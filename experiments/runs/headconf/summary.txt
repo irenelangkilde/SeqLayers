@@ -1,0 +1,27 @@
+=== headconf099  Wed Oct 21 23:29:19 UTC 2026
+recorded events in 485.8 s
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+count cache: 1771752 new feature sets, 1771752 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold/events
+treebank    words   gap_acc uas     las     head_lost coverage
+ALL         2899    0.9979  0.7406  0.6989  0.0328  1.0     
+
+pipeline: 887 attachments inferred (0.306 of tokens), 0.971 of them right; 24 left with no candidate
+
+score 3834.4 s, run 20261022-004307 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 leftovers=greedy minctx=2 relevance=0.25 countmin=10000 headconf=0.99 note=headconf099"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:13:49
+	Average shared text size (kbytes): 0
+=== headconf090  Thu Oct 22 00:43:09 UTC 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold/events
+      From worker 7:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+count cache: 3650 new feature sets, 1775402 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold/events
+treebank    words   gap_acc uas     las     head_lost coverage
+ALL         2899    0.9979  0.714   0.6771  0.139   1.0     
+
+pipeline: 1435 attachments inferred (0.495 of tokens), 0.926 of them right; 174 left with no candidate
+
+score 947.2 s, run 20261022-010047 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 leftovers=greedy minctx=2 relevance=0.25 countmin=10000 headconf=0.9 note=headconf090"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 17:39.40
+	Average shared text size (kbytes): 0
+=== all done Thu Oct 22 01:00:48 UTC 2026

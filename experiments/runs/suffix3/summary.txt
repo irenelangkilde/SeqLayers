@@ -1,0 +1,14 @@
+=== suffix3  Wed Oct 21 20:35:07 UTC 2026
+recorded events in 497.0 s
+      From worker 4:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+count cache: 3118908 new feature sets, 3118908 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-sfx3/events
+treebank    words   gap_acc uas     las     head_lost coverage
+ALL         2899    0.9979  0.7292  0.6851  0.0041  1.0     
+
+score 8894.9 s, run 20261021-231345 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 countmin=10000 suffixes=3 note=suffix3"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:38:39
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 18125524
+	Average resident set size (kbytes): 0
+=== all done Wed Oct 21 23:13:47 UTC 2026

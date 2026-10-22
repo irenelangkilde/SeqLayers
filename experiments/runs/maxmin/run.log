@@ -1,0 +1,127 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 65.1 s): 14 of 34 slots always, 283 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 5:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 65.2 s): 14 of 34 slots always, 283 gate values
+      From worker 5:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 65.4 s): 14 of 34 slots always, 283 gate values
+      From worker 4:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 7:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 65.4 s): 14 of 34 slots always, 283 gate values
+      From worker 7:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 65.5 s): 14 of 34 slots always, 283 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 6:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 65.7 s): 14 of 34 slots always, 283 gate values
+      From worker 6:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 5:	[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (73.9 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (74.9 s)
+      From worker 4:	[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (75.4 s)
+      From worker 7:	[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (76.7 s)
+      From worker 2:	[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (76.9 s)
+      From worker 6:	[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (78.3 s)
+count cache: 257368 new feature sets, 4019585 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+treebank    words   gap_acc uas     las     head_lost coverage
+CHILDES     324     0.9981  0.8056  0.7407  0.0     1.0     
+ESLSpok     502     0.9983  0.761   0.7131  0.0     1.0     
+EWT         86      0.9924  0.686   0.6163  0.0     1.0     
+GUM         963     0.9984  0.7144  0.6739  0.0114  1.0     
+GUMReddit   1024    0.998   0.7188  0.668   0.001   1.0     
+ALL         2899    0.998   0.7334  0.6844  0.0041  1.0     
+
+pipeline: 183 attachments inferred (0.063 of tokens), 1.0 of them right; 0 left with no candidate
+
+dist          n       share   uas     las
+R1            842     0.29    0.918   0.898
+R2            417     0.144   0.837   0.806
+L3-5          310     0.107   0.629   0.503
+R3-5          309     0.107   0.563   0.531
+L1            265     0.091   0.792   0.74
+L6+           261     0.09    0.253   0.161
+L2            236     0.081   0.669   0.568
+root          179     0.062   1.0     1.0
+R6+           80      0.028   0.275   0.262
+
+deprel        n       share   uas     las
+punct         478     0.165   0.626   0.626
+case          258     0.089   0.802   0.779
+nsubj         252     0.087   0.782   0.734
+det           181     0.062   0.939   0.939
+root          179     0.062   1.0     1.0
+advmod        178     0.061   0.747   0.736
+obl           145     0.05    0.572   0.455
+nmod          136     0.047   0.684   0.625
+obj           132     0.046   0.811   0.659
+amod          121     0.042   0.893   0.86
+conj          115     0.04    0.339   0.243
+cc            103     0.036   0.68    0.68
+aux           97      0.033   0.907   0.907
+mark          91      0.031   0.758   0.758
+compound      80      0.028   0.812   0.712
+cop           49      0.017   0.694   0.653
+parataxis     44      0.015   0.341   0.159
+advcl         41      0.014   0.39    0.268
+acl           41      0.014   0.659   0.585
+xcomp         35      0.012   0.686   0.6
+nummod        33      0.011   0.758   0.545
+ccomp         26      0.009   0.808   0.538
+discourse     18      0.006   0.667   0.556
+flat          14      0.005   0.357   0.357
+expl          11      0.004   0.909   0.818
+iobj          11      0.004   0.818   0.364
+fixed         8       0.003   0.625   0.625
+appos         6       0.002   0.833   0.667
+vocative      4       0.001   0.75    0.0
+reparandum    3       0.001   0.667   0.0
+csubj         3       0.001   0.667   0.0
+dep           2       0.001   1.0     0.5
+orphan        2       0.001   0.5     0.0
+goeswith      1       0.0     0.0     0.0
+dislocated    1       0.0     1.0     0.0
+
+depfreq       n       share   uas     las
+50+           1616    0.557   0.768   0.755
+5-49          711     0.245   0.712   0.624
+1-4           354     0.122   0.667   0.573
+0             218     0.075   0.656   0.537
+
+headfreq      n       share   uas     las
+5-49          1170    0.404   0.754   0.706
+1-4           841     0.29    0.698   0.643
+0             435     0.15    0.671   0.625
+50+           274     0.095   0.679   0.606
+root          179     0.062   1.0     1.0
+
+err           n       share   
+too_near      326     0.422   
+too_far       259     0.335   
+wrong_side    188     0.243   
+
+tag           n       share   acc
+head_xpos     2899    0.25    0.5643
+head_upos     2899    0.25    0.7251
+head_dir      2899    0.25    0.8875
+head_dist     2899    0.25    0.6482
+score 3874.4 s, run 20261022-154644 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 stepscore=maxmin note=maxmin"
+	User time (seconds): 9457.68
+	System time (seconds): 78.57
+	Percent of CPU this job got: 232%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:08:13
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 28469076
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 22291
+	Minor (reclaiming a frame) page faults: 30151730
+	Voluntary context switches: 169509
+	Involuntary context switches: 26469
+	Swaps: 0
+	File system inputs: 6025032
+	File system outputs: 522032
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

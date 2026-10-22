@@ -1,0 +1,11 @@
+=== adaptive-pool  Thu Oct 22 15:04:55 MDT 2026
+ALL         2899    0.9979  0.7413  0.6999  0.0041  1.0     
+
+score 1788.0 s, run 20261022-153613 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+     1878.47 real      1999.43 user      3983.96 sys
+=== adaptive-nopool  Thu Oct 22 15:36:14 MDT 2026
+ALL         2899    0.9977  0.7403  0.7002  0.0041  1.0     
+
+score 7087.6 s, run 20261022-173547 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+     7173.39 real      6473.34 user     12681.08 sys
+=== all done Thu Oct 22 17:35:47 MDT 2026

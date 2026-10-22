@@ -1,0 +1,80 @@
+[ Info: ChainModel: grouped decisions into 3902432 records (668198 grouped, 767 label sets)
+[ Info: ChainModel: joint tables for 1172 frequent items, 292319 pairs (43.2 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 313.6 s
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=correction;relevance=0.25)[events=gold;wclasses=classes5], GUM docs: 963 tokens, 6667.8 s; heads 652/963, labels 615
+
+attach
+slot                      chain        %    first        % left_try  left_in        %      ctx        %   |corr|
+cand upos                 16467     14.1    14168     31.7    25007    23872      2.8   710863      7.5    138.6
+cand len                   4293      3.7     1278      2.9    40343    28576      3.3   523909      5.5    244.5
+distance                  20406     17.5    13468     30.2    22847    12099      1.4   729162      7.7    576.8
+cand form                  6043      5.2     4280      9.6    35450    24349      2.8   372393      3.9   1521.4
+cand person                1068      0.9        0      0.0    40608    28976      3.4   392947      4.1     11.0
+cand number                 840      0.7        0      0.0    40836    29204      3.4   392598      4.1     40.9
+cand wclass30               917      0.8        5      0.0    40601    29104      3.4    21845      0.2    115.4
+cand basepos               3000      2.6      679      1.5    38526    26965      3.2   457744      4.8      2.5
+cand left_neighbor.upos     2333      2.0      163      0.4    38992    27594      3.2   223255      2.3    249.5
+cand xpos                  2321      2.0      787      1.8    39136    27603      3.2   427928      4.5    161.7
+cand wclass300             1979      1.7      895      2.0    39414    27941      3.3    77539      0.8    183.7
+cand left_neighbor.xpos     1519      1.3        0      0.0    39783    28393      3.3   129193      1.4     85.4
+cand wclass3000            2446      2.1      989      2.2    38912    27440      3.2   113469      1.2    217.8
+cand right_neighbor.xpos     2258      1.9      235      0.5    38486    27585      3.2   119954      1.3    148.1
+cand right_neighbor.upos     5240      4.5      332      0.7    35451    24586      2.9   245733      2.6    154.3
+cand wclass30000           3984      3.4     3210      7.2    36124    24868      2.9   157802      1.7    434.0
+cand right_neighbor.form     4566      3.9     3287      7.4    33988    23851      2.8   170724      1.8    776.8
+direction                  4984      4.3       60      0.1    28256    23244      2.7   668783      7.0     25.5
+dep  upos                  2483      2.1        0      0.0    25722    25712      3.0   435723      4.6    245.7
+dep  xpos                  2478      2.1        0      0.0    24937    24932      2.9   349800      3.7     89.3
+dep  len                   1663      1.4        1      0.0    25016    24955      2.9   470269      4.9    372.5
+dep  right_neighbor.xpos     1221      1.0        0      0.0    25111    25101      2.9    83211      0.9    138.7
+cand left_neighbor.form     1598      1.4      222      0.5    33140    24226      2.8   198330      2.1    679.5
+dep  wclass300             1043      0.9        0      0.0    24453    24453      2.9    60506      0.6    167.9
+dep  right_neighbor.upos     1938      1.7        0      0.0    23084    23074      2.7   142912      1.5    221.1
+dep  wclass3000            1042      0.9        0      0.0    23343    23343      2.7    82185      0.9    220.3
+dep  left_neighbor.xpos      616      0.5        0      0.0    22956    22914      2.7    74607      0.8     87.8
+dep  wclass30              1889      1.6        0      0.0    21218    21218      2.5    58161      0.6     77.7
+dep  basepos               1160      1.0        0      0.0    21702    21700      2.5   320509      3.4     34.1
+dep  left_neighbor.upos      991      0.9        0      0.0    20642    20601      2.4   123219      1.3    253.9
+dep  wclass30000           1276      1.1        0      0.0    19845    19844      2.3    95215      1.0    168.8
+dep  form                  1256      1.1       28      0.1    19528    19377      2.3   299259      3.1   1234.0
+dep  right_neighbor.form     3059      2.6      330      0.7    14785    14696      1.7    99388      1.0    787.4
+dep  left_neighbor.form     1357      1.2        7      0.0    14343    14273      1.7    99092      1.0    757.2
+dep  number                 865      0.7        0      0.0    11311    11311      1.3   148667      1.6     20.1
+dep  person                1250      1.1        0      0.0     8712     8712      1.0   135542      1.4     24.9
+cand tense                  810      0.7        0      0.0     8876     8703      1.0   122955      1.3      6.0
+cand caps                  1610      1.4       14      0.0     5750     5716      0.7   120091      1.3     25.8
+dep  caps                  1460      1.3      198      0.4     2946     2917      0.3    47990      0.5     43.7
+dep  tense                  760      0.7        0      0.0      717      717      0.1    25164      0.3      0.0
+
+deprel
+slot                      chain        %    first        % left_try  left_in        %      ctx        %   |corr|
+head_dir                   8398     18.4     5350     17.6    21382     5041      3.5   135562      8.5     58.0
+upos                       4884     10.7     4022     13.2    22214     6627      4.6   164215     10.4     82.7
+person                     3829      8.4     3110     10.2    22737     6822      4.8   125402      7.9      2.0
+basepos                    2905      6.4     2393      7.9    24698     7403      5.2   131183      8.3      8.1
+wclass30                   2936      6.4     2361      7.8    22298     6611      4.6    42562      2.7     37.3
+head.upos                  4005      8.8     2557      8.4    20728     5100      3.6    93450      5.9    113.4
+xpos                       2096      4.6     1584      5.2    23163     6760      4.7   109233      6.9     37.9
+number                     1667      3.7     1101      3.6    20404     6991      4.9    97433      6.1     22.0
+len                        1936      4.2     1309      4.3    22985     6483      4.5   112548      7.1    100.4
+right_neighbor.upos        1402      3.1      641      2.1    23079     6765      4.7    59547      3.8    147.5
+head.xpos                  1246      2.7      607      2.0    23198     6835      4.8    40930      2.6     94.7
+head_upos                     0      0.0        0      0.0    24701     7960      5.6    32443      2.0      0.0
+left_neighbor.upos          879      1.9      422      1.4    23665     7045      4.9    57302      3.6    166.3
+head_dist                  1751      3.8      724      2.4    21245     6087      4.2    31354      2.0    169.7
+head_xpos                     0      0.0        0      0.0    24436     7763      5.4    15730      1.0      0.0
+left_neighbor.xpos          639      1.4      393      1.3    21984     6711      4.7    40253      2.5     42.9
+right_neighbor.xpos         598      1.3      259      0.9    21744     6714      4.7    36551      2.3     58.4
+wclass300                   576      1.3      397      1.3    22767     6544      4.6    12803      0.8     85.7
+wclass3000                 1353      3.0     1200      3.9    19431     5438      3.8    30471      1.9     98.9
+wclass30000                 697      1.5      587      1.9    14485     3751      2.6    18639      1.2    113.6
+caps                       1671      3.7      209      0.7     6052     2204      1.5    61044      3.8     19.0
+right_neighbor.form         404      0.9      230      0.8    10368     3255      2.3    29278      1.8    139.6
+left_neighbor.form          342      0.7      207      0.7    10346     3203      2.2    32335      2.0    161.4
+form                        494      1.1      397      1.3    11543     2321      1.6    41078      2.6     98.4
+tense                       487      1.1        1      0.0     7552     1807      1.3    25105      1.6      7.1
+head.form                   430      0.9      387      1.3     4187     1154      0.8    10052      0.6     84.4
+
+count cache: 2459676 new feature sets, 2459676 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-wcclasses5/events

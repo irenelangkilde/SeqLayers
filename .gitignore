@@ -1,0 +1,8 @@
+# generated: recorded events, count caches, lexicons (gigabytes; re-recorded from the treebanks)
+experiments/work/
+# local backups of replaced files (history now lives in git)
+backups/
+# exported conversation transcripts
+Claude_*.txt
+*.tmp
+.DS_Store

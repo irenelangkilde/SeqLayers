@@ -1,0 +1,7 @@
+=== greedy-rel025-fill  Tue Oct 20 07:40:53 MDT 2026
+count cache: 6817908 new feature sets, 7313957 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold/events/counts.jls
+treebank    words   gap_acc uas     las     head_lost coverage
+ALL         2899    0.9979  0.7385  0.6961  0.0041  1.0     
+
+score 6313.6 s, run 20261020-092700 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== greedy-rel025-warm  Tue Oct 20 09:27:01 MDT 2026

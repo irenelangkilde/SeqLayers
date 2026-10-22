@@ -1,0 +1,102 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 276.5 s
+      From worker 7:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 2:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 4:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 5:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 6:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 4:	[ Info: ChainModel: joint tables for 801 frequent items, 145415 pairs (31.3 s)
+      From worker 7:	[ Info: ChainModel: joint tables for 801 frequent items, 145415 pairs (31.3 s)
+      From worker 5:	[ Info: ChainModel: joint tables for 801 frequent items, 145415 pairs (31.3 s)
+      From worker 2:	[ Info: ChainModel: joint tables for 801 frequent items, 145415 pairs (31.3 s)
+      From worker 6:	[ Info: ChainModel: joint tables for 801 frequent items, 145415 pairs (31.3 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 801 frequent items, 145415 pairs (31.4 s)
+count cache: 60564 new feature sets, 60564 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold/events
+treebank    words   gap_acc uas     las     head_lost coverage
+CHILDES     324     0.9981  0.9846  0.8858  0.0     1.0     
+ESLSpok     502     0.9983  0.994   0.9064  0.0     1.0     
+EWT         86      0.9899  1.0     0.9419  0.0     1.0     
+GUM         963     0.9984  0.9751  0.9055  0.0114  1.0     
+GUMReddit   1024    0.998   0.9854  0.8926  0.001   1.0     
+ALL         2899    0.9979  0.9838  0.9     0.0041  1.0     
+
+pipeline: 2793 attachments inferred (0.963 of tokens), 0.999 of them right; 6 left with no candidate
+
+dist          n       share   uas     las
+R1            842     0.29    1.0     0.969
+R2            417     0.144   1.0     0.971
+L3-5          310     0.107   0.987   0.758
+R3-5          309     0.107   0.981   0.935
+L1            265     0.091   1.0     0.925
+L6+           261     0.09    0.87    0.655
+L2            236     0.081   1.0     0.86
+root          179     0.062   1.0     1.0
+R6+           80      0.028   0.962   0.825
+
+deprel        n       share   uas     las
+punct         478     0.165   0.962   0.962
+case          258     0.089   0.992   0.973
+nsubj         252     0.087   0.988   0.921
+det           181     0.062   0.994   0.994
+root          179     0.062   1.0     1.0
+advmod        178     0.061   0.994   0.961
+obl           145     0.05    0.979   0.8
+nmod          136     0.047   0.985   0.875
+obj           132     0.046   1.0     0.856
+amod          121     0.042   1.0     0.95
+conj          115     0.04    0.922   0.591
+cc            103     0.036   0.99    0.981
+aux           97      0.033   1.0     1.0
+mark          91      0.031   0.989   0.989
+compound      80      0.028   1.0     0.812
+cop           49      0.017   1.0     0.959
+parataxis     44      0.015   0.955   0.659
+advcl         41      0.014   0.951   0.512
+acl           41      0.014   0.976   0.878
+xcomp         35      0.012   1.0     0.8
+nummod        33      0.011   1.0     0.606
+ccomp         26      0.009   0.962   0.538
+discourse     18      0.006   1.0     0.778
+flat          14      0.005   1.0     0.929
+expl          11      0.004   1.0     0.909
+iobj          11      0.004   1.0     0.364
+fixed         8       0.003   1.0     1.0
+appos         6       0.002   1.0     0.667
+vocative      4       0.001   1.0     0.0
+reparandum    3       0.001   1.0     0.0
+csubj         3       0.001   1.0     0.667
+dep           2       0.001   1.0     0.5
+orphan        2       0.001   1.0     0.0
+goeswith      1       0.0     1.0     1.0
+dislocated    1       0.0     1.0     0.0
+
+depfreq       n       share   uas     las
+50+           1616    0.557   0.984   0.961
+5-49          711     0.245   0.992   0.845
+1-4           354     0.122   0.975   0.797
+0             218     0.075   0.972   0.794
+
+headfreq      n       share   uas     las
+5-49          1170    0.404   0.987   0.921
+1-4           841     0.29    0.976   0.87
+0             435     0.15    0.984   0.887
+50+           274     0.095   0.982   0.858
+root          179     0.062   1.0     1.0
+
+err           n       share   
+too_near      22      0.468   
+too_far       19      0.404   
+no_choice     6       0.128   
+
+tag           n       share   acc
+head_xpos     2899    0.125   1.0
+head_upos     2899    0.125   1.0
+head_dist@committed2899    0.125   1.0
+head_dir      2899    0.125   1.0
+head_dir@committed2899    0.125   1.0
+head_xpos@committed2899    0.125   1.0
+head_dist     2899    0.125   1.0
+head_upos@committed2899    0.125   1.0
+score 216.6 s, run 20261021-164247 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv

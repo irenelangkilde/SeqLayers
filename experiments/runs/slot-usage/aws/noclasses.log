@@ -1,0 +1,91 @@
+[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+[ Info: ChainModel: joint tables for 801 frequent items, 145415 pairs (53.5 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 473.4 s
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=correction;relevance=0.25)[events=gold], GUM docs: 963 tokens, 6823.3 s; heads 691/963, labels 657
+
+attach
+slot                      chain        %    first        % left_try  left_in        %      ctx        %   |corr|
+cand upos                 17986     15.6    15297     34.3    23487    22237      3.5   511418      8.6    135.3
+cand len                   4659      4.0     1284      2.9    39977    28101      4.4   376561      6.3    227.6
+distance                  21128     18.3    14354     32.2    21989    11200      1.7   555323      9.3    450.7
+cand form                  7268      6.3     5704     12.8    33954    22788      3.5   267209      4.5   1526.3
+cand person                1449      1.3        0      0.0    40227    28464      4.4   209325      3.5     11.5
+cand number                1248      1.1        7      0.0    40428    28665      4.5   222072      3.7     35.0
+cand basepos               3286      2.8      792      1.8    38237    26560      4.1   283949      4.8      4.6
+cand xpos                  3944      3.4     1825      4.1    37505    25857      4.0   288355      4.8    159.2
+cand left_neighbor.xpos     1653      1.4        4      0.0    39654    28142      4.4    50149      0.8     89.1
+cand left_neighbor.upos     2477      2.1      205      0.5    38846    27317      4.2   125032      2.1    246.1
+cand right_neighbor.xpos     2821      2.4      431      1.0    37834    26841      4.2    50618      0.8    148.4
+cand right_neighbor.upos     5590      4.8      446      1.0    35047    24064      3.7   152164      2.6    137.4
+cand right_neighbor.form     4765      4.1     3365      7.5    33777    23629      3.7   133086      2.2    745.7
+direction                  4998      4.3       60      0.1    28443    23326      3.6   504777      8.5     29.7
+dep  upos                  3373      2.9        0      0.0    24808    24806      3.9   304732      5.1    241.3
+dep  xpos                  3151      2.7        0      0.0    24199    24196      3.8   236764      4.0     73.1
+dep  len                   2081      1.8        1      0.0    24580    24527      3.8   345222      5.8    285.0
+dep  right_neighbor.xpos     1585      1.4        0      0.0    24721    24712      3.8    31813      0.5    154.1
+cand left_neighbor.form     1813      1.6      284      0.6    32925    24017      3.7   148125      2.5    699.2
+dep  right_neighbor.upos     2346      2.0        0      0.0    22693    22684      3.5    84914      1.4    227.0
+dep  left_neighbor.xpos      770      0.7        0      0.0    22907    22865      3.6    29543      0.5     82.4
+dep  basepos               1523      1.3        0      0.0    21200    21198      3.3   202700      3.4     39.7
+dep  left_neighbor.upos     1430      1.2        0      0.0    20523    20481      3.2    77041      1.3    221.7
+dep  form                  2177      1.9       28      0.1    18994    18855      2.9   222060      3.7   1151.1
+dep  right_neighbor.form     3281      2.8      330      0.7    14904    14827      2.3    80264      1.3    774.6
+dep  left_neighbor.form     1627      1.4        7      0.0    14382    14314      2.2    78927      1.3    715.0
+dep  number                 848      0.7        0      0.0    11156    11156      1.7    88476      1.5     23.4
+cand tense                  923      0.8        0      0.0     9653     9485      1.5    72855      1.2      4.9
+dep  person                1502      1.3        0      0.0     8492     8492      1.3    83245      1.4     23.4
+cand caps                  1674      1.4       14      0.0     5694     5660      0.9    90613      1.5     24.2
+dep  caps                  1534      1.3      198      0.4     2990     2960      0.5    40932      0.7     41.6
+dep  tense                  599      0.5        0      0.0      745      745      0.1    14460      0.2      0.0
+
+deprel
+slot                      chain        %    first        % left_try  left_in        %      ctx        %   |corr|
+head_dir                   8750     19.1     5450     17.9    20954     4815      4.0   109474      8.9     55.8
+upos                       6066     13.2     5069     16.7    21092     6417      5.3   145948     11.9     80.5
+person                     4087      8.9     3170     10.4    22515     6822      5.6   101051      8.3      1.4
+basepos                    3294      7.2     2807      9.2    24263     7310      6.0   108394      8.9      9.7
+xpos                       3099      6.8     2496      8.2    22216     6620      5.4    97887      8.0     40.3
+head.upos                  4299      9.4     2813      9.2    20473     5101      4.2    78636      6.4     89.0
+number                     2023      4.4     1422      4.7    20019     6918      5.7    79995      6.5     24.5
+len                        2558      5.6     1781      5.9    22465     6326      5.2    99431      8.1     84.1
+right_neighbor.upos        1738      3.8      879      2.9    22722     6759      5.6    49383      4.0    105.2
+head.xpos                  1363      3.0      664      2.2    23019     6877      5.7    31724      2.6     81.8
+left_neighbor.upos         1134      2.5      599      2.0    23337     7049      5.8    47362      3.9    151.9
+head_upos                     0      0.0        0      0.0    24740     8127      6.7    15964      1.3      0.0
+head_dist                  1927      4.2      777      2.6    21029     6055      5.0    22164      1.8    161.1
+head_xpos                     0      0.0        0      0.0    24366     7889      6.5     5665      0.5      0.0
+left_neighbor.xpos          780      1.7      474      1.6    21907     6882      5.7    31414      2.6     38.7
+right_neighbor.xpos         642      1.4      304      1.0    21674     6813      5.6    26372      2.2     45.2
+caps                       1580      3.5      282      0.9     6363     2381      2.0    52136      4.3     18.5
+right_neighbor.form         469      1.0      271      0.9    10337     3375      2.8    25950      2.1    153.6
+left_neighbor.form          403      0.9      224      0.7    10335     3402      2.8    29501      2.4    168.0
+form                        629      1.4      545      1.8    11403     2541      2.1    35877      2.9     95.3
+tense                       481      1.1        1      0.0     7569     1983      1.6    20769      1.7      7.1
+head.form                   464      1.0      414      1.4     4166     1186      1.0     9059      0.7     93.2
+
+count cache: 1370398 new feature sets, 1370398 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold/events
+	Command being timed: "julia --project=experiments experiments/slot_usage.jl model=chain select=maxdev events=gold dev_sents=5 jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 tb=GUM docs=1 out=experiments/runs/slot-usage/noclasses.tsv"
+	User time (seconds): 7364.90
+	System time (seconds): 22.96
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:03:09
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 17680892
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1701
+	Minor (reclaiming a frame) page faults: 9000707
+	Voluntary context switches: 3104
+	Involuntary context switches: 30210
+	Swaps: 0
+	File system inputs: 732528
+	File system outputs: 5524088
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

@@ -1,0 +1,30 @@
+[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 11 label sets)
+[ Info: ChainModel: joint tables for 801 frequent items, 145415 pairs (19.9 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold/events
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=correction;relevance=0.25)[events=gold]: 86 tokens, 224.2 s; heads 59/86, labels 56; cache emptied 1 times; max RSS 6.7 GB
+
+chain   scans 9268, records read 96516673, per scan median 731, 90th pct 29079, max 201949
+greedy  scans 613309, records read 2985066797, per scan median 38, 90th pct 4357, max 1921436
+
+chain   11395 pass decisions: skipped 2127 (18.7%); passes forced by 1 long trial 1134, 2: 821, 3+: 7313; median trials 6
+greedy  626500 pass decisions: skipped 13191 (2.1%); passes forced by 1 long trial 122754, 2: 75989, 3+: 414566; median trials 4
+      261.90 real       301.83 user        21.89 sys
+          7212728320  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             2271156  page reclaims
+              164313  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 376  voluntary context switches
+             1308939  involuntary context switches
+       2366114744468  instructions retired
+       1265820917913  cycles elapsed
+         14029436632  peak memory footprint

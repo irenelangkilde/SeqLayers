@@ -1,0 +1,14 @@
+=== wclass5-noleft  Wed Oct 21 18:35:54 UTC 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-wcclasses5/events
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3902432 records (668198 grouped, 767 label sets)
+count cache: 8898 new feature sets, 4776139 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-wcclasses5/events
+treebank    words   gap_acc uas     las     head_lost coverage
+ALL         2899    0.9979  0.7227  0.6761  0.0041  1.0     
+
+score 3521.1 s, run 20261021-193737 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 countmin=10000 classleft=false wclasses=/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5 note=wclass5-noleft"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:01:43
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 27446092
+	Average resident set size (kbytes): 0
+=== all done Wed Oct 21 19:37:38 UTC 2026

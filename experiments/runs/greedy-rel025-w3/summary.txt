@@ -1,0 +1,10 @@
+=== greedy-rel025-w3-warm  Tue Oct 20 14:38:12 MDT 2026
+count cache: 268 new feature sets, 2641615 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold/events
+treebank    words   gap_acc uas     las     head_lost coverage
+ALL         2899    0.9979  0.7385  0.6961  0.0041  1.0     
+
+score 6116.7 s, run 20261020-162056 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+     6164.55 real      5608.48 user     12842.31 sys
+          6623346688  maximum resident set size
+                   0  average shared memory size
+=== all done Tue Oct 20 16:20:56 MDT 2026

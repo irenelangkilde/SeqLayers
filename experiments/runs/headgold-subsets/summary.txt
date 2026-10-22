@@ -1,0 +1,43 @@
+=== hg-dir  Thu Oct 22 17:47:31 UTC 2026
+ALL         2899    0.9979  0.7792  0.7337  0.0041  1.0     
+
+pipeline: 213 attachments inferred (0.073 of tokens), 1.0 of them right; 0 left with no candidate
+
+score 4117.8 s, run 20261022-185937 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 headgold=head_dir note=hg-dir"
+=== hg-dist  Thu Oct 22 18:59:38 UTC 2026
+ALL         2899    0.9979  0.8934  0.8251  0.0041  1.0     
+
+pipeline: 566 attachments inferred (0.195 of tokens), 1.0 of them right; 0 left with no candidate
+
+score 743.4 s, run 20261022-191509 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 headgold=head_dist note=hg-dist"
+=== hg-dirdist  Thu Oct 22 19:15:10 UTC 2026
+ALL         2899    0.9979  0.9248  0.852   0.0041  1.0     
+
+pipeline: 1973 attachments inferred (0.681 of tokens), 1.0 of them right; 0 left with no candidate
+
+score 431.9 s, run 20261022-192529 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 headgold=head_dir,head_dist note=hg-dirdist"
+=== hg-dirdist-upos  Thu Oct 22 19:25:30 UTC 2026
+ALL         2899    0.9979  0.9703  0.8889  0.0041  1.0     
+
+pipeline: 2697 attachments inferred (0.93 of tokens), 0.999 of them right; 2 left with no candidate
+
+score 201.1 s, run 20261022-193158 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 headgold=head_dir,head_dist,head_upos note=hg-dirdist-upos"
+=== hg-dirdist-xpos  Thu Oct 22 19:31:59 UTC 2026
+ALL         2899    0.9979  0.9838  0.8996  0.0041  1.0     
+
+pipeline: 2772 attachments inferred (0.956 of tokens), 0.999 of them right; 6 left with no candidate
+
+score 174.7 s, run 20261022-193805 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 headgold=head_dir,head_dist,head_xpos note=hg-dirdist-xpos"
+=== hg-all  Thu Oct 22 19:38:06 UTC 2026
+ALL         2899    0.9979  0.9838  0.8996  0.0041  1.0     
+
+pipeline: 2793 attachments inferred (0.963 of tokens), 0.999 of them right; 6 left with no candidate
+
+score 154.7 s, run 20261022-194349 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 headgold=all note=hg-all"
+=== all done Thu Oct 22 19:43:50 UTC 2026

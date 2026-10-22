@@ -1,0 +1,23 @@
+=== wclass5-cold  Tue Oct 20 21:33:54 UTC 2026
+count cache: 4766209 new feature sets, 4766209 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-wcclasses5/events
+treebank    words   gap_acc uas     las     head_lost coverage
+ALL         2899    0.9979  0.7213  0.6726  0.0041  1.0     
+
+score 28216.9 s, run 20261021-053549 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 countmin=10000 wclasses=/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5 note=wclass5-cold"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 8:01:55
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 25337132
+	Average resident set size (kbytes): 0
+=== wclass5-warm  Wed Oct 21 05:35:50 UTC 2026
+count cache: 1032 new feature sets, 4767241 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-wcclasses5/events
+treebank    words   gap_acc uas     las     head_lost coverage
+ALL         2899    0.9979  0.7213  0.6726  0.0041  1.0     
+
+score 4884.2 s, run 20261021-065938 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 countmin=10000 wclasses=/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5 note=wclass5-warm"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:23:49
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 14612832
+	Average resident set size (kbytes): 0
+=== all done Wed Oct 21 06:59:39 UTC 2026

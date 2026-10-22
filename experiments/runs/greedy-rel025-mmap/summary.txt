@@ -1,0 +1,19 @@
+=== greedy-rel025-mmap-cold  Tue Oct 20 11:34:25 MDT 2026
+count cache: 2640836 new feature sets, 2640836 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold/events
+treebank    words   gap_acc uas     las     head_lost coverage
+ALL         2899    0.9979  0.7385  0.6961  0.0041  1.0     
+
+score 4781.4 s, run 20261020-125930 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+     5104.98 real     11946.52 user      3485.86 sys
+          7643152384  maximum resident set size
+                   0  average shared memory size
+=== greedy-rel025-mmap-warm  Tue Oct 20 12:59:30 MDT 2026
+count cache: 511 new feature sets, 2641347 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold/events
+treebank    words   gap_acc uas     las     head_lost coverage
+ALL         2899    0.9979  0.7385  0.6961  0.0041  1.0     
+
+score 4881.0 s, run 20261020-142141 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+     4931.84 real      5734.15 user     11479.32 sys
+          8190197760  maximum resident set size
+                   0  average shared memory size
+=== all done Tue Oct 20 14:21:42 MDT 2026

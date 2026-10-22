@@ -1,0 +1,46 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 1.0e-12, 58.2 s): 28 of 32 slots always, 257 gate values
+[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+model with gates (all effects kept) in 69.0 s
+
+slot                         effect  max under a gate   (gate slot)
+cand upos                    3.6344            4.3848   cand left_neighbor.upos
+cand form                     3.228            3.6161   cand left_neighbor.upos
+cand xpos                     3.091            3.9384   cand right_neighbor.upos
+distance                     2.4789            5.1416   dep  upos
+cand basepos                  2.159             3.971   distance
+cand len                     1.5582            3.5544   cand right_neighbor.xpos
+cand right_neighbor.xpos     1.0232             2.298   cand left_neighbor.xpos
+cand right_neighbor.form     0.9129            1.3841   cand len
+cand right_neighbor.upos     0.8852            2.3691   cand left_neighbor.upos
+cand left_neighbor.form      0.7974            2.5447   distance
+cand left_neighbor.upos      0.7745            2.5277   dep  xpos
+cand left_neighbor.xpos      0.6363            2.6493   distance
+cand person                  0.6258            2.9873   dep  xpos
+cand number                  0.6175            2.9794   dep  xpos
+cand tense                   0.3742            2.5295   cand left_neighbor.xpos
+direction                    0.2818            4.3853   dep  xpos
+cand caps                    0.2211            2.3175   dep  xpos
+dep  left_neighbor.xpos      0.0511            1.9477   distance
+dep  left_neighbor.upos       0.047            1.4913   cand xpos
+dep  right_neighbor.xpos     0.0317            2.2366   distance
+dep  xpos                    0.0279            2.6692   distance
+dep  right_neighbor.upos     0.0277            2.3154   distance
+dep  len                     0.0234            1.6484   cand xpos
+dep  upos                    0.0222            2.7255   cand basepos
+dep  basepos                 0.0144            1.9361   cand xpos
+dep  person                  0.0139            0.9644   cand right_neighbor.xpos
+dep  caps                    0.0092            0.5517   cand right_neighbor.xpos
+dep  number                  0.0081            0.9335   cand right_neighbor.xpos
+dep  form                       0.0            2.5375   distance
+dep  left_neighbor.form         0.0            1.7423   distance
+dep  right_neighbor.form        0.0            2.1546   distance
+dep  tense                      0.0            0.7698   distance
+
+gate      always  gate values  mean admitted/record  of 32
+0.02          24          255                  32.0
+0.05          18          238                  32.0
+0.1           17          227                  32.0
+0.15          17          225                  32.0
+0.2           17          221                  31.9
+0.3           15          401                  31.1
+0.5           14          330                  28.1

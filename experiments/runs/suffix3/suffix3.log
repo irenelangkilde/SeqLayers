@@ -1,0 +1,121 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 497.0 s
+      From worker 4:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 6:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 7:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 5:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 2:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 5:	[ Info: ChainModel: joint tables for 924 frequent items, 202350 pairs (67.8 s)
+      From worker 6:	[ Info: ChainModel: joint tables for 924 frequent items, 202350 pairs (68.0 s)
+      From worker 4:	[ Info: ChainModel: joint tables for 924 frequent items, 202350 pairs (68.5 s)
+      From worker 7:	[ Info: ChainModel: joint tables for 924 frequent items, 202350 pairs (68.6 s)
+      From worker 2:	[ Info: ChainModel: joint tables for 924 frequent items, 202350 pairs (70.5 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 924 frequent items, 202350 pairs (71.4 s)
+count cache: 3118908 new feature sets, 3118908 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-sfx3/events
+treebank    words   gap_acc uas     las     head_lost coverage
+CHILDES     324     0.9981  0.7963  0.7438  0.0     1.0     
+ESLSpok     502     0.9983  0.7629  0.7151  0.0     1.0     
+EWT         86      0.9899  0.7093  0.6512  0.0     1.0     
+GUM         963     0.9984  0.6937  0.6604  0.0114  1.0     
+GUMReddit   1024    0.998   0.7266  0.6777  0.001   1.0     
+ALL         2899    0.9979  0.7292  0.6851  0.0041  1.0     
+
+pipeline: 183 attachments inferred (0.063 of tokens), 1.0 of them right; 0 left with no candidate
+
+dist          n       share   uas     las
+R1            842     0.29    0.913   0.897
+R2            417     0.144   0.801   0.784
+L3-5          310     0.107   0.613   0.481
+R3-5          309     0.107   0.566   0.531
+L1            265     0.091   0.815   0.77
+L6+           261     0.09    0.238   0.165
+L2            236     0.081   0.703   0.619
+root          179     0.062   1.0     1.0
+R6+           80      0.028   0.288   0.238
+
+deprel        n       share   uas     las
+punct         478     0.165   0.607   0.607
+case          258     0.089   0.76    0.748
+nsubj         252     0.087   0.794   0.746
+det           181     0.062   0.939   0.939
+root          179     0.062   1.0     1.0
+advmod        178     0.061   0.764   0.758
+obl           145     0.05    0.559   0.448
+nmod          136     0.047   0.64    0.574
+obj           132     0.046   0.811   0.705
+amod          121     0.042   0.876   0.843
+conj          115     0.04    0.374   0.261
+cc            103     0.036   0.65    0.641
+aux           97      0.033   0.938   0.938
+mark          91      0.031   0.758   0.758
+compound      80      0.028   0.825   0.688
+cop           49      0.017   0.816   0.776
+parataxis     44      0.015   0.25    0.182
+advcl         41      0.014   0.415   0.244
+acl           41      0.014   0.732   0.659
+xcomp         35      0.012   0.771   0.686
+nummod        33      0.011   0.697   0.576
+ccomp         26      0.009   0.808   0.538
+discourse     18      0.006   0.722   0.556
+flat          14      0.005   0.571   0.5
+expl          11      0.004   0.909   0.818
+iobj          11      0.004   0.818   0.455
+fixed         8       0.003   0.75    0.75
+appos         6       0.002   0.833   0.667
+vocative      4       0.001   0.5     0.0
+reparandum    3       0.001   0.0     0.0
+csubj         3       0.001   0.667   0.0
+dep           2       0.001   1.0     0.5
+orphan        2       0.001   0.0     0.0
+goeswith      1       0.0     0.0     0.0
+dislocated    1       0.0     0.0     0.0
+
+depfreq       n       share   uas     las
+50+           1616    0.557   0.764   0.753
+5-49          711     0.245   0.71    0.634
+1-4           354     0.122   0.647   0.554
+0             218     0.075   0.665   0.56
+
+headfreq      n       share   uas     las
+5-49          1170    0.404   0.745   0.706
+1-4           841     0.29    0.685   0.629
+0             435     0.15    0.683   0.641
+50+           274     0.095   0.693   0.631
+root          179     0.062   1.0     1.0
+
+err           n       share   
+too_near      295     0.376   
+too_far       294     0.375   
+wrong_side    196     0.25    
+
+tag           n       share   acc
+head_xpos     2899    0.25    0.5747
+head_upos     2899    0.25    0.7327
+head_dir      2899    0.25    0.8813
+head_dist     2899    0.25    0.6554
+score 8894.9 s, run 20261021-231345 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 countmin=10000 suffixes=3 note=suffix3"
+	User time (seconds): 20042.06
+	System time (seconds): 63.66
+	Percent of CPU this job got: 211%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:38:39
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 18125524
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1787
+	Minor (reclaiming a frame) page faults: 22312670
+	Voluntary context switches: 3708
+	Involuntary context switches: 53479
+	Swaps: 0
+	File system inputs: 733928
+	File system outputs: 6152024
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

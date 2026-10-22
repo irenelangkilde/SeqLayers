@@ -1,0 +1,13 @@
+=== headgold-all  Wed Oct 21 16:33:27 MDT 2026
+ALL         2899    0.9979  0.9838  0.9     0.0041  1.0     
+
+pipeline: 2793 attachments inferred (0.963 of tokens), 0.999 of them right; 6 left with no candidate
+
+score 216.6 s, run 20261021-164247 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== headgold-dirdist  Wed Oct 21 16:42:48 MDT 2026
+ALL         2899    0.9979  0.9248  0.8524  0.0041  1.0     
+
+pipeline: 1973 attachments inferred (0.681 of tokens), 1.0 of them right; 0 left with no candidate
+
+score 1050.6 s, run 20261021-170115 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Wed Oct 21 17:01:16 MDT 2026

@@ -1,0 +1,29 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 24.7 s): 14 of 32 slots always, 283 gate values
+[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (19.7 s)
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 24.7 s): 14 of 32 slots always, 283 gate values
+[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (19.7 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events
+
+== target = false: 216.8 s; heads 59/86, labels 56, gaps 391/395
+decision    decisions  chain steps  steps/decision  restarted leftovers try      included
+10                 74         4649           62.82          0         14496          9241
+11                 74          576            7.78          0          1996          1613
+12                 74         1180           15.95          0          3298          2800
+9                  74         2454           33.16          0          8473          5290
+attach             81         5679           70.11          0         33100         29500
+deprel             75         4171           55.61          0         36397         11490
+gap               288         1531            5.32          0          3294          3231
+
+== target = true: 8.1 s; heads 44/86, labels 33, gaps 389/395
+decision    decisions  chain steps  steps/decision  restarted leftovers try      included
+10                 74         4988           67.41         74         15183            88
+11                 74          499            6.74         48          2139           650
+12                 74          937           12.66         72          3517           190
+9                  74         2551           34.47         71          8928           341
+attach             81         3740           46.17         81         31236           353
+deprel             75         5392           71.89         75         37132             0
+gap               288         1481            5.14         17          3358          3037

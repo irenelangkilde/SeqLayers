@@ -1,0 +1,1868 @@
+# chain.jl  --  greedy chains of conditioning features, calculated from joint counts
+#
+# For a decision, start with no conditioning features and each candidate at its prior odds.
+# Repeatedly add the feature slot (context path, head form, distance, ...) chosen by the
+# selection criterion, re-estimating each candidate's odds from the *joint* counts of the
+# whole conditioning set:
+#
+#     o_c(C ∪ {s}) = smoothOdds(c1, c2, o_c(C))        c1/c2: chosen/unchosen training records
+#                                                      containing all of C ∪ {s} for candidate c
+#
+# Because each feature is judged given the ones already chosen, a redundant feature barely
+# changes the counts and adds ~nothing -- no evidence is counted twice.  Stop when the best
+# feature's criterion falls below `tau` (or counts fall below `mincount`).
+#
+# Selection criteria (x = candidates' odds before adding s, y = after; K = number of candidates):
+#   :maxdev         per candidate: its own chain, maximizing |log y_c − log x_c|
+#   :avglogodds     mean_c |log y_c − log x_c|
+#   :clr_mean_abs   mean absolute clr change, (1/K) Σ |Δ_c|,    Δ = clr(log y) − clr(log x)
+#   :clr_rms        RMS-normalized Aitchison distance, √((1/K) Σ Δ_c²)
+# (clr of the log odds vector: subtract its mean.)  With K = 2 the two clr criteria coincide.
+#
+# Target mode: if a step changes the top two candidates or their order, the chain restarts
+# from nothing with a target odds profile, now picking the feature that moves the odds closest
+# to the target (same distance family), stopping when no feature gets at least `tau` closer.
+# A later change of the top two to an order different from the target's restarts again, up to
+# `maxrestarts`.  The target is (`restart`):
+#   :immediate   the odds profile right after the step that changed the order
+#   :exhaust     the profile reached by continuing to add features -- ignoring `tau` -- until
+#                none has `mincount` joint records left
+# With :maxdev the per-candidate chains run in step (each candidate adds its own best feature
+# per round) so the ranking can be checked after each round, and each candidate approaches its
+# own target odds.
+#
+# Leftovers (features never added to the chain):
+#   :none       ignore them
+#   :marginal   add each one's single-feature correction relative to the prior
+#   :backoff    add each one's correction conditioned on the longest prefix of the chain that
+#               still has `mincount` joint records with it (empty prefix = :marginal)
+#   :greedy     each leftover X gets its own conditioning context, grown greedily from the chain's
+#               features and the leftovers already included: at each step the available feature
+#               f that most changes X's correction (`greedyby` = :correction: |corr(S∪f) − corr(S)|,
+#               corr(S) = log o(S∪X) − log o(S)) -- or most moves the context's own odds (:odds) --
+#               among those keeping S∪f∪X supported; until none does.  X is included (its
+#               correction added, and itself available as context for later leftovers) only if
+#               its context has at least `minctx` features.  Leftovers are taken in slot order.
+#               Speed-ups (approximate): a context stops growing at `maxctx` features; a leftover
+#               whose relevance -- the largest of |λ_X| and |λ(a, X)| over the chain's features a,
+#               for the candidate's label -- is below `relevance` is skipped outright.
+#   :backoff1   the same as :backoff, but never back off to the empty prefix: a leftover without joint
+#               support with at least the chain's first feature is dropped, since a correction
+#               relative to the prior would re-count evidence the chain already used.  (With an
+#               empty chain it behaves like :marginal.)
+#
+# Joint tables (`jointmin` > 0): at build time, counts per label are precomputed for every
+# "frequent" item (at least `jointmin` records) and every co-occurring pair of frequent items.
+# A chain step whose set is such an item or pair takes its counts from the tables without
+# intersecting record lists; the set's list is built only if the chain goes deeper.  Exact:
+# scores are the same as without the tables.  Intersections with a rare item stay on the fly,
+# since they're cheap (binary search of the long list).
+#
+# Screening (`screen` > 0), treating items as absent at decode time so chains never pay for them:
+#   - an item with fewer than `mincount` records (exact: no set containing it can be supported);
+#   - a frequent item whose own correction and every stored pair's correction are below `screen`.
+#     As in the lattice, a pair's correction is λ = log smoothOdds(c1, c2, e) − log e with e what
+#     its two items predict (prior × exp(λ_a + λ_b)); so an item that only matters together with
+#     another (a dependent's own tag, for attachment) survives through its pairs.  Labeled
+#     decisions combine per-label λ by `screenby`: :maxdev (largest |λ|) or :clr_rms (Aitchison).
+# Items that are neither rare nor frequent are kept.  Needs the joint tables.
+#
+# Records: a feature value's sorted list of records (its posting) is stored only if it holds fewer
+# than `keepfrac` of its decision type's records.  A chain prefix's records are a view: a stored
+# base list (a posting, a list built earlier, or all records of the type) plus filter items its
+# records must also contain.  A prefix gets a list of its own once its count falls below
+# `keepfrac` of its base's length; so a near-universal value (tense=0) never stores one, and a
+# view never scans more than 1/keepfrac times the records it holds.  All of a chain step's trial
+# items are counted in one pass over the view's base, checking the filter in the same pass -- or,
+# when every trial item is rare, by intersecting their postings.  For speed, each item gets a
+# small integer id at build time and records are scanned as ids against marker arrays.  Since a
+# decision type's records all have the same layout, each item sits at a fixed position (its slot);
+# a pass then reads only the trial and filter items' positions of each record, not all of its
+# items (`usepos`; an item seen at more than one position falls back to reading everything).  Entries
+# for sets already seen are cached.  None of this changes any count, so scores are the same for
+# any `keepfrac`.
+#
+# Climbing (`m.climb`): an item x given rings -- nested sets of items of the same slot, innermost
+# first (e.g. a word, then its nearest neighbours, its class, groups of classes) -- doesn't count
+# "slot = x" in a chain: at each step (and leftover depth) it counts "slot ∈ ring L of x" for the
+# finest L whose records support the candidate's label (≥ mincount), so the chain uses the most
+# specific ring the data allow there.  Every ring level is counted in the same scan (a record's
+# value lies in one innermost ring), and the chosen level's records are kept from that scan.
+# The rings themselves come from outside (see climb.jl).  As a leftover (`climbleft`), a
+# climbing slot takes :deepest -- the finest ring supported at the deepest prefix that supports
+# any (the usual leftover rule) -- or :specific -- the finest ring supported at any depth, from
+# the deepest prefix supporting that ring (specificity before depth) -- or :none (no correction).
+#
+# Grouped decisions (`group`): a labeled decision is recorded as one record per candidate label,
+# all with the same items (the context).  With grouping, consecutive records of one decision become
+# one record holding its gold label and its label set; a set's "not chosen" count for label l is
+# then the number of matching decisions whose label set holds l, less those whose gold label is l.
+# Exact (every count is unchanged); attachment's records differ in their items, so they stay one
+# per candidate.  Record numbers then refer to the grouped records.
+#
+# Relevance gates (gate > 0): which slots a decision considers at all, learned once from the
+# training records, so an irrelevant feature costs nothing when deciding.  For each unlabeled
+# decision type with a fixed record layout: a slot's average effect (mean |log-odds change| from
+# knowing its value, over the records holding it, supported values only) and its effect among the
+# records holding each value v of a "gate" slot (one with at most MAXGATEVALS values: tags,
+# distance, direction, ...).  A slot is admitted when its average effect reaches `gate`, or when a
+# gate value present in the record makes its effect reach `gate`.  The admitted slots are all the
+# chain and the leftovers ever look at (one rule for both).  Labeled types: every slot admitted.
+#
+# Persistent counts: `pcounts` holds counts for feature sets computed in earlier runs (they
+# depend only on the training events), consulted before any scan.  On disk they are packed:
+# sorted keys and flat label/count arrays (save_counts / load_counts), memory-mapped so every
+# worker shares one copy, and looked up by binary search; a Dict works too (tests).  With
+# `keepcounts`, every exactly counted set whose counting read at least `keepmin` records (cheaper
+# ones are not worth storing; not climbing ones, which depend on rings and label) is also added
+# to `newcounts`, for the caller to save.
+#
+# Candidate pool (`poolm` = m > 0; :maxdev chains): at build time each decision type gets an
+# ordering of entries -- slots, and slot pairs whose mean total effect exceeds their stronger
+# slot's by at least `poolgain` (so redundant pairs, which add nothing over their stronger value,
+# get no entry; optionally also mean |λ| ≥ `poollam`) -- by their mean total effect on the outcome,
+# |log o − log prior|, over a sample of `poolsample` records.  With `pairscore` = :min, a pair is
+# scored -- in the ordering and in each step -- by the least of its own effect and its two slots'
+# effects, so it ranks no higher than its weaker part; with :increment, by its excess over its
+# stronger slot, effect(AB) − max(effect(A), effect(B)) (= the least of effect(AB) and its increments
+# over each slot), so only interactions score well.  Ties go to the lower order (single first).
+# `pairfilter`: a supported pair removes its slots from the rest of the step (else they compete).  A chain step walks that ordering, skipping entries with a slot already in the chain
+# (or an absent value, or found unsupported earlier in this chain: support only shrinks), and
+# evaluates entries until m of them are supported; a supported pair removes its two slots from
+# the rest of this step's walk.  The best of those m is added if it moves the odds by ≥ tau; a
+# pair adds both values in one step.  Leftovers are unaffected.
+#
+# Sampling (`sample` = c > 0; approximate): a scan of a view reads at most n = K·c / p₂ of its
+# base's records, evenly spaced, and scales the counts up; p₂ is the probability (o/(1+o)) of the
+# decision's second-ranked candidate at that point, and K the number of labels (1 for unlabeled
+# decisions: labeled ones have a record per label, so only 1/K of the records are any one label's).
+# So the top two candidates see about c chosen records or more (relative error ≈ 1/√c), and
+# lower-ranked ones, which barely affect the decision, get less precision.  A trial item whose
+# estimated count is under 10·mincount is counted exactly, so small counts (support, smoothing)
+# stay exact.  With sampling, :maxdev chains run in rounds so
+# the ranking is known at each step.  Cached entries remember how many records they read, and are
+# reused only where that's enough.
+
+struct ChainOpts
+  select::Symbol
+  tau::Float64
+  mincount::Int
+  leftovers::Symbol
+  target::Bool
+  maxrestarts::Int
+  restart::Symbol
+  screen::Float64
+  screenby::Symbol
+  sample::Float64
+  climbleft::Symbol
+  minctx::Int
+  greedyby::Symbol
+  maxctx::Int
+  relevance::Float64
+  poolm::Int
+  pairscore::Symbol
+  pairfilter::Bool
+  gate::Float64
+  redundant::Bool                                 # greedy: redundant features join the leftovers' conditioning pool
+  ctxchain::Bool                                  # greedy: a leftover's context has exactly as many features as the chain
+  stepscore::Symbol                               # :maxdev step score: :abs |Δ|, :signed Δ (raise the odds most), :maxmin, :maxmin2
+  top2::Bool                                      # :maxdev: only the two leading candidates' chains advance (run_top2)
+  contest::Bool                                   # re-decide the top two by a contest chain on their odds ratio (contest!)
+  pickfewest::Int                                 # >0: of the k best-scoring features passing tau, take the one with fewest records
+  adaptctx::Bool                                  # greedy: minimum context max(1, min(minctx, chain + redundant pool))
+end
+
+const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
+const NOLIST = Int32[]
+const NOCOUNTS = LabelCounts()
+
+"The records of `base` that contain every item of `filt`."
+struct RecView
+  base::Vector{Int32}
+  filt::Vector{UInt64}
+end
+RecView(base::Vector{Int32}) = RecView(base, UInt64[])
+const Entry = Tuple{RecView,LabelCounts}
+const NOENTRY = (RecView(NOLIST), NOCOUNTS)
+
+"""
+Relevance gates for one decision type (built when `gate` > 0; see Relevance gates in the header):
+`effect[s]` is slot s's average effect, `always[s]` whether it passes the gate on that alone, and
+`byvalue[id]` the slots that pass when the item with that id (a value of a gate slot) is present.
+"""
+struct Gates
+  nslots::Int
+  effect::Vector{Float32}
+  always::BitVector
+  gateslots::Vector{Int}
+  byvalue::Dict{Int32,Vector{Int16}}
+  effectby::Dict{Tuple{Int32,Int16},Float32}       # (gate value, slot) -> effect, for diagnostics
+  valcount::Dict{Int32,Int}                         # gate value -> its records
+end
+
+const MAXGATEVALS = 64                              # slots with at most this many values can be gates
+const GATEMIN = 2000                                # a gate value opens slots only with at least this many records
+const GATEBLOCK = 14                                # gate effects: halves are alternating blocks of 2^GATEBLOCK records
+
+"""
+An item's rings (see Climbing in the header): `order` lists the items of its innermost rings,
+nearest first (the item itself first); rings 1..length(cuts) are the prefixes order[1:cuts[L]];
+then each of `outer` (each containing the previous rings).
+"""
+struct Climb
+  order::Vector{UInt64}
+  cuts::Vector{Int}
+  outer::Vector{Vector{UInt64}}
+end
+nlevels(c::Climb) = length(c.cuts) + length(c.outer)
+
+mutable struct ChainModel <: AbstractModel
+  recs::Vector{CandRec}
+  items::Vector{UInt64}
+  ids::Vector{Int32}                             # items[q] as a small id (0 for ABSENT)
+  idof::Dict{UInt64,Int32}
+  want::Vector{Int32}                            # id -> trial index during a scan (0 otherwise)
+  infilt::BitVector                              # id -> in the scanned view's filter
+  typerecs::Dict{UInt64,Vector{Int32}}           # decision type -> all its records
+  itemcount::Dict{UInt64,Int}                    # item -> number of records containing it
+  itemtype::Dict{UInt64,UInt64}                  # item -> its decision type (items are type-specific)
+  postings::Dict{UInt64,Vector{Int32}}           # item -> its records, if fewer than keepfrac of its type's
+  keepfrac::Float64
+  prior::Dict{UInt64,Tuple{Float64,Float64}}
+  opts::ChainOpts
+  cache::Dict{UInt64,Tuple{Entry,Int}}           # set key -> ((records, counts per label), records read; EXACT if all)
+  cached::Int                                    # list entries built and held by the cache
+  maxcached::Int
+  memo::Dict{UInt64,Vector{Float64}}             # (type, labels, items) -> final scores
+  frequent::Set{UInt64}                          # items with joint tables (see joint tables)
+  single::Dict{UInt64,LabelCounts}               # frequent item -> counts per label
+  pairs::Dict{UInt64,LabelCounts}                # key of a pair of frequent items -> counts per label
+  screened::Set{UInt64}                          # items treated as absent (see screening)
+  climb::Dict{UInt64,Climb}                      # items that climb rings (see Climbing)
+  vclimb::Dict{UInt64,Tuple{UInt64,UInt32}}      # climbing trial key -> (item, label it's for)
+  rtrial::Vector{Int32}                          # id -> climbing trial index during a scan (0 otherwise)
+  rlevel::Vector{Int8}                           # id -> its innermost ring level in that trial
+  reclen::Float64                                # mean number of items per record
+  slotof::Vector{Int16}                          # id -> its position in its records (-1: varies)
+  usepos::Bool                                   # passes read only the needed positions
+  nlab::Int                                      # labels are 0..nlab-1 over all types (dense tallies use tnlab, per type)
+  pool::Dict{UInt64,Vector{Tuple{Int16,Int16}}}  # decision type -> ordered entries (slot, slot or 0)
+  lsid::Vector{Int32}                            # record -> its label set (grouped decision), 0 if ungrouped
+  lsets::Vector{Vector{UInt32}}                  # label sets of grouped decisions
+  pcounts::Any                                   # set key -> counts from earlier runs: PackedCounts or Dict (see Persistent counts)
+  newcounts::Dict{UInt64,LabelCounts}            # set key -> counts computed in this run
+  keepcounts::Bool
+  keepmin::Int                                   # records a count must have read to be kept
+  tnlab::Dict{UInt64,Int}                        # decision type -> its labels are 0..tnlab-1 (dense tally rows)
+  tls::Dict{UInt64,Vector{Int32}}                # decision type -> its label sets (global ids, in local order)
+  lsloc::Vector{Int32}                           # label set -> its index among its type's
+  noleft::Dict{UInt64,Set{Int}}                  # decision type -> slots never used as leftovers (chains only)
+  gates::Dict{UInt64,Gates}                      # decision type -> relevance gates (see Gates)
+end
+
+const MAXMEMO = 2_000_000
+const EXACT = typemax(Int)
+
+
+"Order-independent key of a feature set, built one item at a time (the empty set is 0)."
+extendkey(key::UInt64, x::UInt64) = key + hash(x, 0x51ed270b27a1f6c3)
+
+function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount = 5, leftovers = :backoff,
+  target = false, maxrestarts = 2, restart = :immediate, maxcached = 50_000_000, keepfrac = 0.1,
+  jointmin = 0, screen = 0.0, screenby = :maxdev, sample = 0.0, climbleft = :deepest, usepos = true, minctx = 1, greedyby = :correction,
+  maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
+  pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
+  stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0)
+  select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
+  leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
+  greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
+  ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
+  stepscore in (:abs, :signed, :maxmin, :maxmin2) || error("unknown stepscore $stepscore (use :abs, :signed, :maxmin or :maxmin2)")
+  lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
+  restart in (:immediate, :exhaust) || error("unknown restart $restart")
+  screenby in (:maxdev, :clr_rms) || error("unknown screenby $screenby")
+  climbleft in (:deepest, :specific, :none) || error("unknown climbleft $climbleft")
+  0 < keepfrac <= 1 || error("keepfrac must be in (0, 1]")
+  pairscore in (:total, :min, :increment) || error("unknown pairscore $pairscore")
+  screen > 0 && jointmin <= 0 && error("screening needs the joint tables (jointmin > 0)")
+  poolm > 0 && group && error("the candidate pool needs group = false")
+  target && restart == :exhaust && select != :maxdev && error("restart = :exhaust is implemented for :maxdev only")
+  recs, items = load_events(dir)
+  prior = Dict{UInt64,Tuple{Float64,Float64}}()
+  for r in recs                                    # priors from the records as recorded
+    for pk in unique((lpriorkey(r.typekey, UInt32(0)), lpriorkey(r.typekey, r.label)))
+      (c, oc) = get(prior, pk, (0.0, 0.0))
+      prior[pk] = r.chosen == 1 ? (c + 1, oc) : (c, oc + 1)
+    end
+  end
+  recs, lsid, lsets = group ? group_records(recs, items) : (recs, zeros(Int32, length(recs)), Vector{UInt32}[])
+  typerecs = Dict{UInt64,Vector{Int32}}()
+  ids, idof = zeros(Int32, length(items)), Dict{UInt64,Int32}()
+  counts, types, slots = Int[], UInt64[], Int16[]   # by id
+  for (j, r) in enumerate(recs)
+    push!(get!(() -> Int32[], typerecs, r.typekey), Int32(j))
+    for q in r.start:r.start+r.n-1
+      x = items[q]
+      x == ABSENT && continue
+      pos = Int16(q - r.start + 1)
+      id = get!(idof, x) do
+        push!(counts, 0); push!(types, r.typekey); push!(slots, pos)
+        Int32(length(counts))
+      end
+      slots[id] == pos || (slots[id] = Int16(-1))
+      ids[q] = id
+      counts[id] += 1
+    end
+  end
+  itemcount = Dict(x => counts[id] for (x, id) in idof)
+  itemtype = Dict(x => types[id] for (x, id) in idof)
+  postings = Dict(x => sizehint!(Int32[], k) for (x, k) in itemcount if k < keepfrac * length(typerecs[itemtype[x]]))
+  for (j, r) in enumerate(recs), q in r.start:r.start+r.n-1
+    L = get(postings, items[q], nothing)          # (ABSENT has no posting)
+    L === nothing || push!(L, Int32(j))           # records in order, so lists come out sorted
+  end
+  m = ChainModel(recs, items, ids, idof, zeros(Int32, length(counts)), falses(length(counts)),
+    typerecs, itemcount, itemtype, postings, keepfrac, prior,
+    ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
+      minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive),
+    Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
+    Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
+    Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
+    isempty(recs) ? 1.0 : sum(r -> r.n, recs) / length(recs), slots, usepos,
+    isempty(recs) ? 1 : Int(max(maximum(r -> r.label, recs), maximum(maximum, lsets; init = UInt32(0)))) + 1,
+    Dict{UInt64,Vector{Tuple{Int16,Int16}}}(), lsid, lsets,
+    Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), false, 10_000, Dict{UInt64,Int}(),
+    Dict{UInt64,Vector{Int32}}(), zeros(Int32, length(lsets)), Dict{UInt64,Set{Int}}(), Dict{UInt64,Gates}())
+  tally_shapes!(m)
+  if gate > 0
+    t = @elapsed build_gates!(m)
+    @info "ChainModel: relevance gates for $(length(m.gates)) decision types (gate = $gate, $(round(t; digits = 1)) s): " *
+      join(("$(sum(g.always)) of $(length(g.always)) slots always, $(length(g.byvalue)) gate values" for g in values(m.gates)), "; ")
+  end
+  group && @info "ChainModel: grouped decisions into $(length(recs)) records ($(count(!iszero, lsid)) grouped, $(length(lsets)) label sets)"
+  if poolm > 0
+    t = @elapsed pool_order!(m, poolsample, poollam, poolgain)
+    @info "ChainModel: candidate-pool orderings for $(length(m.pool)) decision types, $(sum(length, values(m.pool); init = 0)) entries ($(round(t; digits = 1)) s)"
+  end
+  if jointmin > 0
+    t = @elapsed members = joint_tables!(m, jointmin)
+    @info "ChainModel: joint tables for $(length(m.frequent)) frequent items, $(length(m.pairs)) pairs ($(round(t; digits = 1)) s)"
+    if screen > 0
+      screen_items!(m, members)
+      @info "ChainModel: screened $(length(m.screened)) of $(length(itemcount)) items (screen = $screen, $screenby)"
+    end
+  end
+  m
+end
+
+"""
+Group consecutive records of one decision -- same type, same items, labels increasing -- into one
+record with the gold label (chosen = 1; chosen = 0 if the group has none) and the label set's id.
+"""
+function group_records(recs, items)
+  out, lsid = CandRec[], Int32[]
+  lsets, lsidx = Vector{UInt32}[], Dict{Tuple{UInt64,Vector{UInt32}},Int32}()   # a label set belongs to one type
+  i = 1
+  while i <= length(recs)
+    r, j = recs[i], i
+    labs = UInt32[r.label]
+    while j < length(recs)
+      s = recs[j+1]
+      (s.typekey == r.typekey && s.n == r.n && s.label > recs[j].label &&
+        view(items, s.start:s.start+s.n-1) == view(items, r.start:r.start+r.n-1)) || break
+      j += 1
+      push!(labs, s.label)
+    end
+    nchosen = count(k -> recs[k].chosen == 1, i:j)
+    if j == i || nchosen > 1                       # (more than one gold: not one decision; keep them apart)
+      for k in i:j
+        push!(out, recs[k]); push!(lsid, 0)
+      end
+    else
+      g = findfirst(k -> recs[k].chosen == 1, i:j)
+      id = get!(lsidx, (r.typekey, labs)) do
+        push!(lsets, copy(labs))
+        Int32(length(lsets))
+      end
+      push!(out, CandRec(r.typekey, g === nothing ? UInt32(0) : recs[i+g-1].label, g === nothing ? UInt32(0) : UInt32(1), r.start, r.n))
+      push!(lsid, id)
+    end
+    i = j + 1
+  end
+  out, lsid, lsets
+end
+
+"Add record j's counts to `d` (a grouped decision: chosen for its gold label, not chosen for the rest of its set)."
+function tally!(m::ChainModel, d::LabelCounts, j)
+  r = m.recs[j]
+  g = m.lsid[j]
+  if g == 0
+    (c1, c2) = get(d, r.label, (0.0, 0.0))
+    d[r.label] = r.chosen == 1 ? (c1 + 1, c2) : (c1, c2 + 1)
+  else
+    for l in m.lsets[g]
+      (c1, c2) = get(d, l, (0.0, 0.0))
+      d[l] = r.chosen == 1 && l == r.label ? (c1 + 1, c2) : (c1, c2 + 1)
+    end
+  end
+end
+
+const NOLS = Int32[]
+
+"""
+Per decision type: the dense tally size (labels 0..max) and its label sets.  Sized per type, so a
+type with many labels (a fine word-class level) doesn't make every other type's tallies large.
+"""
+function tally_shapes!(m::ChainModel)
+  for (j, r) in enumerate(m.recs)
+    m.tnlab[r.typekey] = max(get(m.tnlab, r.typekey, 1), Int(r.label) + 1)
+    g = m.lsid[j]
+    g == 0 && continue
+    m.tnlab[r.typekey] = max(m.tnlab[r.typekey], Int(maximum(m.lsets[g])) + 1)
+    if m.lsloc[g] == 0
+      v = get!(() -> Int32[], m.tls, r.typekey)
+      push!(v, g)
+      m.lsloc[g] = length(v)
+    end
+  end
+end
+
+"Dense tally rows and label sets for records of the type of `base`'s records (all one type)."
+tallyshape(m::ChainModel, base) =
+  isempty(base) ? (1, NOLS) : (tk = m.recs[base[1]].typekey; (m.tnlab[tk], get(m.tls, tk, NOLS)))
+
+
+"""
+Effect of each slot over `recs` (all of one unlabeled type with `n` slots), per gate value: for
+gate slot g, the records holding value v at g; with g = 0, all records (v = 0).  The records are
+split into two halves (alternating blocks of 2^14 records, a few segments each: a token appears as a
+candidate in many decisions, all recorded with its segment, so it stays in one half),
+and for each value x of slot s the change d = log o(x,v) - log o(v) is measured in each half (o(x,v)
+smoothed toward o(v); 0 unless x has ceil(mincount/2) records with v in that half).  The effect is
+sqrt(max(0, mean of (dA - mean dA)(dB - mean dB))) over the records holding s: a split-half
+covariance, so a real effect (the same sign in both halves) counts and chance deviations,
+independent between halves, average out; centring removes a shift shared by all values (the
+smoothing's low-count bias) -- an irrelevant feature gets about 0 even under one of many gate values.  Returns
+(v, s) -> effect and v -> (chosen, not chosen).
+"""
+function slot_effects(m::ChainModel, recs, n, g, p0)
+  Z = (Int32(0), Int32(0), Int32(0), Int32(0))
+  bump(t, h, ch) = h == 0 ? (ch ? (t[1] + Int32(1), t[2], t[3], t[4]) : (t[1], t[2] + Int32(1), t[3], t[4])) :
+    (ch ? (t[1], t[2], t[3] + Int32(1), t[4]) : (t[1], t[2], t[3], t[4] + Int32(1)))
+  pair = Dict{Tuple{Int32,Int16,Int32},NTuple{4,Int32}}()
+  vc = Dict{Int32,NTuple{4,Int32}}()
+  @inbounds for j in recs
+    r = m.recs[j]
+    v = g == 0 ? Int32(0) : m.ids[r.start+g-1]
+    (g > 0 && v == 0) && continue
+    ch, h = r.chosen == 1, (j >> GATEBLOCK) & 1
+    vc[v] = bump(get(vc, v, Z), h, ch)
+    for s in 1:n
+      s == g && continue
+      x = m.ids[r.start+s-1]
+      x == 0 && continue
+      k = (v, Int16(s), x)
+      pair[k] = bump(get(pair, k, Z), h, ch)
+    end
+  end
+  hmin = max(1, cld(m.opts.mincount, 2))
+  odds(a, b, o) = a + b >= hmin ? smoothOdds(Float64(a), Float64(b), o) : o
+  ov = Dict(v => (odds(t[1], t[2], p0), odds(t[3], t[4], p0)) for (v, t) in vc)
+  # the changes in each half, then their covariance about each half's mean change for the slot:
+  # smoothOdds shifts low counts the same way in both halves (e.g. 0 or 1 chosen where 2.5 are
+  # expected comes out below o(v)), a bias the covariance alone would count as an effect
+  den = Dict{Tuple{Int32,Int16},Float64}()
+  sums = Dict{Tuple{Int32,Int16},NTuple{3,Float64}}()     # (weight, sum w*dA, sum w*dB) over supported values
+  deltas = Tuple{Tuple{Int32,Int16},Float64,Float64,Float64}[]
+  for ((v, s, x), t) in pair
+    k = (v, s)
+    w = Float64(sum(t))
+    den[k] = get(den, k, 0.0) + w
+    (t[1] + t[2] >= hmin && t[3] + t[4] >= hmin) || continue
+    oa, ob = ov[v]
+    da = log(odds(t[1], t[2], oa)) - log(oa)
+    db = log(odds(t[3], t[4], ob)) - log(ob)
+    push!(deltas, (k, w, da, db))
+    (sw, sa, sb) = get(sums, k, (0.0, 0.0, 0.0))
+    sums[k] = (sw + w, sa + w * da, sb + w * db)
+  end
+  num = Dict{Tuple{Int32,Int16},Float64}()
+  for (k, w, da, db) in deltas
+    (sw, sa, sb) = sums[k]
+    num[k] = get(num, k, 0.0) + w * (da - sa / sw) * (db - sb / sw)
+  end
+  Dict(k => Float32(sqrt(max(0.0, get(num, k, 0.0) / d))) for (k, d) in den),
+    Dict(v => (t[1] + t[3], t[2] + t[4]) for (v, t) in vc)
+end
+
+"""
+Build m.gates for every unlabeled decision type with a fixed record layout (others: every slot is
+always admitted).  A slot is admitted always if its effect (see slot_effects) reaches `gate`;
+otherwise when a value of a gate slot (one with few values) is present under which its effect
+reaches `gate`.
+"""
+function build_gates!(m::ChainModel)
+  θ = m.opts.gate
+  for (tk, recs) in m.typerecs
+    isempty(recs) && continue
+    n = Int(m.recs[recs[1]].n)
+    all(j -> m.recs[j].label == 0 && m.lsid[j] == 0 && m.recs[j].n == n, recs) || continue
+    p0 = priorodds(m, lpriorkey(tk, UInt32(0)))
+    nv = [Set{Int32}() for _ in 1:n]
+    for j in recs, s in 1:n
+      length(nv[s]) > MAXGATEVALS && continue
+      x = m.ids[m.recs[j].start+s-1]
+      x == 0 || push!(nv[s], x)
+    end
+    gslots = [s for s in 1:n if 0 < length(nv[s]) <= MAXGATEVALS]
+    e0, _ = slot_effects(m, recs, n, 0, p0)
+    effect = Float32[get(e0, (Int32(0), Int16(s)), 0f0) for s in 1:n]
+    always = BitVector(effect .>= θ)
+    byvalue, effectby, valcount = Dict{Int32,Vector{Int16}}(), Dict{Tuple{Int32,Int16},Float32}(), Dict{Int32,Int}()
+    for g in gslots
+      eg, vc = slot_effects(m, recs, n, g, p0)
+      for ((v, s), e) in eg
+        valcount[v] = sum(vc[v])
+        sum(vc[v]) >= m.opts.mincount || continue
+        effectby[(v, s)] = e
+        sum(vc[v]) >= GATEMIN || continue                   # small cells: chance effects (see GATEMIN)
+        (!always[s] && e >= θ) && push!(get!(() -> Int16[], byvalue, v), s)
+      end
+    end
+    m.gates[tk] = Gates(n, effect, always, gslots, byvalue, effectby, valcount)
+  end
+end
+
+"The slots of record `Ic` (type tk) that pass the relevance gates: all of them without gates."
+function admitted(m::ChainModel, tk, Ic)
+  g = get(m.gates, tk, nothing)
+  (g === nothing || length(Ic) != g.nslots) && return collect(eachindex(Ic))
+  ok = copy(g.always)
+  for s in g.gateslots
+    id = get(m.idof, Ic[s], Int32(0))
+    id == 0 && continue
+    for t in get(g.byvalue, id, Int16[])
+      ok[t] = true
+    end
+  end
+  findall(ok)
+end
+
+"Add record j to dense tallies (column t; N: grouped decisions per label set, expanded by expandgroups!)."
+@inline function tallycol!(m::ChainModel, C1, C2, N, j, r, t)
+  g = m.lsid[j]
+  if g == 0
+    r.chosen == 1 ? (C1[r.label+1, t] += 1) : (C2[r.label+1, t] += 1)
+  else
+    r.chosen == 1 && (C1[r.label+1, t] += 1; C2[r.label+1, t] -= 1)   # the gold label: chosen, not "not chosen"
+    N[m.lsloc[g], t] += 1
+  end
+end
+
+"Each grouped decision counts as not chosen for every label of its set (gold corrected by tallycol!); tls: the type's label sets."
+function expandgroups!(m::ChainModel, C2, N, tls)
+  @inbounds for g in axes(N, 1), t in axes(N, 2)
+    n = N[g, t]
+    n == 0 && continue
+    for l in m.lsets[tls[g]]
+      C2[l+1, t] += n
+    end
+  end
+end
+
+"Fill the joint tables (see the header); returns pair key -> its two items."
+function joint_tables!(m::ChainModel, jointmin)
+  for (x, k) in m.itemcount
+    k >= jointmin && (push!(m.frequent, x); m.single[x] = LabelCounts())
+  end
+  acc = Dict{Tuple{UInt64,UInt32},Tuple{Int32,Int32}}()
+  members = Dict{UInt64,Tuple{UInt64,UInt64}}()
+  F = UInt64[]
+  for (j, r) in enumerate(m.recs)
+    empty!(F)
+    for q in r.start:r.start+r.n-1
+      x = m.items[q]
+      x != ABSENT && x in m.frequent && push!(F, x)
+    end
+    for x in F
+      tally!(m, m.single[x], j)
+    end
+    g = m.lsid[j]
+    labs = g == 0 ? (r.label,) : m.lsets[g]
+    for a in 1:length(F)-1, b in a+1:length(F)
+      key = extendkey(extendkey(UInt64(0), F[a]), F[b])
+      haskey(members, key) || (members[key] = (F[a], F[b]))
+      for l in labs
+        (c1, c2) = get(acc, (key, l), (Int32(0), Int32(0)))
+        acc[(key, l)] = r.chosen == 1 && l == r.label ? (c1 + Int32(1), c2) : (c1, c2 + Int32(1))
+      end
+    end
+  end
+  for ((key, l), (c1, c2)) in acc
+    get!(LabelCounts, m.pairs, key)[l] = (Float64(c1), Float64(c2))
+  end
+  members
+end
+
+"Fill `m.screened` (see screening in the header)."
+function screen_items!(m::ChainModel, members)
+  (; screen, screenby, mincount) = m.opts
+  labelsof = Dict{UInt64,Vector{UInt32}}()               # decision type -> its labels
+  for (j, r) in enumerate(m.recs)
+    ls = get!(() -> UInt32[], labelsof, r.typekey)
+    for l in (m.lsid[j] == 0 ? (r.label,) : m.lsets[m.lsid[j]])
+      l in ls || push!(ls, l)
+    end
+  end
+  typeof_ = m.itemtype
+  # per-label λ of a set from its counts and the odds its subsets predict
+  λ(c, l, e) = ((c1, c2) = get(c, l, (0, 0)); c1 + c2 < max(mincount, 1) ? 0.0 : log(smoothOdds(c1, c2, e)) - log(e))
+  combine(v) = screenby == :maxdev || length(v) == 1 ? maximum(abs, v) : sqrt(sum(abs2, v .- sum(v) / length(v)) / length(v))
+  lam1 = Dict(x => (ls = labelsof[typeof_[x]]; ls => [λ(m.single[x], l, priorodds(m, lpriorkey(typeof_[x], l))) for l in ls])
+    for x in m.frequent)
+  best = Dict(x => combine(last(lam1[x])) for x in m.frequent)
+  for (key, (a, b)) in members
+    ls, la = lam1[a]
+    lb = last(lam1[b])
+    tk = typeof_[a]
+    v = [λ(m.pairs[key], l, priorodds(m, lpriorkey(tk, l)) * exp(la[j] + lb[j])) for (j, l) in enumerate(ls)]
+    sc = combine(v)
+    sc > best[a] && (best[a] = sc)
+    sc > best[b] && (best[b] = sc)
+  end
+  for (x, k) in m.itemcount
+    (k < max(mincount, 1) || (x in m.frequent && best[x] < screen)) && push!(m.screened, x)
+  end
+end
+
+priorodds(m::ChainModel, pk::UInt64) = (p = get(m.prior, pk, (0.0, 0.0)); (p[1] + 0.5) / (p[2] + 0.5))
+waitscore(m::ChainModel, st::State, key::AgendaKey) = log(priorodds(m, lpriorkey(typekey(key[1], key[2]), UInt32(0))))
+
+"Intersection of two sorted lists (binary-search the longer one when sizes are very different)."
+function intersect_sorted(a::AbstractVector{Int32}, b::AbstractVector{Int32})
+  length(a) > length(b) && ((a, b) = (b, a))
+  out = Int32[]
+  if 16 * length(a) < length(b)
+    lo = 1
+    for x in a
+      lo = searchsortedfirst(b, x, lo, length(b), Base.Order.Forward)
+      lo > length(b) && break
+      b[lo] == x && push!(out, x)
+    end
+  else
+    i = j = 1
+    while i <= length(a) && j <= length(b)
+      a[i] < b[j] ? (i += 1) : a[i] > b[j] ? (j += 1) : (push!(out, a[i]); i += 1; j += 1)
+    end
+  end
+  out
+end
+
+"Dense per-label tallies (index label+1) as a LabelCounts: an entry for each label seen, as tally! makes."
+function todict(c1::AbstractVector{Float64}, c2::AbstractVector{Float64})
+  d = LabelCounts()
+  @inbounds for k in eachindex(c1)
+    (c1[k] > 0 || c2[k] > 0) && (d[UInt32(k - 1)] = (c1[k], c2[k]))
+  end
+  d
+end
+
+function labelcounts(m::ChainModel, list)
+  nl, tls = tallyshape(m, list)
+  C1, C2, N = zeros(nl, 1), zeros(nl, 1), zeros(length(tls), 1)
+  @inbounds for j in list
+    tallycol!(m, C1, C2, N, j, m.recs[j], 1)
+  end
+  expandgroups!(m, C2, N, tls)
+  todict(view(C1, :, 1), view(C2, :, 1))
+end
+
+"Mark (or unmark) the view filter's ids in `m.infilt`."
+markfilt!(m::ChainModel, filt, on::Bool) = foreach(x -> (m.infilt[m.idof[x]] = on), filt)
+
+"Does record j contain every item of the marked filter (of length nf)?  (Items are unique within a record.)"
+@inline function hasmarked(m::ChainModel, j, nf)
+  r, n = m.recs[j], 0
+  @inbounds for q in r.start:r.start+r.n-1
+    id = m.ids[q]
+    id > 0 && m.infilt[id] && (n += 1)
+  end
+  n == nf
+end
+
+"Positions of these items in their records, or nothing if positions are off or some item's varies."
+function slotpositions(m::ChainModel, ids)
+  m.usepos || return nothing
+  out = Int16[]
+  for id in ids
+    s = m.slotof[id]
+    s > 0 || return nothing
+    s in out || push!(out, s)
+  end
+  out
+end
+
+"Does record j hold a marked filter item at each of `fslots` (nf items)?"
+@inline function hasmarkedat(m::ChainModel, j, fslots, nf)
+  r, n = m.recs[j], 0
+  @inbounds for s in fslots
+    s <= r.n || continue
+    id = m.ids[r.start+s-1]
+    id > 0 && m.infilt[id] && (n += 1)
+  end
+  n == nf
+end
+
+"Keep the records of `L` that contain every item of `filt`."
+function filterrecs(m::ChainModel, L::Vector{Int32}, filt)
+  isempty(filt) && return L
+  markfilt!(m, filt, true)
+  fslots = slotpositions(m, Int32[m.idof[x] for x in filt])
+  try
+    fslots === nothing ? Int32[j for j in L if hasmarked(m, j, length(filt))] :
+      Int32[j for j in L if hasmarkedat(m, j, fslots, length(filt))]
+  finally
+    markfilt!(m, filt, false)
+  end
+end
+
+"""
+The view's records as a list of its own: starting from the shortest posting among its filter
+items when that's shorter than the base (its records hold the item, so they're all in there).
+"""
+function buildlist(m::ChainModel, v::RecView)
+  isempty(v.filt) && return v.base
+  b = argmin(x -> length(get(m.postings, x, v.base)), v.filt)
+  P = get(m.postings, b, nothing)
+  (P === nothing || length(P) >= length(v.base)) && return filterrecs(m, v.base, v.filt)
+  filterrecs(m, intersect_sorted(v.base, P), filter(!=(b), v.filt))
+end
+
+total(c::LabelCounts) = sum(((c1, c2),) -> c1 + c2, values(c); init = 0.0)
+
+"Cache an entry that read `nread` records (EXACT: all); `built` list entries were newly made for it; `persist`: may be saved (see Persistent counts) if counting it read `cost` ≥ keepmin records."
+function store!(m::ChainModel, key::UInt64, e::Entry; built = 0, nread = EXACT, persist = true, cost = 0)
+  # (not with climbing: sets built on a climbing step depend on the rings, not only the events)
+  m.keepcounts && persist && nread == EXACT && cost >= m.keepmin && isempty(m.climb) && pcget(m.pcounts, key) === nothing &&
+    (m.newcounts[key] = e[2])
+  if built > 0
+    m.cached + built > m.maxcached && (empty!(m.cache); m.cached = 0; CACHE_EMPTIED[] += 1)
+    m.cached += built
+  end
+  m.cache[key] = (e, nread)
+  e
+end
+
+"Records a scan may read (see Sampling in the header), from the candidates' current odds."
+function samplecap(m::ChainModel, odds; nlabels = 1)
+  m.opts.sample > 0 || return EXACT
+  p = sort!([o / (1 + o) for o in odds]; rev = true)
+  p2 = length(p) >= 2 ? p[2] : p[1]
+  n = nlabels * m.opts.sample / max(p2, 1e-12)
+  n >= typemax(Int) / 2 ? EXACT : ceil(Int, n)
+end
+
+"Evenly spaced positions 1..B, `n` of them."
+sample_positions(B::Int, n::Int) = (1 + ((i - 1) * B) ÷ n for i in 1:n)
+
+"""
+Counts per label for each of `xs` (with ids `tids`) over the view's base records at `positions`.
+With climbing trials (ids already marked in m.rtrial/m.rlevel), also each one's matching records
+with their innermost ring level, returned as the second value.
+"""
+function scan_counts(m::ChainModel, v::RecView, tids::Vector{Int32}, positions; nclimb = 0, climbids = Int32[])
+  SCAN_HOOK[] === nothing || SCAN_HOOK[](length(positions))
+  # positions to read: the trial items', the climbing rings' (one slot each), the filter's
+  tslots = slotpositions(m, isempty(climbids) ? tids : [tids; climbids])
+  fslots = slotpositions(m, Int32[m.idof[x] for x in v.filt])
+  (tslots === nothing || fslots === nothing) && (tslots = fslots = nothing)
+  nl, tls = tallyshape(m, v.base)
+  C1, C2 = zeros(nl, length(tids)), zeros(nl, length(tids))   # dense tallies: label+1 x trial
+  N = zeros(length(tls), length(tids))                         # grouped decisions per label set of the type
+  chits = [Tuple{Int32,Int8}[] for _ in 1:nclimb]
+  for (t, id) in enumerate(tids)
+    m.want[id] == 0 || error("duplicate trial items")
+    m.want[id] = t
+  end
+  markfilt!(m, v.filt, true)
+  try
+    nfilt, hit = length(v.filt), Int32[]
+    for p in positions                               # one pass: filter and every trial item at once
+      j = v.base[p]
+      r, nf = m.recs[j], 0
+      empty!(hit)
+      ct, cl = 0, Int8(0)
+      if tslots === nothing                          # read every item
+        @inbounds for q in r.start:r.start+r.n-1
+          id = m.ids[q]
+          id == 0 && continue
+          t = m.want[id]
+          t > 0 && push!(hit, t)
+          m.infilt[id] && (nf += 1)
+          nclimb > 0 && m.rtrial[id] > 0 && (ct = m.rtrial[id]; cl = m.rlevel[id])
+        end
+      else                                           # read only the needed positions
+        @inbounds for s in fslots
+          s <= r.n || continue
+          id = m.ids[r.start+s-1]
+          id > 0 && m.infilt[id] && (nf += 1)
+        end
+        nf == nfilt || continue
+        @inbounds for s in tslots
+          s <= r.n || continue
+          id = m.ids[r.start+s-1]
+          id == 0 && continue
+          t = m.want[id]
+          t > 0 && push!(hit, t)
+          nclimb > 0 && m.rtrial[id] > 0 && (ct = m.rtrial[id]; cl = m.rlevel[id])
+        end
+      end
+      nf == nfilt || continue
+      @inbounds for t in hit
+        tallycol!(m, C1, C2, N, j, r, t)
+      end
+      ct > 0 && push!(chits[ct], (Int32(j), cl))    # one value per slot, so one hit per climbing trial
+    end
+  finally
+    markfilt!(m, v.filt, false)
+    foreach(id -> (m.want[id] = 0), tids)
+  end
+  expandgroups!(m, C2, N, tls)
+  tallies = [todict(view(C1, :, t), view(C2, :, t)) for t in eachindex(tids)]
+  nclimb > 0 ? (tallies, chits) : tallies
+end
+
+"Diagnostics: if set, called with the number of records each scan reads; IN_GREEDY is true inside greedy leftovers."
+const SCAN_HOOK = Ref{Any}(nothing)
+const IN_GREEDY = Ref(false)
+const CACHE_EMPTIED = Ref(0)                     # diagnostics: times the cache was emptied for space
+const PASS_HOOK = Ref{Any}(nothing)              # diagnostics: (trials, short trials, pass skipped) per decision
+
+"Mark climbing trial t's ring items (innermost level per item); returns the marked ids."
+function markclimb!(m::ChainModel, c::Climb, t::Int)
+  marked = Int32[]
+  mark(x, L) = (id = get(m.idof, x, Int32(0)); id > 0 && m.rtrial[id] == 0 &&
+    (m.rtrial[id] = t; m.rlevel[id] = L; push!(marked, id)))
+  lo = 1
+  for (L, hi) in enumerate(c.cuts)
+    foreach(x -> mark(x, Int8(L)), view(c.order, lo:hi))
+    lo = hi + 1
+  end
+  for (k, ring) in enumerate(c.outer)
+    foreach(x -> mark(x, Int8(length(c.cuts) + k)), ring)
+  end
+  marked
+end
+
+"""
+A climbing trial's entry from its scan hits: the finest ring level whose records support
+`label`, as a list of its own (or the outermost, unsupported, if none does).
+"""
+function climbentry(m::ChainModel, c::Climb, hits, label::UInt32)
+  L = nlevels(c)
+  per = [LabelCounts() for _ in 1:L]
+  for (j, l) in hits
+    tally!(m, per[l], j)
+  end
+  cum, best = LabelCounts(), L
+  for l in 1:L
+    for (lab, (c1, c2)) in per[l]
+      (a, b) = get(cum, lab, (0.0, 0.0))
+      cum[lab] = (a + c1, b + c2)
+    end
+    (c1, c2) = get(cum, label, (0.0, 0.0))
+    c1 + c2 >= max(m.opts.mincount, 1) && (best = l; break)
+  end
+  counts = LabelCounts()
+  for l in 1:best, (lab, (c1, c2)) in per[l]
+    (a, b) = get(counts, lab, (0.0, 0.0))
+    counts[lab] = (a + c1, b + c2)
+  end
+  (RecView(Int32[j for (j, l) in hits if l <= best]), counts)
+end
+
+"""
+New odds for a candidate from an entry's counts, smoothed toward its current odds (or unchanged
+if unsupported).  A set with no records at all is never supported, whatever `mincount` is: it
+carries no information, and treating it as supported would stop leftover backoff at a depth
+with no data instead of moving to a shallower prefix that has some.
+"""
+function update_odds(m::ChainModel, e, label::UInt32, x::Float64)
+  (c1, c2) = get(e[2], label, (0.0, 0.0))
+  c1 + c2 < max(m.opts.mincount, 1) && return x, false
+  smoothOdds(c1, c2, x), true
+end
+
+##======== criteria
+
+clr(lx) = lx .- (sum(lx) / length(lx))
+
+function criterion(sel::Symbol, x::Vector{Float64}, y::Vector{Float64})
+  lx, ly = log.(x), log.(y)
+  (sel == :avglogodds || sel == :maxdev || length(x) == 1) && return sum(abs.(ly .- lx)) / length(x)
+  Δ = clr(ly) .- clr(lx)
+  sel == :clr_mean_abs ? sum(abs.(Δ)) / length(Δ) : sqrt(sum(Δ .^ 2) / length(Δ))
+end
+
+top2(x) = (p = sortperm(x; rev = true); length(p) == 1 ? (p[1], 0) : (p[1], p[2]))
+
+##======== chains
+
+"""
+One candidate's chain: after each step k (k = 0 first), the set's key, its records (a view) and
+size, and the odds; `members` are the items added, in order.
+"""
+mutable struct ChainState
+  keys::Vector{UInt64}
+  views::Vector{RecView}
+  sizes::Vector{Int}
+  members::Vector{UInt64}
+  odds::Vector{Float64}
+end
+ChainState(o::Float64, typerecs::Vector{Int32}) = ChainState(UInt64[0], [RecView(typerecs)], [0], UInt64[], [o])
+depth(st::ChainState) = length(st.keys) - 1
+
+"The view for prefix view `v` (with `n` items) plus x, before any list is built for it."
+childview(m::ChainModel, v::RecView, n::Int, x::UInt64) =
+  n == 0 && haskey(m.postings, x) ? RecView(m.postings[x]) : RecView(v.base, [v.filt; x])
+
+"""
+Entries (records, counts per label) for chain prefix k (0..depth) plus each of `xs`, from the
+cache, the joint tables, the rarity shortcut, intersections with rare postings, or one pass over
+the prefix view's base (see Records in the header), reading at most `cap` of its records when
+sampling (see Sampling).
+"""
+function extend_all(m::ChainModel, st::ChainState, k::Int, xs::Vector{UInt64}; cap::Int = EXACT)
+  v, pkey, n = st.views[k+1], st.keys[k+1], st.sizes[k+1]
+  out = Vector{Entry}(undef, length(xs))
+  todo, climbs = Int[], Int[]
+  for (i, x) in enumerate(xs)
+    key = extendkey(pkey, x)
+    ce = get(m.cache, key, nothing)
+    if ce !== nothing && ce[2] >= cap
+      out[i] = ce[1]
+    elseif haskey(m.vclimb, x)
+      push!(climbs, i)
+    elseif get(m.itemcount, x, 0) < max(m.opts.mincount, 1)
+      out[i] = NOENTRY                               # no set containing x can be supported
+    elseif x in m.frequent && n == 0
+      out[i] = (childview(m, v, n, x), m.single[x])
+    elseif x in m.frequent && n == 1 && st.members[1] in m.frequent
+      out[i] = (childview(m, v, n, x), get(m.pairs, key, NOCOUNTS))
+    elseif (pc = pcget(m.pcounts, key)) !== nothing   # counted in an earlier run
+      out[i] = (childview(m, v, n, x), pc)
+    else
+      push!(todo, i)
+    end
+  end
+  (isempty(todo) && isempty(climbs)) && return out
+  v = materialize!(m, st, k)                         # counting has to read the prefix's records now
+  B = length(v.base)
+  # skip the pass when every trial item is cheaper to count from its own list (binary-search
+  # intersection with the base: ~|list| log₂|base|) than a pass over the base (~|base| × record length)
+  short(i) = (P = get(m.postings, xs[i], nothing); P !== nothing && 16 * length(P) < B)
+  rare(todo) = !isempty(todo) && all(short, todo) &&
+    sum(i -> length(m.postings[xs[i]]), todo) * log2(max(B, 2)) < B * m.reclen
+  PASS_HOOK[] === nothing || isempty(todo) || PASS_HOOK[](length(todo), count(short, todo), rare(todo))
+  if cap < B && !isempty(todo) && !rare(todo)        # sample; items with few sampled records stay exact
+    pos = sample_positions(B, cap)
+    T = scan_counts(m, v, Int32[m.idof[xs[i]] for i in todo], pos)
+    sc = B / cap
+    exact_ = Int[]
+    for (t, i) in enumerate(todo)
+      if total(T[t]) * sc < 10 * max(m.opts.mincount, 1)
+        push!(exact_, i)
+      else
+        c = LabelCounts(l => (c1 * sc, c2 * sc) for (l, (c1, c2)) in T[t])
+        out[i] = store!(m, extendkey(pkey, xs[i]), (childview(m, v, n, xs[i]), c); nread = cap)
+      end
+    end
+    todo = exact_
+  end
+  if rare(todo)
+    for i in todo                                    # all rare: intersect their postings with the base
+      L = n == 0 ? m.postings[xs[i]] : filterrecs(m, intersect_sorted(v.base, m.postings[xs[i]]), v.filt)
+      out[i] = store!(m, extendkey(pkey, xs[i]), (RecView(L), labelcounts(m, L)); built = n == 0 ? 0 : length(L),
+        cost = length(m.postings[xs[i]]))
+    end
+    todo = Int[]
+  end
+  (isempty(todo) && isempty(climbs)) && return out
+  # one exact pass for the remaining items and every climbing trial
+  marked = Int32[]
+  try
+    for (t, i) in enumerate(climbs)
+      append!(marked, markclimb!(m, m.climb[first(m.vclimb[xs[i]])], t))
+    end
+    tallies, chits = scan_counts(m, v, Int32[m.idof[xs[i]] for i in todo], 1:B; nclimb = max(length(climbs), 1),
+      climbids = marked)
+    for (t, i) in enumerate(todo)
+      out[i] = store!(m, extendkey(pkey, xs[i]), (childview(m, v, n, xs[i]), tallies[t]); cost = B)
+    end
+    for (t, i) in enumerate(climbs)
+      x, label = m.vclimb[xs[i]]
+      e = climbentry(m, m.climb[x], chits[t], label)
+      out[i] = store!(m, extendkey(pkey, xs[i]), e; built = length(e[1].base), persist = false)
+    end
+  finally
+    foreach(id -> (m.rtrial[id] = 0; m.rlevel[id] = 0), marked)
+  end
+  out
+end
+
+"Cumulative counts per ring level of climbing key `vk` at chain prefix k (level L: rings 1..L), exact."
+function climblevels(m::ChainModel, st::ChainState, k::Int, vk::UInt64)
+  x, _ = m.vclimb[vk]
+  c = m.climb[x]
+  v = st.views[k+1]
+  marked = markclimb!(m, c, 1)
+  hits = try
+    last(scan_counts(m, v, Int32[], 1:length(v.base); nclimb = 1, climbids = marked))[1]
+  finally
+    foreach(id -> (m.rtrial[id] = 0; m.rlevel[id] = 0), marked)
+  end
+  per = [LabelCounts() for _ in 1:nlevels(c)]
+  for (j, l) in hits
+    tally!(m, per[l], j)
+  end
+  for l in 2:length(per), (lab, (c1, c2)) in per[l-1]
+    (a, b) = get(per[l], lab, (0.0, 0.0))
+    per[l][lab] = (a + c1, b + c2)
+  end
+  per
+end
+
+"The climbing trial key for item x scored for `label` (registered so extend_all recognizes it)."
+function climbkey!(m::ChainModel, x::UInt64, label::UInt32)
+  k = hash((x, :climb, label))
+  m.vclimb[k] = (x, label)
+  k
+end
+
+"""
+Add item x (entry e, new odds y) to the chain, or keep the set (x === nothing: the item is
+absent).  The new prefix gets a list of its own once it holds fewer than `keepfrac` of its
+view's base.
+"""
+function advance!(m::ChainModel, st::ChainState, x, e, y)
+  if x === nothing
+    push!(st.keys, st.keys[end]); push!(st.views, st.views[end]); push!(st.sizes, st.sizes[end])
+  else
+    v, c = e
+    key = extendkey(st.keys[end], x)
+    # keepfrac < 1: the new prefix gets a list once it holds under keepfrac of its base; keepfrac = 1:
+    # it stays a view until a count actually has to scan it (materialize!)
+    if !isempty(v.filt) && m.keepfrac < 1 && total(c) < m.keepfrac * length(v.base)
+      v = RecView(buildlist(m, v))
+      store!(m, key, (v, labelcounts(m, v.base)); built = length(v.base))   # exact, whatever e was (not kept: it was counted already)
+    end
+    push!(st.keys, key); push!(st.views, v); push!(st.sizes, st.sizes[end] + 1)
+    push!(st.members, x)
+  end
+  push!(st.odds, y)
+end
+
+"""
+Give chain prefix k a record list of its own if it's still a view (keepfrac = 1: lists are built
+only when a count has to scan them), updating its cached entry; returns its records.
+"""
+function materialize!(m::ChainModel, st::ChainState, k::Int)
+  v = st.views[k+1]
+  (m.keepfrac >= 1 && !isempty(v.filt)) || return v
+  L = buildlist(m, v)
+  v2 = RecView(L)
+  st.views[k+1] = v2
+  key = st.keys[k+1]
+  ce = get(m.cache, key, nothing)
+  ce === nothing || store!(m, key, (v2, ce[1][2]); built = length(L), nread = ce[2], persist = false)
+  v2
+end
+
+"Counts per label for an explicit item set of decision type `tk`, built step by step (tests, diagnostics)."
+function setcounts(m::ChainModel, tk::UInt64, S::Vector{UInt64})
+  st = ChainState(1.0, get(m.typerecs, tk, NOLIST))
+  e = NOENTRY
+  for x in S
+    e = only(extend_all(m, st, depth(st), [x]))
+    advance!(m, st, x, e, 1.0)
+  end
+  e[2], st
+end
+
+present_items(Ic, slots) = UInt64[Ic[s] for s in slots]
+
+"""
+Run the decision-level chain over slots for all candidates at once.  `I[c][s]` is candidate c's
+item in slot s.  Returns the chain states and the slots left unused.  With a `target`, steps
+are chosen to approach it; otherwise to maximize the criterion.
+"""
+function run_chain(m::ChainModel, I, labels, priors, typerecs; target = nothing, restarts = 0)
+  K, nslots = length(I), length(I[1])
+  states = [ChainState(p, typerecs) for p in priors]
+  remaining = collect(1:nslots)
+  dist(y) = criterion(m.opts.select, y, target)
+  while !isempty(remaining)
+    x = [s.odds[end] for s in states]
+    best, bs, by, be = -Inf, 0, x, nothing
+    # each candidate's entries for all its remaining (present) items, in one pass per candidate
+    cap = samplecap(m, x; nlabels = all(iszero, labels) ? 1 : K)
+    E = map(enumerate(states)) do (c, st)
+      slots = [s for s in remaining if I[c][s] != ABSENT]
+      Dict(zip(slots, extend_all(m, st, depth(st), present_items(I[c], slots); cap)))
+    end
+    for s in remaining
+      # a candidate whose item in this slot is absent (still pending) keeps its current set and odds
+      es = [I[c][s] == ABSENT ? nothing : E[c][s] for c in 1:K]
+      y = similar(x)
+      any_ok = false
+      for c in 1:K
+        es[c] === nothing && (y[c] = x[c]; continue)
+        y[c], ok = update_odds(m, es[c], labels[c], x[c])
+        any_ok |= ok
+      end
+      any_ok || continue
+      sc = target === nothing ? criterion(m.opts.select, x, y) : dist(x) - dist(y)
+      sc > best && ((best, bs, by, be) = (sc, s, y, es))
+    end
+    (bs == 0 || best < m.opts.tau) && break
+    for (c, st) in enumerate(states)
+      advance!(m, st, be[c] === nothing ? nothing : I[c][bs], be[c], by[c])
+    end
+    deleteat!(remaining, findfirst(==(bs), remaining))
+    if m.opts.target && restarts < m.opts.maxrestarts && K > 1
+      changed = top2(by) != top2(x)
+      if changed && (target === nothing || top2(by) != top2(target))
+        return run_chain(m, I, labels, priors, typerecs; target = copy(by), restarts = restarts + 1)
+      end
+    end
+  end
+  states, remaining
+end
+
+"""
+One step of a candidate's own chain (:maxdev).  Without a target: add the feature that moves
+its odds the most; with target odds `t`: the one that brings its odds closest to `t`.  The
+step must score at least `tau`, unless `exhaust`, when any feature with `mincount` joint
+records will do.  Returns whether a feature was added.
+"""
+function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; target = nothing, exhaust = false,
+  cap = EXACT)
+  x = st.odds[end]
+  best, bs, by, be = -Inf, 0, x, nothing
+  slots = [s for s in remaining if Ic[s] != ABSENT]
+  tr = CHAIN_TRACE[] === nothing ? nothing : Tuple{Int,Float64,Float64}[]
+  k = target === nothing && !exhaust ? m.opts.pickfewest : 0
+  passing = Tuple{Float64,Int,Float64,Any}[]          # with pickfewest: (score, slot, odds, entry) of those reaching tau
+  for (s, e) in zip(slots, extend_all(m, st, depth(st), present_items(Ic, slots); cap))
+    y, ok = update_odds(m, e, label, x)
+    tr === nothing || push!(tr, (s, ok ? abs(log(y) - log(x)) : NaN, total(e[2])))
+    ok || continue
+    sc = target !== nothing ? abs(log(x) - log(target)) - abs(log(y) - log(target)) :
+      m.opts.stepscore == :signed ? log(y) - log(x) :                      # the feature that raises the odds most
+      m.opts.stepscore == :maxmin ? minimum(o -> abs(log(y) - log(o)), st.odds) :   # away from every earlier stage
+      m.opts.stepscore == :maxmin2 ? maxmin2(e, label, st.odds) :                    # ...each smoothed toward that stage
+      abs(log(y) - log(x))
+    sc > best && ((best, bs, by, be) = (sc, s, y, e))
+    k > 0 && sc >= m.opts.tau && push!(passing, (sc, s, y, e))
+  end
+  if k > 0 && !isempty(passing)                     # of the k best, the one with the fewest records (ties: better score)
+    top = sort!(passing; by = p -> -p[1])[1:min(k, end)]
+    (_, bs, by, be) = top[argmin([(total(p[4][2]), -p[1]) for p in top])]
+  end
+  stop = bs == 0 || (!exhaust && best < m.opts.tau)
+  tr === nothing || CHAIN_TRACE[](:step, (cand = CHAIN_TRACE_CAND[], before = x, tried = tr,
+    chosen = stop ? 0 : bs, after = stop ? x : by))
+  stop && return false
+  advance!(m, st, Ic[bs], be, by)
+  deleteat!(remaining, findfirst(==(bs), remaining))
+  true
+end
+
+"""
+Max-min step score with the counts smoothed toward each earlier stage in turn: the smallest
+|log smoothOdds(c1, c2, o) - log o| over the chain's odds o so far (prior first).
+"""
+function maxmin2(e, label, odds)
+  (c1, c2) = get(e[2], label, (0.0, 0.0))
+  minimum(o -> abs(log(smoothOdds(c1, c2, o)) - log(o)), odds)
+end
+
+"""
+Optional trace hook: when set to a function, `f(event, data)` is called for :maxdev chains with
+event :step (data: candidate, odds before, each tried slot's score (NaN: unsupported) and
+records, the chosen slot or 0, odds after) and :final (candidate, chain log-odds with leftovers).
+For diagnostics; the candidate being scored is `CHAIN_TRACE_CAND[]`.
+"""
+const CHAIN_TRACE = Ref{Any}(nothing)
+const CHAIN_TRACE_CAND = Ref{Any}(nothing)
+const TRACE_KEY = Ref{Any}(nothing)               # the decision being scored, while CHAIN_TRACE is set
+
+"""
+Optional hook for greedy leftovers: `f(slot, included, ctxslots, corr)` for each leftover tried
+(after the relevance filter): whether it was included, the slots of its context, its correction.
+"""
+const LEFTOVER_TRACE = Ref{Any}(nothing)
+
+"""
+Fill `m.pool` (see Candidate pool in the header): per decision type with a fixed record layout,
+slots and slot pairs (gain over their stronger slot ≥ `gainmin`, mean |λ| ≥ `lammin`) ordered by
+mean total effect over a record sample.
+"""
+function pool_order!(m::ChainModel, nsample::Int, lammin::Float64, gainmin::Float64)
+  mc = max(m.opts.mincount, 1)
+  for (tk, recl) in m.typerecs
+    n0 = m.recs[recl[1]].n
+    all(j -> m.recs[j].n == n0, recl) || continue
+    js = length(recl) <= nsample ? recl : recl[collect(sample_positions(length(recl), nsample))]   # evenly spaced
+    lab = [m.recs[j].label for j in js]
+    val(j, q) = m.items[m.recs[j].start+q-1]
+    p = Dict(l => priorodds(m, lpriorkey(tk, l)) for l in unique(lab))
+    sm(c, l, e) = ((c1, c2) = c; c1 + c2 < mc ? e : smoothOdds(c1, c2, e))
+    count1(q) = (d = Dict{Tuple{UInt64,UInt32},Tuple{Float64,Float64}}();
+      for (r, j) in enumerate(js)
+        x = val(j, q); x == ABSENT && continue
+        (a, b) = get(d, (x, lab[r]), (0.0, 0.0))
+        d[(x, lab[r])] = m.recs[j].chosen == 1 ? (a + 1, b) : (a, b + 1)
+      end; d)
+    c1s = [count1(q) for q in 1:n0]
+    # each record's smoothed odds for its own value in each slot
+    o = [let x = val(j, q); x == ABSENT ? NaN : sm(c1s[q][(x, lab[r])], lab[r], p[lab[r]]) end
+         for (r, j) in enumerate(js), q in 1:n0]
+    entries = Tuple{Float64,Int16,Int16}[]
+    for q in 1:n0
+      v = [abs(log(o[r, q]) - log(p[lab[r]])) for r in eachindex(js) if !isnan(o[r, q])]
+      push!(entries, (isempty(v) ? 0.0 : sum(v) / length(js), Int16(q), Int16(0)))
+    end
+    for q1 in 1:n0-1, q2 in q1+1:n0
+      d = Dict{Tuple{UInt64,UInt64,UInt32},Tuple{Float64,Float64}}()
+      for (r, j) in enumerate(js)
+        x, y = val(j, q1), val(j, q2)
+        (x == ABSENT || y == ABSENT) && continue
+        (a, b) = get(d, (x, y, lab[r]), (0.0, 0.0))
+        d[(x, y, lab[r])] = m.recs[j].chosen == 1 ? (a + 1, b) : (a, b + 1)
+      end
+      lam = tot = 0.0
+      for (r, j) in enumerate(js)
+        x, y = val(j, q1), val(j, q2)
+        (x == ABSENT || y == ABSENT) && continue
+        l, pl = lab[r], p[lab[r]]
+        e = pl * (o[r, q1] / pl) * (o[r, q2] / pl)          # what the two values predict separately
+        oxy = sm(d[(x, y, l)], l, e)
+        lam += abs(log(oxy) - log(e)); tot += abs(log(oxy) - log(pl))
+      end
+      tot /= length(js)
+      gain = tot - max(entries[q1][1], entries[q2][1])        # over its stronger slot (entries 1:n0 are the singles)
+      score = m.opts.pairscore == :min ? min(tot, entries[q1][1], entries[q2][1]) :
+              m.opts.pairscore == :increment ? gain : tot
+      lam / length(js) >= lammin && gain >= gainmin && push!(entries, (score, Int16(q1), Int16(q2)))
+    end
+    sort!(entries; by = e -> (-e[1], e[3] != 0))                # ties: singles first
+    m.pool[tk] = [(e[2], e[3]) for e in entries]
+  end
+end
+
+"A copy of chain state `st` cut back to its prefix k."
+truncstate(st::ChainState, k::Int) = ChainState(st.keys[1:k+1], st.views[1:k+1], st.sizes[1:k+1],
+  st.members[1:st.sizes[k+1]], st.odds[1:k+1])
+
+"""
+Entries for chain prefix k plus both items of each pair: from the cache, the pairs table (empty
+prefix), or one pass reading the filter's and the pairs' positions (else, two steps per pair).
+"""
+function extend_pairs(m::ChainModel, st::ChainState, k::Int, prs::Vector{Tuple{UInt64,UInt64}})
+  v, pkey, n = st.views[k+1], st.keys[k+1], st.sizes[k+1]
+  mc = max(m.opts.mincount, 1)
+  out = Vector{Entry}(undef, length(prs))
+  todo = Int[]
+  for (i, (x, y)) in enumerate(prs)
+    key = extendkey(extendkey(pkey, x), y)
+    ce = get(m.cache, key, nothing)
+    if ce !== nothing
+      out[i] = ce[1]
+    elseif get(m.itemcount, x, 0) < mc || get(m.itemcount, y, 0) < mc
+      out[i] = NOENTRY
+    elseif n == 0 && x in m.frequent && y in m.frequent
+      out[i] = (RecView(v.base, [v.filt; x; y]), get(m.pairs, extendkey(extendkey(UInt64(0), x), y), NOCOUNTS))
+    elseif (pc = pcget(m.pcounts, key)) !== nothing   # counted in an earlier run
+      out[i] = (RecView(v.base, [v.filt; x; y]), pc)
+    else
+      push!(todo, i)
+    end
+  end
+  isempty(todo) && return out
+  v = materialize!(m, st, k)
+  fslots = slotpositions(m, Int32[m.idof[x] for x in v.filt])
+  ps = [(slotpositions(m, Int32[m.idof[prs[i][1]]]), slotpositions(m, Int32[m.idof[prs[i][2]]])) for i in todo]
+  if fslots === nothing || any(p -> p[1] === nothing || p[2] === nothing, ps)
+    for i in todo                                    # no positions: two steps
+      x, y = prs[i]
+      t = truncstate(st, k)
+      ex = only(extend_all(m, t, k, [x]))
+      advance!(m, t, x, ex, t.odds[end])
+      out[i] = only(extend_all(m, t, k + 1, [y]))
+    end
+    return out
+  end
+  q1 = [p[1][1] for p in ps]; q2 = [p[2][1] for p in ps]
+  id1 = [m.idof[prs[i][1]] for i in todo]; id2 = [m.idof[prs[i][2]] for i in todo]
+  nl, tls = tallyshape(m, v.base)
+  C1, C2 = zeros(nl, length(todo)), zeros(nl, length(todo))
+  N = zeros(length(tls), length(todo))
+  B = length(v.base)
+  # a pair with a value whose own record list is short is counted from that list (every record
+  # holding both values is in it); the rest share one pass over the base
+  shortlist(t) = (Px = get(m.postings, prs[todo[t]][1], nothing); Py = get(m.postings, prs[todo[t]][2], nothing);
+    P = Px === nothing ? Py : Py === nothing ? Px : (length(Px) <= length(Py) ? Px : Py);
+    P !== nothing && (n == 0 || 16 * length(P) < B) ? P : nothing)
+  lists = [shortlist(t) for t in eachindex(todo)]
+  markfilt!(m, v.filt, true)
+  try
+    nfilt = length(v.filt)
+    passes(r) = (nf = 0; @inbounds for s in fslots
+        s <= r.n || continue
+        id = m.ids[r.start+s-1]
+        id > 0 && m.infilt[id] && (nf += 1)
+      end; nf == nfilt)
+    has(r, t) = q1[t] <= r.n && q2[t] <= r.n && m.ids[r.start+q1[t]-1] == id1[t] && m.ids[r.start+q2[t]-1] == id2[t]
+    for t in eachindex(todo)                         # pairs counted from a short list
+      lists[t] === nothing && continue
+      L = n == 0 ? lists[t] : intersect_sorted(v.base, lists[t])
+      @inbounds for j in L
+        r = m.recs[j]
+        (passes(r) && has(r, t)) || continue
+        tallycol!(m, C1, C2, N, j, r, t)
+      end
+    end
+    long = [t for t in eachindex(todo) if lists[t] === nothing]
+    if !isempty(long)                                # the others: one pass over the base
+      @inbounds for j in v.base
+        r = m.recs[j]
+        passes(r) || continue
+        for t in long
+          has(r, t) || continue
+          tallycol!(m, C1, C2, N, j, r, t)
+        end
+      end
+    end
+  finally
+    markfilt!(m, v.filt, false)
+  end
+  expandgroups!(m, C2, N, tls)
+  for (t, i) in enumerate(todo)
+    x, y = prs[i]
+    out[i] = store!(m, extendkey(extendkey(pkey, x), y), (RecView(v.base, [v.filt; x; y]), todict(view(C1, :, t), view(C2, :, t)));
+      cost = lists[t] === nothing ? B : length(lists[t]))
+  end
+  out
+end
+
+"""
+One pooled chain step (see Candidate pool in the header).  `dead` collects entries found
+unsupported in this chain.  Returns whether an entry was added.
+"""
+function step_pool!(m::ChainModel, st::ChainState, Ic, label, remaining, order, dead::Set{Tuple{Int16,Int16}})
+  x0, k = st.odds[end], depth(st)
+  rem = Set(remaining)
+  ok_(q) = q in rem && Ic[q] != ABSENT
+  considered = Tuple{Float64,Int16,Int16,Entry,Float64}[]      # (score, q1, q2, entry, new odds)
+  skip = Set{Int16}()                                          # slots of supported pairs, this step
+  pos = 1
+  while length(considered) < m.opts.poolm && pos <= length(order)
+    batch = Tuple{Int16,Int16}[]
+    while pos <= length(order) && length(batch) < m.opts.poolm - length(considered) + 2
+      e = order[pos]; pos += 1
+      e in dead && continue
+      e[2] == 0 ? (ok_(e[1]) && !(e[1] in skip) && push!(batch, e)) :
+        (ok_(e[1]) && ok_(e[2]) && push!(batch, e))
+    end
+    isempty(batch) && break
+    sb = [e for e in batch if e[2] == 0]; pb = [e for e in batch if e[2] != 0]
+    if m.opts.pairscore != :total                              # a pair's score needs its slots' effects too
+      for e in pb, q in (e[1], e[2])
+        (q, Int16(0)) in sb || push!(sb, (q, Int16(0)))
+      end
+    end
+    es = Dict(zip(sb, extend_all(m, st, k, UInt64[Ic[e[1]] for e in sb])))
+    ep = Dict(zip(pb, extend_pairs(m, st, k, [(Ic[e[1]], Ic[e[2]]) for e in pb])))
+    for e in batch                                             # in order, applying the pair filter
+      length(considered) >= m.opts.poolm && break
+      e[2] == 0 && e[1] in skip && continue
+      en = e[2] == 0 ? es[e] : ep[e]
+      y, ok = update_odds(m, en, label, x0)
+      ok || (push!(dead, e); continue)
+      sc = abs(log(y) - log(x0))
+      if e[2] != 0 && m.opts.pairscore != :total
+        eq = [(r = update_odds(m, es[(q, Int16(0))], label, x0); r[2] ? abs(log(r[1]) - log(x0)) : 0.0) for q in (e[1], e[2])]
+        sc = m.opts.pairscore == :min ? min(sc, eq...) : sc - maximum(eq)   # :increment: excess over the stronger slot
+      end
+      push!(considered, (sc, e[1], e[2], en, y))
+      e[2] == 0 || !m.opts.pairfilter || (push!(skip, e[1]); push!(skip, e[2]))
+    end
+  end
+  isempty(considered) && return false
+  # ties: a single before a pair, then the lower slot (as step_single!)
+  sc, q1, q2, en, y = considered[argmax([(c[1], c[3] == 0, -Int(c[2])) for c in considered])]
+  sc < m.opts.tau && return false
+  if q2 == 0
+    advance!(m, st, Ic[q1], en, y)
+  else
+    ex = only(extend_all(m, st, k, [Ic[q1]]))                  # the pair as two members, one step's odds
+    yx, _ = update_odds(m, ex, label, x0)
+    advance!(m, st, Ic[q1], ex, yx)
+    advance!(m, st, Ic[q2], en, y)
+    deleteat!(remaining, findfirst(==(Int(q2)), remaining))
+  end
+  deleteat!(remaining, findfirst(==(Int(q1)), remaining))
+  true
+end
+
+"Per-candidate chain (:maxdev): each candidate picks its own features."
+function run_single(m::ChainModel, Ic, label, prior, typerecs; tk = nothing)
+  st = ChainState(prior, typerecs)
+  remaining = tk === nothing ? collect(eachindex(Ic)) : admitted(m, tk, Ic)
+  order = m.opts.poolm > 0 && tk !== nothing ? get(m.pool, tk, nothing) : nothing
+  if order === nothing
+    while step_single!(m, st, Ic, label, remaining) end
+  else
+    dead = Set{Tuple{Int16,Int16}}()
+    while step_pool!(m, st, Ic, label, remaining, order, dead) end
+  end
+  st, remaining
+end
+
+"""
+:maxdev chains in rounds (one step per still-running candidate per round), so the ranking, and
+with it the sampling cap, is known at each step.  Without sampling it gives what run_single does.
+"""
+function run_maxdev_rounds(m::ChainModel, I, labels, priors, typerecs; tk = nothing)
+  K = length(I)
+  nl = all(iszero, labels) ? 1 : K
+  states = [ChainState(p, typerecs) for p in priors]
+  rems = [tk === nothing ? collect(eachindex(I[c])) : admitted(m, tk, I[c]) for c in 1:K]
+  running = trues(K)
+  while any(running)
+    cap = samplecap(m, [s.odds[end] for s in states]; nlabels = nl)
+    for c in 1:K
+      running[c] && (running[c] = step_single!(m, states[c], I[c], labels[c], rems[c]; cap))
+    end
+  end
+  states, rems
+end
+
+"""
+:maxdev chains where only the two leading candidates advance: every candidate's chain takes its
+first step (that gives the ranking), then the two with the highest odds step in lockstep while the
+rest stay frozen.  When a frozen candidate overtakes one of the two, it resumes its own chain (a
+maxdev chain doesn't depend on the other candidates, so starting over would repeat it) and the
+displaced one freezes.  Ends when both leaders can't add a feature; each chain is thus cut where
+it dropped out of the top two.
+"""
+function run_top2(m::ChainModel, I, labels, priors, typerecs; tk = nothing)
+  K = length(I)
+  states = [ChainState(p, typerecs) for p in priors]
+  rems = [tk === nothing ? collect(eachindex(I[c])) : admitted(m, tk, I[c]) for c in 1:K]
+  done = [!step_single!(m, states[c], I[c], labels[c], rems[c]) for c in 1:K]
+  while true
+    lead = top2([s.odds[end] for s in states])
+    active = [c for c in lead if c > 0 && !done[c]]
+    isempty(active) && break
+    for c in active
+      done[c] = !step_single!(m, states[c], I[c], labels[c], rems[c])
+    end
+  end
+  states, rems
+end
+
+"""
+A contest chain between candidates a and b: from zero features, each step adds the slot (present
+and supported for both) that most changes the log ratio of their odds,
+|(log ya - log xa) - (log yb - log xb)|, each with its own value; it ends when no slot changes it
+by `tau`.  Returns their final log odds.  No leftovers.
+"""
+function contest_chain(m::ChainModel, Ia, Ib, la, lb, pa, pb, typerecs, tk)
+  sa, sb = ChainState(pa, typerecs), ChainState(pb, typerecs)
+  rem = intersect(admitted(m, tk, Ia), admitted(m, tk, Ib))
+  filter!(s -> Ia[s] != ABSENT && Ib[s] != ABSENT, rem)
+  while !isempty(rem)
+    ea = extend_all(m, sa, depth(sa), UInt64[Ia[s] for s in rem])
+    eb = extend_all(m, sb, depth(sb), UInt64[Ib[s] for s in rem])
+    xa, xb = sa.odds[end], sb.odds[end]
+    best, bi, bya, byb = -Inf, 0, xa, xb
+    for i in eachindex(rem)
+      ya, oka = update_odds(m, ea[i], la, xa)
+      yb, okb = update_odds(m, eb[i], lb, xb)
+      (oka && okb) || continue
+      sc = abs((log(ya) - log(xa)) - (log(yb) - log(xb)))
+      sc > best && ((best, bi, bya, byb) = (sc, i, ya, yb))
+    end
+    (bi == 0 || best < m.opts.tau) && break
+    advance!(m, sa, Ia[rem[bi]], ea[bi], bya)
+    advance!(m, sb, Ib[rem[bi]], eb[bi], byb)
+    deleteat!(rem, bi)
+  end
+  log(sa.odds[end]), log(sb.odds[end])
+end
+
+"""
+Contest re-ranking (see ChainOpts.contest): after the usual scores, the top two are re-decided by a
+contest chain on their odds ratio, their scores replaced by its log odds; if that leaves one of them
+below a third candidate, the new top two contest again (from zero features), up to `maxrestarts`
+times.  The others keep their scores, and the margin is then the contest's log ratio.
+"""
+function contest!(m::ChainModel, scores, I, labels, priors, typerecs, tk)
+  length(scores) < 2 && return scores
+  done = Set{Tuple{Int,Int}}()
+  for _ in 0:m.opts.maxrestarts
+    o = sortperm(scores; rev = true)
+    pair = (min(o[1], o[2]), max(o[1], o[2]))
+    pair in done && break                            # this pair has had its contest
+    push!(done, pair)
+    a, b = pair
+    scores[a], scores[b] = contest_chain(m, I[a], I[b], labels[a], labels[b], priors[a], priors[b], typerecs, tk)
+    length(scores) < 3 && break
+    o2 = sortperm(scores; rev = true)
+    Set(o2[1:2]) == Set(pair) && break               # both still lead: settled
+  end
+  scores
+end
+
+"""
+:maxdev chains in target mode: the candidates' chains advance in step, one feature each per
+round, so the ranking can be checked after every round (see `restart` in the header).
+"""
+function run_maxdev_target(m::ChainModel, I, labels, priors, typerecs; tk = nothing)
+  K = length(I)
+  target, restarts = nothing, 0
+  while true
+    states = [ChainState(p, typerecs) for p in priors]
+    rems = [tk === nothing ? collect(eachindex(I[c])) : admitted(m, tk, I[c]) for c in 1:K]
+    exhausting, restart_to = false, nothing
+    while true
+      x = [s.odds[end] for s in states]
+      cap = samplecap(m, x; nlabels = all(iszero, labels) ? 1 : K)
+      advanced = false
+      for c in 1:K
+        advanced |= step_single!(m, states[c], I[c], labels[c], rems[c];
+          target = target === nothing ? nothing : target[c], exhaust = exhausting, cap)
+      end
+      advanced || break
+      exhausting && continue
+      y = [s.odds[end] for s in states]
+      if K > 1 && restarts < m.opts.maxrestarts && top2(y) != top2(x) &&
+         (target === nothing || top2(y) != top2(target))
+        m.opts.restart == :immediate ? (restart_to = y; break) : (exhausting = true)
+      end
+    end
+    exhausting && (restart_to = [s.odds[end] for s in states])
+    restart_to === nothing && return states, rems
+    target, restarts = restart_to, restarts + 1
+  end
+end
+
+"""
+Log-odds of a finished chain plus the corrections from its leftover slots.  Each leftover's
+correction comes from the deepest prefix that supports it; the leftovers still open at a depth
+are counted together, and the corrections are added in slot order.
+"""
+function chain_logodds(m::ChainModel, st::ChainState, Ic, label, prior, remaining; cap = EXACT)
+  lo = log(st.odds[end])
+  if !isempty(m.noleft) && !isempty(st.views[1].base)        # slots kept out of the leftovers
+    skip = get(m.noleft, m.recs[st.views[1].base[1]].typekey, nothing)
+    skip === nothing || (remaining = [s for s in remaining if !(s in skip)])
+  end
+  m.opts.leftovers == :none && return lo
+  m.opts.leftovers == :greedy && return lo + greedy_leftovers(m, st, Ic, label, prior, remaining)
+  slots = [s for s in remaining if Ic[s] != ABSENT]
+  lowest = m.opts.leftovers == :backoff1 && depth(st) > 0 ? 1 : 0
+  depths = m.opts.leftovers == :marginal ? (0:0) : (depth(st):-1:lowest)
+  corr = zeros(length(slots))
+  open_ = collect(eachindex(slots))
+  # climbing slots under :none or :specific are handled apart from the usual depth search
+  climbing = [t for t in open_ if haskey(m.vclimb, Ic[slots[t]])]
+  if m.opts.climbleft != :deepest && !isempty(climbing)
+    filter!(t -> !(t in climbing), open_)
+    m.opts.climbleft == :specific && for t in climbing
+      perk = Dict(k => climblevels(m, st, k, Ic[slots[t]]) for k in depths)
+      done = false
+      for L in 1:length(first(values(perk))), k in depths   # finest ring first, then the deepest prefix for it
+        o = st.odds[k+1]
+        y, ok = update_odds(m, (NOENTRY[1], perk[k][L]), label, o)
+        ok && (corr[t] = log(y) - log(o); done = true; break)
+      end
+      done || push!(open_, t)                          # (unsupported: stays open, so no correction)
+    end
+    sort!(open_)
+    pending_none = m.opts.climbleft == :none ? climbing : Int[]
+  else
+    pending_none = Int[]
+  end
+  unresolved = copy(pending_none)
+  for k in depths
+    isempty(open_) && break
+    es = extend_all(m, st, k, UInt64[Ic[slots[t]] for t in open_]; cap)
+    o = st.odds[k+1]
+    still = Int[]
+    for (t, e) in zip(open_, es)
+      y, ok = update_odds(m, e, label, o)
+      ok ? (corr[t] = log(y) - log(o)) : push!(still, t)
+    end
+    open_ = still
+  end
+  # climbing slots handled apart and found unsupported are still in open_; :none slots never get a correction
+  for t in eachindex(slots)
+    (t in open_ || t in unresolved) || (lo += corr[t])
+  end
+  lo
+end
+
+"""
+Sum of the leftovers' corrections under :greedy (see Leftovers in the header).  Each leftover X
+grows a context S (as a chain state, with a twin state for S∪X so both sets' records are at hand);
+o(S∪f) is smoothed toward o(S) and o(S∪f∪X) toward o(S∪f), as along a chain.
+"""
+function greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, remaining)
+  IN_GREEDY[] = true
+  try
+    _greedy_leftovers(m, st, Ic, label, prior, remaining)
+  finally
+    IN_GREEDY[] = false
+  end
+end
+
+"""
+A leftover's relevance (see :greedy in the header): the largest of |λ_X| (its effect alone) and
+|λ(a, X)| over the chain's features a, for `label`; λ as in the lattice, from exact counts.
+"""
+function leftover_relevance(m::ChainModel, st::ChainState, X, label, prior, base)
+  S0 = ChainState(prior, base)
+  eX = only(extend_all(m, S0, 0, [X]))
+  yX, okX = update_odds(m, eX, label, prior)
+  oX = okX ? yX : prior
+  r = abs(log(oX) - log(prior))
+  for a in st.members
+    S1 = ChainState(prior, base)
+    ea = only(extend_all(m, S1, 0, [a]))
+    ya, oka = update_odds(m, ea, label, prior)
+    oka || continue
+    advance!(m, S1, a, ea, ya)
+    e = prior * (ya / prior) * (oX / prior)            # what a and X predict separately
+    y, ok = update_odds(m, only(extend_all(m, S1, 1, [X])), label, e)
+    ok && (r = max(r, abs(log(y) - log(e))))
+  end
+  r
+end
+
+"""
+Slots among `remaining` that are redundant given the finished chain: supported at its final
+prefix (`mincount` records with the prefix) but changing its odds by less than `tau`.
+"""
+function redundant_slots(m::ChainModel, st::ChainState, Ic, label, remaining)
+  slots = [s for s in remaining if Ic[s] != ABSENT]
+  isempty(slots) && return Int[]
+  x = st.odds[end]
+  out = Int[]
+  for (s, e) in zip(slots, extend_all(m, st, depth(st), UInt64[Ic[s] for s in slots]))
+    y, ok = update_odds(m, e, label, x)
+    ok && abs(log(y) - log(x)) < m.opts.tau && push!(out, s)
+  end
+  out
+end
+
+function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, remaining)
+  base = st.views[1].base                            # the decision type's records
+  avail = copy(st.members)                           # chain features, (redundant ones,) then included leftovers
+  total_ = 0.0
+  needmin, needmax = m.opts.minctx, m.opts.maxctx
+  if m.opts.ctxchain                                 # contexts as large as the chain (none if it's empty)
+    depth(st) == 0 && return 0.0
+    needmin = needmax = depth(st)
+  end
+  nred = 0
+  if m.opts.redundant                                # redundant features: context only, no correction of their own
+    red = redundant_slots(m, st, Ic, label, remaining)
+    append!(avail, UInt64[Ic[s] for s in red])
+    remaining = [s for s in remaining if !(s in red)]
+    nred = length(red)
+  end
+  # adaptive: short chains (plus pool) need only as much context as they have, but at least 1
+  m.opts.adaptctx && (needmin = max(1, min(m.opts.minctx, depth(st) + nred)))
+  for s in remaining
+    X = Ic[s]
+    X == ABSENT && continue
+    m.opts.relevance > 0 && leftover_relevance(m, st, X, label, prior, base) < m.opts.relevance && continue
+    S, SX = ChainState(prior, base), ChainState(prior, base)
+    eX = only(extend_all(m, S, 0, [X]))
+    yX, okX = update_odds(m, eX, label, prior)
+    advance!(m, SX, X, eX, yX)
+    corr = okX ? log(yX) - log(prior) : 0.0
+    chosen = UInt64[]
+    while length(chosen) < needmax
+      fs = UInt64[f for f in avail if !(f in chosen)]
+      isempty(fs) && break
+      eS = extend_all(m, S, depth(S), fs)
+      eSX = extend_all(m, SX, depth(SX), fs)
+      oS = S.odds[end]
+      best, bi, by1, by2, bcorr = -Inf, 0, 0.0, 0.0, 0.0
+      for (i, f) in enumerate(fs)
+        y1, ok1 = update_odds(m, eS[i], label, oS)          # o(S∪f)
+        y2, ok2 = update_odds(m, eSX[i], label, y1)         # o(S∪f∪X), toward o(S∪f)
+        (ok1 && ok2) || continue                             # S∪f∪X must be supported
+        c = log(y2) - log(y1)
+        sc = m.opts.greedyby == :correction ? abs(c - corr) : abs(log(y1) - log(oS))
+        sc > best && ((best, bi, by1, by2, bcorr) = (sc, i, y1, y2, c))
+      end
+      bi == 0 && break
+      advance!(m, S, fs[bi], eS[bi], by1)
+      advance!(m, SX, fs[bi], eSX[bi], by2)
+      push!(chosen, fs[bi])
+      corr = bcorr
+    end
+    LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](s, length(chosen) >= m.opts.minctx,
+      [something(findfirst(==(f), Ic), 0) for f in chosen], corr)
+    if length(chosen) >= needmin
+      total_ += corr
+      push!(avail, X)
+    end
+  end
+  total_
+end
+
+function decide(m::ChainModel, st::State, key::AgendaKey)
+  d, i = decisiondef(st, key), key[3]
+  d.ready(st, i) || return (NONE, -Inf)
+  cands = d.candidates(st, i)
+  isempty(cands) && return (NONE, -Inf)
+  tk = typekey(key[1], key[2])
+  CHAIN_TRACE[] === nothing || (TRACE_KEY[] = key)
+  labels = [d.labeled ? c : UInt32(0) for c in cands]
+  I = [d.items(st, i, c) for c in cands]
+  isempty(m.screened) || (I = [[x in m.screened ? ABSENT : x for x in Ic] for Ic in I])
+  isempty(m.climb) || (I = [[haskey(m.climb, x) ? climbkey!(m, x, labels[c]) : x for x in I[c]] for c in eachindex(I)])
+  memokey = hash((tk, labels, I))
+  scores = get(m.memo, memokey, nothing)
+  scores === nothing || return choose(cands, copy(scores), d.open ? waitscore(m, st, key) : nothing)
+  priors = [priorodds(m, lpriorkey(tk, l)) for l in labels]
+  tr = get(m.typerecs, tk, NOLIST)
+  # leftovers are sampled by the ranking the chains end with
+  logodds(states, rems) = (cap = samplecap(m, [s.odds[end] for s in states]; nlabels = d.labeled ? length(cands) : 1);
+    [chain_logodds(m, states[c], I[c], labels[c], priors[c], rems isa Vector{Int} ? rems : rems[c]; cap)
+     for c in eachindex(cands)])
+  scores = if m.opts.select == :maxdev && m.opts.top2
+    logodds(run_top2(m, I, labels, priors, tr; tk)...)
+  elseif m.opts.select == :maxdev && m.opts.target
+    logodds(run_maxdev_target(m, I, labels, priors, tr; tk)...)
+  elseif m.opts.select == :maxdev && m.opts.sample > 0
+    logodds(run_maxdev_rounds(m, I, labels, priors, tr; tk)...)
+  elseif m.opts.select == :maxdev
+    [begin
+      CHAIN_TRACE[] === nothing || (CHAIN_TRACE_CAND[] = cands[c])
+      cs, rem = run_single(m, I[c], labels[c], priors[c], tr; tk)
+      lo = chain_logodds(m, cs, I[c], labels[c], priors[c], rem)
+      CHAIN_TRACE[] === nothing || CHAIN_TRACE[](:final, (cand = cands[c], logodds = lo))
+      lo
+    end for c in eachindex(cands)]
+  else
+    logodds(run_chain(m, I, labels, priors, tr)...)
+  end
+  m.opts.contest && (scores = contest!(m, scores, I, labels, priors, tr, tk))
+  length(m.memo) >= MAXMEMO && empty!(m.memo)
+  m.memo[memokey] = copy(scores)
+  choose(cands, scores, d.open ? waitscore(m, st, key) : nothing)
+end
+
+"""
+Counts packed for storage: keys sorted; for key i, label entries start[i]:start[i+1]-1 of the
+label / chosen / not-chosen arrays.  Memory-mapped from disk by load_counts.
+"""
+struct PackedCounts
+  keys::Vector{UInt64}
+  start::Vector{UInt32}
+  lab::Vector{UInt16}
+  c1::Vector{UInt32}
+  c2::Vector{UInt32}
+end
+Base.length(p::PackedCounts) = length(p.keys)
+
+"Counts for `key`, or nothing (packed: binary search on the sorted keys)."
+function pcget(p::PackedCounts, key::UInt64)
+  i = searchsortedfirst(p.keys, key)
+  (i > length(p.keys) || p.keys[i] != key) && return nothing
+  LabelCounts(UInt32(p.lab[j]) => (Float64(p.c1[j]), Float64(p.c2[j])) for j in p.start[i]:p.start[i+1]-1)
+end
+pcget(d::AbstractDict, key::UInt64) = get(d, key, nothing)
+
+"Pack a Dict of counts (keys sorted)."
+function packcounts(d::AbstractDict{UInt64,LabelCounts})
+  ks = sort!(collect(keys(d)))
+  start, lab, c1, c2 = UInt32[1], UInt16[], UInt32[], UInt32[]
+  for k in ks
+    for (l, (a, b)) in d[k]
+      push!(lab, UInt16(l)); push!(c1, UInt32(a)); push!(c2, UInt32(b))
+    end
+    push!(start, UInt32(length(lab) + 1))
+  end
+  PackedCounts(ks, start, lab, c1, c2)
+end
+
+"Unpack into a Dict (tests, small caches)."
+unpackcounts(p::PackedCounts) = Dict(k => pcget(p, k) for k in p.keys)
+
+"Merge two packed caches with disjoint keys into one, in key order, without unpacking either."
+function mergecounts(a::PackedCounts, b::PackedCounts)
+  n = length(a) + length(b)
+  ks, start = Vector{UInt64}(undef, n), Vector{UInt32}(undef, n + 1)
+  lab, c1, c2 = UInt16[], UInt32[], UInt32[]
+  sizehint!(lab, length(a.lab) + length(b.lab)); sizehint!(c1, length(lab)); sizehint!(c2, length(lab))
+  i = j = 1
+  start[1] = 1
+  for k in 1:n
+    froma = j > length(b) || (i <= length(a) && a.keys[i] <= b.keys[j])
+    p, r = froma ? (a, i) : (b, j)
+    ks[k] = p.keys[r]
+    for q in p.start[r]:p.start[r+1]-1
+      push!(lab, p.lab[q]); push!(c1, p.c1[q]); push!(c2, p.c2[q])
+    end
+    start[k+1] = UInt32(length(lab) + 1)
+    froma ? (i += 1) : (j += 1)
+  end
+  PackedCounts(ks, start, lab, c1, c2)
+end
+
+const COUNT_FILES = ("counts_keys.bin", "counts_start.bin", "counts_lab.bin", "counts_c1.bin", "counts_c2.bin")
+const COUNT_SIG = "counts_sig.txt"
+
+"""
+Save packed counts in `dir` with signature `sig` (a string identifying the events): each array to
+a temporary file, renamed into place, then the signature file (with the array lengths) last.
+"""
+function save_counts(dir::AbstractString, sig::AbstractString, p::PackedCounts)
+  arrays = (p.keys, p.start, p.lab, p.c1, p.c2)
+  rm(joinpath(dir, COUNT_SIG); force = true)        # invalid until every array is written
+  for (f, a) in zip(COUNT_FILES, arrays)
+    tmp = joinpath(dir, f * ".tmp")
+    open(io -> write(io, a), tmp, "w")
+    mv(tmp, joinpath(dir, f); force = true)
+  end
+  open(joinpath(dir, COUNT_SIG), "w") do io
+    println(io, sig)
+    println(io, join(length.(arrays), ' '))
+  end
+end
+
+"Memory-map the counts saved in `dir`, or nothing if missing or saved for other events (`sig`)."
+function load_counts(dir::AbstractString, sig::AbstractString)
+  sf = joinpath(dir, COUNT_SIG)
+  isfile(sf) || return nothing
+  lines = readlines(sf)
+  (length(lines) >= 2 && lines[1] == sig) || return nothing
+  lens = parse.(Int, split(lines[2]))
+  types = (UInt64, UInt32, UInt16, UInt32, UInt32)
+  arrays = map(zip(COUNT_FILES, types, lens)) do (f, T, n)
+    path = joinpath(dir, f)
+    (isfile(path) && filesize(path) == n * sizeof(T)) || return nothing
+    n == 0 ? T[] : Mmap.mmap(path, Vector{T}, n)
+  end
+  any(isnothing, arrays) && return nothing
+  PackedCounts(arrays...)
+end

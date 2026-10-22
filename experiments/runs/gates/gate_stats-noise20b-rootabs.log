@@ -1,0 +1,51 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 1.0e-12, 67.8 s): 33 of 34 slots always, 162 gate values
+[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 1273 sentences
+recorded events in 490.0 s
+model with gates (all effects kept) in 79.4 s
+
+slot                         effect  max under a gate   (gate slot)  max, gate ≥500 max, gate ≥2000max, gate ≥10000max, gate ≥50000
+cand upos                    3.6612            4.4055   cand left_neighbor.upos              4.406           4.406           4.406           4.406
+cand form                    3.2328            3.6285   cand left_neighbor.upos              3.628           3.628           3.628           3.628
+cand xpos                    3.1158            3.9806   cand right_neighbor.upos             3.981           3.981           3.981           3.981
+distance                     2.4793            5.0602   dep  upos                             5.06            5.06            5.06            5.06
+cand basepos                 2.1682             3.972   distance                             3.972           3.972           3.972           3.972
+cand len                     1.5602             3.551   cand right_neighbor.xpos             3.551           3.551           3.551           3.551
+cand right_neighbor.xpos     1.0178            2.3844   cand left_neighbor.xpos              2.384           2.384           2.384           2.171
+cand right_neighbor.form     0.8778            1.3599   cand len                              1.36            1.36            1.36            1.36
+cand right_neighbor.upos     0.8759            2.3945   cand left_neighbor.upos              2.395           2.395           2.395           2.395
+cand left_neighbor.upos      0.7627             2.538   dep  xpos                            2.538           2.538           2.538           2.538
+cand left_neighbor.form      0.7504            2.5373   distance                             2.537           2.537           2.537           1.767
+cand left_neighbor.xpos      0.6184            2.6407   distance                             2.641           2.641           2.641           2.565
+cand person                  0.6125            3.0072   dep  xpos                            3.007           3.007           3.007           2.661
+cand number                  0.5968            2.9995   dep  xpos                            2.999           2.999           2.999            2.74
+cand tense                   0.3334            2.4411   cand left_neighbor.xpos              2.441           2.441           2.441           1.718
+direction                    0.2817            4.3853   dep  xpos                            4.385           4.385           4.385           4.385
+cand caps                    0.1376            1.6184   dep  right_neighbor.xpos             1.618           1.618           1.434           1.434
+dep  left_neighbor.xpos      0.0512            1.9385   distance                             1.939           1.939           1.939           0.846
+dep  left_neighbor.form        0.05            1.7251   distance                             1.725           1.725           1.725           0.841
+dep  left_neighbor.upos      0.0481            1.4853   direction                            1.485           1.485           1.485           0.963
+cand noise                   0.0451            0.4613   cand xpos                            0.461           0.461           0.444           0.444
+dep  right_neighbor.xpos     0.0335            2.2349   distance                             2.235           2.235           2.235             1.4
+dep  right_neighbor.form     0.0314            2.1462   distance                             2.146           2.146           2.146           1.441
+dep  right_neighbor.upos     0.0307            2.3084   distance                             2.308           2.308           2.308           1.286
+dep  xpos                    0.0283            2.6672   distance                             2.667           2.667           2.667            2.32
+dep  len                     0.0259            1.6632   direction                            1.663           1.663           1.663           1.266
+dep  form                    0.0257            2.5332   distance                             2.533           2.533           2.533           1.945
+dep  upos                    0.0252            2.7007   distance                             2.701           2.701           2.701           2.419
+dep  basepos                 0.0153            1.9497   distance                              1.95            1.95            1.95           0.912
+dep  person                  0.0146            0.9588   cand right_neighbor.xpos             0.959           0.959           0.959           0.774
+dep  caps                    0.0099            0.5511   cand right_neighbor.xpos             0.551           0.551           0.551           0.551
+dep  number                  0.0084            0.9573   cand right_neighbor.xpos             0.957           0.957           0.946            0.66
+dep  tense                   0.0063            0.7689   distance                             0.769           0.769           0.769           0.585
+dep  noise                      0.0            0.2173   cand len                             0.217           0.217           0.217           0.217
+
+gate      always  gate values  mean admitted/record  of 34
+0.02          28          251                  34.0
+0.05          18          356                  33.7
+0.1           17          281                  33.3
+0.15          16          361                  32.9
+0.2           16          326                  32.5
+0.3           15          369                  31.3
+0.5           14          293                  28.1

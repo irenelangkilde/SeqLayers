@@ -1,0 +1,106 @@
+
+[76015] signal 15: Terminated: 15
+in expression starting at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/slot_usage.jl:79
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+iterate at ./range.jl:928 [inlined]
+#scan_counts#337 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:639
+scan_counts at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:609 [inlined]
+#extend_all#352 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:833
+extend_all at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:771 [inlined]
+_greedy_leftovers at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:1408
+greedy_leftovers at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:1361
+#chain_logodds#418 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:1309
+chain_logodds at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:1306
+unknown function (ip: 0x49de0008f) at (unknown file)
+#decide##21 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:1463 [inlined]
+#decide##21 at ./none:0
+iterate at ./generator.jl:48 [inlined]
+collect_to! at ./array.jl:886 [inlined]
+collect_to_with_first! at ./array.jl:864 [inlined]
+collect at ./array.jl:838
+decide at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:1460
+pipeline_attach! at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl:119
+segment_done! at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl:58
+#process#273 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/driver.jl:65
+process at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/driver.jl:48 [inlined]
+#ceiling_counts#36 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl:160 [inlined]
+ceiling_counts at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl:158
+unknown function (ip: 0x3877941cf) at (unknown file)
+macro expansion at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/slot_usage.jl:80 [inlined]
+top-level scope at ./timing.jl:463
+jl_toplevel_eval_flex at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/builder-honeycrisp-HL2F7YQ3XH.1/019ebd63-635e-4155-b60a-9d2815900786/trusted/build/builder-honeycrisp-HL2F7YQ3XH-1/julialang/julia-ci/src/toplevel.c:731
+jl_eval_toplevel_stmts at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/builder-honeycrisp-HL2F7YQ3XH.1/019ebd63-635e-4155-b60a-9d2815900786/trusted/build/builder-honeycrisp-HL2F7YQ3XH-1/julialang/julia-ci/src/toplevel.c:585
+jl_toplevel_eval_flex at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/builder-honeycrisp-HL2F7YQ3XH.1/019ebd63-635e-4155-b60a-9d2815900786/trusted/build/builder-honeycrisp-HL2F7YQ3XH-1/julialang/julia-ci/src/toplevel.c:683
+ijl_toplevel_eval at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/builder-honeycrisp-HL2F7YQ3XH.1/019ebd63-635e-4155-b60a-9d2815900786/trusted/build/builder-honeycrisp-HL2F7YQ3XH-1/julialang/julia-ci/src/toplevel.c:754 [inlined]
+ijl_toplevel_eval_in at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/builder-honeycrisp-HL2F7YQ3XH.1/019ebd63-635e-4155-b60a-9d2815900786/trusted/build/builder-honeycrisp-HL2F7YQ3XH-1/julialang/julia-ci/src/toplevel.c:799
+eval at ./boot.jl:489
+include_string at ./loading.jl:3045
+_include at ./loading.jl:3105
+include at ./Base.jl:309
+exec_options at ./client.jl:344
+_start at ./client.jl:577
+jfptr__start_44882.1 at /Users/irenelangkildegeary2015/.julia/juliaup/julia-1.13.2+0.aarch64.apple.darwin14/Julia-1.13.app/Contents/Resources/julia/lib/julia/sys.dylib (unknown line)
+jl_apply at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/builder-honeycrisp-HL2F7YQ3XH.1/019ebd63-635e-4155-b60a-9d2815900786/trusted/build/builder-honeycrisp-HL2F7YQ3XH-1/julialang/julia-ci/src/julia.h:2319 [inlined]
+true_main at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/builder-honeycrisp-HL2F7YQ3XH.1/019ebd63-635e-4155-b60a-9d2815900786/trusted/build/builder-honeycrisp-HL2F7YQ3XH-1/julialang/julia-ci/src/jlapi.c:985
+jl_repl_entrypoint at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/builder-honeycrisp-HL2F7YQ3XH.1/019ebd63-635e-4155-b60a-9d2815900786/trusted/build/builder-honeycrisp-HL2F7YQ3XH-1/julialang/julia-ci/src/jlapi.c:1152
+unknown function (ip: 0x0) at (unknown file)
+Allocations: 6070618988 (Pool: 6070618609; Big: 379); GC: 11735
+[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+[ Info: ChainModel: joint tables for 801 frequent items, 145415 pairs (21.1 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 271.9 s
+stopped locally Wed Oct 21 07:19:26 MDT 2026; to be run on AWS
