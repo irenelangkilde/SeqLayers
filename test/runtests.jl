@@ -844,7 +844,7 @@ end
       b, rb = SeqLayers.run_single(m1, I, UInt32(0), 0.05, tr)
       @test allunique(b.members) && length(b.members) + length(rb) == length(I)   # each slot used at most once
     end
-    for ps in (:total, :min, :increment)
+    for ps in (:total, :min, :increment, :synergy)
       m = ChainModel(edir; kw..., pairsteps = true, pairscore = ps)
       @test 0 <= evaluate(docs, specs, m, Lexicon(); words = 128, edge = 4).uas <= 1
     end

@@ -284,7 +284,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   screenby in (:maxdev, :clr_rms) || error("unknown screenby $screenby")
   climbleft in (:deepest, :specific, :none) || error("unknown climbleft $climbleft")
   0 < keepfrac <= 1 || error("keepfrac must be in (0, 1]")
-  pairscore in (:total, :min, :increment) || error("unknown pairscore $pairscore")
+  pairscore in (:total, :min, :increment, :synergy) || error("unknown pairscore $pairscore")
   screen > 0 && jointmin <= 0 && error("screening needs the joint tables (jointmin > 0)")
   poolm > 0 && group && error("the candidate pool needs group = false")
   target && restart == :exhaust && select != :maxdev && error("restart = :exhaust is implemented for :maxdev only")
@@ -1182,7 +1182,10 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
         y, ok = update_odds(m, e, label, x)
         ok || continue
         sc = abs(log(y) - log(x))
+        # (:min can't beat the pair's better member, which competes as a single: no pair would win)
         m.opts.pairscore == :min && (sc = min(sc, single[a][3], single[b][3]))
+        # :synergy: only a pair that beats its better member by tau, then on its full change
+        m.opts.pairscore == :synergy && sc - max(single[a][3], single[b][3]) < m.opts.tau && continue
         m.opts.pairscore == :increment && (sc -= max(single[a][3], single[b][3]))
         sc > best && ((best, pair) = (sc, (a, b, e, y)))             # strictly better: ties go to the single
       end
