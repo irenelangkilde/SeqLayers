@@ -1,0 +1,10 @@
+recorded events in 1285.1 s
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 155.1 s): 14 of 32 slots always, 319 gate values
+ALL         2899    0.9983  0.7641  0.7168  0.0041  1.0     
+
+score 7598.2 s, run 20261023-071710 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=2 train_sents=2000 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true note=train2000"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:35:23
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 23127980
+	Average resident set size (kbytes): 0

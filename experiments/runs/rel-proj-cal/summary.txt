@@ -1,0 +1,35 @@
+=== relations-projective  Fri Oct 23 02:28:12 UTC 2026
+UNHANDLED TASK ERROR: EOFError: read end of file
+Stacktrace:
+ERROR: LoadError: ProcessExitedException(4)
+Stacktrace:
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs-rel/events
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 102.0 s): 27 of 66 slots always, 738 gate values
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 27:36.86
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 49288600
+	Average resident set size (kbytes): 0
+=== calibrate  Fri Oct 23 02:55:49 UTC 2026
+UNHANDLED TASK ERROR: EOFError: read end of file
+Stacktrace:
+UNHANDLED TASK ERROR: IOError: read: connection reset by peer (ECONNRESET)
+Stacktrace:
+ERROR: LoadError: ProcessExitedException(4)
+Stacktrace:
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+      From worker 5:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 64.4 s): 14 of 34 slots always, 283 gate values
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:14:24
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 27348312
+	Average resident set size (kbytes): 0
+cp: cannot stat 'experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events/alpha.tsv': No such file or directory
+=== leftalpha  Fri Oct 23 05:10:14 UTC 2026
+ERROR: LoadError: On worker 2:
+SystemError: opening file "experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events/alpha.tsv": No such file or directory
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+      From worker 5:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 64.4 s): 14 of 34 slots always, 283 gate values
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 3:35.45
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 5840584
+	Average resident set size (kbytes): 0
+=== all done Fri Oct 23 05:13:50 UTC 2026

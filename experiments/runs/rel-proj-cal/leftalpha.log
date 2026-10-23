@@ -1,0 +1,93 @@
+ERROR: LoadError: On worker 2:
+SystemError: opening file "experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events/alpha.tsv": No such file or directory
+Stacktrace:
+  [1] #systemerror#37
+    @ ./error.jl:186
+  [2] #open#648
+    @ ./iostream.jl:327
+  [3] open
+    @ ./iostream.jl:306 [inlined]
+  [4] #eachline#373
+    @ ./io.jl:1254 [inlined]
+  [5] eachline
+    @ ./io.jl:1253
+  [6] top-level scope
+    @ /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/dev_eval.jl:294
+  [7] eval
+    @ ./boot.jl:489
+  [8] #handle_msg##8
+    @ ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/process_messages.jl:303
+  [9] run_work_thunk
+    @ ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/process_messages.jl:70
+ [10] run_work_thunk
+    @ ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/process_messages.jl:79
+ [11] #schedule_call##2
+    @ ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/process_messages.jl:88
+
+...and 5 more exceptions.
+
+Stacktrace:
+ [1] sync_end(c::Channel{Any})
+   @ Base ./task.jl:630
+ [2] macro expansion
+   @ ./task.jl:663 [inlined]
+ [3] remotecall_eval(m::Module, procs::Vector{Int64}, ex::Expr)
+   @ Distributed ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/macros.jl:222
+ [4] start_workers(cfg::Dict{String, Any}, s::@NamedTuple{tbs::Vector{SubString{String}}, idx::CharIndex, wc::Nothing, sfx::Vector{Int64}, devdocs::Vector{Tuple{SubString{String}, Doc}}, tunedocs::Vector{Tuple{SubString{String}, Doc}}, trainsample::Vector{Doc}, workdir::String, model::Nothing, lex::Lexicon, recipe::Tuple{String, @NamedTuple{select::Symbol, tau::Float64, mincount::Int64, leftovers::Symbol, target::Bool, maxrestarts::Int64, restart::Symbol, minctx::Int64, greedyby::Symbol, relevance::Float64, gate::Float64, jointmin::Int64, keepfrac::Float64, maxcached::Int64, group::Bool}, String, Tuple{Symbol}}, modelname::String, build_s::Float64, nlambda::Int64})
+   @ Main /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/dev_eval.jl:272
+ [5] ceiling_main(cfg::Dict{String, Any})
+   @ Main /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.jl:70
+ [6] top-level scope
+   @ /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.jl:190
+ [7] include(mod::Module, _path::String)
+   @ Base ./Base.jl:309
+ [8] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:344
+ [9] _start()
+   @ Base ./client.jl:577
+in expression starting at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.jl:190
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+      From worker 5:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 64.4 s): 14 of 34 slots always, 283 gate values
+      From worker 5:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 6:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 64.6 s): 14 of 34 slots always, 283 gate values
+      From worker 6:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 64.6 s): 14 of 34 slots always, 283 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 64.7 s): 14 of 34 slots always, 283 gate values
+      From worker 4:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 64.8 s): 14 of 34 slots always, 283 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 7:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 64.9 s): 14 of 34 slots always, 283 gate values
+      From worker 7:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 6:	[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (69.0 s)
+      From worker 4:	[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (69.5 s)
+      From worker 5:	[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (69.9 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (71.0 s)
+      From worker 7:	[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (71.3 s)
+      From worker 2:	[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (73.0 s)
+Command exited with non-zero status 1
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 workers=6 leftalpha=experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events/alpha.tsv note=leftalpha"
+	User time (seconds): 968.17
+	System time (seconds): 7.81
+	Percent of CPU this job got: 452%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 3:35.45
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 5840584
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 23435
+	Minor (reclaiming a frame) page faults: 1591624
+	Voluntary context switches: 176861
+	Involuntary context switches: 1071
+	Swaps: 0
+	File system inputs: 6166848
+	File system outputs: 304392
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 1

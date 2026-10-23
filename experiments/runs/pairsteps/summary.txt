@@ -1,0 +1,26 @@
+=== redundant-noise (run.sh)
+ALL         2899    0.9979  0.7413  0.7009  0.0041  1.0     
+
+score 1940.7 s, run 20261023-014230 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true note=redundant-noise"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 35:49.06
+	Average shared text size (kbytes): 0
+=== pairs-total  Fri Oct 23 01:43:00 UTC 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 63.8 s): 14 of 34 slots always, 283 gate values
+ALL         2899    0.9981  0.7699  0.7275  0.0041  1.0     
+
+score 8707.7 s, run 20261023-041121 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true pairsteps=true pairscore=total note=pairs-total"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:28:22
+	Average shared text size (kbytes): 0
+=== pairs-synergy  Fri Oct 23 04:11:22 UTC 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+      From worker 6:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 63.2 s): 14 of 34 slots always, 283 gate values
+ALL         2899    0.9981  0.7703  0.7296  0.0041  1.0     
+
+score 1587.3 s, run 20261023-044053 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true pairsteps=true pairscore=synergy note=pairs-synergy"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 29:32.35
+	Average shared text size (kbytes): 0
+=== all done Fri Oct 23 04:40:54 UTC 2026
