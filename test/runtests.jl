@@ -848,6 +848,25 @@ end
       m = ChainModel(edir; kw..., pairsteps = true, pairscore = ps)
       @test 0 <= evaluate(docs, specs, m, Lexicon(); words = 128, edge = 4).uas <= 1
     end
+    # pairs first: a pair-covered slot never enters a chain alone (members come in twos)
+    mp = ChainModel(edir; kw..., pairsteps = true, pairsfirst = true)
+    for r in m0.recs[tr[1:6]]
+      I = [x for x in m0.items[r.start:r.start+r.n-1]]
+      cov = SeqLayers.pair_covered(mp, I, collect(eachindex(I)))
+      st, _ = SeqLayers.run_single(mp, I, UInt32(0), 0.05, tr)
+      @test iseven(count(x -> findfirst(==(x), I) in cov, st.members))
+    end
+    # when every present feature is pair-covered, a chain still grows by pairs
+    grew = false
+    for r in m0.recs[tr]
+      I = [x for x in m0.items[r.start:r.start+r.n-1]]
+      cov = SeqLayers.pair_covered(mp, I, collect(eachindex(I)))
+      isempty(cov) && continue
+      J = [s in cov ? x : SeqLayers.ABSENT for (s, x) in enumerate(I)]     # keep only covered slots
+      st, _ = SeqLayers.run_single(mp, J, UInt32(0), 0.05, tr)
+      SeqLayers.depth(st) > 0 && (grew = true; break)
+    end
+    @test grew
   end
 
   @testset "train and decode" begin
