@@ -1,1 +1,13 @@
 === hg-dir-upos-xpos  Thu Oct 22 20:09:39 MDT 2026
+ALL         2899    0.9979  0.9338  0.8593  0.0041  1.0     
+
+pipeline: 1742 attachments inferred (0.601 of tokens), 0.998 of them right; 6 left with no candidate
+
+score 549.6 s, run 20261022-202513 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== hg-dist-upos-xpos  Thu Oct 22 20:25:13 MDT 2026
+ALL         2899    0.9979  0.9769  0.8941  0.0041  1.0     
+
+pipeline: 2600 attachments inferred (0.897 of tokens), 0.998 of them right; 6 left with no candidate
+
+score 350.1 s, run 20261022-203234 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Thu Oct 22 20:32:34 MDT 2026

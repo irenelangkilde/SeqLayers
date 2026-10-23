@@ -5,7 +5,7 @@ function State(doc::Doc, span::UnitRange{Int}, final::Bool, edge::Int, specs::Ve
   layers = Dict{Symbol,Sequence}(s.name => Sequence(s, max(n, 1)) for s in specs)
   st = State(doc, span, final, edge, layers, [s.name for s in specs], lex,
     PriorityQueue{AgendaKey,Float64}(Base.Order.Reverse), Dict{AgendaKey,UInt32}(), AgendaKey[],
-    Dict{AgendaKey,Vector{ReadCell}}(), 0, Set{Tuple{Symbol,Int}}(), true, nothing)
+    Dict{AgendaKey,Vector{ReadCell}}(), 0, Set{Tuple{Symbol,Int}}(), true, nothing, nothing)
   base = first(st.order)
   for _ in 1:n
     addcol!(st, base)

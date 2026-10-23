@@ -201,4 +201,5 @@ mutable struct State <: AbstractState
   hidden::Set{Tuple{Symbol,Int}}                 # columns masked while recording training events
   infer::Bool                                    # constraints may infer decisions (not for the oracle)
   memo::Union{Nothing,Dict{Symbol,Any}}          # shared by dynamic relations during one refresh! (else nothing)
+  relcache::Any                                  # children lists between refreshes, with the attach row they came from
 end

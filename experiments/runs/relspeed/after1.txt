@@ -1,0 +1,2 @@
+relations=false: 63 sentences recorded in 14.55 s
+relations=true: 63 sentences recorded in 180.83 s

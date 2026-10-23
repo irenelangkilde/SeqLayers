@@ -479,11 +479,17 @@ const REL_KINDS = (SIB_KINDS..., CHILD_KINDS...)
 const DIR_KINDS = (:inner_sibling, :outer_sibling)          # the others have a fixed direction
 const SIB_TAG = hash("token.attach.sibling")
 
-"Each token's committed children, by position (shared during a refresh! via st.memo)."
+"""
+Each token's committed children, by position: shared during a refresh! via st.memo, and between
+refreshes via st.relcache while the attach row is unchanged.
+"""
 function children_index(st)
   m = st.memo
   m !== nothing && haskey(m, :children) && return m[:children]
   toks = st.layers[:token]
+  att = UInt32[toks[:attach, u] for u in 1:toks.ncols]
+  c = st.relcache
+  c !== nothing && c[1] == att && (m !== nothing && (m[:children] = c[2]); return c[2])
   ch = [Int[] for _ in 1:toks.ncols]
   for u in 1:toks.ncols
     h = toks[:attach, u]
@@ -492,6 +498,7 @@ function children_index(st)
   end
   foreach(v -> sort!(v; by = u -> toks[:first_char, u]), ch)
   m !== nothing && (m[:children] = ch)
+  st.relcache = (att, ch)
   ch
 end
 
@@ -525,12 +532,81 @@ function child_of(st, t, kind)
   length(r) >= k ? UInt32(r[k]) : PENDING
 end
 
-relation_of(st, t, kind) = kind in SIB_KINDS ? sibling_of(st, t, st.layers[:token][:attach, t], kind) : child_of(st, t, kind)
+"""
+Every token's relations at once, from the children lists sorted by position (during a refresh!,
+shared via st.memo): a sibling is a neighbour in its head's list, a child an entry in its own.
+"""
+function relation_table(st)
+  m = st.memo
+  haskey(m, :reltable) && return m[:reltable]
+  toks = st.layers[:token]
+  n = toks.ncols
+  pos(u) = toks[:first_char, u]
+  tab = Dict(k => fill(PENDING, n) for k in REL_KINDS)
+  ch = children_index(st)
+  for h in 1:n
+    c = ch[h]
+    ph = pos(h)
+    for (i, t) in enumerate(c)
+      pt = pos(t)
+      i > 1 && (tab[:left_sibling][t] = UInt32(c[i-1]))
+      i < length(c) && (tab[:right_sibling][t] = UInt32(c[i+1]))
+      if ph > pt                                       # head to the right: inner toward it, outer to the left
+        i < length(c) && pos(c[i+1]) < ph && (tab[:inner_sibling][t] = UInt32(c[i+1]))
+        i > 1 && (tab[:outer_sibling][t] = UInt32(c[i-1]))
+      else                                             # head to the left
+        i > 1 && pos(c[i-1]) > ph && (tab[:inner_sibling][t] = UInt32(c[i-1]))
+        i < length(c) && (tab[:outer_sibling][t] = UInt32(c[i+1]))
+      end
+    end
+    # h's own children: nearest left, first and second nearest right
+    k = searchsortedfirst(c, h; by = u -> pos(u))      # first child to the right of h
+    k > 1 && (tab[:dep_left1][h] = UInt32(c[k-1]))
+    k <= length(c) && (tab[:dep_right1][h] = UInt32(c[k]))
+    k + 1 <= length(c) && (tab[:dep_right2][h] = UInt32(c[k+1]))
+  end
+  for kind in REL_KINDS                                # the distance (and direction) rows, from the same table
+    rel = tab[kind]
+    tab[Symbol(kind, :_dist)] = [relation_dist(st, t, rel[t]) for t in 1:n]
+    kind in DIR_KINDS && (tab[Symbol(kind, :_dir)] = [relation_dir(st, t, rel[t]) for t in 1:n])
+  end
+  m[:reltable] = tab
+end
+
+relation_of(st, t, kind) = st.memo !== nothing ? relation_table(st)[kind][t] :
+  kind in SIB_KINDS ? sibling_of(st, t, st.layers[:token][:attach, t], kind) : child_of(st, t, kind)
+
+"""
+Word distance from t to u as `word_distance` computes it, in constant time during a refresh!: the
+tokens' order by position and a running count of untokenized chars are built once per refresh
+(st.memo).  Outside a refresh it falls back to word_distance.
+"""
+function word_distance_fast(st, t, u)
+  m = st.memo
+  m === nothing && return word_distance(st, t, u)
+  idx = get!(m, :wordrank) do
+    toks, chars = st.layers[:token], st.layers[:char]
+    order = sortperm([toks[:first_char, v] for v in 1:toks.ncols])
+    rank = zeros(Int, toks.ncols)
+    foreach(((r, v),) -> (rank[v] = r), enumerate(order))
+    pend = zeros(Int, chars.ncols + 1)                 # pend[j+1]: untokenized non-space chars in 1..j
+    for j in 1:chars.ncols
+      pend[j+1] = pend[j] + (!isspace(segchar(st, j)) && chars[:token_of, j] == PENDING)
+    end
+    (rank, pend)
+  end
+  rank, pend = idx
+  toks = st.layers[:token]
+  l, r = toks[:first_char, t] < toks[:first_char, u] ? (t, Int(u)) : (Int(u), t)
+  a, b = Int(toks[:last_char, l]) + 1, Int(toks[:first_char, r]) - 1
+  a <= b && pend[b+1] - pend[a] > 0 && return nothing   # something between isn't tokenized yet
+  abs(rank[r] - rank[l])
+end
 
 "Word-distance bucket code (1: 1, 2: 2, 3: 3-5, 4: 6-10, 5: 11+) from t to u, or PENDING."
 function relation_dist(st, t, u)
   u == PENDING && return PENDING
-  d = word_distance(st, t, Int(u))
+  d = word_distance_fast(st, t, Int(u))
   d === nothing ? PENDING : UInt32(d == 1 ? 1 : d == 2 ? 2 : d <= 5 ? 3 : d <= 10 ? 4 : 5)
 end
 
@@ -566,10 +642,14 @@ function relation_rows()
   end
   # distance and direction rows hold bucket codes, not columns: they're only ever read, never followed
   for kind in REL_KINDS
-    push!(rels, RelDef(Symbol(kind, :_dist), :token, true, (st, t) -> relation_dist(st, t, relation_of(st, t, kind))))
+    dk = Symbol(kind, :_dist)
+    push!(rels, RelDef(dk, :token, true, (st, t) -> st.memo !== nothing ? relation_table(st)[dk][t] :
+      relation_dist(st, t, relation_of(st, t, kind))))
   end
   for kind in DIR_KINDS
-    push!(rels, RelDef(Symbol(kind, :_dir), :token, true, (st, t) -> relation_dir(st, t, relation_of(st, t, kind))))
+    rk = Symbol(kind, :_dir)
+    push!(rels, RelDef(rk, :token, true, (st, t) -> st.memo !== nothing ? relation_table(st)[rk][t] :
+      relation_dir(st, t, relation_of(st, t, kind))))
   end
   paths = FeatPath[]
   link = Int[]                       # positions (within these paths) of the children's paths
