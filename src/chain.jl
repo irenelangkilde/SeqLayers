@@ -170,6 +170,7 @@ struct ChainOpts
   contest::Bool                                   # re-decide the top two by a contest chain on their odds ratio (contest!)
   pickfewest::Int                                 # >0: of the k best-scoring features passing tau, take the one with fewest records
   adaptctx::Bool                                  # greedy: minimum context max(1, min(minctx, chain + redundant pool))
+  pairsteps::Bool                                 # :maxdev chains may add a precomputed pair (joint tables) in one step
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -272,7 +273,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   jointmin = 0, screen = 0.0, screenby = :maxdev, sample = 0.0, climbleft = :deepest, usepos = true, minctx = 1, greedyby = :correction,
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
-  stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0)
+  stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
@@ -325,7 +326,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -1154,6 +1155,8 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
   tr = CHAIN_TRACE[] === nothing ? nothing : Tuple{Int,Float64,Float64}[]
   k = target === nothing && !exhaust ? m.opts.pickfewest : 0
   passing = Tuple{Float64,Int,Float64,Any}[]          # with pickfewest: (score, slot, odds, entry) of those reaching tau
+  usepairs = m.opts.pairsteps && target === nothing && !exhaust
+  single = Dict{Int,Tuple{Any,Float64,Float64}}()   # with pairsteps: slot -> (entry, odds, score) of supported singles
   for (s, e) in zip(slots, extend_all(m, st, depth(st), present_items(Ic, slots); cap))
     y, ok = update_odds(m, e, label, x)
     tr === nothing || push!(tr, (s, ok ? abs(log(y) - log(x)) : NaN, total(e[2])))
@@ -1165,6 +1168,25 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
       abs(log(y) - log(x))
     sc > best && ((best, bs, by, be) = (sc, s, y, e))
     k > 0 && sc >= m.opts.tau && push!(passing, (sc, s, y, e))
+    usepairs && (single[s] = (e, y, sc))
+  end
+  pair = nothing                                    # (slot a, slot b, pair entry, odds) if a pair wins
+  if usepairs
+    fs = [s for s in slots if Ic[s] in m.frequent]
+    prs = [(a, b) for (i, a) in enumerate(fs) for b in fs[i+1:end]
+           if haskey(m.pairs, extendkey(extendkey(UInt64(0), Ic[a]), Ic[b]))]
+    if !isempty(prs)
+      ep = extend_pairs(m, st, depth(st), [(Ic[a], Ic[b]) for (a, b) in prs])
+      for ((a, b), e) in zip(prs, ep)
+        (haskey(single, a) && haskey(single, b)) || continue    # both slots supported alone, so the pair can be split
+        y, ok = update_odds(m, e, label, x)
+        ok || continue
+        sc = abs(log(y) - log(x))
+        m.opts.pairscore == :min && (sc = min(sc, single[a][3], single[b][3]))
+        m.opts.pairscore == :increment && (sc -= max(single[a][3], single[b][3]))
+        sc > best && ((best, pair) = (sc, (a, b, e, y)))             # strictly better: ties go to the single
+      end
+    end
   end
   if k > 0 && !isempty(passing)                     # of the k best, the one with the fewest records (ties: better score)
     top = sort!(passing; by = p -> -p[1])[1:min(k, end)]
@@ -1174,6 +1196,14 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
   tr === nothing || CHAIN_TRACE[](:step, (cand = CHAIN_TRACE_CAND[], before = x, tried = tr,
     chosen = stop ? 0 : bs, after = stop ? x : by))
   stop && return false
+  if pair !== nothing && !(bs != 0 && best < m.opts.tau)
+    a, b, e, y = pair                                  # the pair as two members: a's own odds, then the pair's
+    advance!(m, st, Ic[a], single[a][1], single[a][2])
+    advance!(m, st, Ic[b], e, y)
+    deleteat!(remaining, findfirst(==(a), remaining))
+    deleteat!(remaining, findfirst(==(b), remaining))
+    return true
+  end
   advance!(m, st, Ic[bs], be, by)
   deleteat!(remaining, findfirst(==(bs), remaining))
   true

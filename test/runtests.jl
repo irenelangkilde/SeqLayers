@@ -829,6 +829,27 @@ end
     @test lab("n't") == "R1"
   end
 
+  @testset "pair steps in maxdev chains" begin
+    edir = mktempdir()
+    record_events(docs, specs, Lexicon(), edir)
+    kw = (select = :maxdev, leftovers = :none, mincount = 1, jointmin = 2)
+    m0 = ChainModel(edir; kw...)
+    m1 = ChainModel(edir; kw..., pairsteps = true)
+    @test m1.opts.pairsteps && !isempty(m1.pairs)
+    tk = SeqLayers.typekey(:token, 1)
+    tr = m0.typerecs[tk]
+    for r in m0.recs[tr[1:6]]
+      I = [x for x in m0.items[r.start:r.start+r.n-1]]
+      a, ra = SeqLayers.run_single(m0, I, UInt32(0), 0.05, tr)
+      b, rb = SeqLayers.run_single(m1, I, UInt32(0), 0.05, tr)
+      @test allunique(b.members) && length(b.members) + length(rb) == length(I)   # each slot used at most once
+    end
+    for ps in (:total, :min, :increment)
+      m = ChainModel(edir; kw..., pairsteps = true, pairscore = ps)
+      @test 0 <= evaluate(docs, specs, m, Lexicon(); words = 128, edge = 4).uas <= 1
+    end
+  end
+
   @testset "train and decode" begin
     lex = Lexicon()
     m = train!(CountModel(), docs, specs, lex)

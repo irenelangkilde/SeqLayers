@@ -60,6 +60,8 @@
 #                maxmin2 (the same with the counts smoothed toward each o in turn)
 #   lockstep     maxdev chains: none (each candidate's chain runs to the end) | top2 (only the two
 #                leading candidates advance; see run_top2 in chain.jl)
+#   pairsteps    maxdev chain steps may add a precomputed pair (joint tables, jointmin) in one step,
+#                scored by pairscore (total | min | increment); ties go to single features: true | false
 #   pickfewest   chain steps: of the k best-scoring features reaching tau, add the one with the fewest
 #                records (0 = off: the best-scoring one)
 #   contest      re-decide the top two candidates by a contest chain on their odds ratio, restarting
@@ -93,7 +95,7 @@ const RESULTS = joinpath(HERE, "results.csv")
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
   "wmo" => 1e-3, "train_sents" => 500, "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
-  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
+  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
 
 function parse_cfg(args)
@@ -213,6 +215,7 @@ function setup(cfg)
       cfg["leftovers"] == "greedy" && cfg["maxctx"] > 0 && (chainopts = merge(chainopts, (maxctx = cfg["maxctx"],)))
       cfg["leftovers"] == "greedy" && cfg["relevance"] > 0 && (chainopts = merge(chainopts, (relevance = cfg["relevance"],)))
       cfg["gate"] > 0 && (chainopts = merge(chainopts, (gate = cfg["gate"],)))
+      cfg["pairsteps"] == "true" && (chainopts = merge(chainopts, (pairsteps = true, pairscore = Symbol(cfg["pairscore"]))))
       cfg["pickfewest"] > 0 && (chainopts = merge(chainopts, (pickfewest = cfg["pickfewest"],)))
       cfg["contest"] == "true" && (chainopts = merge(chainopts, (contest = true,)))
       cfg["lockstep"] != "none" && (chainopts = merge(chainopts, (lockstep = Symbol(cfg["lockstep"]),)))

@@ -1,0 +1,22 @@
+=== hg-xpos  Fri Oct 23 00:03:17 UTC 2026
+ALL         2899    0.9979  0.912   0.8396  0.0041  1.0     
+
+pipeline: 1190 attachments inferred (0.41 of tokens), 0.997 of them right; 6 left with no candidate
+
+score 601.8 s, run 20261023-001645 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 headgold=head_xpos note=hg-xpos"
+=== hg-upos  Fri Oct 23 00:16:46 UTC 2026
+ALL         2899    0.9979  0.8606  0.7958  0.0041  1.0     
+
+pipeline: 704 attachments inferred (0.243 of tokens), 0.996 of them right; 2 left with no candidate
+
+score 809.4 s, run 20261023-003322 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 headgold=head_upos note=hg-upos"
+=== hg-dist-xpos  Fri Oct 23 00:33:24 UTC 2026
+ALL         2899    0.9979  0.9769  0.8938  0.0041  1.0     
+
+pipeline: 2561 attachments inferred (0.883 of tokens), 0.998 of them right; 6 left with no candidate
+
+score 202.1 s, run 20261023-003958 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 headgold=head_dist,head_xpos note=hg-dist-xpos"
+=== all done Fri Oct 23 00:39:59 UTC 2026
