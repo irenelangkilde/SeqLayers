@@ -702,6 +702,15 @@ end
     @test evaluate(docs, specs, mh, Lexicon(); words = 128, edge = 4).uas ≈ evaluate(docs, specs, ms, Lexicon(); words = 128, edge = 4).uas
     m2 = ChainModel(edir; kw..., redundant = true, poolsigma = 0.1); m2.generalize = gen
     @test 0 <= evaluate(docs, specs, m2, Lexicon(); words = 128, edge = 4).uas <= 1
+    ml = ChainModel(edir; kw..., redundant = true, poolsigma = 1e9, poolmode = :local); ml.generalize = gen
+    @test evaluate(docs, specs, mh, Lexicon(); words = 128, edge = 4).uas ≈ evaluate(docs, specs, ml, Lexicon(); words = 128, edge = 4).uas
+    ml2 = ChainModel(edir; kw..., redundant = true, poolsigma = 0.1, poolmode = :local); ml2.generalize = gen
+    @test 0 <= evaluate(docs, specs, ml2, Lexicon(); words = 128, edge = 4).uas <= 1
+    # local mode records each step's alternatives
+    tr1 = ml2.typerecs[SeqLayers.typekey(:token, 1)]; r1 = ml2.recs[tr1[1]]
+    I1 = [x for x in ml2.items[r1.start:r1.start+r1.n-1]]
+    st1, _ = SeqLayers.run_single(ml2, I1, UInt32(0), 0.05, tr1)
+    @test length(st1.alts) == SeqLayers.depth(st1)
   end
 
   @testset "maxdev step scores" begin

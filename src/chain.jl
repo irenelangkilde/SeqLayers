@@ -173,6 +173,7 @@ struct ChainOpts
   pairsteps::Bool                                 # :maxdev chains may add a precomputed pair (joint tables) in one step
   pairsfirst::Bool                                # with pairsteps: a feature in any precomputed pair joins only via a pair
   poolsigma::Float64                              # soft pool: generalization g of a chain form weighted exp(-d_g/sigma) (0: off)
+  poolmode::Symbol                                # :whole (rebuild the chain with g for w; blend) | :local (at w's step; scale)
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -277,13 +278,15 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   jointmin = 0, screen = 0.0, screenby = :maxdev, sample = 0.0, climbleft = :deepest, usepos = true, minctx = 1, greedyby = :correction,
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
-  stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0)
+  stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
+  poolmode = :whole)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
   stepscore in (:abs, :signed, :maxmin, :maxmin2) || error("unknown stepscore $stepscore (use :abs, :signed, :maxmin or :maxmin2)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
+  poolmode in (:whole, :local) || error("unknown poolmode $poolmode (use :whole or :local)")
   restart in (:immediate, :exhaust) || error("unknown restart $restart")
   screenby in (:maxdev, :clr_rms) || error("unknown screenby $screenby")
   climbleft in (:deepest, :specific, :none) || error("unknown climbleft $climbleft")
@@ -330,7 +333,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -925,8 +928,10 @@ mutable struct ChainState
   sizes::Vector{Int}
   members::Vector{UInt64}
   odds::Vector{Float64}
+  alts::Vector{Dict{UInt64,Float64}}   # poolmode :local: per member, the odds every alternative reached at its step
 end
-ChainState(o::Float64, typerecs::Vector{Int32}) = ChainState(UInt64[0], [RecView(typerecs)], [0], UInt64[], [o])
+ChainState(o::Float64, typerecs::Vector{Int32}) = ChainState(UInt64[0], [RecView(typerecs)], [0], UInt64[], [o], Dict{UInt64,Float64}[])
+ChainState(keys, views, sizes, members, odds) = ChainState(keys, views, sizes, members, odds, Dict{UInt64,Float64}[])
 depth(st::ChainState) = length(st.keys) - 1
 
 "The view for prefix view `v` (with `n` items) plus x, before any list is built for it."
@@ -1161,6 +1166,8 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
   k = target === nothing && !exhaust ? m.opts.pickfewest : 0
   passing = Tuple{Float64,Int,Float64,Any}[]          # with pickfewest: (score, slot, odds, entry) of those reaching tau
   usepairs = m.opts.pairsteps && target === nothing && !exhaust
+  rec = m.opts.poolsigma > 0 && m.opts.poolmode == :local && target === nothing
+  alts = rec ? Dict{UInt64,Float64}() : nothing    # every supported alternative's odds at this step
   single = Dict{Int,Tuple{Any,Float64,Float64}}()   # with pairsteps: slot -> (entry, odds, score) of supported singles
   for (s, e) in zip(slots, extend_all(m, st, depth(st), present_items(Ic, slots); cap))
     y, ok = update_odds(m, e, label, x)
@@ -1172,6 +1179,7 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
       m.opts.stepscore == :maxmin2 ? maxmin2(e, label, st.odds) :                    # ...each smoothed toward that stage
       abs(log(y) - log(x))
     usepairs && (single[s] = (e, y, sc))
+    rec && (alts[Ic[s]] = y)
     s in nosingle && continue                       # (pairsfirst: joins only as a pair member)
     sc > best && ((best, bs, by, be) = (sc, s, y, e))
     k > 0 && sc >= m.opts.tau && push!(passing, (sc, s, y, e))
@@ -1209,11 +1217,13 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
     a, b, e, y = pair                                  # the pair as two members: a's own odds, then the pair's
     advance!(m, st, Ic[a], single[a][1], single[a][2])
     advance!(m, st, Ic[b], e, y)
+    rec && (push!(st.alts, alts); push!(st.alts, Dict{UInt64,Float64}()))   # (b's step: no alternatives: weight 1)
     deleteat!(remaining, findfirst(==(a), remaining))
     deleteat!(remaining, findfirst(==(b), remaining))
     return true
   end
   advance!(m, st, Ic[bs], be, by)
+  rec && push!(st.alts, alts)
   deleteat!(remaining, findfirst(==(bs), remaining))
   true
 end
@@ -1751,6 +1761,19 @@ function generalization_weights!(poolw, m::ChainModel, st::ChainState, Ic, label
   G = get(m.generalize, m.recs[base[1]].typekey, nothing)
   G === nothing && return poolw
   o0 = st.odds[end]
+  if m.opts.poolmode == :local                       # at w's own step: o(prefix before w + g) vs o(prefix before w + w)
+    for (i, w) in enumerate(st.members)
+      sw = findfirst(==(w), Ic)
+      (sw === nothing || !haskey(G, sw) || i > length(st.alts) || isempty(st.alts[i])) && continue
+      for sg in G[sw]
+        g = Ic[sg]
+        (g == ABSENT || !(g in pool)) && continue
+        yg = get(st.alts[i], g, nothing)
+        poolw[g] = yg === nothing ? 0.0 : exp(-abs(log(yg) - log(st.odds[i+1])) / m.opts.poolsigma)
+      end
+    end
+    return poolw
+  end
   for w in st.members
     sw = findfirst(==(w), Ic)
     (sw === nothing || !haskey(G, sw)) && continue
@@ -1849,7 +1872,9 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
       [something(findfirst(==(f), Ic), 0) for f in chosen], corr)
     if length(chosen) >= needmin
       W = isempty(poolw) ? 1.0 : prod(get(poolw, f, 1.0) for f in chosen; init = 1.0)
-      if W < 1.0                                     # blend toward conditioning without the pool features
+      if W < 1.0 && m.opts.poolmode == :local        # scale the correction by the generalizations' weights
+        corr *= W
+      elseif W < 1.0                                 # blend toward conditioning without the pool features
         corr = W * corr + (1 - W) * context_correction(m, X, [f for f in chosen if !haskey(poolw, f)], label, prior, base)
       end
       total_ += corr
