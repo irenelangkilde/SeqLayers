@@ -1,0 +1,12 @@
+
+ran:
+  level 30000: class of     8 words,    41669 occurrences   +in:   4038 (9.69 per 100)   +on:   2006 (4.81 per 100)   e.g. ran, fell, went, came, grew, goes, coming, appeared
+  level  3000: class of    58 words,    51291 occurrences   +in:   4673 (9.11 per 100)   +on:   2296 (4.48 per 100)   e.g. ran, goes, fell, grew, went, came, sank, slips
+  level   300: class of   800 words,   297646 occurrences   +in:  27749 (9.32 per 100)   +on:   9949 (3.34 per 100)   e.g. dug, sat, ran, dies, told, waft, flew, seen
+  level    30: class of  4363 words,   536626 occurrences   +in:  34284 (6.39 per 100)   +on:  14698 (2.74 per 100)   e.g. ¯, 1, ½, ¾, ¼, 2, tb, k7
+
+item:
+  level 30000: class of     8 words,    22526 occurrences   +in:    391 (1.74 per 100)   +on:    283 (1.26 per 100)   e.g. line, pier, item, verse, volume, episode, chapter, footnote
+  level  3000: class of    41 words,    37709 occurrences   +in:    808 (2.14 per 100)   +on:    452 (1.20 per 100)   e.g. vi, abb, iun, iul, saa, tab, vii, gen
+  level   300: class of   132 words,   372079 occurrences   +in:   3335 (0.90 per 100)   +on:   1480 (0.40 per 100)   e.g. £, $, §, ¶, €, #, ¥, [
+  level    30: class of  7633 words,  5951395 occurrences   +in: 143951 (2.42 per 100)   +on:  66629 (1.12 per 100)   e.g. €, $, £, [, m, #, ±, %

@@ -20,6 +20,7 @@ include("models.jl")
 include("suffixarray.jl")
 include("wordclass.jl")
 include("specs.jl")
+include("pptable.jl")
 include("conllu.jl")
 include("driver.jl")
 include("lattice.jl")
@@ -34,6 +35,6 @@ export NONE, PENDING,
   AbstractModel, CountModel, OracleModel, decide, score,
   default_specs, read_conllu, doc_from_text, CharIndex,
   ParsedSentence, process, train!, evaluate, evaluate_counts, eval_scores,
-  LatticeModel, record_events, ChainModel, climb_table, load_wordclasses
+  LatticeModel, record_events, ChainModel, climb_table, load_wordclasses, load_pptable
 
 end

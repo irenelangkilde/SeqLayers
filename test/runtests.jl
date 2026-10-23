@@ -887,6 +887,23 @@ end
     @test grew
   end
 
+  @testset "PP-attachment table items" begin
+    dir = mktempdir()
+    write(joinpath(dir, "wordclasses.tsv"), "#sizes\t2\n" * join(["like\t50\t1", "rain\t40\t2", "grew\t30\t1", "economy\t20\t2"], '\n') * "\n")
+    write(joinpath(dir, "pp.tsv"), "#total\t10000\nbase\tin\t100\nclass\t1\t1000\tin\t80\nclass\t2\t1000\tin\t5\nform\tlike\t500\tin\t60\n")
+    tab = load_pptable(joinpath(dir, "pp.tsv"), dir)
+    @test SeqLayers.pp_bucket(80, 1000, 0.01) == 4            # 7.9 per 100 after smoothing: 4-8
+    @test SeqLayers.pp_bucket(100, 1000, 0.01) == 5           # 9.8 per 100: 8-16
+    @test SeqLayers.pp_bucket(0, 1000, 0.01) == 1
+    pspecs = default_specs(pptable = tab)
+    @test evaluate(docs, pspecs, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
+    edir, edir0 = mktempdir(), mktempdir()
+    record_events(docs, pspecs, Lexicon(), edir); record_events(docs, specs, Lexicon(), edir0)
+    tk = SeqLayers.typekey(:token, 1)
+    n(e) = [Int(c.n) for c in first(SeqLayers.load_events(e)) if c.typekey == tk]
+    @test n(edir) == n(edir0) .+ 2                              # two PP items per attachment record
+  end
+
   @testset "train and decode" begin
     lex = Lexicon()
     m = train!(CountModel(), docs, specs, lex)

@@ -6,6 +6,7 @@
 #   explain=item:number,xpos   for these decisions of that token, also print each candidate value's
 #                              chain (feature = value, odds after each step), leftovers (tried, included,
 #                              context, correction) and final score, scored just before the commit
+#   explaintop=60              show at most this many candidate values, best first
 #
 # Confidence: the chosen value's probability among the decision's candidates (choose's softmax, with
 # "wait" for open decisions) and its margin in log-odds; Inf: the only candidate.  Decisions settled by
@@ -18,6 +19,7 @@ import SeqLayers: observe!, segment_done!, segment_discard!
 
 DEFAULTS["text"] = "I ran across the item in the internet."
 DEFAULTS["explain"] = ""
+DEFAULTS["explaintop"] = 60
 cfg = parse_cfg(["model=chain"; ARGS])
 s = setup(cfg)
 idx = s.idx
@@ -89,8 +91,10 @@ function explain(st, key)
   scores = [events[c].final === nothing ? NaN : events[c].final.logodds for c in cands]
   mx = maximum(filter(!isnan, scores); init = 0.0)
   z = sum(x -> isnan(x) ? 0.0 : exp(x - mx), scores)
-  println("\n==== $(d.name) of '$(S.tokstr(st, t))': $(length(cands)) candidate values")
-  for (ci, c) in enumerate(cands)
+  println("\n==== $(d.name) of '$(S.tokstr(st, t))': $(length(cands)) candidate values" *
+    (length(cands) > cfg["explaintop"] ? " (the $(cfg["explaintop"]) best shown)" : ""))
+  for ci in sortperm(scores; rev = true, by = x -> isnan(x) ? -Inf : x)[1:min(end, cfg["explaintop"])]
+    c = cands[ci]
     f = events[c].final
     f === nothing && (println("  $(valname(st, lname, d.name, c)): (no chain)"); continue)
     lab = d.labeled ? c : UInt32(0)

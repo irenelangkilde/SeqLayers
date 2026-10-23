@@ -1,0 +1,216 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 64.9 s): 14 of 34 slots always, 283 gate values
+[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (65.3 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 1273 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+
+==== attach of 'internet': 5 candidate values (the 4 best shown)
+
+  -- -> item:  final log odds 1.5, probability 0.9984
+     prior odds 0.0146
+     chain 1: distance                           odds -> 0.0588
+     chain 2: cand.right_neighbor.upos=ADP       odds -> 0.219
+     chain 3: cand.left_neighbor.form=the        odds -> 0.298
+     chain 4: dep.upos=NOUN                      odds -> 1.89
+     chain 5: cand.len=4                         odds -> 2.6
+     chain 6: dep.left_neighbor.form=the         odds -> 9.0
+     chain log odds 2.2; leftovers tried 6, included 6, total correction -0.69
+       + cand.form=item                     0.0   context: cand.right_neighbor.xpos=IN, cand.right_neighbor.upos=ADP, direction, cand.left_neighbor.upos=DET, dep.upos=NOUN, cand.upos=NOUN, cand.len=4, dep.basepos=N, cand.basepos=N, dep.person=3rd, cand.person=3rd, dep.left_neighbor.upos=DET, dep.left_neighbor.xpos=DT, cand.left_neighbor.xpos=DT
+       + dep.len=8                       -0.577   context: distance, dep.left_neighbor.form=the, cand.len=4, cand.right_neighbor.xpos=IN, dep.basepos=N, cand.right_neighbor.upos=ADP, dep.upos=NOUN, direction, dep.person=3rd, dep.left_neighbor.upos=DET, dep.left_neighbor.xpos=DT
+       + dep.right_neighbor.form=none       0.0   context: cand.left_neighbor.upos=DET, cand.basepos=N, cand.len=4, cand.right_neighbor.upos=ADP, direction, cand.upos=NOUN, cand.person=3rd, cand.left_neighbor.xpos=DT, cand.right_neighbor.xpos=IN
+       + cand.right_neighbor.form=in     -0.118   context: cand.right_neighbor.upos=ADP, dep.left_neighbor.xpos=DT, dep.len=8, cand.upos=NOUN, distance, direction, cand.basepos=N, cand.person=3rd, dep.left_neighbor.upos=DET, cand.right_neighbor.xpos=IN
+       + dep.right_neighbor.upos=none       0.0   context: cand.left_neighbor.upos=DET, cand.basepos=N, cand.len=4, cand.right_neighbor.upos=ADP, direction, cand.upos=NOUN, cand.person=3rd, cand.left_neighbor.xpos=DT, cand.right_neighbor.xpos=IN, dep.right_neighbor.form=none
+       + dep.right_neighbor.xpos=none       0.0   context: cand.left_neighbor.upos=DET, cand.basepos=N, cand.len=4, cand.right_neighbor.upos=ADP, direction, cand.upos=NOUN, cand.person=3rd, cand.left_neighbor.xpos=DT, cand.right_neighbor.xpos=IN, dep.right_neighbor.form=none, dep.right_neighbor.upos=none
+
+  -- -> ran:  final log odds -4.93, probability 0.0016
+     prior odds 0.0146
+     chain 1: distance                           odds -> 0.0154
+     chain 2: cand.right_neighbor.upos=ADP       odds -> 0.0628
+     chain 3: cand.len=3                         odds -> 0.0308
+     chain 4: cand.left_neighbor.xpos=PRP        odds -> 0.00719
+     chain log odds -4.93; leftovers tried 6, included 6, total correction 0.0
+       + dep.len=8                          0.0   context: distance, dep.left_neighbor.xpos=DT, cand.basepos=V, cand.len=3, cand.left_neighbor.xpos=PRP, dep.upos=NOUN, dep.basepos=N, dep.person=3rd, cand.person=0, dep.left_neighbor.upos=DET, cand.left_neighbor.upos=PRON
+       + dep.left_neighbor.form=the         0.0   context: cand.left_neighbor.form=i, cand.right_neighbor.upos=ADP, distance, cand.left_neighbor.xpos=PRP, cand.basepos=V, cand.person=0, dep.left_neighbor.upos=DET, cand.left_neighbor.upos=PRON, dep.left_neighbor.xpos=DT, cand.right_neighbor.xpos=IN
+       + dep.right_neighbor.form=none       0.0   context: dep.upos=NOUN, distance, dep.basepos=N, dep.person=3rd, cand.person=0
+       + cand.right_neighbor.form=across     0.0   context: dep.left_neighbor.form=the, dep.len=8, cand.right_neighbor.upos=ADP, dep.upos=NOUN, dep.basepos=N, dep.person=3rd, dep.left_neighbor.upos=DET, dep.left_neighbor.xpos=DT, cand.right_neighbor.xpos=IN
+       + dep.right_neighbor.upos=none       0.0   context: dep.upos=NOUN, distance, dep.basepos=N, dep.person=3rd, cand.person=0, dep.right_neighbor.form=none
+       + dep.right_neighbor.xpos=none       0.0   context: dep.upos=NOUN, distance, dep.basepos=N, dep.person=3rd, cand.person=0, dep.right_neighbor.form=none, dep.right_neighbor.upos=none
+
+  -- -> I:  final log odds -9.93, probability 0.0
+     prior odds 0.0146
+     chain 1: direction                          odds -> 0.0109
+     chain 2: cand.form=i                        odds -> 9.7e-5
+     chain 3: cand.upos=PRON                     odds -> 4.87e-5
+     chain log odds -9.93; leftovers tried 1, included 1, total correction 0.0
+       + cand.right_neighbor.form=ran       0.0   context: direction, cand.upos=PRON, distance, cand.xpos=PRP, cand.basepos=0, cand.number=0, cand.tense=0
+
+  -- -> across:  final log odds -10.25, probability 0.0
+     prior odds 0.0146
+     chain 1: cand.xpos=IN                       odds -> 0.000258
+     chain 2: dep.left_neighbor.xpos=DT          odds -> 3.53e-5
+     chain log odds -10.25; leftovers tried 0, included 0, total correction 0.0
+
+==== deprel of 'internet': 37 candidate values (the 4 best shown)
+
+  -- nmod:  final log odds 0.04, probability 0.8937
+     prior odds 0.0639
+     chain 1: person=3rd                         odds -> 0.231
+     chain 2: head.upos=NOUN                     odds -> 0.969
+     chain 3: head_dist=3-5                      odds -> 2.3
+     chain 4: left_neighbor.form=the             odds -> 5.21
+     chain 5: head_dir=left                      odds -> 9.35
+     chain log odds 2.24; leftovers tried 4, included 4, total correction -2.19
+       + right_neighbor.form=none        -1.714   context: head_dir=left, head.upos=NOUN, caps=4, tense=0, head_upos=NOUN
+       + head.form=item                  -0.479   context: head.upos=NOUN, caps=4, tense=0, head_upos=NOUN
+       + right_neighbor.upos=none           0.0   context: head_dir=left, right_neighbor.form=none, head.upos=NOUN, caps=4, tense=0, head_upos=NOUN
+       + right_neighbor.xpos=none           0.0   context: head_dir=left, right_neighbor.form=none, head.upos=NOUN, caps=4, tense=0, head_upos=NOUN, right_neighbor.upos=none
+
+  -- conj:  final log odds -2.59, probability 0.0643
+     prior odds 0.0356
+     chain 1: head.upos=NOUN                     odds -> 0.035
+     chain 2: head_dir=left                      odds -> 0.158
+     chain 3: upos=NOUN                          odds -> 0.345
+     chain 4: left_neighbor.form=the             odds -> 0.125
+     chain 5: head_dist=3-5                      odds -> 0.075
+     chain log odds -2.59; leftovers tried 3, included 3, total correction 0.0
+       + right_neighbor.form=none           0.0   context: head_dir=left, head_dist=3-5, caps=4, tense=0
+       + right_neighbor.upos=none           0.0   context: head_dir=left, right_neighbor.form=none, head.upos=NOUN, caps=4, tense=0, head_upos=NOUN
+       + right_neighbor.xpos=none           0.0   context: head_dir=left, right_neighbor.form=none, head.upos=NOUN, caps=4, tense=0, head_upos=NOUN, right_neighbor.upos=none
+
+  -- acl:  final log odds -3.87, probability 0.0179
+     prior odds 0.0186
+     chain 1: head.upos=NOUN                     odds -> 0.0424
+     chain 2: head_dir=left                      odds -> 0.197
+     chain 3: basepos=N                          odds -> 0.014
+     chain 4: left_neighbor.upos=DET             odds -> 0.0331
+     chain 5: head_dist=3-5                      odds -> 0.0248
+     chain 6: left_neighbor.form=the             odds -> 0.0209
+     chain log odds -3.87; leftovers tried 3, included 3, total correction 0.0
+       + right_neighbor.form=none           0.0   context: head_dir=left, head_dist=3-5, caps=4, tense=0
+       + right_neighbor.upos=none           0.0   context: head_dir=left, head_dist=3-5, caps=4, tense=0, right_neighbor.form=none
+       + right_neighbor.xpos=none           0.0   context: head_dir=left, head_dist=3-5, caps=4, tense=0, right_neighbor.form=none, right_neighbor.upos=none
+
+  -- appos:  final log odds -4.55, probability 0.0091
+     prior odds 0.00416
+     chain 1: head.upos=NOUN                     odds -> 0.00721
+     chain 2: head_dir=left                      odds -> 0.0299
+     chain 3: number=singular                    odds -> 0.0585
+     chain 4: left_neighbor.form=the             odds -> 0.0173
+     chain 5: upos=NOUN                          odds -> 0.0142
+     chain 6: head_dist=3-5                      odds -> 0.0106
+     chain log odds -4.55; leftovers tried 0, included 0, total correction 0.0
+
+"I ran across the item in the internet"  --  chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=correction;relevance=0.25;gate=0.5;pairsteps=true;pairscore=synergy;pairsfirst=false;redundant=true;poolsigma=0.0;poolmode=whole)[events=gold;noise=20;rootabsent]
+
+#    decision    where                 chosen            prob   margin
+1    gap         after 't' (char 37)   E                  1.0      Inf
+2    gap         after 'r' (char 9)    I                  1.0     23.3
+3    gap         after 'e' (char 36)   I                  1.0     23.3
+4    gap         after 'a' (char 4)    I                  1.0     23.3
+5    gap         after 'n' (char 35)   I                  1.0     23.3
+6    gap         after 'c' (char 8)    I                  1.0     23.3
+7    gap         after 'h' (char 15)   I                  1.0     23.3
+8    gap         after 'n' (char 31)   I                  1.0     23.3
+9    gap         after 'r' (char 3)    I                  1.0     23.3
+10   gap         after 'a' (char 7)    I                  1.0     23.3
+11   gap         after 't' (char 19)   I                  1.0     23.3
+12   gap         after 'i' (char 18)   I                  1.0     23.3
+13   gap         after 'r' (char 34)   I                  1.0     23.3
+14   gap         after 'e' (char 33)   I                  1.0     23.3
+15   gap         after 'o' (char 10)   I                  1.0     23.3
+16   gap         after 't' (char 32)   I                  1.0     23.3
+17   gap         after 'i' (char 30)   I                  1.0     23.3
+18   gap         after 'h' (char 27)   I                  1.0     23.3
+19   gap         after 't' (char 14)   I                  1.0     23.3
+20   gap         after 't' (char 26)   I                  1.0     23.3
+21   gap         after 'i' (char 23)   I                  1.0     23.3
+22   gap         after 's' (char 11)   I                  1.0     23.3
+23   gap         after 'e' (char 20)   I                  1.0     23.3
+24   gap         after 'm' (char 21)   S                  1.0    16.11
+25   gap         after 's' (char 12)   S                  1.0    16.11
+26   gap         after 'e' (char 16)   S                  1.0    16.11
+27   gap         after 'e' (char 28)   S                  1.0    15.95
+28   gap         after 'n' (char 24)   S                  1.0    15.93
+29   number      'the'                 0                  1.0     14.5
+30   tense       'the'                 0                  1.0    14.46
+31   gap         after 'n' (char 5)    S                  1.0     14.1
+32   tense       'the'                 0                  1.0    14.09
+33   head_dir    'the'                 right              1.0    15.46
+34   basepos     'the'                 0                  1.0    14.07
+35   upos        'the'                 DET                1.0    14.02
+36   person      'the'                 0                  1.0    15.25
+37   number      'the'                 0                  1.0    13.82
+38   xpos        'the'                 DT                 1.0    14.52
+39   basepos     'the'                 0                  1.0    15.32
+40   head_dir    'the'                 right              1.0     13.4
+41   person      'the'                 0                  1.0    13.11
+42   person      'across'              0                  1.0    13.03
+43   tense       'item'                0                  1.0    12.82
+44   upos        'the'                 DET                1.0    12.78
+45   tense       'internet'            0                  1.0    12.82
+46   person      'in'                  0                  1.0    12.71
+47   xpos        'the'                 DT                 1.0    12.62
+48   gap         after 'I' (char 1)    S                  1.0    12.42
+49   tense       'I'                   0                  1.0    13.44
+50   basepos     'I'                   0                  1.0    12.16
+51   number      'I'                   0                  1.0     19.2
+52   person      'I'                   1st                1.0    11.88
+53   person      'ran'                 0                  1.0     10.3
+54   upos        'I'                   PRON               1.0    10.17
+55   xpos        'I'                   PRP                1.0    10.11
+56   head_dir    'I'                   right           0.9999     9.89
+57   basepos     'in'                  0               0.9999      9.5
+58   number      'in'                  0                  1.0    15.89
+59   tense       'in'                  0                  1.0    15.58
+60   upos        'in'                  ADP             0.9999     9.21
+61   head_dir    'in'                  right           0.9999     9.15
+62   xpos        'in'                  IN                 1.0    11.62
+63   attach      'the'                 -> item         0.9996     7.92
+64   deprel      'the'                 det                1.0    13.99
+65   deprel      'the'                 det              0.999     6.89
+66   head_dir    'internet'            left            0.9986     6.56
+67   upos        'item'                NOUN            0.9957     5.45
+68   person      'item'                3rd                1.0    14.36
+69   basepos     'item'                N                  1.0    16.81
+70   attach      'I'                   -> ran          0.9977     6.09
+71   deprel      'I'                   nsubj           0.9996     7.93
+72   basepos     'across'              0               0.9948     5.26
+73   number      'across'              0                  1.0     19.2
+74   tense       'across'              0                  1.0    18.91
+75   xpos        'across'              IN              0.9997      8.0
+76   head_dir    'across'              right           0.9997     8.27
+77   basepos     'ran'                 V               0.9979     6.17
+78   upos        'across'              ADP             0.9959     5.49
+79   head_upos   'across'              NOUN            0.9981     6.26
+80   upos        'internet'            NOUN            0.9887     4.48
+81   basepos     'internet'            N               0.9998     8.52
+82   person      'internet'            3rd                1.0    10.46
+83   attach      'in'                  -> internet     0.9977     6.07
+84   deprel      'in'                  case            0.9991     7.03
+85   attach      'internet'            -> item         0.9952     5.33
+86   head_dist   'across'              2               0.9686     3.43
+87   deprel      'across'              case               1.0    12.61
+88   attach      'item'                -> ran          0.9668     3.37
+89   attach      'ran'                 -> ROOT         0.9536     3.02
+90   deprel      'ran'                 root               1.0    11.95
+91   upos        'ran'                 VERB            0.9999     9.76
+92   deprel      'item'                obl             0.9958     5.48
+93   number      'internet'            singular        0.9205     2.45
+94   xpos        'internet'            NN                 1.0    11.78
+95   deprel      'internet'            nmod            0.8937     2.13
+96   number      'item'                plural          0.7208     0.95
+97   xpos        'item'                NNS                1.0    12.84
+98   number      'ran'                 0               0.6591     0.66
+99   tense       'ran'                 past            0.9929     4.94
+100  xpos        'ran'                 VBD                1.0    11.26
+
+result:
+  1  I           head 2 ran         nsubj
+  2  ran         head ROOT          root
+  3  across      head 5 item        case
+  4  the         head 5 item        det
+  5  item        head 2 ran         obl
+  6  in          head 8 internet    case
+  7  the         head 8 internet    det
+  8  internet    head 5 item        nmod

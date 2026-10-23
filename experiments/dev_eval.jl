@@ -43,6 +43,9 @@
 #   classleft    with wclasses: may class slots be leftovers (else chains only): true | false
 #   suffixes     suffix features of these lengths, e.g. 3 or 2,3 ("" = none); events recorded apart
 #   noise        a random feature with this many values (0 = none; for testing gates); events apart
+#   pptable      PP-attachment table from DepCC (experiments/build_pptable.py; e.g.
+#                juliaNLP/clusters/pptable/pptable.tsv): two attachment items for the dependent's
+#                preposition and the candidate's class and word ("" = none); events apart
 #   headsdist    a fifth head-property decision, the head's signed distance (L1..L11+, R1..R11+, root):
 #                true | false; events apart
 #   relations    sibling and child relations (upos, deprel, distance, direction) in the context and
@@ -107,7 +110,7 @@ const RESULTS = joinpath(HERE, "results.csv")
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
   "wmo" => 1e-3, "train_sents" => 500, "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
-  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
+  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
 
 function parse_cfg(args)
@@ -181,10 +184,11 @@ function setup(cfg)
   alltrain = [read_conllu(f) for f in trainfiles]
   idx = CharIndex(reduce(vcat, alltrain))
   wc = isempty(cfg["wclasses"]) ? nothing : load_wordclasses(cfg["wclasses"])
+  pp = isempty(cfg["pptable"]) ? nothing : load_pptable(cfg["pptable"], joinpath(dirname(dirname(cfg["pptable"])), "classes5"))
   sfx = isempty(cfg["suffixes"]) ? Int[] : parse.(Int, split(cfg["suffixes"], ','))
   specs = default_specs(charindex = idx, wordclasses = wc, suffixes = sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true",
     projective = cfg["projective"] == "true", relations = cfg["relations"] == "true",
-    headsdist = cfg["headsdist"] == "true")
+    headsdist = cfg["headsdist"] == "true", pptable = pp)
   # same Doc objects as in the index, so their suffix-array features are leave-one-out
   trainsample = reduce(vcat, [firstsents(ds, cfg["train_sents"]) for ds in alltrain])
   # held-out tuning docs: the training docs right after the sample's
@@ -198,7 +202,8 @@ function setup(cfg)
     (isempty(cfg["wclasses"]) ? "" : "-wc" * basename(rstrip(cfg["wclasses"], '/'))) *
     (isempty(cfg["suffixes"]) ? "" : "-sfx" * replace(cfg["suffixes"], ',' => "")) *
     (cfg["noise"] > 0 ? "-noise$(cfg["noise"])" : "") * (cfg["rootabsent"] == "true" ? "-rootabs" : "") *
-    (cfg["relations"] == "true" ? "-rel" : "") * (cfg["headsdist"] == "true" ? "-sdist" : ""))
+    (cfg["relations"] == "true" ? "-rel" : "") * (cfg["headsdist"] == "true" ? "-sdist" : "") *
+    (isempty(cfg["pptable"]) ? "" : "-pp"))
   mkpath(workdir)
   local model, lex
   modelname = cfg["model"]
@@ -252,7 +257,8 @@ function setup(cfg)
       (cfg["classleft"] == "true" ? "" : ";classleft=false")) *
       (isempty(cfg["suffixes"]) ? "" : ";suffixes=" * cfg["suffixes"]) * (cfg["noise"] > 0 ? ";noise=$(cfg["noise"])" : "") *
       (cfg["rootabsent"] == "true" ? ";rootabsent" : "") * (cfg["projective"] == "true" ? ";projective" : "") *
-      (cfg["relations"] == "true" ? ";relations" : "") * (cfg["headsdist"] == "true" ? ";headsdist" : "") * "]"
+      (cfg["relations"] == "true" ? ";relations" : "") * (cfg["headsdist"] == "true" ? ";headsdist" : "") *
+      (isempty(cfg["pptable"]) ? "" : ";pptable") * "]"
   elseif cfg["model"] == "count"
     lex = Lexicon()
     model = train!(CountModel(), trainsample, specs, lex)
@@ -284,7 +290,8 @@ function start_workers(cfg, s)
       wordclasses = $(isempty(cfg["wclasses"]) ? nothing : :(load_wordclasses($(cfg["wclasses"])))),
       suffixes = $(isempty(cfg["suffixes"]) ? Int[] : parse.(Int, split(cfg["suffixes"], ','))), noise = $(cfg["noise"]), rootabsent = $(cfg["rootabsent"] == "true"),
       projective = $(cfg["projective"] == "true"), relations = $(cfg["relations"] == "true"),
-      headsdist = $(cfg["headsdist"] == "true"))
+      headsdist = $(cfg["headsdist"] == "true"),
+      pptable = $(isempty(cfg["pptable"]) ? nothing : :(load_pptable($(cfg["pptable"]), $(joinpath(dirname(dirname(cfg["pptable"])), "classes5"))))))
     const WLEX = deserialize(joinpath($rundir, "lex.jls"))
     const WMODEL = let m = deserialize(joinpath($rundir, "model.jls"))
       if m isa Tuple
