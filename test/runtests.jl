@@ -693,6 +693,12 @@ end
       @test 0 <= r.uas <= 1
     end
     @test_throws ErrorException ChainModel(edir; kw..., ctxsize = :other)
+    # soft pool: a huge sigma gives every pool feature weight ~1, so results match the hard pool
+    mh = ChainModel(edir; kw..., redundant = true)
+    ms = ChainModel(edir; kw..., redundant = true, poolsigma = 1e9)
+    @test evaluate(docs, specs, mh, Lexicon(); words = 128, edge = 4).uas ≈ evaluate(docs, specs, ms, Lexicon(); words = 128, edge = 4).uas
+    m2 = ChainModel(edir; kw..., redundant = true, poolsigma = 0.02)
+    @test 0 <= evaluate(docs, specs, m2, Lexicon(); words = 128, edge = 4).uas <= 1
   end
 
   @testset "maxdev step scores" begin

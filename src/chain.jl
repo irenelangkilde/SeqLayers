@@ -172,6 +172,7 @@ struct ChainOpts
   adaptctx::Bool                                  # greedy: minimum context max(1, min(minctx, chain + redundant pool))
   pairsteps::Bool                                 # :maxdev chains may add a precomputed pair (joint tables) in one step
   pairsfirst::Bool                                # with pairsteps: a feature in any precomputed pair joins only via a pair
+  poolsigma::Float64                              # redundant pool: weight exp(-d/sigma) on conditioning on a pool feature (0: off)
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -275,7 +276,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   jointmin = 0, screen = 0.0, screenby = :maxdev, sample = 0.0, climbleft = :deepest, usepos = true, minctx = 1, greedyby = :correction,
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
-  stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false)
+  stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
@@ -328,7 +329,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -1721,15 +1722,42 @@ Slots among `remaining` that are redundant given the finished chain: supported a
 prefix (`mincount` records with the prefix) but changing its odds by less than `tau`.
 """
 function redundant_slots(m::ChainModel, st::ChainState, Ic, label, remaining)
+  first.(redundant_divergence(m, st, Ic, label, remaining))
+end
+
+"The redundant slots with their divergence d = |log o(c | prefix, r) - log o(c | prefix)| (< tau)."
+function redundant_divergence(m::ChainModel, st::ChainState, Ic, label, remaining)
   slots = [s for s in remaining if Ic[s] != ABSENT]
-  isempty(slots) && return Int[]
+  out = Tuple{Int,Float64}[]
+  isempty(slots) && return out
   x = st.odds[end]
-  out = Int[]
   for (s, e) in zip(slots, extend_all(m, st, depth(st), UInt64[Ic[s] for s in slots]))
     y, ok = update_odds(m, e, label, x)
-    ok && abs(log(y) - log(x)) < m.opts.tau && push!(out, s)
+    d = abs(log(y) - log(x))
+    ok && d < m.opts.tau && push!(out, (s, d))
   end
   out
+end
+
+"""
+A leftover X's correction with context `ctx` (in the order chosen): log o(c | ctx, X) - log o(c | ctx),
+each stage smoothed toward the one before as in _greedy_leftovers.  Empty ctx: X's marginal correction.
+"""
+function context_correction(m::ChainModel, X, ctx, label, prior, base)
+  S, SX = ChainState(prior, base), ChainState(prior, base)
+  eX = only(extend_all(m, S, 0, [X]))
+  yX, okX = update_odds(m, eX, label, prior)
+  advance!(m, SX, X, eX, yX)
+  corr = okX ? log(yX) - log(prior) : 0.0
+  for f in ctx
+    eS, eSX = only(extend_all(m, S, depth(S), [f])), only(extend_all(m, SX, depth(SX), [f]))
+    y1, ok1 = update_odds(m, eS, label, S.odds[end])
+    y2, ok2 = update_odds(m, eSX, label, y1)
+    (ok1 && ok2) || break
+    advance!(m, S, f, eS, y1); advance!(m, SX, f, eSX, y2)
+    corr = log(y2) - log(y1)
+  end
+  corr
 end
 
 function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, remaining)
@@ -1742,11 +1770,14 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     needmin = needmax = depth(st)
   end
   nred = 0
+  poolw = Dict{UInt64,Float64}()                     # poolsigma: pool feature -> weight of conditioning on it
   if m.opts.redundant                                # redundant features: context only, no correction of their own
-    red = redundant_slots(m, st, Ic, label, remaining)
+    rd = redundant_divergence(m, st, Ic, label, remaining)
+    red = first.(rd)
     append!(avail, UInt64[Ic[s] for s in red])
     remaining = [s for s in remaining if !(s in red)]
     nred = length(red)
+    m.opts.poolsigma > 0 && foreach(((s, d),) -> (poolw[Ic[s]] = exp(-d / m.opts.poolsigma)), rd)
   end
   # adaptive: short chains (plus pool) need only as much context as they have, but at least 1
   m.opts.adaptctx && (needmin = max(1, min(m.opts.minctx, depth(st) + nred)))
@@ -1784,6 +1815,10 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](s, length(chosen) >= m.opts.minctx,
       [something(findfirst(==(f), Ic), 0) for f in chosen], corr)
     if length(chosen) >= needmin
+      W = isempty(poolw) ? 1.0 : prod(get(poolw, f, 1.0) for f in chosen; init = 1.0)
+      if W < 1.0                                     # blend toward conditioning without the pool features
+        corr = W * corr + (1 - W) * context_correction(m, X, [f for f in chosen if !haskey(poolw, f)], label, prior, base)
+      end
       total_ += corr
       push!(avail, X)
     end
