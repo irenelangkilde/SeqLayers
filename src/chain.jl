@@ -259,6 +259,7 @@ mutable struct ChainModel <: AbstractModel
   lsloc::Vector{Int32}                           # label set -> its index among its type's
   noleft::Dict{UInt64,Set{Int}}                  # decision type -> slots never used as leftovers (chains only)
   gates::Dict{UInt64,Gates}                      # decision type -> relevance gates (see Gates)
+  leftalpha::Dict{UInt64,Float64}                # decision type -> weight of the greedy leftovers' corrections (default 1)
 end
 
 const MAXMEMO = 2_000_000
@@ -334,7 +335,8 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     isempty(recs) ? 1 : Int(max(maximum(r -> r.label, recs), maximum(maximum, lsets; init = UInt32(0)))) + 1,
     Dict{UInt64,Vector{Tuple{Int16,Int16}}}(), lsid, lsets,
     Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), false, 10_000, Dict{UInt64,Int}(),
-    Dict{UInt64,Vector{Int32}}(), zeros(Int32, length(lsets)), Dict{UInt64,Set{Int}}(), Dict{UInt64,Gates}())
+    Dict{UInt64,Vector{Int32}}(), zeros(Int32, length(lsets)), Dict{UInt64,Set{Int}}(), Dict{UInt64,Gates}(),
+    Dict{UInt64,Float64}())
   tally_shapes!(m)
   if gate > 0
     t = @elapsed build_gates!(m)
@@ -1238,6 +1240,12 @@ Optional hook for greedy leftovers: `f(slot, included, ctxslots, corr)` for each
 const LEFTOVER_TRACE = Ref{Any}(nothing)
 
 """
+Optional hook for calibration: `f(chain_logodds, leftover_correction)` for each candidate scored
+(leftovers :none or :greedy), in candidate order; `leftalpha` weights the correction afterwards.
+"""
+const PARTS_HOOK = Ref{Any}(nothing)
+
+"""
 Fill `m.pool` (see Candidate pool in the header): per decision type with a fixed record layout,
 slots and slot pairs (gain over their stronger slot ≥ `gainmin`, mean |λ| ≥ `lammin`) ordered by
 mean total effect over a record sample.
@@ -1604,8 +1612,12 @@ function chain_logodds(m::ChainModel, st::ChainState, Ic, label, prior, remainin
     skip = get(m.noleft, m.recs[st.views[1].base[1]].typekey, nothing)
     skip === nothing || (remaining = [s for s in remaining if !(s in skip)])
   end
-  m.opts.leftovers == :none && return lo
-  m.opts.leftovers == :greedy && return lo + greedy_leftovers(m, st, Ic, label, prior, remaining)
+  if m.opts.leftovers in (:none, :greedy)
+    corr = m.opts.leftovers == :none ? 0.0 : greedy_leftovers(m, st, Ic, label, prior, remaining)
+    PARTS_HOOK[] === nothing || PARTS_HOOK[](lo, corr)
+    α = isempty(m.leftalpha) || isempty(st.views[1].base) ? 1.0 : get(m.leftalpha, m.recs[st.views[1].base[1]].typekey, 1.0)
+    return lo + α * corr
+  end
   slots = [s for s in remaining if Ic[s] != ABSENT]
   lowest = m.opts.leftovers == :backoff1 && depth(st) > 0 ? 1 : 0
   depths = m.opts.leftovers == :marginal ? (0:0) : (depth(st):-1:lowest)

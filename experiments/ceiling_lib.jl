@@ -24,9 +24,34 @@ mutable struct CeilingRecorder
   headconf::Float64                              # pipeline: commit a predicted head property only this sure
   headgold::Vector{Symbol}                       # pipeline: head properties given at their gold values
   c::Dict{Symbol,Int}
+  parts::Union{Nothing,Vector{Any}}              # calibration: per decision (type, chain log odds, corrections, wait, gold index)
 end
-CeilingRecorder(model, doc, scoretags, headconf, headgold = Symbol[]) =
-  CeilingRecorder(model, doc, scoretags, headconf, headgold, Dict(k => 0 for k in CEILING_COUNTS))
+CeilingRecorder(model, doc, scoretags, headconf, headgold = Symbol[]; collect = false) =
+  CeilingRecorder(model, doc, scoretags, headconf, headgold, Dict(k => 0 for k in CEILING_COUNTS), collect ? Any[] : nothing)
+
+"""
+`decide`, recording for calibration (when r.parts is set) each candidate's chain log odds and leftover
+correction, the wait score of open decisions, and where gold is among the candidates.
+"""
+function rdecide(r::CeilingRecorder, st, key, gold)
+  r.parts === nothing && return decide(r.model, st, key)
+  empty!(r.model.memo)                           # every decision scored afresh, so the hook sees it
+  buf = Tuple{Float64,Float64}[]
+  SeqLayers.PARTS_HOOK[] = (lo, c) -> push!(buf, (lo, c))
+  res = try
+    decide(r.model, st, key)
+  finally
+    SeqLayers.PARTS_HOOK[] = nothing
+  end
+  d = SeqLayers.decisiondef(st, key)
+  cands = d.ready(st, key[3]) ? d.candidates(st, key[3]) : UInt32[]
+  g = findfirst(==(gold), cands)
+  if g !== nothing && length(cands) >= 2 && length(buf) == length(cands)
+    w = d.open ? SeqLayers.waitscore(r.model, st, key) : NaN
+    push!(r.parts, (SeqLayers.typekey(key[1], key[2]), first.(buf), last.(buf), w, g))
+  end
+  res
+end
 
 observe!(::CeilingRecorder, st, key, choice) = nothing
 segment_discard!(::CeilingRecorder) = nothing
@@ -39,7 +64,7 @@ function masked_choice(r::CeilingRecorder, st, key, gold::UInt32)
     d.ready(st, i) || (r.c[:notready] += 1; return (PENDING, false))
     cands = d.candidates(st, i)
     isempty(cands) && return (PENDING, false)
-    first(decide(r.model, st, key)), gold in cands
+    first(rdecide(r, st, key, gold)), gold in cands
   finally
     restore()
   end
@@ -96,7 +121,7 @@ function pipeline_attach!(r::CeilingRecorder, st, t, gold::UInt32)
   foreach(n -> (toks[n, t] = PENDING), names)
   SeqLayers.refresh!(st)
   try
-    res = [decs[k].name in r.headgold ? (old[j+1], Inf) : decide(r.model, st, (:token, k, t)) for (j, k) in enumerate(hk)]
+    res = [decs[k].name in r.headgold ? (old[j+1], Inf) : rdecide(r, st, (:token, k, t), old[j+1]) for (j, k) in enumerate(hk)]
     # the separate direction and distance predictions both right (compare head_sdist's accuracy)
     jd, jt = findfirst(k -> decs[k].name == :head_dir, hk), findfirst(k -> decs[k].name == :head_dist, hk)
     if jd !== nothing && jt !== nothing
@@ -129,7 +154,7 @@ function pipeline_attach!(r::CeilingRecorder, st, t, gold::UInt32)
       return only(cands), gold in cands
     end
     isempty(cands) && (r.c[:nocands] += 1; return PENDING, false)
-    first(decide(r.model, st, (:token, 1, t))), gold in cands
+    first(rdecide(r, st, (:token, 1, t), gold)), gold in cands
   finally
     foreach(((n, v),) -> (toks[n, t] = v), zip(names, old))
     SeqLayers.refresh!(st)
@@ -178,9 +203,9 @@ function breakdown!(c, st, t, a, rel, pa, pr)
 end
 
 "Perfect-context counts for one dev doc."
-function ceiling_counts(doc::Doc, specs, model, lex; scoretags = true, headconf = 0.0, headgold = Symbol[], kw...)
-  r = CeilingRecorder(model, doc, scoretags, headconf, headgold)
+function ceiling_counts(doc::Doc, specs, model, lex; scoretags = true, headconf = 0.0, headgold = Symbol[], collect = false, kw...)
+  r = CeilingRecorder(model, doc, scoretags, headconf, headgold; collect)
   process(doc, specs, OracleModel(), lex; observer = r, kw...)
   r.c[:tok_gold] = length(doc.gold.head)
-  r.c
+  collect ? (r.c, r.parts) : r.c
 end

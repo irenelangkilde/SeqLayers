@@ -75,6 +75,10 @@
 #   events       how lattice/chain training events are recorded: gold (every decision from the
 #                finished gold state, omnidirectional) | replay (left-to-right gold replay)
 #   train_sents  training sentences per treebank used for counts
+#   tune_sents   held-out tuning sentences per treebank: the training sentences right after those
+#                (ceiling.jl on=tune scores them, e.g. to calibrate the leftovers' weight)
+#   leftalpha    weights of the greedy leftovers' corrections per decision type, from this TSV
+#                (written by ceiling.jl calibrate=true); "" = all 1
 #   dev_sents    dev sentences per treebank (0 = all); the first N, so every run sees the same ones
 #   workers      parallel decoding processes
 #   note         free text saved with the results
@@ -94,7 +98,7 @@ const CORPUS_LIST = "/Users/irenelangkildegeary2015/Projects/crystallization/jul
 const RESULTS = joinpath(HERE, "results.csv")
 
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
-  "wmo" => 1e-3, "train_sents" => 500, "dev_sents" => 300, "workers" => 8, "note" => "",
+  "wmo" => 1e-3, "train_sents" => 500, "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
   "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
@@ -176,6 +180,9 @@ function setup(cfg)
     headsdist = cfg["headsdist"] == "true")
   # same Doc objects as in the index, so their suffix-array features are leave-one-out
   trainsample = reduce(vcat, [firstsents(ds, cfg["train_sents"]) for ds in alltrain])
+  # held-out tuning docs: the training docs right after the sample's
+  tunedocs = [(tb, d) for (tb, ds) in zip(tbs, alltrain)
+              for d in firstsents(ds[length(firstsents(ds, cfg["train_sents"]))+1:end], cfg["tune_sents"])]
   devdocs = [(tb, d) for (tb, f) in zip(tbs, devfiles) for d in firstsents(read_conllu(f), cfg["dev_sents"])]
   println("train sample: ", sum(nsents, trainsample), " sentences;  dev: ", sum(p -> nsents(p[2]), devdocs), " sentences")
 
@@ -245,7 +252,7 @@ function setup(cfg)
   end
   build_s = time() - t0
   nlambda = model isa LatticeModel ? length(model.lambda) : model isa CountModel ? length(model.chosen) : 0
-  (; tbs, idx, wc, sfx, devdocs, trainsample, workdir, model, lex, recipe, modelname, build_s, nlambda)
+  (; tbs, idx, wc, sfx, devdocs, tunedocs, trainsample, workdir, model, lex, recipe, modelname, build_s, nlambda)
 end
 
 """
@@ -284,6 +291,8 @@ function start_workers(cfg, s)
           cm.keepcounts = true
           cm.keepmin = $(cfg["countmin"])
         end
+        $(isempty(cfg["leftalpha"])) || (cm.leftalpha = Dict(parse(UInt64, split(l, '\t')[1]; base = 16) => parse(Float64, split(l, '\t')[3])
+          for l in eachline($(cfg["leftalpha"])) if !startswith(l, '#')))
         $(cfg["classleft"] == "true") || (cm.noleft = SeqLayers.wclass_slots(WSPECS))
         cm
       else

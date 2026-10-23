@@ -16,6 +16,11 @@
 #              probability is at least this (0 = always); "tag" rows "<name>@committed" are those
 #   headgold   pipeline: these head properties are given at their gold values, not predicted
 #              (all, or a list like head_dir,head_dist): a ceiling for the attachment mechanism
+#   on         dev (default) | tune: score the held-out tuning docs instead (dev_eval.jl tune_sents)
+#   calibrate  true: also fit the weight of the greedy leftovers' corrections per decision type
+#              (score = chain + alpha * corrections, maximizing the likelihood of the gold choices
+#              under choose's softmax), report calibration, and write alpha.tsv (run dir and events
+#              dir); use it with leftalpha=<file>.  Normally with on=tune.
 #   depfreq, headfreq (breakdown dims): attachment ceiling by how often the dependent's / gold head's
 #              form occurs in the training sample (0, 1-4, 5-49, 50+; root heads apart)
 #
@@ -59,7 +64,9 @@ end
 
 function ceiling_main(cfg)
   s = setup(cfg)
-  (; tbs, devdocs, modelname) = s
+  (; tbs, modelname) = s
+  devdocs = cfg["on"] == "tune" ? s.tunedocs : cfg["on"] == "dev" ? s.devdocs : error("on: dev or tune")
+  cal = cfg["calibrate"] == "true"
   rundir = start_workers(cfg, s)
   Distributed.remotecall_eval(Main, workers(), :(include($(joinpath(HERE, "ceiling_lib.jl")))))
   freq = Dict{String,Int}()                          # training form frequencies, for the depfreq/headfreq dims
@@ -75,7 +82,9 @@ function ceiling_main(cfg)
   headgold = cfg["headgold"] == "all" ? collect(keys(SeqLayers.ALLHEADSETS)) :
     isempty(cfg["headgold"]) ? Symbol[] : Symbol.(split(cfg["headgold"], ','))
   all(n -> haskey(SeqLayers.ALLHEADSETS, n), headgold) || error("headgold: names are $(join(keys(SeqLayers.ALLHEADSETS), ", "))")
-  counts = pmap(p -> (p[1], ceiling_counts(p[2], WSPECS, WMODEL, WLEX; scoretags, headconf, headgold)), devdocs[order])
+  res = pmap(p -> (p[1], ceiling_counts(p[2], WSPECS, WMODEL, WLEX; scoretags, headconf, headgold, collect = cal)), devdocs[order])
+  counts = cal ? [(tb, c[1]) for (tb, c) in res] : res
+  parts = cal ? reduce(vcat, [c[2] for (_, c) in res]; init = Any[]) : Any[]
   save_countcache(cfg, s)
   score_s = time() - t1
   rmprocs(workers())
@@ -105,10 +114,77 @@ function ceiling_main(cfg)
   a[:inferred] + a[:nocands] > 0 && println("\npipeline: $(a[:inferred]) attachments inferred ($(round(a[:inferred] / max(a[:tok_n], 1); digits = 3)) of tokens), ",
     "$(round(a[:inferred_ok] / max(a[:inferred], 1); digits = 3)) of them right; $(a[:nocands]) left with no candidate")
   write_breakdown(runid, modelname, cfg, bytb["ALL"])
+  cal && calibrate_report(cfg, s, parts)
   println("score $(round(score_s; digits = 1)) s, run $runid → $CEILING_RESULTS, $BREAKDOWN_RESULTS")
 end
 
 DEFAULTS["tags"] = "true"
 DEFAULTS["headconf"] = 0.9
 DEFAULTS["headgold"] = ""
+DEFAULTS["on"] = "dev"
+DEFAULTS["calibrate"] = "false"
+
+"log P(gold) under choose's softmax for scores L + a*C (plus the fixed wait score of open decisions)."
+function goldll(L, C, w, g, a)
+  s = L .+ a .* C
+  isnan(w) || (s = [s; w])
+  mx = maximum(s)
+  s[g] - mx - log(sum(exp.(s .- mx)))
+end
+
+"Confidence of the chosen candidate under choose (with wait), and whether it is gold."
+function chosen_conf(L, C, w, g, a)
+  s = L .+ a .* C
+  b = argmax(s)
+  z = isnan(w) ? s : [s; w]
+  mx = maximum(z)
+  exp(s[b] - mx) / sum(exp.(z .- mx)), b == g
+end
+
+"""
+Fit alpha per decision type on the collected parts; print the fit and a calibration table (chosen
+confidence bins vs accuracy) at alpha = 1 and at the fitted alpha; write alpha.tsv.
+"""
+function calibrate_report(cfg, s, parts)
+  sp = default_specs(wordclasses = s.wc, suffixes = s.sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true",
+    relations = cfg["relations"] == "true", headsdist = cfg["headsdist"] == "true")
+  names = Dict(SeqLayers.typekey(:char, 1) => "gap")
+  foreach(((k, d),) -> (names[SeqLayers.typekey(:token, k)] = string(d.name)), enumerate(sp[2].decisions))
+  bytk = Dict{UInt64,Vector{Any}}()
+  foreach(p -> push!(get!(() -> Any[], bytk, p[1]), p), parts)
+  grid = 0.0:0.02:2.0
+  bins = (0.5, 0.8, 0.9, 0.95, 0.99, 1.0)
+  out = joinpath(s.recipe[1], "alpha.tsv")
+  lines = String[]
+  println("\ncalibration: weight of the leftovers' corrections per decision type (fit on $(cfg["on"]) docs)")
+  println(rpad("decision", 12), lpad("n", 7), lpad("alpha", 7), lpad("ll(1)", 10), lpad("ll(alpha)", 11), lpad("acc(1)", 8), lpad("acc(a)", 8))
+  for (tk, ps) in sort(collect(bytk); by = p -> get(names, p[1], ""))
+    ll(a) = sum(p -> goldll(p[2], p[3], p[4], p[5], a), ps)
+    lls = [ll(a) for a in grid]
+    a = grid[argmax(lls)]
+    acc(a) = count(p -> chosen_conf(p[2], p[3], p[4], p[5], a)[2], ps) / length(ps)
+    nm = get(names, tk, string(tk; base = 16))
+    println(rpad(nm, 12), lpad(length(ps), 7), lpad(a, 7), lpad(round(ll(1.0); digits = 1), 10), lpad(round(maximum(lls); digits = 1), 11),
+      lpad(round(acc(1.0); digits = 4), 8), lpad(round(acc(a); digits = 4), 8))
+    push!(lines, string(tk; base = 16) * "\t" * nm * "\t" * string(a))
+    for (lab, aa) in (("alpha=1", 1.0), ("alpha=$a", a))
+      cs = [chosen_conf(p[2], p[3], p[4], p[5], aa) for p in ps]
+      row = String[]
+      lo = 0.0
+      for hi in bins
+        sel = [c for c in cs if lo <= c[1] < hi || (hi == 1.0 && c[1] == 1.0)]
+        isempty(sel) || push!(row, "[$(lo),$(hi)): n $(length(sel)) conf $(round(sum(first, sel) / length(sel); digits = 3)) acc $(round(count(last, sel) / length(sel); digits = 3))")
+        lo = hi
+      end
+      println("    ", rpad(lab, 12), join(row, "; "))
+    end
+  end
+  for f in (out, joinpath(HERE, "runs", "alpha-" * Dates.format(now(), "yyyymmdd-HHMMSS") * ".tsv"))
+    open(f, "w") do io
+      println(io, "# typekey (hex)\tdecision\talpha  -- ceiling.jl calibrate=true on=$(cfg["on"]), $(s.modelname)")
+      foreach(l -> println(io, l), lines)
+    end
+  end
+  println("alpha table -> $out")
+end
 ceiling_main(parse_cfg(ARGS))
