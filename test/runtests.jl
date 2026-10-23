@@ -693,11 +693,14 @@ end
       @test 0 <= r.uas <= 1
     end
     @test_throws ErrorException ChainModel(edir; kw..., ctxsize = :other)
-    # soft pool: a huge sigma gives every pool feature weight ~1, so results match the hard pool
+    # soft pool: generalizations of chain forms weighted by how well they stand in for the form; a huge
+    # sigma gives them weight ~1, so results match the hard pool
+    gen = SeqLayers.generalization_slots(specs)
+    @test haskey(gen[SeqLayers.typekey(:token, 1)], 3) && haskey(gen[SeqLayers.typekey(:token, 2)], 1)   # dep form; form
     mh = ChainModel(edir; kw..., redundant = true)
-    ms = ChainModel(edir; kw..., redundant = true, poolsigma = 1e9)
+    ms = ChainModel(edir; kw..., redundant = true, poolsigma = 1e9); ms.generalize = gen
     @test evaluate(docs, specs, mh, Lexicon(); words = 128, edge = 4).uas ≈ evaluate(docs, specs, ms, Lexicon(); words = 128, edge = 4).uas
-    m2 = ChainModel(edir; kw..., redundant = true, poolsigma = 0.02)
+    m2 = ChainModel(edir; kw..., redundant = true, poolsigma = 0.1); m2.generalize = gen
     @test 0 <= evaluate(docs, specs, m2, Lexicon(); words = 128, edge = 4).uas <= 1
   end
 

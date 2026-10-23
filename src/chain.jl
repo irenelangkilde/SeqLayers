@@ -172,7 +172,7 @@ struct ChainOpts
   adaptctx::Bool                                  # greedy: minimum context max(1, min(minctx, chain + redundant pool))
   pairsteps::Bool                                 # :maxdev chains may add a precomputed pair (joint tables) in one step
   pairsfirst::Bool                                # with pairsteps: a feature in any precomputed pair joins only via a pair
-  poolsigma::Float64                              # redundant pool: weight exp(-d/sigma) on conditioning on a pool feature (0: off)
+  poolsigma::Float64                              # soft pool: generalization g of a chain form weighted exp(-d_g/sigma) (0: off)
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -262,6 +262,7 @@ mutable struct ChainModel <: AbstractModel
   noleft::Dict{UInt64,Set{Int}}                  # decision type -> slots never used as leftovers (chains only)
   gates::Dict{UInt64,Gates}                      # decision type -> relevance gates (see Gates)
   leftalpha::Dict{UInt64,Float64}                # decision type -> weight of the greedy leftovers' corrections (default 1)
+  generalize::Dict{UInt64,Dict{Int,Vector{Int}}} # decision type -> form slot -> its generalization slots (soft pool)
 end
 
 const MAXMEMO = 2_000_000
@@ -338,7 +339,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     Dict{UInt64,Vector{Tuple{Int16,Int16}}}(), lsid, lsets,
     Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), false, 10_000, Dict{UInt64,Int}(),
     Dict{UInt64,Vector{Int32}}(), zeros(Int32, length(lsets)), Dict{UInt64,Set{Int}}(), Dict{UInt64,Gates}(),
-    Dict{UInt64,Float64}())
+    Dict{UInt64,Float64}(), Dict{UInt64,Dict{Int,Vector{Int}}}())
   tally_shapes!(m)
   if gate > 0
     t = @elapsed build_gates!(m)
@@ -1740,6 +1741,38 @@ function redundant_divergence(m::ChainModel, st::ChainState, Ic, label, remainin
 end
 
 """
+Soft pool weights (poolsigma): for each chain form w with generalization slots g in the pool (upos, xpos,
+classes, ... of the same token), how well g stands in for w here: the chain's odds rebuilt with w
+replaced by g, d_g = |log o(c | prefix with g for w) - log o(c | prefix)|, weight exp(-d_g / sigma)
+(0 if the replaced chain isn't supported).
+"""
+function generalization_weights!(poolw, m::ChainModel, st::ChainState, Ic, label, prior, base, pool)
+  isempty(base) && return poolw
+  G = get(m.generalize, m.recs[base[1]].typekey, nothing)
+  G === nothing && return poolw
+  o0 = st.odds[end]
+  for w in st.members
+    sw = findfirst(==(w), Ic)
+    (sw === nothing || !haskey(G, sw)) && continue
+    for sg in G[sw]
+      g = Ic[sg]
+      (g == ABSENT || !(g in pool)) && continue
+      S = ChainState(prior, base)
+      ok = true
+      for f in st.members
+        x = f == w ? g : f
+        e = only(extend_all(m, S, depth(S), [x]))
+        y, ok = update_odds(m, e, label, S.odds[end])
+        ok || break
+        advance!(m, S, x, e, y)
+      end
+      poolw[g] = ok ? exp(-abs(log(S.odds[end]) - log(o0)) / m.opts.poolsigma) : 0.0
+    end
+  end
+  poolw
+end
+
+"""
 A leftover X's correction with context `ctx` (in the order chosen): log o(c | ctx, X) - log o(c | ctx),
 each stage smoothed toward the one before as in _greedy_leftovers.  Empty ctx: X's marginal correction.
 """
@@ -1777,7 +1810,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     append!(avail, UInt64[Ic[s] for s in red])
     remaining = [s for s in remaining if !(s in red)]
     nred = length(red)
-    m.opts.poolsigma > 0 && foreach(((s, d),) -> (poolw[Ic[s]] = exp(-d / m.opts.poolsigma)), rd)
+    m.opts.poolsigma > 0 && generalization_weights!(poolw, m, st, Ic, label, prior, base, Set(UInt64[Ic[s] for s in red]))
   end
   # adaptive: short chains (plus pool) need only as much context as they have, but at least 1
   m.opts.adaptctx && (needmin = max(1, min(m.opts.minctx, depth(st) + nred)))

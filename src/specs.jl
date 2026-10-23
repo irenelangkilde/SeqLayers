@@ -92,6 +92,8 @@ function gold_head(i::Int, h::Int, words)
 end
 
 const MAX_LINK_CHARS = 200     # head candidates must start within this many chars
+"Each token layer spec's attachment link paths (set by default_specs; read by generalization_slots)."
+const LINKPATHS = IdDict{Any,Vector{Int}}()
 # token context paths used in attachment features: form, caps, len, neighbors' forms (1:5),
 # the six tags (7:12) and the neighbors' upos/xpos (13:16); not the head's (6, 17, 18).  With word
 # classes, their paths (23:26 for four levels) are added, then any suffix paths.
@@ -941,6 +943,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
     (st, t) -> Int(st.layers[:token][:last_char, t]))
 
   length(tokens.context) == 22 + extra + length(relpaths) + headsdist || error("token context paths moved: update linkpaths")
+  LINKPATHS[tokens] = linkpaths
   sentences = LayerSpec{SentenceLayer}(:sentence,
     FeatDef[],
     [RelDef(:first_token, :token, false, (st, s) -> PENDING),     # given by :sentences

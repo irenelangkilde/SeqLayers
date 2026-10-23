@@ -92,5 +92,32 @@ function wclass_slots(specs)
   out
 end
 
+"""
+For each token decision type, each form slot's generalization slots on the same token (same relation
+path: the token itself, a neighbour, ...): its upos, xpos, basepos, suffixes and word classes, when
+present.  Attachment: per side (dependent, candidate), over the link paths; label decisions: over the
+context paths.  For the soft redundant pool (ChainOpts.poolsigma).
+"""
+function generalization_slots(specs)
+  toks = specs[2]
+  ctx = toks.context
+  isgen(f) = f in (:upos, :xpos, :basepos) || iswclass(f) || startswith(String(f), "suffix")
+  function group(paths, slotof)
+    forms, gens = Dict{Vector{Symbol},Int}(), Dict{Vector{Symbol},Vector{Int}}()
+    for (j, k) in enumerate(paths)
+      p = ctx[k]
+      p.feat == :form && (forms[p.rels] = slotof(j))
+      isgen(p.feat) && push!(get!(() -> Int[], gens, p.rels), slotof(j))
+    end
+    Dict(s => gens[r] for (r, s) in forms if haskey(gens, r))
+  end
+  out = Dict{UInt64,Dict{Int,Vector{Int}}}()
+  lp = get(LINKPATHS, toks, LINK_PATHS)
+  for (k, d) in enumerate(toks.decisions)
+    out[typekey(:token, k)] = k == 1 ? merge(group(lp, j -> 2j + 1), group(lp, j -> 2j + 2)) : group(eachindex(ctx), j -> j)
+  end
+  out
+end
+
 "Is this a word-class decision?"
 iswclass(name::Symbol) = startswith(String(name), "wclass")

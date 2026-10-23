@@ -53,9 +53,9 @@
 #                events apart
 #   redundant    greedy leftovers: redundant features (supported at the chain's final prefix, change
 #                < tau) join the conditioning pool, without a correction of their own: true | false
-#   poolsigma    with redundant=true: conditioning on a pool feature r is weighted exp(-d_r/sigma), d_r its
-#                log-odds change at the chain's prefix; leftovers blend toward their context without
-#                pool features (0 = off: full weight)
+#   poolsigma    with redundant=true: a pool feature g that generalizes a chain form w (its upos, xpos,
+#                class, ...) is trusted by exp(-d_g/sigma), d_g the change in the chain's log odds when g
+#                replaces w; leftovers conditioned on g blend toward their context without it (0 = off)
 #   ctxsize      greedy leftovers' context size: min (at least minctx) | chain (exactly the chain's length) |
 #                adaptive (at least max(1, min(minctx, chain length + redundant pool)))
 #   stepscore    maxdev chain step score: abs (|log y - log x|) | signed (log y - log x: the feature
@@ -296,6 +296,7 @@ function start_workers(cfg, s)
           cm.keepcounts = true
           cm.keepmin = $(cfg["countmin"])
         end
+        $(cfg["poolsigma"] > 0) && (cm.generalize = SeqLayers.generalization_slots(WSPECS))
         $(isempty(cfg["leftalpha"])) || (cm.leftalpha = Dict(parse(UInt64, split(l, '\t')[1]; base = 16) => parse(Float64, split(l, '\t')[3])
           for l in eachline($(cfg["leftalpha"])) if !startswith(l, '#')))
         $(cfg["classleft"] == "true") || (cm.noleft = SeqLayers.wclass_slots(WSPECS))
