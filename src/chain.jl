@@ -1240,7 +1240,8 @@ end
 """
 Optional trace hook: when set to a function, `f(event, data)` is called for :maxdev chains with
 event :step (data: candidate, odds before, each tried slot's score (NaN: unsupported) and
-records, the chosen slot or 0, odds after) and :final (candidate, chain log-odds with leftovers).
+records, the chosen slot or 0, odds after) and :final (candidate, chain log-odds with leftovers,
+the chain's members and its odds after each, from the prior).
 For diagnostics; the candidate being scored is `CHAIN_TRACE_CAND[]`.
 """
 const CHAIN_TRACE = Ref{Any}(nothing)
@@ -1915,7 +1916,7 @@ function decide(m::ChainModel, st::State, key::AgendaKey)
       CHAIN_TRACE[] === nothing || (CHAIN_TRACE_CAND[] = cands[c])
       cs, rem = run_single(m, I[c], labels[c], priors[c], tr; tk)
       lo = chain_logodds(m, cs, I[c], labels[c], priors[c], rem)
-      CHAIN_TRACE[] === nothing || CHAIN_TRACE[](:final, (cand = cands[c], logodds = lo))
+      CHAIN_TRACE[] === nothing || CHAIN_TRACE[](:final, (cand = cands[c], logodds = lo, members = copy(cs.members), odds = copy(cs.odds)))
       lo
     end for c in eachindex(cands)]
   else
