@@ -1,0 +1,497 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+count cache: loaded 4459654 feature sets
+warm-up: 1 docs, 86 tokens, 80.4 s
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=correction;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;noise=20;rootabsent]: 1789 tokens, 2122.5 s; heads 1349/1789, labels 1276; cache emptied 4 times; max RSS 17.7 GB
+
+chain   scans 168562, records read 219844105, per scan median 366, 90th pct 4261, max 29035
+greedy  scans 2527191, records read 4493884180, per scan median 33, 90th pct 1893, max 2512289
+
+chain   197961 pass decisions: skipped 29399 (14.9%); passes forced by 1 long trial 27719, 2: 15270, 3+: 125573; median trials 5
+greedy  2631717 pass decisions: skipped 104526 (4.0%); passes forced by 1 long trial 557527, 2: 180726, 3+: 1788938; median trials 5
+
+count cache: 263511 new feature sets, 4723165 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+
+== inclusive samples, SeqLayers and experiment code only
+ Count  Overhead File                                                                                                      Line Function
+   206         0 @SeqLayers/src/chain.jl                                                                                  1942 decide(m::ChainModel, st::State, key::Tuple{Symbol, Int64, Int64})
+   214         0 @SeqLayers/src/engine.jl                                                                                  177 compact_reads!(reads::Vector{Tuple{Symbol, Int64, Int64, UInt32}})
+   216         0 @SeqLayers/src/engine.jl                                                                                  199 rescore!(st::State, model::OracleModel)
+   218         0 @SeqLayers/src/chain.jl                                                                                   797 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   219         2 @SeqLayers/src/chain.jl                                                                                  1905 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+   227         0 @SeqLayers/src/chain.jl                                                                                   795 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   241         0 @SeqLayers/src/chain.jl                                                                                   722 hasmarkedat
+   242         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl      78 segment_done!(r::CeilingRecorder, st::State)
+   279        58 @SeqLayers/src/chain.jl                                                                                  1178 step_single!(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, remaining::Vector{Int64}; target::Nothing, exhaust::Boo…
+   289       165 @SeqLayers/src/chain.jl                                                                                     ? scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   295       295 @SeqLayers/src/chain.jl                                                                                   827 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   300         0 @SeqLayers/src/engine.jl                                                                                  197 rescore!(st::State, model::OracleModel)
+   301         0 @SeqLayers/src/engine.jl                                                                                  189 tracked_decide(model::OracleModel, st::State, key::Tuple{Symbol, Int64, Int64})
+   312        39 @SeqLayers/src/chain.jl                                                                                   826 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   343        67 @SeqLayers/src/chain.jl                                                                                   665 intersect_sorted(a::Vector{Int32}, b::Vector{Int32})
+   350         0 @SeqLayers/src/engine.jl                                                                                  241 commit!(st::State, key::Tuple{Symbol, Int64, Int64}, choice::UInt32)
+   362         0 @SeqLayers/src/chain.jl                                                                                   828 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   367         0 @SeqLayers/src/chain.jl                                                                                   958 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+   375         0 @SeqLayers/src/chain.jl                                                                                  1772 redundant_divergence(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, remaining::Vector{Int64}; weak::Vector{Int64})
+   384         0 @SeqLayers/src/specs.jl                                                                                   201 adjacent_token(st::State, t::Int64, dir::Int64)
+   385       385 @SeqLayers/src/chain.jl                                                                                   724 hasmarkedat
+   396         7 @SeqLayers/src/specs.jl                                                                                   895 #252
+   440         0 @SeqLayers/src/chain.jl                                                                                   833 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   451         0 @SeqLayers/src/specs.jl                                                                                   152 arc_crosses(st::State, j::Int64)
+   464         0 @SeqLayers/src/chain.jl                                                                                   824 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   465         0 @SeqLayers/src/chain.jl                                                                                   725 hasmarkedat
+   492        22 @Base/dict.jl                                                                                              94 Dict{UInt32, Tuple{Float64, Float64}}(kv::Base.Generator{UnitRange{Int64}, SeqLayers.var"#pcget##0#pcget##1"{SeqLayers.PackedCounts}})
+   525         0 @SeqLayers/src/chain.jl                                                                                  1077 advance!(m::ChainModel, st::SeqLayers.ChainState, x::UInt64, e::Tuple{SeqLayers.RecView, Dict{UInt32, Tuple{Float64, Float64}}}, y::Float64)
+   554         0 @SeqLayers/src/chain.jl                                                                                   678 todict(c1::SubArray{Float64, 1, Matrix{Float64}, Tuple{Base.Slice{Base.OneTo{Int64}}, Int64}, true}, c2::SubArray{Float64, 1, Matrix{Float64}, T…
+   563         0 @SeqLayers/src/chain.jl                                                                                  1913 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+   563         0 @SeqLayers/src/specs.jl                                                                                   150 arc_crosses(st::State, j::Int64)
+   576         0 @SeqLayers/src/chain.jl                                                                                   906 update_odds(m::ChainModel, e::Tuple{SeqLayers.RecView, Dict{UInt32, Tuple{Float64, Float64}}}, label::UInt32, x::Float64)
+   581         0 @SeqLayers/src/chain.jl                                                                                   830 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   585         0 @SeqLayers/src/engine.jl                                                                                  140 refresh!(st::State)
+   592         0 @SeqLayers/src/engine.jl                                                                                  225 solve!(st::State, model::OracleModel; observer::CeilingRecorder)
+   652         2 @SeqLayers/src/specs.jl                                                                                   153 arc_crosses(st::State, j::Int64)
+   659         0 @SeqLayers/src/chain.jl                                                                                   968 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+   780         0 @SeqLayers/src/chain.jl                                                                                  1756 redundant_divergence(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, remaining::Vector{Int64}; weak::Vector{Int64})
+   973         0 @Base/dict.jl                                                                                              92 Dict{UInt32, Tuple{Float64, Float64}}(kv::Base.Generator{UnitRange{Int64}, SeqLayers.var"#pcget##0#pcget##1"{SeqLayers.PackedCounts}})
+   995         0 @SeqLayers/src/chain.jl                                                                                  1731 leftover_relevance(m::ChainModel, st::SeqLayers.ChainState, X::UInt64, label::UInt32, prior::Float64, base::Vector{Int32})
+  1106        16 @SeqLayers/src/types.jl                                                                                   138 track_read
+  1128       520 @SeqLayers/src/chain.jl                                                                                   832 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+  1131        14 @SeqLayers/src/types.jl                                                                                   144 getindex
+  1240         0 @SeqLayers/src/chain.jl                                                                                  1001 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+  1249         0 @SeqLayers/src/chain.jl                                                                                  1890 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+  1306         9 @SeqLayers/src/types.jl                                                                                   143 getindex
+  1327         0 @SeqLayers/src/chain.jl                                                                                  1877 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+  1327         1 @SeqLayers/src/chain.jl                                                                                  1751 redundant_divergence
+  1411        93 @SeqLayers/src/chain.jl                                                                                   970 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+  1668         0 @SeqLayers/src/specs.jl                                                                                   785 oracle_choice(st::State, key::Tuple{Symbol, Int64, Int64})
+  1671         0 @SeqLayers/src/models.jl                                                                                  133 decide(::OracleModel, st::State, key::Tuple{Symbol, Int64, Int64})
+  1671         0 @SeqLayers/src/specs.jl                                                                                   117 gap_candidates(st::State, i::Int64)
+  1677         0 @SeqLayers/src/engine.jl                                                                                  188 tracked_decide(model::OracleModel, st::State, key::Tuple{Symbol, Int64, Int64})
+  1774         2 @SeqLayers/src/chain.jl                                                                                  1994 pcget
+  1974        24 @SeqLayers/src/chain.jl                                                                                   680 todict(c1::SubArray{Float64, 1, Matrix{Float64}, Tuple{Base.Slice{Base.OneTo{Int64}}, Int64}, true}, c2::SubArray{Float64, 1, Matrix{Float64}, T…
+  1978         0 @SeqLayers/src/engine.jl                                                                                  202 rescore!(st::State, model::OracleModel)
+  2471         0 @SeqLayers/src/chain.jl                                                                                  1832 generalization_weights!(poolw::Dict{UInt64, Float64}, m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64…
+  2518         0 @SeqLayers/src/engine.jl                                                                                  217 solve!(st::State, model::OracleModel; observer::CeilingRecorder)
+  2528         2 @SeqLayers/src/chain.jl                                                                                  1883 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+  2591         0 @SeqLayers/src/chain.jl                                                                                   846 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+  2735      2735 @SeqLayers/src/chain.jl                                                                                   569 tallycol!
+  2875      1527 @SeqLayers/src/chain.jl                                                                                   669 intersect_sorted(a::Vector{Int32}, b::Vector{Int32})
+  3123         0 @SeqLayers/src/driver.jl                                                                                   58 process(doc::Doc, specs::Vector{LayerSpec}, model::OracleModel, lex::Lexicon; words::Int64, edge::Int64, observer::CeilingRecorder, search::Noth…
+  3123         0 @SeqLayers/src/engine.jl                                                                                  213 solve!
+  3248         0 @SeqLayers/src/chain.jl                                                                                  1992 pcget
+  3376      2562 @SeqLayers/src/chain.jl                                                                                   831 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+  3404       155 @SeqLayers/src/chain.jl                                                                                  1017 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+  3422         0 @SeqLayers/src/chain.jl                                                                                   837 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+  4426         0 @SeqLayers/src/chain.jl                                                                                   663 intersect_sorted(a::Vector{Int32}, b::Vector{Int32})
+  4982         1 @SeqLayers/src/chain.jl                                                                                   969 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+  4998         5 @SeqLayers/src/chain.jl                                                                                   943 childview(m::ChainModel, v::SeqLayers.RecView, n::Int64, x::UInt64)
+  6982         0 @SeqLayers/src/chain.jl                                                                                  1854 context_correction(m::ChainModel, X::UInt64, ctx::Vector{UInt64}, label::UInt32, prior::Float64, base::Vector{Int32})
+  7068         0 @SeqLayers/src/chain.jl                                                                                  1925 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+  7177         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl      89 segment_done!(r::CeilingRecorder, st::State)
+  7383         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl      67 masked_choice(r::CeilingRecorder, st::State, key::Tuple{Symbol, Int64, Int64}, gold::UInt32)
+  9005         2 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl     124 pipeline_attach!(r::CeilingRecorder, st::State, t::Int64, gold::UInt32)
+  9279         0 @SeqLayers/src/chain.jl                                                                                   807 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+  9290       137 @SeqLayers/src/chain.jl                                                                                     ? hasmarkedat
+ 13205      1257 @SeqLayers/src/chain.jl                                                                                   670 intersect_sorted(a::Vector{Int32}, b::Vector{Int32})
+ 13206         0 @SeqLayers/src/chain.jl                                                                                  1177 step_single!(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, remaining::Vector{Int64}; target::Nothing, exhaust::Boo…
+ 13835         0 @SeqLayers/src/chain.jl                                                                                  1503 run_single(m::ChainModel, Ic::Vector{UInt64}, label::UInt32, prior::Float64, typerecs::Vector{Int32}; tk::UInt64)
+ 13835         0 @SeqLayers/src/chain.jl                                                                                  1165 step_single!
+ 13868         0 @SeqLayers/src/chain.jl                                                                                  1497 kwcall(::@NamedTuple{tk::UInt64}, ::typeof(SeqLayers.run_single), m::ChainModel, Ic::Vector{UInt64}, label::UInt32, prior::Float64, typerecs::Ve…
+ 13899        20 @SeqLayers/src/chain.jl                                                                                  1963 #decide##21
+ 19763         0 @SeqLayers/src/chain.jl                                                                                   753 buildlist(m::ChainModel, v::SeqLayers.RecView)
+ 20677         0 @SeqLayers/src/chain.jl                                                                                  1901 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+ 23953     23953 @SeqLayers/src/chain.jl                                                                                   829 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+ 49350         0 @SeqLayers/src/chain.jl                                                                                   788 scan_counts
+ 49384         1 @SeqLayers/src/chain.jl                                                                                  1014 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+ 49575     48602 @SeqLayers/src/chain.jl                                                                                   726 hasmarkedat
+ 68323         2 @SeqLayers/src/chain.jl                                                                                   737 filterrecs(m::ChainModel, L::Vector{Int32}, filt::Vector{UInt64})
+ 68384         0 @SeqLayers/src/chain.jl                                                                                     ? buildlist(m::ChainModel, v::SeqLayers.RecView)
+ 88182         1 @SeqLayers/src/chain.jl                                                                                  1089 materialize!(m::ChainModel, st::SeqLayers.ChainState, k::Int64)
+ 88221         0 @SeqLayers/src/chain.jl                                                                                   976 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+104646         0 @SeqLayers/src/chain.jl                                                                                  1900 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+136384         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl     157 pipeline_attach!(r::CeilingRecorder, st::State, t::Int64, gold::UInt32)
+138590         1 @SeqLayers/src/chain.jl                                                                                  1708 greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+138592         0 @SeqLayers/src/chain.jl                                                                                  1652 chain_logodds(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64}; cap::Int64)
+138600         2 @SeqLayers/src/chain.jl                                                                                  1645 chain_logodds(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+138614        14 @SeqLayers/src/chain.jl                                                                                  1964 #decide##21
+145490         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl      87 segment_done!(r::CeilingRecorder, st::State)
+150270         5 @SeqLayers/src/chain.jl                                                                                   952 extend_all
+152518         0 @SeqLayers/src/chain.jl                                                                                  1961 decide(m::ChainModel, st::State, key::Tuple{Symbol, Int64, Int64})
+152768         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl      37 rdecide(r::CeilingRecorder, st::State, key::Tuple{Symbol, Int64, Int64}, gold::UInt32)
+152921         0 @SeqLayers/src/driver.jl                                                                                   66 process(doc::Doc, specs::Vector{LayerSpec}, model::OracleModel, lex::Lexicon; words::Int64, edge::Int64, observer::CeilingRecorder, search::Noth…
+156070         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl     206 kwcall(::@NamedTuple{scoretags::Bool, headconf::Float64}, ::typeof(ceiling_counts), doc::Doc, specs::Vector{LayerSpec}, model::ChainModel, lex::…
+156070         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl     208 #ceiling_counts#42
+156070         0 @SeqLayers/src/driver.jl                                                                                   49 process
+156071         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/profile_chain.jl    60 macro expansion
+
+== self time (overhead), top entries
+ Count  Overhead File                                                                                                      Line Function
+ =====  ======== ====                                                                                                      ==== ========
+156071         0 @Base/timing.jl                                                                                           463 top-level scope
+156071         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/profile_chain.jl    60 macro expansion
+156070         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl     206 kwcall(::@NamedTuple{scoretags::Bool, headconf::Float64}, ::typeof(ceiling_counts), doc::Doc, specs::Vector{LayerSpec}, model::ChainModel, lex::…
+156070         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl     208 #ceiling_counts#42
+156070         0 @SeqLayers/src/driver.jl                                                                                   49 process
+152921         0 @SeqLayers/src/driver.jl                                                                                   66 process(doc::Doc, specs::Vector{LayerSpec}, model::OracleModel, lex::Lexicon; words::Int64, edge::Int64, observer::CeilingRecorder, search::Noth…
+145490         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl      87 segment_done!(r::CeilingRecorder, st::State)
+136384         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl     157 pipeline_attach!(r::CeilingRecorder, st::State, t::Int64, gold::UInt32)
+152768         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl      37 rdecide(r::CeilingRecorder, st::State, key::Tuple{Symbol, Int64, Int64}, gold::UInt32)
+152518         0 @SeqLayers/src/chain.jl                                                                                  1961 decide(m::ChainModel, st::State, key::Tuple{Symbol, Int64, Int64})
+146296         0 @Base/array.jl                                                                                            838 collect(itr::Base.Generator{Base.OneTo{Int64}, SeqLayers.var"#decide##21#decide##22"{ChainModel, Vector{Int32}, Vector{Float64}, Vector{UInt32},…
+144981         0 @Base/array.jl                                                                                            864 collect_to_with_first!
+144950         0 @Base/array.jl                                                                                            886 collect_to!
+152736         0 @Base/generator.jl                                                                                         48 iterate
+138592         0 @SeqLayers/src/chain.jl                                                                                  1652 chain_logodds(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64}; cap::Int64)
+104646         0 @SeqLayers/src/chain.jl                                                                                  1900 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+ 88221         0 @SeqLayers/src/chain.jl                                                                                   976 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+ 19763         0 @SeqLayers/src/chain.jl                                                                                   753 buildlist(m::ChainModel, v::SeqLayers.RecView)
+156084         0 @Base/Base.jl                                                                                             355 (::Base.var"#start_profile_listener##0#start_profile_listener##1"{Base.AsyncCondition})()
+156084         0 @Base/Base.jl                                                                                             335 profile_printing_listener(cond::Base.AsyncCondition)
+156084         0 @Base/asyncevent.jl                                                                                       186 _trywait(t::Base.AsyncCondition)
+156084         0 @Base/condition.jl                                                                                        136 wait
+156084         0 @Base/condition.jl                                                                                        141 wait(c::Base.GenericCondition{Base.Threads.SpinLock}; first::Bool)
+156070         0 @Base/client.jl                                                                                           577 _start()
+156070         0 @Base/client.jl                                                                                           344 exec_options(opts::Base.JLOptions)
+156070         0 @Base/Base.jl                                                                                             309 include(mod::Module, _path::String)
+156070         0 @Base/loading.jl                                                                                         3105 _include(mapexpr::Function, mod::Module, _path::String)
+156070         0 @Base/loading.jl                                                                                         3045 include_string(mapexpr::typeof(identity), mod::Module, code::String, filename::String)
+156070         0 @Base/boot.jl                                                                                             489 eval(m::Module, e::Any)
+ 68384         0 @SeqLayers/src/chain.jl                                                                                     ? buildlist(m::ChainModel, v::SeqLayers.RecView)
+ 63464         0 @Base/array.jl                                                                                            680 _collect(::Type{Int32}, itr::Base.Generator{Base.Iterators.Filter{SeqLayers.var"#filterrecs##2#filterrecs##3"{ChainModel, Vector{UInt64}, Vector…
+ 60566         0 none                                                                                                        ? #filterrecs##2
+ 49350         0 @SeqLayers/src/chain.jl                                                                                   788 scan_counts
+  9279         0 @SeqLayers/src/chain.jl                                                                                   807 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+ 11450         0 @Base/abstractarray.jl                                                                                   1366 getindex
+ 20677         0 @SeqLayers/src/chain.jl                                                                                  1901 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+  3422         0 @SeqLayers/src/chain.jl                                                                                   837 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   980         0 @Base/abstractarray.jl                                                                                   1363 getindex
+   973         0 @Base/abstractarray.jl                                                                                   1387 _getindex
+   973         0 @Base/bitarray.jl                                                                                         672 getindex
+   425         0 @Base/bitarray.jl                                                                                         666 unsafe_bitgetindex
+ 12641         0 @Base/array.jl                                                                                           1345 push!
+ 12209         0 @Base/array.jl                                                                                           1348 _push!
+  1712         0 @Base/essentials.jl                                                                                        11 length
+  1317         0 @Base/array.jl                                                                                           1201 _growend!
+  4426         0 @SeqLayers/src/chain.jl                                                                                   663 intersect_sorted(a::Vector{Int32}, b::Vector{Int32})
+  2471         0 @SeqLayers/src/chain.jl                                                                                  1832 generalization_weights!(poolw::Dict{UInt64, Float64}, m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64…
+   432         0 @Base/array.jl                                                                                           1349 _push!
+  3248         0 @SeqLayers/src/chain.jl                                                                                  1992 pcget
+  3247         0 @Base/sort.jl                                                                                             310 searchsortedfirst
+  3247         0 @Base/sort.jl                                                                                             310 #searchsortedfirst#5
+  3247         0 @Base/sort.jl                                                                                             308 searchsortedfirst
+   938         0 @Base/iterators.jl                                                                                        554 iterate(f::Base.Iterators.Filter{SeqLayers.var"#filterrecs##2#filterrecs##3"{ChainModel, Vector{UInt64}, Vector{Int16}}, Vector{Int32}}, state::…
+  9595         0 @Base/array.jl                                                                                           1181 _growend_internal!(a::Vector{Int32}, delta::Int64, len::Int64)
+  9597         0 @Base/array.jl                                                                                           1101 array_new_memory
+ 13868         0 @SeqLayers/src/chain.jl                                                                                  1497 kwcall(::@NamedTuple{tk::UInt64}, ::typeof(SeqLayers.run_single), m::ChainModel, Ic::Vector{UInt64}, label::UInt32, prior::Float64, typerecs::Ve…
+ 13835         0 @SeqLayers/src/chain.jl                                                                                  1503 run_single(m::ChainModel, Ic::Vector{UInt64}, label::UInt32, prior::Float64, typerecs::Vector{Int32}; tk::UInt64)
+ 13835         0 @SeqLayers/src/chain.jl                                                                                  1165 step_single!
+ 13206         0 @SeqLayers/src/chain.jl                                                                                  1177 step_single!(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, remaining::Vector{Int64}; target::Nothing, exhaust::Boo…
+  7068         0 @SeqLayers/src/chain.jl                                                                                  1925 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+  6982         0 @SeqLayers/src/chain.jl                                                                                  1854 context_correction(m::ChainModel, X::UInt64, ctx::Vector{UInt64}, label::UInt32, prior::Float64, base::Vector{Int32})
+  1196         0 @Base/sort.jl                                                                                             190 searchsortedfirst
+   464         0 @SeqLayers/src/chain.jl                                                                                   824 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+  2609         0 @Base/essentials.jl                                                                                       974 getindex
+  4848         0 @Base/abstractarray.jl                                                                                   2144 vcat
+  4848         0 @Base/abstractarray.jl                                                                                   2135 cat
+   581         0 @SeqLayers/src/chain.jl                                                                                   830 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   367         0 @SeqLayers/src/chain.jl                                                                                   958 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+   976         0 @Base/dict.jl                                                                                             505 get
+   197         0 @SeqLayers/src/chain.jl                                                                                   723 hasmarkedat
+   440         0 @SeqLayers/src/chain.jl                                                                                   833 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   439         0 @Base/iterators.jl                                                                                        544 iterate(f::Base.Iterators.Filter{SeqLayers.var"#filterrecs##2#filterrecs##3"{ChainModel, Vector{UInt64}, Vector{Int16}}, Vector{Int32}}, state::…
+  1327         0 @SeqLayers/src/chain.jl                                                                                  1877 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+   780         0 @SeqLayers/src/chain.jl                                                                                  1756 redundant_divergence(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, remaining::Vector{Int64}; weak::Vector{Int64})
+    74         0 @Base/array.jl                                                                                           1020 setindex!
+  9763         0 @Base/array.jl                                                                                            828 collect(itr::Base.Generator{Base.OneTo{Int64}, SeqLayers.var"#decide##21#decide##22"{ChainModel, Vector{Int32}, Vector{Float64}, Vector{UInt32},…
+  7072         0 @Base/array.jl                                                                                            864 collect_to_with_first!(dest::Vector{Tuple{UInt32, Float64}}, v1::Tuple{UInt32, Float64}, itr::Base.Generator{Base.Iterators.Enumerate{Vector{Int…
+  7118         0 @Base/array.jl                                                                                            886 collect_to!(dest::Vector{Tuple{UInt32, Float64}}, itr::Base.Generator{Base.Iterators.Enumerate{Vector{Int64}}, var"#pipeline_attach!##10#pipelin…
+  9003         0 none                                                                                                        ? #pipeline_attach!##10
+  7177         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl      89 segment_done!(r::CeilingRecorder, st::State)
+  7383         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl      67 masked_choice(r::CeilingRecorder, st::State, key::Tuple{Symbol, Int64, Int64}, gold::UInt32)
+   659         0 @SeqLayers/src/chain.jl                                                                                   968 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+   973         0 @Base/dict.jl                                                                                              92 Dict{UInt32, Tuple{Float64, Float64}}(kv::Base.Generator{UnitRange{Int64}, SeqLayers.var"#pcget##0#pcget##1"{SeqLayers.PackedCounts}})
+   994         0 @Base/dict.jl                                                                                             194 sizehint!
+  1077         0 @Base/dict.jl                                                                                             151 rehash!(h::Dict{UInt32, Tuple{Float64, Float64}}, newsz::Int64)
+  1240         0 @SeqLayers/src/chain.jl                                                                                  1001 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+   362         0 @SeqLayers/src/chain.jl                                                                                   828 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   147         0 @SeqLayers/src/chain.jl                                                                                   954 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+  1249         0 @SeqLayers/src/chain.jl                                                                                  1890 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+   995         0 @SeqLayers/src/chain.jl                                                                                  1731 leftover_relevance(m::ChainModel, st::SeqLayers.ChainState, X::UInt64, label::UInt32, prior::Float64, base::Vector{Int32})
+   576         0 @SeqLayers/src/chain.jl                                                                                   906 update_odds(m::ChainModel, e::Tuple{SeqLayers.RecView, Dict{UInt32, Tuple{Float64, Float64}}}, label::UInt32, x::Float64)
+   145         0 @SeqLayers/src/chain.jl                                                                                   818 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   206         0 @SeqLayers/src/chain.jl                                                                                  1942 decide(m::ChainModel, st::State, key::Tuple{Symbol, Int64, Int64})
+   206         0 none                                                                                                        ? #decide##4
+   983         0 @FunctionWrappers/src/FunctionWrappers.jl                                                                 144 FunctionWrapper
+   983         0 @FunctionWrappers/src/FunctionWrappers.jl                                                                 125 do_ccall
+  2591         0 @SeqLayers/src/chain.jl                                                                                   846 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   197         0 @SeqLayers/src/chain.jl                                                                                   568 tallycol!
+   526         0 @Base/array.jl                                                                                            678 _collect(::Type{Int32}, itr::Base.Generator{Base.Iterators.Filter{SeqLayers.var"#filterrecs##2#filterrecs##3"{ChainModel, Vector{UInt64}, Vector…
+   137         0 @Base/array.jl                                                                                           1197 _growend!
+  1482         0 @Base/dict.jl                                                                                             365 setindex!(h::Dict{UInt32, Tuple{Float64, Float64}}, v0::Tuple{Float64, Float64}, key::UInt32)
+   685         0 @Base/dict.jl                                                                                             160 rehash!(h::Dict{UInt32, Tuple{Float64, Float64}}, newsz::Int64)
+  4271         0 @Base/array.jl                                                                                            679 _collect(::Type{Int32}, itr::Base.Generator{Base.Iterators.Filter{SeqLayers.var"#filterrecs##2#filterrecs##3"{ChainModel, Vector{UInt64}, Vector…
+   182         0 @SeqLayers/src/chain.jl                                                                                     ? tallycol!
+   140         0 @Base/promotion.jl                                                                                        433 +
+   241         0 @SeqLayers/src/chain.jl                                                                                   722 hasmarkedat
+    85         0 @SeqLayers/src/chain.jl                                                                                   836 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   303         0 @Base/array.jl                                                                                           1185 _growend_internal!(a::Vector{Int32}, delta::Int64, len::Int64)
+   298         0 @Base/genericmemory.jl                                                                                    139 unsafe_copyto!
+   200         0 @Base/indices.jl                                                                                          366 to_indices
+   200         0 @Base/indices.jl                                                                                          369 to_indices
+   200         0 @Base/indices.jl                                                                                          293 to_index
+   200         0 @Base/indices.jl                                                                                          308 to_index
+   200         0 @Base/number.jl                                                                                             7 convert
+   200         0 @Base/boot.jl                                                                                            1010 Int64
+   465         0 @SeqLayers/src/chain.jl                                                                                   725 hasmarkedat
+   207         0 @Base/dict.jl                                                                                             148 rehash!(h::Dict{UInt32, Tuple{Float64, Float64}}, newsz::Int64)
+    74         0 @SeqLayers/src/chain.jl                                                                                  1720 leftover_relevance(m::ChainModel, st::SeqLayers.ChainState, X::UInt64, label::UInt32, prior::Float64, base::Vector{Int32})
+    82         0 @Base/dict.jl                                                                                             244 ht_keyindex
+   116         0 @Base/array.jl                                                                                            962 getindex
+   110         0 @Base/abstractarray.jl                                                                                    684 checkbounds
+   525         0 @SeqLayers/src/chain.jl                                                                                  1077 advance!(m::ChainModel, st::SeqLayers.ChainState, x::UInt64, e::Tuple{SeqLayers.RecView, Dict{UInt32, Tuple{Float64, Float64}}}, y::Float64)
+   563         0 @SeqLayers/src/chain.jl                                                                                  1913 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+   100         0 @SeqLayers/src/chain.jl                                                                                   806 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   394         0 @Base/dict.jl                                                                                             150 rehash!(h::Dict{UInt32, Tuple{Float64, Float64}}, newsz::Int64)
+   375         0 @SeqLayers/src/chain.jl                                                                                  1772 redundant_divergence(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, remaining::Vector{Int64}; weak::Vector{Int64})
+   168         0 @Base/dict.jl                                                                                             478 getindex(h::Dict{Symbol, Vector{Int64}}, key::Symbol)
+    79         0 @Base/dict.jl                                                                                             129 hashindex
+   585         0 @SeqLayers/src/engine.jl                                                                                  140 refresh!(st::State)
+   917         0 @FunctionWrappers/src/FunctionWrappers.jl                                                                  65 (::FunctionWrappers.CallWrapper{UInt32})(f::SeqLayers.var"#252#253", arg1::State, arg2::Int64)
+    76         0 @SeqLayers/src/specs.jl                                                                                   206 adjacent_token(st::State, t::Int64, dir::Int64)
+   554         0 @SeqLayers/src/chain.jl                                                                                   678 todict(c1::SubArray{Float64, 1, Matrix{Float64}, Tuple{Base.Slice{Base.OneTo{Int64}}, Int64}, true}, c2::SubArray{Float64, 1, Matrix{Float64}, T…
+   157         0 @SeqLayers/src/specs.jl                                                                                   923 #288
+   176         0 @SeqLayers/src/engine.jl                                                                                  110 label_items
+   176         0 @SeqLayers/src/engine.jl                                                                                   73 context
+   173         0 none                                                                                                        ? #context##0
+   162         0 @SeqLayers/src/engine.jl                                                                                   56 follow(st::State, lname::Symbol, i::Int64, path::FeatPath)
+   227         0 @SeqLayers/src/chain.jl                                                                                   795 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   256         0 @Base/array.jl                                                                                            621 zeros
+   256         0 @Base/array.jl                                                                                            623 zeros
+   227         0 @Base/array.jl                                                                                            626 zeros
+   227         0 @Base/boot.jl                                                                                             662 Array
+   201         0 @Base/boot.jl                                                                                             605 new_as_memoryref
+   109         0 @SeqLayers/src/chain.jl                                                                                  1726 leftover_relevance(m::ChainModel, st::SeqLayers.ChainState, X::UInt64, label::UInt32, prior::Float64, base::Vector{Int32})
+    76         0 @Base/dict.jl                                                                                             178 rehash!(h::Dict{UInt32, Tuple{Float64, Float64}}, newsz::Int64)
+   421         0 @Base/genericmemory.jl                                                                                    267 setindex!
+    70         0 @SeqLayers/src/chain.jl                                                                                   573 tallycol!
+   166         0 @Base/dict.jl                                                                                             328 _setindex!
+   206         0 @Base/dict.jl                                                                                             159 rehash!(h::Dict{UInt32, Tuple{Float64, Float64}}, newsz::Int64)
+   257         0 @Base/boot.jl                                                                                             648 Array
+   105         0 @Base/array.jl                                                                                            701 _array_for_inner
+   106         0 @Base/abstractarray.jl                                                                                    876 similar
+   106         0 @Base/array.jl                                                                                            409 similar
+   106         0 @Base/abstractarray.jl                                                                                    877 similar
+   230         0 @Base/boot.jl                                                                                             671 Array
+   237         0 @Base/boot.jl                                                                                             661 Array
+    67         0 @SeqLayers/src/chain.jl                                                                                  1002 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+   112         0 @SeqLayers/src/chain.jl                                                                                  1076 advance!(m::ChainModel, st::SeqLayers.ChainState, x::UInt64, e::Tuple{SeqLayers.RecView, Dict{UInt32, Tuple{Float64, Float64}}}, y::Float64)
+   146         0 @Base/array.jl                                                                                            963 getindex
+   438         0 @Base/array.jl                                                                                            436 getindex
+    74         0 @Base/dict.jl                                                                                             327 _setindex!
+   242         0 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl      78 segment_done!(r::CeilingRecorder, st::State)
+  3123         0 @SeqLayers/src/driver.jl                                                                                   58 process(doc::Doc, specs::Vector{LayerSpec}, model::OracleModel, lex::Lexicon; words::Int64, edge::Int64, observer::CeilingRecorder, search::Noth…
+  3123         0 @SeqLayers/src/engine.jl                                                                                  213 solve!
+   592         0 @SeqLayers/src/engine.jl                                                                                  225 solve!(st::State, model::OracleModel; observer::CeilingRecorder)
+   106         0 @SeqLayers/src/engine.jl                                                                                  238 commit!(st::State, key::Tuple{Symbol, Int64, Int64}, choice::UInt32)
+   103         0 @SeqLayers/src/types.jl                                                                                    98 #Constraint##0
+   101         0 @SeqLayers/src/specs.jl                                                                                   759 close_sentences!
+  2518         0 @SeqLayers/src/engine.jl                                                                                  217 solve!(st::State, model::OracleModel; observer::CeilingRecorder)
+   350         0 @SeqLayers/src/engine.jl                                                                                  241 commit!(st::State, key::Tuple{Symbol, Int64, Int64}, choice::UInt32)
+   384         0 @SeqLayers/src/specs.jl                                                                                   201 adjacent_token(st::State, t::Int64, dir::Int64)
+  1978         0 @SeqLayers/src/engine.jl                                                                                  202 rescore!(st::State, model::OracleModel)
+  1677         0 @SeqLayers/src/engine.jl                                                                                  188 tracked_decide(model::OracleModel, st::State, key::Tuple{Symbol, Int64, Int64})
+  1671         0 @SeqLayers/src/models.jl                                                                                  133 decide(::OracleModel, st::State, key::Tuple{Symbol, Int64, Int64})
+  1668         0 @SeqLayers/src/specs.jl                                                                                   785 oracle_choice(st::State, key::Tuple{Symbol, Int64, Int64})
+  1671         0 @SeqLayers/src/specs.jl                                                                                   117 gap_candidates(st::State, i::Int64)
+   451         0 @SeqLayers/src/specs.jl                                                                                   152 arc_crosses(st::State, j::Int64)
+   216         0 @SeqLayers/src/engine.jl                                                                                  199 rescore!(st::State, model::OracleModel)
+   227         0 @Base/reducedim.jl                                                                                       1010 any
+   215         0 @Base/reducedim.jl                                                                                       1010 #any#767
+   170         0 @Base/anyall.jl                                                                                           124 _any
+   170         0 @SeqLayers/src/engine.jl                                                                                  199 #rescore!##0
+   301         0 @SeqLayers/src/engine.jl                                                                                  189 tracked_decide(model::OracleModel, st::State, key::Tuple{Symbol, Int64, Int64})
+   214         0 @SeqLayers/src/engine.jl                                                                                  177 compact_reads!(reads::Vector{Tuple{Symbol, Int64, Int64, UInt32}})
+   563         0 @SeqLayers/src/specs.jl                                                                                   150 arc_crosses(st::State, j::Int64)
+   300         0 @SeqLayers/src/engine.jl                                                                                  197 rescore!(st::State, model::OracleModel)
+   299         0 @Base/array.jl                                                                                            759 collect(itr::Base.KeySet{Tuple{Symbol, Int64, Int64}, DataStructures.PriorityQueue{Tuple{Symbol, Int64, Int64}, Float64, Base.Order.ReverseOrder…
+   299         0 @Base/array.jl                                                                                            765 _collect
+   102         0 @Base/abstractarray.jl                                                                                    948 copyto!(dest::Vector{Tuple{Symbol, Int64, Int64}}, src::Base.KeySet{Tuple{Symbol, Int64, Int64}, DataStructures.PriorityQueue{Tuple{Symbol, Int6…
+   293         0 @Base/abstractdict.jl                                                                                      66 iterate
+   102         0 @DataStructures/src/priorityqueue.jl                                                                      414 iterate
+   101         0 @DataStructures/src/priorityqueue.jl                                                                      416 iterate(pq::DataStructures.PriorityQueue{Tuple{Symbol, Int64, Int64}, Float64, Base.Order.ReverseOrdering{Base.Order.ForwardOrdering}}, ordered:…
+   191         0 @Base/abstractarray.jl                                                                                    953 copyto!(dest::Vector{Tuple{Symbol, Int64, Int64}}, src::Base.KeySet{Tuple{Symbol, Int64, Int64}, DataStructures.PriorityQueue{Tuple{Symbol, Int6…
+   149         0 @DataStructures/src/priorityqueue.jl                                                                      324 popfirst!(pq::DataStructures.PriorityQueue{Tuple{Symbol, Int64, Int64}, Float64, Base.Order.ReverseOrdering{Base.Order.ForwardOrdering}})
+    98         0 @Base/dict.jl                                                                                             110 copy
+    98         0 @Base/dict.jl                                                                                             117 Dict
+    98         0 @Base/abstractdict.jl                                                                                     637 dict_with_eltype
+    98         0 @Base/dict.jl                                                                                              83 Dict{Tuple{Symbol, Int64, Int64}, Int64}(d::Dict{Tuple{Symbol, Int64, Int64}, Int64})
+   218         0 @SeqLayers/src/chain.jl                                                                                   797 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   115         0 @SeqLayers/src/chain.jl                                                                                   191 RecView
+   205         0 @Base/array.jl                                                                                            828 collect
+   205         0 none                                                                                                        ? #431
+    82         0 @Base/genericmemory.jl                                                                                    193 copy
+156071         1 @Profile/src/Profile.jl                                                                                    60 macro expansion
+152516         1 none                                                                                                        ? (::SeqLayers.var"#decide##21#decide##22"{ChainModel, Vector{Int32}, Vector{Float64}, Vector{UInt32}, UInt64, Vector{UInt32}})(c::Int64)
+138590         1 @SeqLayers/src/chain.jl                                                                                  1708 greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+ 88182         1 @SeqLayers/src/chain.jl                                                                                  1089 materialize!(m::ChainModel, st::SeqLayers.ChainState, k::Int64)
+ 68373         1 @Base/array.jl                                                                                            672 collect
+ 49384         1 @SeqLayers/src/chain.jl                                                                                  1014 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+  4982         1 @SeqLayers/src/chain.jl                                                                                   969 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+   890         1 @Base/abstractarray.jl                                                                                   1255 _iterate_abstractarray
+  1327         1 @SeqLayers/src/chain.jl                                                                                  1751 redundant_divergence
+    95         1 @Base/dict.jl                                                                                              93 Dict{UInt32, Tuple{Float64, Float64}}(kv::Base.Generator{UnitRange{Int64}, SeqLayers.var"#pcget##0#pcget##1"{SeqLayers.PackedCounts}})
+    88         1 @Base/array.jl                                                                                            825 collect
+   136         1 @SeqLayers/src/engine.jl                                                                                  234 commit!(st::State, key::Tuple{Symbol, Int64, Int64}, choice::UInt32)
+   190         1 @DataStructures/src/priorityqueue.jl                                                                      425 iterate
+138600         2 @SeqLayers/src/chain.jl                                                                                  1645 chain_logodds(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+ 68323         2 @SeqLayers/src/chain.jl                                                                                   737 filterrecs(m::ChainModel, L::Vector{Int32}, filt::Vector{UInt64})
+  2528         2 @SeqLayers/src/chain.jl                                                                                  1883 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+   185         2 @SeqLayers[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 63.5 s): 14 of 34 slots always, 283 gate values
+[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (64.1 s)
+┌ Warning: The profile data buffer is full; profiling probably terminated
+│ before your program finished. To profile for longer runs, call
+│ `Profile.init()` with a larger buffer and/or larger delay.
+└ @ Profile ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Profile/src/Profile.jl:693
+┌ Warning: The profile data buffer is full; profiling probably terminated
+│ before your program finished. To profile for longer runs, call
+│ `Profile.init()` with a larger buffer and/or larger delay.
+└ @ Profile ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Profile/src/Profile.jl:693
+/src/chain.jl                                                                                   759 store!
+  9005         2 /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_lib.jl     124 pipeline_attach!(r::CeilingRecorder, st::State, t::Int64, gold::UInt32)
+  1774         2 @SeqLayers/src/chain.jl                                                                                  1994 pcget
+   708         2 @Base/dict.jl                                                                                             270 ht_keyindex2_shorthash!(h::Dict{UInt32, Tuple{Float64, Float64}}, key::UInt32)
+  1079         2 @Base/dict.jl                                                                                             339 _setindex!
+   107         2 @Base/dict.jl                                                                                             550 haskey
+   219         2 @SeqLayers/src/chain.jl                                                                                  1905 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+   101         2 @SeqLayers/src/specs.jl                                                                                   896 #254
+    90         2 @SeqLayers/src/engine.jl                                                                                  165 read_changed
+   652         2 @SeqLayers/src/specs.jl                                                                                   153 arc_crosses(st::State, j::Int64)
+    80         2 @SeqLayers/src/engine.jl                                                                                  164 read_changed
+   131         3 @Base/dict.jl                                                                                             506 get
+    66         3 @SeqLayers/src/chain.jl                                                                                   938 SeqLayers.ChainState(o::Float64, typerecs::Vector{Int32})
+    95         4 @SeqLayers/src/chain.jl                                                                                  1906 _greedy_leftovers(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, prior::Float64, remaining::Vector{Int64})
+   131         4 none                                                                                                        ? #pcget##0
+   238         4 @Base/set.jl                                                                                              137 push!
+    76         4 @DataStructures/src/priorityqueue.jl                                                                      179 percolate_down!
+150270         5 @SeqLayers/src/chain.jl                                                                                   952 extend_all
+  4998         5 @SeqLayers/src/chain.jl                                                                                   943 childview(m::ChainModel, v::SeqLayers.RecView, n::Int64, x::UInt64)
+   994         5 @Base/dict.jl                                                                                             201 #sizehint!#304
+   129         5 @Base/abstractarray.jl                                                                                   1818 cat_similar(A::Vector{UInt64}, ::Type{UInt64}, shape::Tuple{Int64})
+   115         6 @SeqLayers/src/chain.jl                                                                                   767 store!(m::ChainModel, key::UInt64, e::Tuple{SeqLayers.RecView, Dict{UInt32, Tuple{Float64, Float64}}}; built::Int64, nread::Int64, persist::Bool…
+  2535         6 none                                                                                                        ? #435
+   396         7 @SeqLayers/src/specs.jl                                                                                   895 #252
+   145         8 @SeqLayers/src/chain.jl                                                                                   572 tallycol!
+  1306         9 @SeqLayers/src/types.jl                                                                                   143 getindex
+138614        14 @SeqLayers/src/chain.jl                                                                                  1964 #decide##21
+  1131        14 @SeqLayers/src/types.jl                                                                                   144 getindex
+   126        15 @Base/abstractarray.jl                                                                                    702 checkbounds
+  1106        16 @SeqLayers/src/types.jl                                                                                   138 track_read
+  9971        17 @Base/array.jl                                                                                           1205 _growend!
+   226        18 @Base/boot.jl                                                                                             652 Array
+ 13899        20 @SeqLayers/src/chain.jl                                                                                  1963 #decide##21
+    75        21 @SeqLayers/src/chain.jl                                                                                   570 tallycol!
+   492        22 @Base/dict.jl                                                                                              94 Dict{UInt32, Tuple{Float64, Float64}}(kv::Base.Generator{UnitRange{Int64}, SeqLayers.var"#pcget##0#pcget##1"{SeqLayers.PackedCounts}})
+  1974        24 @SeqLayers/src/chain.jl                                                                                   680 todict(c1::SubArray{Float64, 1, Matrix{Float64}, Tuple{Base.Slice{Base.OneTo{Int64}}, Int64}, true}, c2::SubArray{Float64, 1, Matrix{Float64}, T…
+  1231        35 @Base/dict.jl                                                                                             358 setindex!(h::Dict{UInt64, Tuple{Tuple{SeqLayers.RecView, Dict{UInt32, Tuple{Float64, Float64}}}, Int64}}, v0::Tuple{Tuple{SeqLayers.RecView, Dic…
+    98        38 @SeqLayers/src/chain.jl                                                                                   789 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   131        38 @SeqLayers/src/chain.jl                                                                                   983 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+   312        39 @SeqLayers/src/chain.jl                                                                                   826 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   279        58 @SeqLayers/src/chain.jl                                                                                  1178 step_single!(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, remaining::Vector{Int64}; target::Nothing, exhaust::Boo…
+   981        64 @FunctionWrappers/src/FunctionWrappers.jl                                                                 137 macro expansion
+   343        67 @SeqLayers/src/chain.jl                                                                                   665 intersect_sorted(a::Vector{Int32}, b::Vector{Int32})
+    69        69 @SeqLayers/src/chain.jl                                                                                     ? iterate(f::Base.Iterators.Filter{SeqLayers.var"#filterrecs##2#filterrecs##3"{ChainModel, Vector{UInt64}, Vector{Int16}}, Vector{Int32}}, state::…
+   186        70 @SeqLayers/src/chain.jl                                                                                   727 hasmarkedat
+    75        74 @Base/array.jl                                                                                           1204 _growend!
+    91        75 @Base/abstractarray.jl                                                                                    728 checkbounds_indices
+   107        78 @SeqLayers/src/chain.jl                                                                                   820 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+    80        80 @SeqLayers/src/chain.jl                                                                                   664 intersect_sorted(a::Vector{Int32}, b::Vector{Int32})
+ 60649        82 @Base/iterators.jl                                                                                        547 iterate(f::Base.Iterators.Filter{SeqLayers.var"#filterrecs##2#filterrecs##3"{ChainModel, Vector{UInt64}, Vector{Int16}}, Vector{Int32}}, state::…
+  1411        93 @SeqLayers/src/chain.jl                                                                                   970 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+   100       100 @Base/dict.jl                                                                                             368 setindex!(h::Dict{UInt32, Tuple{Float64, Float64}}, v0::Tuple{Float64, Float64}, key::UInt32)
+  9290       137 @SeqLayers/src/chain.jl                                                                                     ? hasmarkedat
+   140       140 @Base/generator.jl                                                                                         46 iterate
+   148       148 @Base/float.jl                                                                                            492 +
+  3404       155 @SeqLayers/src/chain.jl                                                                                  1017 extend_all(m::ChainModel, st::SeqLayers.ChainState, k::Int64, xs::Vector{UInt64}; cap::Int64)
+   186       155 @SeqLayers/src/chain.jl                                                                                  1181 step_single!(m::ChainModel, st::SeqLayers.ChainState, Ic::Vector{UInt64}, label::UInt32, remaining::Vector{Int64}; target::Nothing, exhaust::Boo…
+   289       165 @SeqLayers/src/chain.jl                                                                                     ? scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   166       166 @Base/abstractarray.jl                                                                                      ? _iterate_abstractarray
+   169       169 @Base/abstractarray.jl                                                                                   1889 __cat_offset!(::Vector{UInt64}, ::Tuple{Int64}, ::Tuple{Bool}, ::Tuple{Int64}, ::UInt64)
+   177       177 @Base/range.jl                                                                                            928 iterate
+   178       178 @Base/dict.jl                                                                                             251 ht_keyindex
+   212       184 @Base/dict.jl                                                                                             281 ht_keyindex2_shorthash!(h::Dict{UInt64, Tuple{Tuple{SeqLayers.RecView, Dict{UInt32, Tuple{Float64, Float64}}}, Int64}}, key::UInt64)
+   190       190 @Base/iterators.jl                                                                                        543 iterate(f::Base.Iterators.Filter{SeqLayers.var"#filterrecs##2#filterrecs##3"{ChainModel, Vector{UInt64}, Vector{Int16}}, Vector{Int32}}, state::…
+   196       196 @Base/array.jl                                                                                           1207 _growend!
+  4848       197 @Base/abstractarray.jl                                                                                   2135 #cat#108
+   217       199 @Base/dict.jl                                                                                             239 ht_keyindex
+   200       200 @Base/boot.jl                                                                                             929 toInt64
+   208       208 @Base/int.jl                                                                                               86 -
+   227       227 @Base/essentials.jl                                                                                         ? hasmarkedat
+   238       238 @Base/essentials.jl                                                                                       401 getindex
+   261       246 @Base/dict.jl                                                                                             243 ht_keyindex
+   295       295 @SeqLayers/src/chain.jl                                                                                   827 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   571       297 @Base/iterators.jl                                                                                          ? iterate(f::Base.Iterators.Filter{SeqLayers.var"#filterrecs##2#filterrecs##3"{ChainModel, Vector{UInt64}, Vector{Int16}}, Vector{Int32}}, state::…
+   298       298 @Base/cmem.jl                                                                                              28 memmove
+ 63930       310 @Base/generator.jl                                                                                         45 iterate
+   329       329 @Base/abstractarray.jl                                                                                   1873 _cat_t(::Val{1}, ::Type{UInt64}, ::Vector{UInt64}, ::Vararg{Any})
+   385       385 @SeqLayers/src/chain.jl                                                                                   724 hasmarkedat
+   922       392 @Base/abstractarray.jl                                                                                   1875 _cat_t(::Val{1}, ::Type{UInt64}, ::Vector{UInt64}, ::Vararg{Any})
+   403       394 @Base/dict.jl                                                                                             248 ht_keyindex
+   421       408 @Base/abstractarray.jl                                                                                   1892 __cat_offset!(::Vector{UInt64}, ::Tuple{Int64}, ::Tuple{Bool}, ::Tuple{Int64}, ::Vector{UInt64}, ::UInt64, ::Vararg{UInt64})
+   418       418 @Base/genericmemory.jl                                                                                    260 _setindex!
+   425       425 @Base/array.jl                                                                                           1202 _growend!
+   433       433 @Base/array.jl                                                                                           1044 __safe_setindex!
+  1726       446 @Base/abstractarray.jl                                                                                   1880 _cat_t(::Val{1}, ::Type{UInt64}, ::Vector{UInt64}, ::Vararg{Any})
+   527       519 @Base/abstractarray.jl                                                                                   1834 cat_size_shape(::Tuple{Bool}, ::Vector{UInt64}, ::UInt64, ::Vararg{UInt64})
+  1128       520 @SeqLayers/src/chain.jl                                                                                   832 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+   710       581 @Base/abstractarray.jl                                                                                   1876 _cat_t(::Val{1}, ::Type{UInt64}, ::Vector{UInt64}, ::Vararg{Any})
+   608       608 @Base/dict.jl                                                                                              80 Dict
+   647       632 @Base/boot.jl                                                                                             649 Array
+  1280       687 @Base/abstractarray.jl                                                                                   1887 __cat(::Vector{UInt64}, ::Tuple{Int64}, ::Tuple{Bool}, ::Vector{UInt64}, ::Vararg{Any})
+   765       765 @Base/iterators.jl                                                                                        549 iterate(f::Base.Iterators.Filter{SeqLayers.var"#filterrecs##2#filterrecs##3"{ChainModel, Vector{UInt64}, Vector{Int16}}, Vector{Int32}}, state::…
+  2556       836 @Base/essentials.jl                                                                                       389 checkbounds
+  4651       958 @Base/abstractarray.jl                                                                                   1871 _cat(::Val{1}, ::Vector{UInt64}, ::Vararg{Any})
+  1105      1105 @Base/essentials.jl                                                                                         ? getindex
+  1196      1196 @Base/int.jl                                                                                              576 >>>
+ 13205      1257 @SeqLayers/src/chain.jl                                                                                   670 intersect_sorted(a::Vector{Int32}, b::Vector{Int32})
+  1403      1403 @Base/abstractarray.jl                                                                                      ? scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+  2875      1527 @SeqLayers/src/chain.jl                                                                                   669 intersect_sorted(a::Vector{Int32}, b::Vector{Int32})
+  1732      1732 @Base/essentials.jl                                                                                        10 size
+  2129      1830 @Base/essentials.jl                                                                                       385 checkbounds
+  2289      1885 @Base/abstractarray.jl                                                                                   1254 _iterate_abstractarray
+  3376      2562 @SeqLayers/src/chain.jl                                                                                   831 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+  2735      2735 @SeqLayers/src/chain.jl                                                                                   569 tallycol!
+  2956      2956 @Base/int.jl                                                                                               87 +
+  3304      3304 @Base/Base_compiler.jl                                                                                     57 getproperty
+  6377      6318 @Base/sort.jl                                                                                             192 searchsortedfirst
+ 12637      9292 @Base/abstractarray.jl                                                                                   1247 iterate
+ 12756     12756 @Base/boot.jl                                                                                             588 GenericMemory
+ 13803     13803 @Base/essentials.jl                                                                                       975 getindex
+ 23953     23953 @SeqLayers/src/chain.jl                                                                                   829 scan_counts(m::ChainModel, v::SeqLayers.RecView, tids::Vector{Int32}, positions::UnitRange{Int64}; nclimb::Int64, climbids::Vector{Int32})
+ 49575     48602 @SeqLayers/src/chain.jl                                                                                   726 hasmarkedat
+156084    156083 @Base/task.jl                                                                                            1297 wait()
+Total snapshots: 312168. Utilization: 50% across all threads and tasks. Use the `groupby` kwarg to break down by thread and/or task.
+	Command being timed: "julia --project=experiments experiments/profile_chain.jl model=chain select=maxdev events=gold dev_sents=5 jointmin=10000 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true docs=3 warm=1 flat=200"
+	User time (seconds): 2198.77
+	System time (seconds): 189.13
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 39:52.24
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 18544272
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 2329
+	Minor (reclaiming a frame) page faults: 6375756
+	Voluntary context switches: 1110859
+	Involuntary context switches: 3409
+	Swaps: 0
+	File system inputs: 6028616
+	File system outputs: 252072
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

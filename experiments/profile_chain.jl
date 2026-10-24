@@ -5,6 +5,8 @@
 # Takes dev_eval.jl's options (model=chain etc.; see its header) plus:
 #   docs=1          the n smallest dev docs (from dev_sents's selection)
 #   flat=300        print the flat profile, entries with at least this many samples (0 = no profile)
+#   reuse=true      keep record lists built for prefixes whose counts came from the count cache
+#                   (false: the earlier behaviour, rebuilding them each time)
 #   warm=1          first decode this many other small docs unprofiled (compilation, caches), then
 #                   empty the score memo so the profiled docs are scored afresh
 # and honours countcache (loading the events' saved counts first, saving new ones after).
@@ -22,8 +24,10 @@ const S = SeqLayers
 DEFAULTS["docs"] = 1
 DEFAULTS["flat"] = 300
 DEFAULTS["warm"] = 1
+DEFAULTS["reuse"] = "true"
 DEFAULTS["headconf"] = 1.0
 cfg = parse_cfg(ARGS)
+S.REUSE_LISTS[] = cfg["reuse"] == "true"
 cfg["model"] == "chain" || error("profile_chain.jl profiles the chain model (model=chain)")
 s = setup(cfg)
 idx = s.idx
@@ -46,6 +50,7 @@ warmdocs = alldocs[1:cfg["warm"]]
 docs = alldocs[cfg["warm"]+1:cfg["warm"]+cfg["docs"]]
 tw = @elapsed foreach(d -> ceiling_counts(d, specs, m, s.lex; scoretags = false, headconf = cfg["headconf"]), warmdocs)
 empty!(m.memo)
+S.MATERIALIZED[] = [0, 0, 0]; S.CACHE_EMPTIED[] = 0
 println("warm-up: $(length(warmdocs)) docs, $(sum(d -> length(d.gold.head), warmdocs; init = 0)) tokens, $(round(tw; digits = 1)) s")
 
 const STATS = Dict(k => [0, 0] for k in (:chain, :greedy))        # [scans, records read]
@@ -62,7 +67,8 @@ t = @elapsed for d in docs
   foreach(k -> (tot[k] += c[k]), keys(tot))
 end
 println("$(s.modelname): $(sum(d -> length(d.gold.head), docs)) tokens, $(round(t; digits = 1)) s; heads $(tot[:uas])/$(tot[:tok_n]), ",
-  "labels $(tot[:las]); cache emptied $(S.CACHE_EMPTIED[]) times; max RSS $(round(Sys.maxrss() / 2^30; digits = 1)) GB\n")
+  "labels $(tot[:las]); cache emptied $(S.CACHE_EMPTIED[]) times; max RSS $(round(Sys.maxrss() / 2^30; digits = 1)) GB")
+println("record lists built $(S.MATERIALIZED[][1]) ($(S.MATERIALIZED[][3]) records), $(S.MATERIALIZED[][2]) of them kept for prefixes counted in an earlier run\n")
 for k in (:chain, :greedy)
   n, r = STATS[k]
   b = sort(BASES[k])

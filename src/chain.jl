@@ -177,6 +177,8 @@ struct ChainOpts
   poolmarginal::Symbol                            # pool features weak on their own too (:off) | send them to the leftovers (:leftover) | drop them (:drop)
   poolkeepgen::Bool                               # poolmarginal with poolsigma: exempt generalizations of chain forms
   poolscale::Symbol                               # soft pool distance: :logodds (d_g) | :z (d_g / SE of the chain's final log odds)
+  ctxfromchain::Bool                              # greedy: a leftover's context starts as the chain (as far as supported), then extends
+  ctxsupport::Int                                 # greedy: a context step needs context + leftover with at least this many records (0: mincount)
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -282,7 +284,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
@@ -338,7 +340,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -850,6 +852,8 @@ end
 "Diagnostics: if set, called with the number of records each scan reads; IN_GREEDY is true inside greedy leftovers."
 const SCAN_HOOK = Ref{Any}(nothing)
 const IN_GREEDY = Ref(false)
+const REUSE_LISTS = Ref(true)                     # (off: the old behaviour, for timing comparisons)
+const MATERIALIZED = Ref([0, 0, 0])               # diagnostics: lists built, of them kept for prefixes counted in an earlier run, records
 const CACHE_EMPTIED = Ref(0)                     # diagnostics: times the cache was emptied for space
 const PASS_HOOK = Ref{Any}(nothing)              # diagnostics: (trials, short trials, pass skipped) per decision
 
@@ -1086,12 +1090,22 @@ only when a count has to scan them), updating its cached entry; returns its reco
 function materialize!(m::ChainModel, st::ChainState, k::Int)
   v = st.views[k+1]
   (m.keepfrac >= 1 && !isempty(v.filt)) || return v
-  L = buildlist(m, v)
-  v2 = RecView(L)
-  st.views[k+1] = v2
   key = st.keys[k+1]
   ce = get(m.cache, key, nothing)
-  ce === nothing || store!(m, key, (v2, ce[1][2]); built = length(L), nread = ce[2], persist = false)
+  if REUSE_LISTS[] && ce !== nothing && isempty(ce[1][1].filt)   # built already (by another chain reaching this prefix)
+    st.views[k+1] = ce[1][1]
+    return ce[1][1]
+  end
+  L = buildlist(m, v)
+  MATERIALIZED[][1] += 1; MATERIALIZED[][3] += length(L)
+  v2 = RecView(L)
+  st.views[k+1] = v2
+  if ce !== nothing
+    store!(m, key, (v2, ce[1][2]); built = length(L), nread = ce[2], persist = false)
+  elseif REUSE_LISTS[] && (pc = pcget(m.pcounts, key)) !== nothing   # counts from an earlier run: keep the list too, for next time
+    MATERIALIZED[][2] += 1
+    store!(m, key, (v2, pc); built = length(L), persist = false)
+  end
   v2
 end
 
@@ -1861,6 +1875,13 @@ function context_correction(m::ChainModel, X, ctx, label, prior, base)
   corr
 end
 
+"Does a leftover context entry (context + leftover) have the records `ctxsupport` asks for?"
+function ctxsupported(m::ChainModel, e, label)
+  m.opts.ctxsupport <= 0 && return true
+  (c1, c2) = get(e[2], label, (0.0, 0.0))
+  c1 + c2 >= m.opts.ctxsupport
+end
+
 function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, remaining)
   base = st.views[1].base                            # the decision type's records
   avail = copy(st.members)                           # chain features, (redundant ones,) then included leftovers
@@ -1894,6 +1915,17 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     advance!(m, SX, X, eX, yX)
     corr = okX ? log(yX) - log(prior) : 0.0
     chosen = UInt64[]
+    if m.opts.ctxfromchain                            # the chain first, in its order, as far as S∪X stays supported
+      for f in st.members
+        e1, e2 = only(extend_all(m, S, depth(S), [f])), only(extend_all(m, SX, depth(SX), [f]))
+        y1, ok1 = update_odds(m, e1, label, S.odds[end])
+        y2, ok2 = update_odds(m, e2, label, y1)
+        (ok1 && ok2 && ctxsupported(m, e2, label)) || break
+        advance!(m, S, f, e1, y1); advance!(m, SX, f, e2, y2)
+        push!(chosen, f)
+        corr = log(y2) - log(y1)
+      end
+    end
     while length(chosen) < needmax
       fs = UInt64[f for f in avail if !(f in chosen)]
       isempty(fs) && break
@@ -1904,7 +1936,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
       for (i, f) in enumerate(fs)
         y1, ok1 = update_odds(m, eS[i], label, oS)          # o(S∪f)
         y2, ok2 = update_odds(m, eSX[i], label, y1)         # o(S∪f∪X), toward o(S∪f)
-        (ok1 && ok2) || continue                             # S∪f∪X must be supported
+        (ok1 && ok2 && ctxsupported(m, eSX[i], label)) || continue   # S∪f∪X must be supported
         c = log(y2) - log(y1)
         sc = m.opts.greedyby == :correction ? abs(c - corr) : abs(log(y1) - log(oS))
         sc > best && ((best, bi, by1, by2, bcorr) = (sc, i, y1, y2, c))

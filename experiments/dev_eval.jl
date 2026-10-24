@@ -48,6 +48,10 @@
 #                preposition and the candidate's class and word ("" = none); events apart
 #   search       limited-discrepancy search in the full decode (src/search.jl): retry this many of each
 #                segment's least confident commits with their runner-up (0 = plain easy-first)
+#   ctxfromchain greedy leftovers: each context starts as the chain (as far as context + leftover stays
+#                supported), then extends greedily: true | false
+#   ctxsupport   greedy leftovers: a context step needs context + leftover with at least this many records
+#                for the label (0 = only mincount)
 #   ldsscore     how search compares paths: sum | mean (of the commits' log probabilities)
 #   ldsall       search may branch on char and sentence decisions too (default: token decisions only)
 #   pprel        with pptable: each PP item compares the candidate's rate with the best of the token's
@@ -122,7 +126,7 @@ const RESULTS = joinpath(HERE, "results.csv")
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
   "wmo" => 1e-3, "train_sents" => 500, "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
-  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
+  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "ctxfromchain" => "false", "ctxsupport" => 0, "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
 
 function parse_cfg(args)
@@ -245,6 +249,8 @@ function setup(cfg)
       cfg["climbleft"] != "deepest" && (chainopts = merge(chainopts, (climbleft = Symbol(cfg["climbleft"]),)))
       cfg["leftovers"] == "greedy" && (chainopts = merge(chainopts, (minctx = cfg["minctx"], greedyby = Symbol(cfg["greedyby"]))))
       cfg["leftovers"] == "greedy" && cfg["maxctx"] > 0 && (chainopts = merge(chainopts, (maxctx = cfg["maxctx"],)))
+      cfg["ctxfromchain"] == "true" && (chainopts = merge(chainopts, (ctxfromchain = true,)))
+      cfg["ctxsupport"] > 0 && (chainopts = merge(chainopts, (ctxsupport = cfg["ctxsupport"],)))
       cfg["leftovers"] == "greedy" && cfg["relevance"] > 0 && (chainopts = merge(chainopts, (relevance = cfg["relevance"],)))
       cfg["gate"] > 0 && (chainopts = merge(chainopts, (gate = cfg["gate"],)))
       cfg["pairsteps"] == "true" && (chainopts = merge(chainopts, (pairsteps = true, pairscore = Symbol(cfg["pairscore"]),

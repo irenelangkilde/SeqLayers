@@ -1,0 +1,56 @@
+=== baseline  Sat Oct 24 21:51:39 UTC 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 63.2 s): 14 of 34 slots always, 283 gate values
+ALL         2899    0.9979  0.7478  0.7051  0.0041  1.0     
+
+pipeline: 183 attachments inferred (0.063 of tokens), 1.0 of them right; 0 left with no candidate
+
+score 1238.4 s, run 20261024-221528 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true note=baseline"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 23:49.87
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 16544932
+	Average resident set size (kbytes): 0
+=== prune-1e-3  Sat Oct 24 22:15:29 UTC 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 63.1 s): 14 of 34 slots always, 283 gate values
+ALL         2899    0.9979  0.7627  0.7192  0.0431  1.0     
+
+pipeline: 1042 attachments inferred (0.359 of tokens), 0.967 of them right; 0 left with no candidate
+domains: attachment candidates 75104 -> 9802 after propagation (0.131)
+
+score 742.9 s, run 20261024-223102 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true domains=prune domeps=1e-3 note=prune-1e-3"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 15:33.94
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 20699724
+	Average resident set size (kbytes): 0
+=== product-1e-3  Sat Oct 24 22:31:03 UTC 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 63.2 s): 14 of 34 slots always, 283 gate values
+ALL         2899    0.9979  0.7754  0.7296  0.0431  1.0     
+
+pipeline: 1042 attachments inferred (0.359 of tokens), 0.967 of them right; 0 left with no candidate
+domains: attachment candidates 75104 -> 9802 after propagation (0.131)
+
+score 729.8 s, run 20261024-224620 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true domains=product domeps=1e-3 note=product-1e-3"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 15:18.43
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 20689964
+	Average resident set size (kbytes): 0
+=== product-1e-2  Sat Oct 24 22:46:21 UTC 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 63.3 s): 14 of 34 slots always, 283 gate values
+ALL         2899    0.9979  0.7737  0.7278  0.1069  1.0     
+
+pipeline: 1657 attachments inferred (0.572 of tokens), 0.906 of them right; 0 left with no candidate
+domains: attachment candidates 75104 -> 7957 after propagation (0.106)
+
+score 741.5 s, run 20261024-230151 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true domains=product domeps=1e-2 note=product-1e-2"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 15:30.72
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 20501068
+	Average resident set size (kbytes): 0
+=== all done Sat Oct 24 23:01:52 UTC 2026
