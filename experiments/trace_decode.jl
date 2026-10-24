@@ -7,6 +7,8 @@
 #                              chain (feature = value, odds after each step), leftovers (tried, included,
 #                              context, correction) and final score, scored just before the commit
 #   explaintop=60              show at most this many candidate values, best first
+#   explainat=head_upos        also explain the listed decisions, while still open, when this decision
+#                              of the token commits (e.g. an attachment later inferred, never decided)
 #
 # Confidence: the chosen value's probability among the decision's candidates (choose's softmax, with
 # "wait" for open decisions) and its margin in log-odds; Inf: the only candidate.  Decisions settled by
@@ -20,12 +22,15 @@ import SeqLayers: observe!, segment_done!, segment_discard!
 DEFAULTS["text"] = "I ran across the item in the internet."
 DEFAULTS["explain"] = ""
 DEFAULTS["explaintop"] = 60
+DEFAULTS["explainat"] = ""
 cfg = parse_cfg(["model=chain"; ARGS])
 s = setup(cfg)
 idx = s.idx
+PPT = isempty(cfg["pptable"]) ? nothing : load_pptable(cfg["pptable"], joinpath(dirname(dirname(cfg["pptable"])), "classes5"))
 widx = CharIndex(idx.fwd, idx.rev, idx.gap, idx.saL, idx.saR, idx.cumL, idx.cumR, idx.prior, IdDict{Doc,Int}(), idx.maxlen, idx.mincount, idx.beta)
 specs = default_specs(charindex = widx, wordclasses = s.wc, suffixes = s.sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true",
-  projective = cfg["projective"] == "true", relations = cfg["relations"] == "true", headsdist = cfg["headsdist"] == "true")
+  projective = cfg["projective"] == "true", relations = cfg["relations"] == "true", headsdist = cfg["headsdist"] == "true",
+  pptable = PPT)
 eventsdir, opts = s.recipe
 m = ChainModel(eventsdir; opts...)
 pc = S.load_counts(eventsdir, eventsig(eventsdir))
@@ -66,6 +71,8 @@ function slotdesc(st, d, t, c, s)
     s == 2 && return "direction"
     lp = S.LINKPATHS[st.layers[:token].spec]
     a = (s - 3) ÷ 2 + 1
+    n = length(d.items(st, t, c))
+    PPT !== nothing && s > n - 2 && return ppdesc(st, t, c, s - (n - 2))
     a > length(lp) && return "slot $s"
     side, u = isodd(s - 3) ? ("cand", c) : ("dep", UInt32(t))
     return "$side.$(ctxname(ctx[lp[a]]))=$(u == NONE ? "none" : ctxval(st, Int(u), ctx[lp[a]]))"
@@ -73,6 +80,25 @@ function slotdesc(st, d, t, c, s)
   s <= length(ctx) || return "slot $s"
   ctxname(ctx[s]) * "=" * ctxval(st, t, ctx[s])
 end
+"Name and bucket of the PP table item k (1: candidate's class rate, 2: its word's rate) for t -> c."
+function ppdesc(st, t, c, k)
+  name = k == 1 ? "cand.ppclass" : "cand.ppword"
+  p = c == S.NONE ? nothing : S.case_prep(st, t)
+  (p === nothing || !haskey(PPT.base, p)) && return "$name=absent"
+  w = lowercase(S.tokstr(st, Int(c)))
+  if k == 1
+    cl = get(PPT.formclass, w, Int32(0))
+    (cl == 0 || !haskey(PPT.classocc, cl)) && return "$name($p)=unknown"
+    npp, nocc = get(PPT.classpp, (cl, p), 0.0), PPT.classocc[cl]
+  else
+    haskey(PPT.formocc, w) || return "$name($p)=unknown"
+    npp, nocc = get(PPT.formpp, (w, p), 0.0), PPT.formocc[w]
+  end
+  b = S.pp_bucket(npp, nocc, PPT.base[p])
+  rate = round(100 * (npp + 20 * PPT.base[p]) / (nocc + 20); sigdigits = 2)
+  "$name($p)=$b ($rate per 100)"
+end
+
 function explain(st, key)
   lname, k, t = key
   d = st.layers[lname].spec.decisions[k]
@@ -120,6 +146,14 @@ function observe!(r::TraceRec, st, key, choice)
   if !isempty(ex) && lname == :token
     w, names = split(ex, ':')
     S.tokstr(st, i) == w && string(d.name) in split(names, ',') && explain(st, key)
+    at = cfg["explainat"]                            # also explain those decisions (still open) when this one commits
+    if !isempty(at) && S.tokstr(st, i) == w && string(d.name) == at
+      ds = st.layers[lname].spec.decisions
+      for nm in split(names, ',')
+        k2 = findfirst(x -> string(x.name) == nm, ds)
+        k2 === nothing || k2 == k || explain(st, (lname, k2, i))
+      end
+    end
   end
   _, margin = decide(m, st, key)                     # (the agenda's own score for this commit)
   p = margin == Inf ? 1.0 : 1 / (1 + exp(-margin))

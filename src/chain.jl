@@ -176,6 +176,7 @@ struct ChainOpts
   poolmode::Symbol                                # :whole (rebuild the chain with g for w; blend) | :local (at w's step; scale)
   poolmarginal::Symbol                            # pool features weak on their own too (:off) | send them to the leftovers (:leftover) | drop them (:drop)
   poolkeepgen::Bool                               # poolmarginal with poolsigma: exempt generalizations of chain forms
+  poolscale::Symbol                               # soft pool distance: :logodds (d_g) | :z (d_g / SE of the chain's final log odds)
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -281,7 +282,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
@@ -289,6 +290,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   stepscore in (:abs, :signed, :maxmin, :maxmin2) || error("unknown stepscore $stepscore (use :abs, :signed, :maxmin or :maxmin2)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
   poolmarginal in (:off, :leftover, :drop) || error("unknown poolmarginal $poolmarginal (use :off, :leftover or :drop)")
+  poolscale in (:logodds, :z) || error("unknown poolscale $poolscale (use :logodds or :z)")
   poolmode in (:whole, :local) || error("unknown poolmode $poolmode (use :whole or :local)")
   restart in (:immediate, :exhaust) || error("unknown restart $restart")
   screenby in (:maxdev, :clr_rms) || error("unknown screenby $screenby")
@@ -336,7 +338,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -1783,7 +1785,9 @@ end
 Soft pool weights (poolsigma): for each chain form w with generalization slots g in the pool (upos, xpos,
 classes, ... of the same token), how well g stands in for w here: the chain's odds rebuilt with w
 replaced by g, d_g = |log o(c | prefix with g for w) - log o(c | prefix)|, weight exp(-d_g / sigma)
-(0 if the replaced chain isn't supported).
+(0 if the replaced chain isn't supported).  poolscale :z (whole mode): d_g in standard errors of the
+chain's final log odds, SE = sqrt(1/n_chosen + 1/n_not) from its final prefix's counts for the
+label (raw counts; the smoothing toward earlier stages is ignored).
 """
 function generalization_weights!(poolw, m::ChainModel, st::ChainState, Ic, label, prior, base, pool)
   isempty(base) && return poolw
@@ -1803,6 +1807,18 @@ function generalization_weights!(poolw, m::ChainModel, st::ChainState, Ic, label
     end
     return poolw
   end
+  scale = 1.0
+  if m.opts.poolscale == :z && !isempty(st.members)  # the chain's final prefix counts, rebuilt (cached entries)
+    S = ChainState(prior, base)
+    e = nothing
+    for f in st.members
+      e = only(extend_all(m, S, depth(S), [f]))
+      y, _ = update_odds(m, e, label, S.odds[end])
+      advance!(m, S, f, e, y)
+    end
+    (c1, c2) = get(e[2], label, (0.0, 0.0))
+    scale = c1 > 0 && c2 > 0 ? sqrt(1 / c1 + 1 / c2) : 1.0
+  end
   for w in st.members
     sw = findfirst(==(w), Ic)
     (sw === nothing || !haskey(G, sw)) && continue
@@ -1818,7 +1834,7 @@ function generalization_weights!(poolw, m::ChainModel, st::ChainState, Ic, label
         ok || break
         advance!(m, S, x, e, y)
       end
-      poolw[g] = ok ? exp(-abs(log(S.odds[end]) - log(o0)) / m.opts.poolsigma) : 0.0
+      poolw[g] = ok ? exp(-abs(log(S.odds[end]) - log(o0)) / scale / m.opts.poolsigma) : 0.0
     end
   end
   poolw

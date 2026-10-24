@@ -1,0 +1,13 @@
+=== z1  Sat Oct 24 12:59:23 MDT 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 29.2 s): 14 of 32 slots always, 283 gate values
+ALL         2899    0.9979  0.7478  0.7051  0.0041  1.0     
+
+score 1273.6 s, run 20261024-132222 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== z2  Sat Oct 24 13:22:22 MDT 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events
+      From worker 6:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 29.6 s): 14 of 32 slots always, 283 gate values
+ALL         2899    0.9979  0.7475  0.7033  0.0041  1.0     
+
+score 1346.9 s, run 20261024-134613 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Sat Oct 24 13:46:13 MDT 2026
