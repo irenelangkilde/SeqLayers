@@ -1,0 +1,13 @@
+=== soft01-drop  Sat Oct 24 09:54:27 MDT 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events
+      From worker 6:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 30.8 s): 14 of 32 slots always, 283 gate values
+ALL         2899    0.9979  0.7472  0.7037  0.0041  1.0     
+
+score 1118.1 s, run 20261024-101447 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== soft01-drop-keepgen  Sat Oct 24 10:14:48 MDT 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 29.2 s): 14 of 32 slots always, 283 gate values
+ALL         2899    0.9979  0.7478  0.7044  0.0041  1.0     
+
+score 940.7 s, run 20261024-103153 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Sat Oct 24 10:31:54 MDT 2026
