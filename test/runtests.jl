@@ -244,6 +244,25 @@ end
       @test 0 <= r.uas <= 1
       @test SeqLayers.LDS_STATS[:branches] > 0
     end
+    # domain variables: a pruned head direction removes the candidates on that side
+    sd = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, specs, lex)
+    solve!(sd, OracleModel())
+    tk_ = sd.layers[:token]
+    t_ = findfirst(t -> tk_[:attach, t] != NONE && tk_[:attach, t] != PENDING &&
+      tk_[:first_char, Int(tk_[:attach, t])] < tk_[:first_char, t], 1:length(tk_))     # its head on the left
+    for n in [:attach; SeqLayers.headnames(tk_)]
+      tk_[n, t_] = PENDING
+    end
+    SeqLayers.refresh!(sd)
+    cs = SeqLayers.attach_candidates(sd, t_)
+    L, R, Rt = (SeqLayers.headcode(:head_dir, x) for x in ("left", "right", "root"))
+    props = Dict(:head_dir => (UInt32[L, R, Rt], [0.9995, 0.0001, 0.0004]))
+    alive, D = SeqLayers.propagate_domains(sd, t_, cs, fill(1 / length(cs), length(cs)), props; eps = 1e-3)
+    @test D[:head_dir] == Set([L])
+    @test all(SeqLayers.head_value(sd, t_, cs[j], :head_dir) == L for j in alive)
+    @test length(alive) == count(h -> SeqLayers.head_value(sd, t_, h, :head_dir) == L, cs)
+    c1, n1 = SeqLayers.domain_choice(sd, t_, cs, fill(1 / length(cs), length(cs)), props; mode = :product)
+    @test SeqLayers.head_value(sd, t_, c1, :head_dir) == L && n1 == length(alive)
     st0 = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, specs, lex)
     st1 = SeqLayers.copy_state(st0)
     solve!(st1, mg)

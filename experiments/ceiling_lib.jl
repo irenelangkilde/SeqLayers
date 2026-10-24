@@ -9,7 +9,10 @@
 # sure of (as easy-first decoding would: unsure ones stay pending), let them narrow the candidates
 # (strictly), infer the attachment if one candidate is left, else let the model choose.  With
 # `headgold`, the named head properties are given at their gold values instead of predicted: a
-# ceiling for the attachment mechanism (narrowing, inference, then the attachment choice).
+# ceiling for the attachment mechanism (narrowing, inference, then the attachment choice).  With
+# `domains` (:prune or :product), no head property is committed: the attachment and head
+# properties keep domains (values with probability >= `domeps`) narrowed by propagation, and the
+# attachment is chosen over its domain (src/domains.jl).
 
 using SeqLayers
 import SeqLayers: observe!, segment_done!, segment_discard!
@@ -25,9 +28,11 @@ mutable struct CeilingRecorder
   headgold::Vector{Symbol}                       # pipeline: head properties given at their gold values
   c::Dict{Symbol,Int}
   parts::Union{Nothing,Vector{Any}}              # calibration: per decision (type, chain log odds, corrections, wait, gold index)
+  domains::Symbol                                # pipeline with domain variables: :off | :prune | :product
+  domeps::Float64
 end
-CeilingRecorder(model, doc, scoretags, headconf, headgold = Symbol[]; collect = false) =
-  CeilingRecorder(model, doc, scoretags, headconf, headgold, Dict(k => 0 for k in CEILING_COUNTS), collect ? Any[] : nothing)
+CeilingRecorder(model, doc, scoretags, headconf, headgold = Symbol[]; collect = false, domains = :off, domeps = 1e-3) =
+  CeilingRecorder(model, doc, scoretags, headconf, headgold, Dict(k => 0 for k in CEILING_COUNTS), collect ? Any[] : nothing, domains, domeps)
 
 """
 `decide`, recording for calibration (when r.parts is set) each candidate's chain log odds and leftover
@@ -120,6 +125,7 @@ function pipeline_attach!(r::CeilingRecorder, st, t, gold::UInt32)
   old = [toks[n, t] for n in names]
   foreach(n -> (toks[n, t] = PENDING), names)
   SeqLayers.refresh!(st)
+  r.domains == :off || return domains_attach!(r, st, t, gold, hk, old, names)
   try
     res = [decs[k].name in r.headgold ? (old[j+1], Inf) : rdecide(r, st, (:token, k, t), old[j+1]) for (j, k) in enumerate(hk)]
     # the separate direction and distance predictions both right (compare head_sdist's accuracy)
@@ -155,6 +161,53 @@ function pipeline_attach!(r::CeilingRecorder, st, t, gold::UInt32)
     end
     isempty(cands) && (r.c[:nocands] += 1; return PENDING, false)
     first(rdecide(r, st, (:token, 1, t), gold)), gold in cands
+  finally
+    foreach(((n, v),) -> (toks[n, t] = v), zip(names, old))
+    SeqLayers.refresh!(st)
+  end
+end
+
+"""
+pipeline_attach! with domain variables (r.domains): every head property and the attachment
+predicted with all of them hidden, as distributions; their domains narrowed together; the
+attachment chosen over its domain (SeqLayers.domain_choice).  Head properties in r.headgold are
+given: a one-value domain.
+"""
+function domains_attach!(r::CeilingRecorder, st, t, gold::UInt32, hk, old, names)
+  toks = st.layers[:token]
+  decs = toks.spec.decisions
+  try
+    props = Dict{Symbol,Tuple{Vector{UInt32},Vector{Float64}}}()
+    for (j, k) in enumerate(hk)
+      name = decs[k].name
+      if name in r.headgold
+        props[name] = ([old[j+1]], [1.0])
+        continue
+      end
+      dist = SeqLayers.commit_dist(r.model, st, (:token, k, t))
+      dist === nothing && continue
+      vals, lps = dist
+      ps = exp.(lps)
+      props[name] = (vals, ps)
+      for (m, x) in (("n", true), ("ok", vals[argmax(ps)] == old[j+1]))
+        key = Symbol("tag|", name, "|", m)
+        r.c[key] = get(r.c, key, 0) + x
+      end
+    end
+    d = SeqLayers.decisiondef(st, (:token, 1, t))
+    d.ready(st, t) || (r.c[:notready] += 1; return PENDING, false)
+    cands = d.candidates(st, t)
+    isempty(cands) && (r.c[:nocands] += 1; return PENDING, false)
+    length(cands) == 1 && return only(cands), gold in cands
+    dist = SeqLayers.commit_dist(r.model, st, (:token, 1, t))
+    dist === nothing && return first(rdecide(r, st, (:token, 1, t), gold)), gold in cands
+    acands, alps = dist
+    alive, D = SeqLayers.propagate_domains(st, t, acands, exp.(alps), props; eps = r.domeps)
+    choice, nalive = SeqLayers.domain_choice(st, t, acands, exp.(alps), props; eps = r.domeps, mode = r.domains)
+    nalive == 1 && (r.c[:inferred] += 1; r.c[:inferred_ok] += choice == gold)
+    r.c[:dom_cands] = get(r.c, :dom_cands, 0) + length(acands)
+    r.c[:dom_alive] = get(r.c, :dom_alive, 0) + nalive
+    choice, gold in acands[alive]
   finally
     foreach(((n, v),) -> (toks[n, t] = v), zip(names, old))
     SeqLayers.refresh!(st)
@@ -203,8 +256,9 @@ function breakdown!(c, st, t, a, rel, pa, pr)
 end
 
 "Perfect-context counts for one dev doc."
-function ceiling_counts(doc::Doc, specs, model, lex; scoretags = true, headconf = 0.0, headgold = Symbol[], collect = false, kw...)
-  r = CeilingRecorder(model, doc, scoretags, headconf, headgold; collect)
+function ceiling_counts(doc::Doc, specs, model, lex; scoretags = true, headconf = 0.0, headgold = Symbol[], collect = false,
+  domains = :off, domeps = 1e-3, kw...)
+  r = CeilingRecorder(model, doc, scoretags, headconf, headgold; collect, domains, domeps)
   process(doc, specs, OracleModel(), lex; observer = r, kw...)
   r.c[:tok_gold] = length(doc.gold.head)
   collect ? (r.c, r.parts) : r.c

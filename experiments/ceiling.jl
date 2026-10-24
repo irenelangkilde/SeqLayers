@@ -16,6 +16,8 @@
 #              probability is at least this (0 = always); "tag" rows "<name>@committed" are those
 #   headgold   pipeline: these head properties are given at their gold values, not predicted
 #              (all, or a list like head_dir,head_dist): a ceiling for the attachment mechanism
+#   domains    pipeline with domain variables instead of commits: off | prune | product (src/domains.jl);
+#              domeps: the probability below which a value leaves its domain (default 1e-3)
 #   on         dev (default) | tune: score the held-out tuning docs instead (dev_eval.jl tune_sents)
 #   calibrate  true: also fit the weight of the greedy leftovers' corrections per decision type
 #              (score = chain + alpha * corrections, maximizing the likelihood of the gold choices
@@ -82,7 +84,8 @@ function ceiling_main(cfg)
   headgold = cfg["headgold"] == "all" ? collect(keys(SeqLayers.ALLHEADSETS)) :
     isempty(cfg["headgold"]) ? Symbol[] : Symbol.(split(cfg["headgold"], ','))
   all(n -> haskey(SeqLayers.ALLHEADSETS, n), headgold) || error("headgold: names are $(join(keys(SeqLayers.ALLHEADSETS), ", "))")
-  res = pmap(p -> (p[1], ceiling_counts(p[2], WSPECS, WMODEL, WLEX; scoretags, headconf, headgold, collect = cal)), devdocs[order])
+  domains, domeps = Symbol(cfg["domains"]), cfg["domeps"]
+  res = pmap(p -> (p[1], ceiling_counts(p[2], WSPECS, WMODEL, WLEX; scoretags, headconf, headgold, collect = cal, domains, domeps)), devdocs[order])
   counts = cal ? [(tb, c[1]) for (tb, c) in res] : res
   parts = cal ? reduce(vcat, [c[2] for (_, c) in res]; init = Any[]) : Any[]
   save_countcache(cfg, s)
@@ -113,6 +116,8 @@ function ceiling_main(cfg)
   a = bytb["ALL"]
   a[:inferred] + a[:nocands] > 0 && println("\npipeline: $(a[:inferred]) attachments inferred ($(round(a[:inferred] / max(a[:tok_n], 1); digits = 3)) of tokens), ",
     "$(round(a[:inferred_ok] / max(a[:inferred], 1); digits = 3)) of them right; $(a[:nocands]) left with no candidate")
+  get(a, :dom_cands, 0) > 0 && println("domains: attachment candidates $(a[:dom_cands]) -> $(a[:dom_alive]) after propagation ",
+    "($(round(a[:dom_alive] / a[:dom_cands]; digits = 3)))")
   write_breakdown(runid, modelname, cfg, bytb["ALL"])
   cal && calibrate_report(cfg, s, parts)
   println("score $(round(score_s; digits = 1)) s, run $runid → $CEILING_RESULTS, $BREAKDOWN_RESULTS")
@@ -121,6 +126,8 @@ end
 DEFAULTS["tags"] = "true"
 DEFAULTS["headconf"] = 0.9
 DEFAULTS["headgold"] = ""
+DEFAULTS["domains"] = "off"
+DEFAULTS["domeps"] = 1e-3
 DEFAULTS["on"] = "dev"
 DEFAULTS["calibrate"] = "false"
 

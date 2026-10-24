@@ -5,6 +5,8 @@
 # Takes dev_eval.jl's options (model=chain etc.; see its header) plus:
 #   docs=1          the n smallest dev docs (from dev_sents's selection)
 #   flat=300        print the flat profile, entries with at least this many samples (0 = no profile)
+#   warm=1          first decode this many other small docs unprofiled (compilation, caches), then
+#                   empty the score memo so the profiled docs are scored afresh
 # and honours countcache (loading the events' saved counts first, saving new ones after).
 #
 # Prints the time, correct heads and labels (perfect-context ceiling, as ceiling.jl), how often the
@@ -19,15 +21,18 @@ const S = SeqLayers
 
 DEFAULTS["docs"] = 1
 DEFAULTS["flat"] = 300
+DEFAULTS["warm"] = 1
 DEFAULTS["headconf"] = 1.0
 cfg = parse_cfg(ARGS)
 cfg["model"] == "chain" || error("profile_chain.jl profiles the chain model (model=chain)")
 s = setup(cfg)
 idx = s.idx
 widx = CharIndex(idx.fwd, idx.rev, idx.gap, idx.saL, idx.saR, idx.cumL, idx.cumR, idx.prior, IdDict{Doc,Int}(), idx.maxlen, idx.mincount, idx.beta)
-specs = default_specs(charindex = widx, wordclasses = s.wc, suffixes = s.sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true")
+specs = default_specs(charindex = widx, wordclasses = s.wc, suffixes = s.sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true",
+  projective = cfg["projective"] == "true", relations = cfg["relations"] == "true", headsdist = cfg["headsdist"] == "true")
 eventsdir, opts = s.recipe
 m = ChainModel(eventsdir; opts...)
+cfg["poolsigma"] > 0 && (m.generalize = S.generalization_slots(specs))
 cfg["classleft"] == "true" || (m.noleft = S.wclass_slots(specs))
 if cfg["countcache"] == "true"
   m.keepcounts = true
@@ -36,7 +41,12 @@ if cfg["countcache"] == "true"
   pc !== nothing && (m.pcounts = pc)
   println("count cache: loaded $(length(m.pcounts)) feature sets")
 end
-docs = sort([d for (_, d) in s.devdocs]; by = d -> length(d.text))[1:cfg["docs"]]
+alldocs = sort([d for (_, d) in s.devdocs]; by = d -> length(d.text))
+warmdocs = alldocs[1:cfg["warm"]]
+docs = alldocs[cfg["warm"]+1:cfg["warm"]+cfg["docs"]]
+tw = @elapsed foreach(d -> ceiling_counts(d, specs, m, s.lex; scoretags = false, headconf = cfg["headconf"]), warmdocs)
+empty!(m.memo)
+println("warm-up: $(length(warmdocs)) docs, $(sum(d -> length(d.gold.head), warmdocs; init = 0)) tokens, $(round(tw; digits = 1)) s")
 
 const STATS = Dict(k => [0, 0] for k in (:chain, :greedy))        # [scans, records read]
 const BASES = Dict(k => Int[] for k in (:chain, :greedy))
@@ -73,5 +83,12 @@ if cfg["countcache"] == "true"
 end
 if cfg["flat"] > 0
   println()
-  Profile.print(format = :flat, sortedby = :count, mincount = cfg["flat"], noisefloor = 2)
+  println("== inclusive samples, SeqLayers and experiment code only")
+  buf = IOBuffer()
+  Profile.print(IOContext(buf, :displaysize => (1000, 220)), format = :flat, sortedby = :count, mincount = cfg["flat"], noisefloor = 2)
+  for l in split(String(take!(buf)), '\n')
+    (occursin("SeqLayers/src", l) || occursin("iments/", l) || occursin("Count", l)) && println(l)
+  end
+  println("\n== self time (overhead), top entries")
+  Profile.print(IOContext(stdout, :displaysize => (60, 220)), format = :flat, sortedby = :overhead, mincount = cfg["flat"] ÷ 3, noisefloor = 2)
 end

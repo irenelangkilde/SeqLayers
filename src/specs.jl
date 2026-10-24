@@ -361,6 +361,28 @@ function settle!(st, lname, k, i, v)
 end
 
 """
+The value of head property `name` that attaching t to h (NONE: root) gives: PENDING while it
+isn't known yet (the words between not tokenized, or the head's tag not decided).
+"""
+function head_value(st, t, h, name)
+  toks = st.layers[:token]
+  if h == NONE
+    ALLHEADSETS[name] |> ls -> UInt32(findfirst(l -> lowercase(l) == "root", ls))
+  elseif name == :head_sdist
+    d = word_distance(st, t, h)
+    d === nothing ? PENDING : headcode(name, (toks[:first_char, h] < toks[:first_char, t] ? "L" : "R") * distlabel(d))
+  elseif name == :head_dir
+    headcode(name, toks[:first_char, h] < toks[:first_char, t] ? "left" : "right")
+  elseif name == :head_dist
+    d = word_distance(st, t, h)
+    d === nothing ? PENDING : headcode(name, distlabel(d))
+  else
+    tag = toks[name == :head_upos ? :upos : :xpos, h]
+    tag == PENDING ? PENDING : headcode(name, TAGSETS[name == :head_upos ? :upos : :xpos][tag])
+  end
+end
+
+"""
 Backward step: a committed attachment determines its token's head properties.  Fills those still
 pending as far as they're known: all of them for a root; direction always; distance once the
 words between are tokenized; the head's tags once they're decided (so a later tag commit fills
@@ -378,20 +400,7 @@ function derive_heads!(st, j)
     h == PENDING && continue
     for (name, k) in ks
       toks[name, t] == PENDING || continue
-      v = if h == NONE
-        ALLHEADSETS[name] |> ls -> UInt32(findfirst(l -> lowercase(l) == "root", ls))
-      elseif name == :head_sdist
-        d = word_distance(st, t, h)
-        d === nothing ? PENDING : headcode(name, (toks[:first_char, h] < toks[:first_char, t] ? "L" : "R") * distlabel(d))
-      elseif name == :head_dir
-        headcode(name, toks[:first_char, h] < toks[:first_char, t] ? "left" : "right")
-      elseif name == :head_dist
-        d = word_distance(st, t, h)
-        d === nothing ? PENDING : headcode(name, distlabel(d))
-      else
-        tag = toks[name == :head_upos ? :upos : :xpos, h]
-        tag == PENDING ? PENDING : headcode(name, TAGSETS[name == :head_upos ? :upos : :xpos][tag])
-      end
+      v = head_value(st, t, h, name)
       v == PENDING && continue
       settle!(st, :token, k, t, v)
       changed = true
