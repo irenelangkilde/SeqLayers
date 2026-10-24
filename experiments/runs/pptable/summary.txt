@@ -1,0 +1,23 @@
+=== pptable-base  Sat Oct 24 05:26:47 UTC 2026
+recorded events in 527.6 s
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.2 s): 16 of 34 slots always, 295 gate values
+ALL         2899    0.9979  0.7465  0.704   0.0041  1.0     
+
+score 2256.4 s, run 20261024-061604 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true pptable=/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/pptable/pptable.tsv note=pptable-base"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 49:17.96
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 13985436
+	Average resident set size (kbytes): 0
+=== pptable-pairs  Sat Oct 24 06:16:05 UTC 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-pp/events
+      From worker 7:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.2 s): 16 of 34 slots always, 295 gate values
+ALL         2899    0.9981  0.7706  0.7292  0.0041  1.0     
+
+score 9530.7 s, run 20261024-085743 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true pptable=/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/pptable/pptable.tsv pairsteps=true pairscore=synergy note=pptable-pairs"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:41:39
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 36946980
+	Average resident set size (kbytes): 0
+=== all done Sat Oct 24 08:57:44 UTC 2026

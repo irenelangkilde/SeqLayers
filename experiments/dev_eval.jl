@@ -62,6 +62,8 @@
 #   poolmode     soft pool weights: whole (rebuild the chain with g for w; leftovers blend toward their
 #                context without g) | local (at w's own chain step; leftover corrections scaled by the
 #                product of their generalizations' weights)
+#   poolmarginal with redundant=true: pool only features informative on their own (marginal |change in log
+#                odds| >= tau) that the chain makes redundant; the rest stay leftovers (relevance filter): true | false
 #   ctxsize      greedy leftovers' context size: min (at least minctx) | chain (exactly the chain's length) |
 #                adaptive (at least max(1, min(minctx, chain length + redundant pool)))
 #   stepscore    maxdev chain step score: abs (|log y - log x|) | signed (log y - log x: the feature
@@ -110,7 +112,7 @@ const RESULTS = joinpath(HERE, "results.csv")
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
   "wmo" => 1e-3, "train_sents" => 500, "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
-  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
+  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
 
 function parse_cfg(args)
@@ -242,7 +244,7 @@ function setup(cfg)
       cfg["lockstep"] != "none" && (chainopts = merge(chainopts, (lockstep = Symbol(cfg["lockstep"]),)))
       cfg["stepscore"] != "abs" && (chainopts = merge(chainopts, (stepscore = Symbol(cfg["stepscore"]),)))
       cfg["redundant"] == "true" && (chainopts = merge(chainopts, (redundant = true, poolsigma = cfg["poolsigma"],
-        poolmode = Symbol(cfg["poolmode"]))))
+        poolmode = Symbol(cfg["poolmode"]), poolmarginal = cfg["poolmarginal"] == "true")))
       cfg["ctxsize"] != "min" && (chainopts = merge(chainopts, (ctxsize = Symbol(cfg["ctxsize"]),)))
       cfg["poolm"] > 0 && (chainopts = merge(chainopts, (poolm = cfg["poolm"], poollam = cfg["poollam"], poolgain = cfg["poolgain"], pairscore = Symbol(cfg["pairscore"]), pairfilter = cfg["pairfilter"] == "true")))
       model = nothing

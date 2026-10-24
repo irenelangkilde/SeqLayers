@@ -1,0 +1,48 @@
+=== calibrate  Fri Oct 23 16:45:52 UTC 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 63.9 s): 14 of 34 slots always, 283 gate values
+ALL         8289    0.9973  0.7546  0.7106  0.0024  1.0     
+
+alpha table -> /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events/alpha.tsv
+score 3932.3 s, run 20261023-175445 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 maxcached=50000000 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true workers=3 noise=20 on=tune calibrate=true note=calibrate"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:09:00
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 12273056
+	Average resident set size (kbytes): 0
+calibration: weight of the leftovers' corrections per decision type (fit on tune docs)
+decision          n  alpha     ll(1)  ll(alpha)  acc(1)  acc(a)
+attach         7723    0.4   -7369.5    -6922.0  0.7392   0.739
+    alpha=1     [0.0,0.5): n 835 conf 0.391 acc 0.329; [0.5,0.8): n 1715 conf 0.65 acc 0.506; [0.8,0.9): n 834 conf 0.855 acc 0.681; [0.9,0.95): n 679 conf 0.928 acc 0.782; [0.95,0.99): n 1471 conf 0.974 acc 0.908; [0.99,1.0): n 2189 conf 0.997 acc 0.974
+    alpha=0.4   [0.0,0.5): n 993 conf 0.389 acc 0.308; [0.5,0.8): n 1813 conf 0.654 acc 0.512; [0.8,0.9): n 856 conf 0.854 acc 0.73; [0.9,0.95): n 706 conf 0.928 acc 0.843; [0.95,0.99): n 1500 conf 0.974 acc 0.943; [0.99,1.0): n 1855 conf 0.997 acc 0.991
+deprel         8289   0.38   -2905.6    -2692.4  0.9128  0.9163
+    alpha=1     [0.0,0.5): n 205 conf 0.413 acc 0.302; [0.5,0.8): n 617 conf 0.656 acc 0.476; [0.8,0.9): n 337 conf 0.856 acc 0.763; [0.9,0.95): n 312 conf 0.928 acc 0.84; [0.95,0.99): n 788 conf 0.975 acc 0.907; [0.99,1.0): n 6030 conf 0.999 acc 0.991
+    alpha=0.38  [0.0,0.5): n 246 conf 0.415 acc 0.293; [0.5,0.8): n 655 conf 0.657 acc 0.542; [0.8,0.9): n 349 conf 0.853 acc 0.768; [0.9,0.95): n 319 conf 0.928 acc 0.853; [0.95,0.99): n 844 conf 0.975 acc 0.927; [0.99,1.0): n 5876 conf 0.999 acc 0.995
+gap           27170   0.34    -370.6     -304.1  0.9966  0.9969
+    alpha=1     [0.5,0.8): n 56 conf 0.69 acc 0.625; [0.8,0.9): n 41 conf 0.852 acc 0.561; [0.9,0.95): n 47 conf 0.926 acc 0.745; [0.95,0.99): n 87 conf 0.975 acc 0.874; [0.99,1.0): n 26939 conf 1.0 acc 0.999
+    alpha=0.34  [0.5,0.8): n 47 conf 0.662 acc 0.638; [0.8,0.9): n 40 conf 0.855 acc 0.475; [0.9,0.95): n 36 conf 0.928 acc 0.778; [0.95,0.99): n 111 conf 0.975 acc 0.838; [0.99,1.0): n 26936 conf 1.0 acc 0.999
+head_dir       8289   0.44   -3195.9    -2959.9  0.8819   0.886
+    alpha=1     [0.0,0.5): n 72 conf 0.466 acc 0.431; [0.5,0.8): n 806 conf 0.66 acc 0.569; [0.8,0.9): n 522 conf 0.856 acc 0.64; [0.9,0.95): n 470 conf 0.928 acc 0.747; [0.95,0.99): n 1080 conf 0.976 acc 0.856; [0.99,1.0): n 5339 conf 0.999 acc 0.976
+    alpha=0.44  [0.0,0.5): n 72 conf 0.464 acc 0.417; [0.5,0.8): n 891 conf 0.665 acc 0.575; [0.8,0.9): n 477 conf 0.858 acc 0.694; [0.9,0.95): n 504 conf 0.929 acc 0.746; [0.95,0.99): n 1079 conf 0.976 acc 0.86; [0.99,1.0): n 5266 conf 0.999 acc 0.981
+head_dist      8289    0.3   -9407.3    -8849.7  0.6278  0.6352
+    alpha=1     [0.0,0.5): n 992 conf 0.42 acc 0.324; [0.5,0.8): n 2688 conf 0.65 acc 0.465; [0.8,0.9): n 1080 conf 0.853 acc 0.591; [0.9,0.95): n 710 conf 0.926 acc 0.67; [0.95,0.99): n 1182 conf 0.973 acc 0.81; [0.99,1.0): n 1637 conf 0.997 acc 0.954
+    alpha=0.3   [0.0,0.5): n 1142 conf 0.42 acc 0.344; [0.5,0.8): n 2809 conf 0.649 acc 0.475; [0.8,0.9): n 1047 conf 0.853 acc 0.657; [0.9,0.95): n 714 conf 0.926 acc 0.696; [0.95,0.99): n 1059 conf 0.974 acc 0.836; [0.99,1.0): n 1518 conf 0.997 acc 0.966
+head_upos      8289   0.36   -7977.6    -7555.9  0.7161  0.7234
+    alpha=1     [0.0,0.5): n 682 conf 0.423 acc 0.349; [0.5,0.8): n 2033 conf 0.657 acc 0.498; [0.8,0.9): n 940 conf 0.852 acc 0.629; [0.9,0.95): n 816 conf 0.927 acc 0.695; [0.95,0.99): n 1318 conf 0.973 acc 0.837; [0.99,1.0): n 2500 conf 0.998 acc 0.97
+    alpha=0.36  [0.0,0.5): n 716 conf 0.423 acc 0.366; [0.5,0.8): n 2102 conf 0.657 acc 0.51; [0.8,0.9): n 1033 conf 0.853 acc 0.651; [0.9,0.95): n 810 conf 0.927 acc 0.732; [0.95,0.99): n 1264 conf 0.973 acc 0.86; [0.99,1.0): n 2364 conf 0.998 acc 0.978
+head_xpos      8289   0.36  -12699.9   -12197.4  0.5741  0.5778
+    alpha=1     [0.0,0.5): n 2489 conf 0.355 acc 0.231; [0.5,0.8): n 1866 conf 0.641 acc 0.432; [0.8,0.9): n 717 conf 0.852 acc 0.651; [0.9,0.95): n 571 conf 0.928 acc 0.741; [0.95,0.99): n 1007 conf 0.974 acc 0.88; [0.99,1.0): n 1639 conf 0.997 acc 0.976
+    alpha=0.36  [0.0,0.5): n 2706 conf 0.342 acc 0.229; [0.5,0.8): n 1833 conf 0.637 acc 0.469; [0.8,0.9): n 672 conf 0.854 acc 0.714; [0.9,0.95): n 544 conf 0.928 acc 0.774; [0.95,0.99): n 979 conf 0.973 acc 0.895; [0.99,1.0): n 1555 conf 0.997 acc 0.985
+alpha table -> /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events/alpha.tsv
+=== leftalpha  Fri Oct 23 17:54:53 UTC 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 64.1 s): 14 of 34 slots always, 283 gate values
+ALL         2899    0.9985  0.7492  0.7089  0.0041  1.0     
+
+score 1105.0 s, run 20261023-181628 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 maxcached=50000000 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true workers=6 noise=20 leftalpha=experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events/alpha.tsv note=leftalpha"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 21:36.63
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 12538460
+	Average resident set size (kbytes): 0
+=== train2000-pairs  Fri Oct 23 18:16:29 UTC 2026
