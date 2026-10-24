@@ -1,1 +1,11 @@
 === pairs-synergy-mac  Fri Oct 23 11:09:17 MDT 2026
+ALL         2899    0.9981  0.7703  0.7285  0.0041  1.0     
+
+score 15857.8 s, run 20261023-153512 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+    15955.85 real     27218.21 user     27789.71 sys
+=== pairsfirst  Fri Oct 23 15:35:13 MDT 2026
+ALL         2899    0.9983  0.7568  0.712   0.0041  1.0     
+
+score 4466.6 s, run 20261023-165109 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+     4557.03 real      5721.79 user      9797.34 sys
+=== all done Fri Oct 23 16:51:10 MDT 2026

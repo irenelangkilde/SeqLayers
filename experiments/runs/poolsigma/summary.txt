@@ -1,0 +1,17 @@
+=== gensigma01  Fri Oct 23 16:51:44 MDT 2026
+ALL         2899    0.9979  0.7492  0.7058  0.0041  1.0     
+
+score 1850.3 s, run 20261023-172414 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== gensigma03  Fri Oct 23 17:24:15 MDT 2026
+ALL         2899    0.9979  0.7489  0.7054  0.0041  1.0     
+
+score 1637.7 s, run 20261023-175258 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== localsigma01  Fri Oct 23 17:52:59 MDT 2026
+ALL         2899    0.9979  0.7361  0.6906  0.0041  1.0     
+
+score 1760.8 s, run 20261023-182344 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== localsigma03  Fri Oct 23 18:23:44 MDT 2026
+ALL         2899    0.9979  0.7389  0.6933  0.0041  1.0     
+
+score 1766.7 s, run 20261023-185433 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Fri Oct 23 18:54:34 MDT 2026

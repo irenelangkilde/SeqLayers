@@ -1,0 +1,23 @@
+=== relations-projective  Fri Oct 23 16:45:47 UTC 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs-rel/events
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 99.6 s): 27 of 66 slots always, 738 gate values
+ALL         2899    0.9979  0.8706  0.8092  0.0162  1.0     
+
+score 1573.7 s, run 20261023-171702 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=2 maxcached=50000000 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 relations=true projective=true note=relations-projective"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 31:15.42
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 22692156
+	Average resident set size (kbytes): 0
+=== relations-pairs  Fri Oct 23 17:17:03 UTC 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs-rel/events
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 100.1 s): 27 of 66 slots always, 738 gate values
+ALL         2899    0.9983  0.8058  0.7516  0.0041  1.0     
+
+score 33733.2 s, run 20261024-024359 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=2 maxcached=50000000 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 relations=true pairsteps=true pairscore=synergy note=relations-pairs"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 9:26:57
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 23612256
+	Average resident set size (kbytes): 0
+=== all done Sat Oct 24 02:44:00 UTC 2026
