@@ -7,6 +7,10 @@
 # its word's rate for P, per 100 occurrences, bucketed in doublings.  Absent when t has no case child
 # (yet), P or the word isn't in the table, or c is the root.  The model learns from the training
 # records how much these buckets tell.
+#
+# Relative mode (pprel): the same two items, but each says how the candidate's rate compares with the
+# best rate among the token's other candidates (log2 ratio, bucketed), so the value is directly
+# about which head prefers the preposition here rather than how often the candidate takes it at all.
 
 "Preposition attachment counts by head class and head word (see build_pptable.py)."
 struct PPTable
@@ -71,14 +75,53 @@ function case_prep(st, t)
   nothing
 end
 
-"The two PP items for attaching t to candidate c (class rate, word rate), absent when unknown."
-function pp_items(tab::PPTable, st, t, c)
+"Smoothed PPs with p per 100 occurrences (as in pp_bucket) of word w's class (level 1) or w (level 2); nothing if unknown."
+function pp_rate(tab::PPTable, w, p, level; k = 20.0)
+  b = tab.base[p]
+  if level == 1
+    cl = get(tab.formclass, w, Int32(0))
+    (cl == 0 || !haskey(tab.classocc, cl)) && return nothing
+    npp, nocc = get(tab.classpp, (cl, p), 0.0), tab.classocc[cl]
+  else
+    haskey(tab.formocc, w) || return nothing
+    npp, nocc = get(tab.formpp, (w, p), 0.0), tab.formocc[w]
+  end
+  100 * (npp + k * b) / (nocc + k)
+end
+
+"""
+Bucket 1..9 of log2(r / best), r a candidate's rate and best the highest among the other candidates:
+1 below 1/8 of it, 2..4 the halvings up to 1/1, 5..8 one to sixteen times (5: 1-2x, ..., 8: 8x and
+up), 9 when no other candidate has a rate.
+"""
+pp_relbucket(r, best) = best === nothing ? UInt32(9) : UInt32(clamp(floor(Int, log2(r / best)) + 5, 1, 8))
+
+"""
+The two PP items for attaching t to candidate c (class rate, word rate), absent when unknown.
+`cands` (relative mode): the token's candidates; each item then compares c's rate with the best of
+the other candidates' (pp_relbucket) instead of bucketing it alone.
+"""
+function pp_items(tab::PPTable, st, t, c; cands = nothing)
   p = c == NONE ? nothing : case_prep(st, t)
   (p === nothing || !haskey(tab.base, p)) && return UInt64[ABSENT, ABSENT]
-  b = tab.base[p]
   w = lowercase(tokstr(st, Int(c)))
-  cl = get(tab.formclass, w, Int32(0))
-  vc = cl == 0 || !haskey(tab.classocc, cl) ? PENDING : pp_bucket(get(tab.classpp, (cl, p), 0.0), tab.classocc[cl], b)
-  vf = haskey(tab.formocc, w) ? pp_bucket(get(tab.formpp, (w, p), 0.0), tab.formocc[w], b) : PENDING
-  UInt64[item(vc, (PP_TAG, 1, vc)), item(vf, (PP_TAG, 2, vf))]
+  out = UInt64[]
+  for level in 1:2
+    r = pp_rate(tab, w, p, level)
+    v = if r === nothing
+      PENDING
+    elseif cands === nothing
+      pp_bucket(r / 100, 1.0, 0.0; k = 0.0)
+    else
+      best = nothing
+      for h in cands
+        (h == c || h == NONE) && continue
+        rh = pp_rate(tab, lowercase(tokstr(st, Int(h))), p, level)
+        rh === nothing || (best = best === nothing ? rh : max(best, rh))
+      end
+      pp_relbucket(r, best)
+    end
+    push!(out, item(v, (PP_TAG, level + (cands === nothing ? 0 : 2), v)))
+  end
+  out
 end

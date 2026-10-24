@@ -23,12 +23,16 @@ end
 function choose(cands, scores::Vector{Float64}, wait)
   b = argmax(scores)
   wait === nothing || (scores = [scores; wait])
+  CHOOSE_HOOK[] === nothing || CHOOSE_HOOK[](cands, scores)
   length(scores) == 1 && return (cands[b], Inf)          # the only possibility
   mx = maximum(scores)
   z = sum(s -> exp(s - mx), scores)
   pb = exp(scores[b] - mx) / z
   (cands[b], pb >= 1 ? Inf : log(pb) - log1p(-pb))
 end
+
+"Search (search.jl): sees each `choose` call's candidates and scores (wait last) when set."
+const CHOOSE_HOOK = Ref{Any}(nothing)
 
 "Log-odds of a candidate that can't be seen yet (for open decisions)."
 waitscore(::AbstractModel, st::State, key::AgendaKey) = 0.0

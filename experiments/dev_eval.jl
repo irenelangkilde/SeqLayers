@@ -46,6 +46,12 @@
 #   pptable      PP-attachment table from DepCC (experiments/build_pptable.py; e.g.
 #                juliaNLP/clusters/pptable/pptable.tsv): two attachment items for the dependent's
 #                preposition and the candidate's class and word ("" = none); events apart
+#   search       limited-discrepancy search in the full decode (src/search.jl): retry this many of each
+#                segment's least confident commits with their runner-up (0 = plain easy-first)
+#   ldsscore     how search compares paths: sum | mean (of the commits' log probabilities)
+#   ldsall       search may branch on char and sentence decisions too (default: token decisions only)
+#   pprel        with pptable: each PP item compares the candidate's rate with the best of the token's
+#                other candidates (log2 ratio buckets) instead of bucketing it alone; events apart
 #   headsdist    a fifth head-property decision, the head's signed distance (L1..L11+, R1..R11+, root):
 #                true | false; events apart
 #   relations    sibling and child relations (upos, deprel, distance, direction) in the context and
@@ -116,7 +122,7 @@ const RESULTS = joinpath(HERE, "results.csv")
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
   "wmo" => 1e-3, "train_sents" => 500, "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
-  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
+  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
 
 function parse_cfg(args)
@@ -194,7 +200,7 @@ function setup(cfg)
   sfx = isempty(cfg["suffixes"]) ? Int[] : parse.(Int, split(cfg["suffixes"], ','))
   specs = default_specs(charindex = idx, wordclasses = wc, suffixes = sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true",
     projective = cfg["projective"] == "true", relations = cfg["relations"] == "true",
-    headsdist = cfg["headsdist"] == "true", pptable = pp)
+    headsdist = cfg["headsdist"] == "true", pptable = pp, pprel = cfg["pprel"] == "true")
   # same Doc objects as in the index, so their suffix-array features are leave-one-out
   trainsample = reduce(vcat, [firstsents(ds, cfg["train_sents"]) for ds in alltrain])
   # held-out tuning docs: the training docs right after the sample's
@@ -209,7 +215,7 @@ function setup(cfg)
     (isempty(cfg["suffixes"]) ? "" : "-sfx" * replace(cfg["suffixes"], ',' => "")) *
     (cfg["noise"] > 0 ? "-noise$(cfg["noise"])" : "") * (cfg["rootabsent"] == "true" ? "-rootabs" : "") *
     (cfg["relations"] == "true" ? "-rel" : "") * (cfg["headsdist"] == "true" ? "-sdist" : "") *
-    (isempty(cfg["pptable"]) ? "" : "-pp"))
+    (isempty(cfg["pptable"]) ? "" : cfg["pprel"] == "true" ? "-pprel" : "-pp"))
   mkpath(workdir)
   local model, lex
   modelname = cfg["model"]
@@ -265,7 +271,7 @@ function setup(cfg)
       (isempty(cfg["suffixes"]) ? "" : ";suffixes=" * cfg["suffixes"]) * (cfg["noise"] > 0 ? ";noise=$(cfg["noise"])" : "") *
       (cfg["rootabsent"] == "true" ? ";rootabsent" : "") * (cfg["projective"] == "true" ? ";projective" : "") *
       (cfg["relations"] == "true" ? ";relations" : "") * (cfg["headsdist"] == "true" ? ";headsdist" : "") *
-      (isempty(cfg["pptable"]) ? "" : ";pptable") * "]"
+      (isempty(cfg["pptable"]) ? "" : cfg["pprel"] == "true" ? ";pptable;pprel" : ";pptable") * "]"
   elseif cfg["model"] == "count"
     lex = Lexicon()
     model = train!(CountModel(), trainsample, specs, lex)
@@ -298,8 +304,11 @@ function start_workers(cfg, s)
       suffixes = $(isempty(cfg["suffixes"]) ? Int[] : parse.(Int, split(cfg["suffixes"], ','))), noise = $(cfg["noise"]), rootabsent = $(cfg["rootabsent"] == "true"),
       projective = $(cfg["projective"] == "true"), relations = $(cfg["relations"] == "true"),
       headsdist = $(cfg["headsdist"] == "true"),
-      pptable = $(isempty(cfg["pptable"]) ? nothing : :(load_pptable($(cfg["pptable"]), $(joinpath(dirname(dirname(cfg["pptable"])), "classes5"))))))
+      pptable = $(isempty(cfg["pptable"]) ? nothing : :(load_pptable($(cfg["pptable"]), $(joinpath(dirname(dirname(cfg["pptable"])), "classes5"))))),
+      pprel = $(cfg["pprel"] == "true"))
     const WLEX = deserialize(joinpath($rundir, "lex.jls"))
+    const WSEARCH = $(cfg["search"] > 0 ? :(SeqLayers.LDS($(cfg["search"]); score = $(QuoteNode(Symbol(cfg["ldsscore"]))),
+      tokenonly = $(cfg["ldsall"] != "true"))) : nothing)
     const WMODEL = let m = deserialize(joinpath($rundir, "model.jls"))
       if m isa Tuple
         cm = ChainModel(m[1]; m[2]...)
@@ -335,7 +344,11 @@ function main(cfg)
   rundir = start_workers(cfg, s)
   t1 = time()
   order = sortperm(devdocs; by = p -> length(p[2].text), rev = true)     # biggest first, for load balance
-  counts = pmap(p -> (p[1], evaluate_counts([p[2]], WSPECS, WMODEL, WLEX)), devdocs[order])
+  counts = pmap(p -> (p[1], evaluate_counts([p[2]], WSPECS, WMODEL, WLEX; search = WSEARCH)), devdocs[order])
+  if cfg["search"] > 0
+    st = [remotecall_fetch(() -> copy(SeqLayers.LDS_STATS), w) for w in workers()]
+    println("search: ", Dict(k => sum(d[k] for d in st) for k in keys(first(st))))
+  end
   save_countcache(cfg, s)
   decode_s = time() - t1
   rmprocs(workers())

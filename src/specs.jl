@@ -839,11 +839,12 @@ features, and each candidate's hypothetical siblings of the dependent as attachm
 `headsdist`, a fifth head-property decision :head_sdist (signed distance: direction and distance in
 one label), narrowing and derived like the others.  With `pptable` (`load_pptable`), attachment
 records get two items from a large parsed corpus: how readily the candidate's word class and word
-take a PP with the dependent's preposition (see pptable.jl).
+take a PP with the dependent's preposition (see pptable.jl); with `pprel`, relative to the best
+of the token's other candidates.
 """
 function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclasses::Union{WordClasses,Nothing} = nothing,
   suffixes::Vector{Int} = Int[], noise::Int = 0, rootabsent::Bool = false, projective::Bool = false,
-  relations::Bool = false, headsdist::Bool = false, pptable = nothing)
+  relations::Bool = false, headsdist::Bool = false, pptable = nothing, pprel::Bool = false)
   safeats = charindex === nothing ? FeatDef[] : [sa_feats(charindex, :left); sa_feats(charindex, :right)]
   sapaths = charindex === nothing ? FeatPath[] : [FeatPath(:sa_left), FeatPath(:sa_right)]
   chars = LayerSpec{CharLayer}(:char,
@@ -900,7 +901,8 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
         candidates = (st, t) -> attach_candidates(st, t; projective),
         features = (st, t, c) -> attach_features(st, t, c, linkpaths),
         items = (st, t, c) -> vcat(attach_items(st, t, c, linkpaths; rootabsent),
-          relations ? hypothetical_sibling_items(st, t, c) : UInt64[], pptable === nothing ? UInt64[] : pp_items(pptable, st, t, c)),
+          relations ? hypothetical_sibling_items(st, t, c) : UInt64[], pptable === nothing ? UInt64[] :
+            pp_items(pptable, st, t, c; cands = pprel ? attach_candidates(st, t; projective) : nothing)),
         allcandidates = attach_allcandidates,
         mask = attach_mask,
         open = true,

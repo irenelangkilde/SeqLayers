@@ -30,7 +30,8 @@ cfg["model"] == "chain" && cfg["select"] == "maxdev" || error("slot_usage.jl tra
 s = setup(cfg)
 idx = s.idx
 widx = CharIndex(idx.fwd, idx.rev, idx.gap, idx.saL, idx.saR, idx.cumL, idx.cumR, idx.prior, IdDict{Doc,Int}(), idx.maxlen, idx.mincount, idx.beta)
-specs = default_specs(charindex = widx, wordclasses = s.wc, suffixes = s.sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true")
+specs = default_specs(charindex = widx, wordclasses = s.wc, suffixes = s.sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true",
+  projective = cfg["projective"] == "true", relations = cfg["relations"] == "true", headsdist = cfg["headsdist"] == "true")
 eventsdir, opts = s.recipe
 m = ChainModel(eventsdir; opts...)
 cfg["classleft"] == "true" || (m.noleft = S.wclass_slots(specs))
@@ -46,10 +47,12 @@ docs = sort(pool; by = d -> length(d.text))[1:min(cfg["docs"], length(pool))]
 # slot names
 ctx = specs[2].context
 pathname(p) = join([string.(p.rels); string(p.feat)], '.')
-nlev = s.wc === nothing ? 0 : length(s.wc.sizes)
-linkpaths = [S.LINK_PATHS; 22 .+ (1:nlev)]
+linkpaths = S.LINKPATHS[specs[2]]
+# after the link paths' pairs: relations' hypothetical siblings (per candidate), then nothing else
 attachname(k) = k == 1 ? "distance" : k == 2 ? "direction" :
-  (a = (k - 3) ÷ 2 + 1; (isodd(k - 3) ? "cand " : "dep  ") * pathname(ctx[linkpaths[a]]))
+  (a = (k - 3) ÷ 2 + 1; a <= length(linkpaths) ? (isodd(k - 3) ? "cand " : "dep  ") * pathname(ctx[linkpaths[a]]) :
+    get(HYPNAMES, k - 2 - 2 * length(linkpaths), "slot $k"))
+const HYPNAMES = [string("hyp.", kind, ".", f) for kind in S.SIB_KINDS for f in (kind in S.DIR_KINDS ? (:upos, :deprel, :dist, :dir) : (:upos, :deprel, :dist))]
 slotname(key, k) = key[2] == 1 ? attachname(k) : pathname(ctx[k])
 dname(key) = key[2] == 1 ? "attach" : key[2] == 2 ? "deprel" : string(specs[2].decisions[key[2]].name)
 

@@ -23,6 +23,7 @@ include("specs.jl")
 include("pptable.jl")
 include("conllu.jl")
 include("driver.jl")
+include("search.jl")
 include("lattice.jl")
 include("chain.jl")
 include("climb.jl")
@@ -34,7 +35,7 @@ export NONE, PENDING,
   addcol!, follow, context, label_features, link_features, solve!,
   AbstractModel, CountModel, OracleModel, decide, score,
   default_specs, read_conllu, doc_from_text, CharIndex,
-  ParsedSentence, process, train!, evaluate, evaluate_counts, eval_scores,
+  ParsedSentence, process, train!, evaluate, evaluate_counts, eval_scores, LDS,
   LatticeModel, record_events, ChainModel, climb_table, load_wordclasses, load_pptable
 
 end

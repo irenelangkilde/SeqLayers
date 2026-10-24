@@ -234,6 +234,20 @@ end
     end
     r = evaluate(docs, specs, ChainModel(dir; select = :clr_rms, target = true, mincount = 1), lex)
     @test 0 <= r.token_f1 <= 1
+    # limited-discrepancy search: k = 0 is the greedy decoder; branches only ever win on score
+    mg = ChainModel(dir; select = :maxdev, leftovers = :backoff1, mincount = 1)
+    g = evaluate_counts(docs, specs, mg, lex)
+    @test evaluate_counts(docs, specs, mg, lex; search = LDS(0)) == g
+    for sc in (:sum, :mean)
+      empty!(SeqLayers.LDS_STATS); merge!(SeqLayers.LDS_STATS, Dict(:segments => 0, :branches => 0, :switched => 0))
+      r = eval_scores(evaluate_counts(docs, specs, mg, lex; search = LDS(3; score = sc)))
+      @test 0 <= r.uas <= 1
+      @test SeqLayers.LDS_STATS[:branches] > 0
+    end
+    st0 = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, specs, lex)
+    st1 = SeqLayers.copy_state(st0)
+    solve!(st1, mg)
+    @test all(st0.layers[l].grid == SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, specs, lex).layers[l].grid for l in st0.order)
     # maxdev target mode: with no restarts allowed, chains in step = independent chains
     st = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, specs, lex)
     solve!(st, OracleModel())
@@ -895,6 +909,14 @@ end
     @test SeqLayers.pp_bucket(80, 1000, 0.01) == 4            # 7.9 per 100 after smoothing: 4-8
     @test SeqLayers.pp_bucket(100, 1000, 0.01) == 5           # 9.8 per 100: 8-16
     @test SeqLayers.pp_bucket(0, 1000, 0.01) == 1
+    @test SeqLayers.pp_relbucket(2.5, 0.81) == 6               # 3.1x the best rival: 2-4x
+    @test SeqLayers.pp_relbucket(0.81, 2.5) == 3               # 0.32x: 1/4-1/2
+    @test SeqLayers.pp_relbucket(1.0, 1.0) == 5
+    @test SeqLayers.pp_relbucket(0.01, 1.0) == 1
+    @test SeqLayers.pp_relbucket(1.0, nothing) == 9
+    @test SeqLayers.pp_rate(tab, "like", "in", 2) ≈ 100 * (60 + 20 * 0.01) / 520
+    @test SeqLayers.pp_rate(tab, "nosuch", "in", 1) === nothing
+    @test evaluate(docs, default_specs(pptable = tab, pprel = true), OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
     pspecs = default_specs(pptable = tab)
     @test evaluate(docs, pspecs, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
     edir, edir0 = mktempdir(), mktempdir()

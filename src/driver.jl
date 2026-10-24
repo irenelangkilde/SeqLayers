@@ -43,9 +43,10 @@ const MAX_GROW = 8
 """
 Tokenize and parse a document segment by segment.  Material after a segment's last closed
 sentence is carried into the next segment and re-processed.  A segment that closes no
-sentence is retried at double size, up to MAX_GROW times, then force-closed.
+sentence is retried at double size, up to MAX_GROW times, then force-closed.  `search` (an LDS):
+solve each segment by limited-discrepancy search instead of plain easy-first (search.jl).
 """
-function process(doc::Doc, specs, model, lex::Lexicon; words = 128, edge = 16, observer = nothing)
+function process(doc::Doc, specs, model, lex::Lexicon; words = 128, edge = 16, observer = nothing, search = nothing)
   out = ParsedSentence[]
   n = length(doc.text)
   s, grow = nextnonspace(doc.text, 1), 1
@@ -54,7 +55,7 @@ function process(doc::Doc, specs, model, lex::Lexicon; words = 128, edge = 16, o
     final = e == n
     st = State(doc, s:e, final, final ? 0 : edge, specs, lex)
     st.infer = !(model isa OracleModel)          # the oracle commits gold itself
-    solve!(st, model; observer)
+    search === nothing || observer !== nothing ? solve!(st, model; observer) : solve_lds!(st, model, search)
     if final || grow >= MAX_GROW
       force_close!(st)
     elseif st.closed_through == 0

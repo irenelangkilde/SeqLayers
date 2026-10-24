@@ -1,0 +1,532 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs-rel/events
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=correction;relevance=0.25;gate=0.5)[events=gold;noise=20;rootabsent;relations]: 12369248 records, loaded in 16.6 s
+
+== attach: 3056324 records, 66 slots (32 relation slots), 2.5 s
+  slot                            rank  mean effect  max effect  (label)
+  cand upos                          1       2.9761      2.9761  
+  cand xpos                          2       2.5689      2.5689  
+  cand form                          3       2.4698      2.4698  
+  cand basepos                       4       1.7941      1.7941  
+  distance                           5       1.7406      1.7406  
+* hyp.right_sibling.dist             6       1.7374      1.7374  
+* hyp.left_sibling.dist              7       1.7204      1.7204  
+* hyp.inner_sibling.dist             8       1.5053      1.5053  
+  cand len                           9       1.4006      1.4006  
+* hyp.outer_sibling.deprel          10       1.3664      1.3664  
+* hyp.right_sibling.deprel          11       1.3651      1.3651  
+* hyp.inner_sibling.deprel          12       1.2731      1.2731  
+* hyp.outer_sibling.upos            13        1.256       1.256  
+* hyp.right_sibling.upos            14       1.2283      1.2283  
+* hyp.inner_sibling.upos            15       1.1718      1.1718  
+* hyp.outer_sibling.dir             16       1.0502      1.0502  
+  cand right_neighbor.xpos          17       0.9289      0.9289  
+* hyp.left_sibling.deprel           18        0.881       0.881  
+  cand right_neighbor.form          19       0.8354      0.8354  
+  cand right_neighbor.upos          20       0.8028      0.8028  
+* hyp.outer_sibling.dist            21        0.781       0.781  
+  cand left_neighbor.upos           22       0.7136      0.7136  
+  cand left_neighbor.form           23        0.707       0.707  
+* hyp.left_sibling.upos             24       0.6992      0.6992  
+  cand left_neighbor.xpos           25        0.581       0.581  
+* cand dep_left1_dist               28        0.441       0.441  
+* cand dep_left1.deprel             29       0.3499      0.3499  
+* cand dep_right1.deprel            30       0.3288      0.3288  
+* cand dep_left1.upos               32       0.2987      0.2987  
+* cand dep_right2_dist              33       0.2886      0.2886  
+* cand dep_right1_dist              35       0.2764      0.2764  
+* cand dep_right2.deprel            36        0.241       0.241  
+* cand dep_right2.upos              37       0.1524      0.1524  
+* cand dep_right1.upos              38        0.151       0.151  
+* hyp.inner_sibling.dir             39       0.1305      0.1305  
+* dep  dep_right2_dist              44       0.0359      0.0359  
+* dep  dep_left1.upos               49       0.0257      0.0257  
+* dep  dep_right1.upos              51       0.0254      0.0254  
+* dep  dep_right1.deprel            54       0.0229      0.0229  
+* dep  dep_right2.deprel            55       0.0226      0.0226  
+* dep  dep_left1.deprel             56        0.022       0.022  
+* dep  dep_right2.upos              57       0.0174      0.0174  
+* dep  dep_right1_dist              59       0.0165      0.0165  
+* dep  dep_left1_dist               66       0.0008      0.0008  
+
+== deprel: 1622154 records, 46 slots (23 relation slots), 1.7 s
+  slot                            rank  mean effect  max effect  (label)
+  basepos                            1       1.6645      3.6037  punct
+  head_dir                           2       1.6315      3.8631  root
+  upos                               3       1.6314      5.0498  punct
+  xpos                               4       1.5038      4.5372  punct
+  head.upos                          5       1.4547      3.8233  root
+  head_upos                          6       1.4547      3.8233  root
+  head.xpos                          7       1.3197      3.5962  root
+  head_xpos                          8       1.3197      3.5962  root
+* outer_sibling_dir                  9       1.3074      3.1842  conj
+  person                            10       1.2307      3.1687  punct
+  len                               11        1.161      2.9608  punct
+* inner_sibling_dir                 12       1.1351      3.2009  conj
+* outer_sibling.deprel              13       1.1308      2.4208  nsubj
+* right_sibling.deprel              14       1.1123       2.292  nsubj
+* left_sibling.deprel               15       1.0863      2.4255  nsubj
+  form                              16       1.0597      3.6187  punct
+* inner_sibling.deprel              17       1.0577      2.5535  case
+  head_dist                         18       1.0441      3.7215  root
+  number                            19       1.0328      3.1086  punct
+* left_sibling_dist                 20       1.0144      2.1297  conj
+* outer_sibling.upos                21       1.0085      2.1615  aux
+  right_neighbor.upos               22       0.9835      2.2323  det
+  left_neighbor.upos                23       0.9792      1.7594  aux
+  right_neighbor.xpos               24       0.9509      2.4613  det
+* inner_sibling.upos                25       0.9497      2.2547  nsubj
+* dep_left1.deprel                  26       0.9063      2.2725  obl
+* right_sibling.upos                28       0.8831      1.6212  case
+* dep_right1.deprel                 29       0.8732      2.0837  obj
+* left_sibling.upos                 30       0.8653      1.7969  det
+* dep_left1.upos                    31       0.8401      2.0076  obj
+* inner_sibling_dist                32       0.7929        2.19  conj
+* dep_right2.deprel                 33       0.6996      1.5316  acl
+* outer_sibling_dist                35        0.688      1.6581  det
+* dep_right1.upos                   36       0.6772      1.3713  cc
+* dep_right2.upos                   39       0.5747       1.476  acl
+* right_sibling_dist                40       0.5345      1.2148  case
+* dep_right1_dist                   43       0.3683      1.1648  cc
+* dep_right2_dist                   44       0.2815      0.8348  cc
+* dep_left1_dist                    45       0.2679      0.8779  punct
+
+== upos: 745314 records, 46 slots (23 relation slots), 0.6 s
+  slot                            rank  mean effect  max effect  (label)
+  basepos                            1       2.6351      3.9822  ADJ
+  xpos                               2       2.4591      4.5395  PUNCT
+  person                             3       2.1657      3.5831  NOUN
+  number                             4       1.9603      3.6059  NOUN
+  len                                5       1.7939      2.9532  PUNCT
+  form                               6       1.7933      3.6208  PUNCT
+* dep_right1.deprel                  7       1.4468      4.1039  VERB
+* dep_left1.deprel                   8       1.2682      3.9548  VERB
+* outer_sibling.deprel               9       1.2509      2.5846  AUX
+* inner_sibling.deprel              10       1.2178      2.3397  ADP
+  left_neighbor.upos                11       1.1841      1.7472  AUX
+  right_neighbor.xpos               12       1.1769      1.9413  DET
+  left_neighbor.xpos                13       1.1512      1.8071  DET
+  right_neighbor.upos               14       1.1293      1.7857  DET
+* right_sibling.deprel              15       1.1165      1.8423  ADP
+* inner_sibling.upos                16       1.0827      1.8842  ADP
+* dep_left1.upos                    17       1.0775      2.6804  VERB
+* outer_sibling.upos                18       1.0327      2.1568  AUX
+  head_dir                          19       1.0295      2.4195  CCONJ
+* left_sibling.deprel               20       1.0132      2.0373  AUX
+* left_sibling_dist                 21       1.0071       1.895  DET
+* inner_sibling_dir                 22       1.0033      2.3428  CCONJ
+  head.xpos                         23       0.9932      1.9177  DET
+  head_xpos                         24       0.9932      1.9177  DET
+  head.upos                         25       0.9538      1.9753  DET
+* right_sibling.upos                27       0.9327      1.5456  ADP
+* left_sibling.upos                 28       0.9323      1.7456  AUX
+* dep_right1.upos                   29        0.916      1.6453  PROPN
+* dep_right2.deprel                 33       0.8394      2.1501  VERB
+* inner_sibling_dist                34       0.8043      1.6127  ADP
+* outer_sibling_dir                 35       0.7951       2.021  DET
+* outer_sibling_dist                37       0.6983      1.5295  DET
+* dep_right2.upos                   38       0.5942      1.0391  PROPN
+* dep_right1_dist                   41       0.5548       1.367  INTJ
+* right_sibling_dist                42       0.5529      1.0827  VERB
+* dep_right2_dist                   43       0.4426       0.931  PROPN
+* dep_left1_dist                    44        0.294      0.8776  PUNCT
+
+== xpos: 2323626 records, 46 slots (23 relation slots), 2.2 s
+  slot                            rank  mean effect  max effect  (label)
+  basepos                            1       1.8204      3.8779  NN
+  person                             2       1.6821      4.2304  NN
+  number                             3       1.5752      4.0909  NN
+  upos                               4       1.4658      3.4556  IN
+  len                                5       1.3753      2.6017  IN
+  form                               6       0.9678      3.0038  DT
+  left_neighbor.upos                 7       0.9051      1.8428  VBZ
+  head_dir                           8        0.904      3.6285  .
+  left_neighbor.xpos                 9       0.8601      1.7917  DT
+* dep_right1.deprel                 10       0.8267      2.6738  NN
+  right_neighbor.upos               11       0.8259      1.7113  MD
+  right_neighbor.xpos               12       0.8242       1.776  IN
+* outer_sibling.deprel              13       0.7832      1.9917  PRP
+* dep_left1.deprel                  14       0.7694      2.4852  VB
+  head.upos                         15       0.7666      1.9033  PRP$
+  head_upos                         16       0.7666      1.9033  PRP$
+* inner_sibling_dir                 17        0.765      3.7637  .
+* inner_sibling.deprel              18       0.7331      2.3128  .
+  head.xpos                         19       0.7194      1.5841  PRP$
+  head_xpos                         20       0.7194      1.5841  PRP$
+* right_sibling.deprel              21       0.7157      1.8426  PRP
+* dep_left1.upos                    22       0.6984      2.3177  VB
+* outer_sibling.upos                23       0.6946      1.7481  VB
+* left_sibling.deprel               24       0.6873      1.6977  .
+* inner_sibling.upos                25        0.674      1.7836  .
+* left_sibling.upos                 26       0.6433      1.5577  MD
+* left_sibling_dist                 27       0.6303       1.848  PRP$
+* right_sibling.upos                28       0.6242      1.3618  IN
+* dep_right1.upos                   29       0.6174      1.6899  NNP
+* outer_sibling_dir                 30       0.5876      2.2563  RP
+* dep_right2.deprel                 35       0.4785       1.548  NNP
+* inner_sibling_dist                37       0.4472      1.4959  PRP
+* outer_sibling_dist                38       0.4292      1.2972  CC
+* right_sibling_dist                39       0.4114      1.0831  IN
+* dep_right2.upos                   40       0.3587      1.0409  NNP
+* dep_right1_dist                   42       0.3117      1.3428  UH
+* dep_left1_dist                    43       0.2974      0.8696  ,
+* dep_right2_dist                   44       0.2646      0.9822  NNP
+
+== basepos: 219210 records, 46 slots (23 relation slots), 0.3 s
+  slot                            rank  mean effect  max effect  (label)
+  xpos                               1       4.9682      6.9307  0
+  upos                               2       4.2427      6.2244  0
+  number                             3       3.0034      5.1862  N
+  person                             4       2.5508      3.2505  V
+* dep_right1.deprel                  5        2.527       4.144  V
+* dep_left1.deprel                   6       2.4615      4.0875  V
+  form                               7       2.4169      3.3938  0
+  len                                8       2.0612      2.4979  0
+* dep_left1.upos                     9        1.799       2.651  V
+  tense                             10       1.6028       2.517  V
+* outer_sibling.deprel              11       1.4053      1.6526  J
+* dep_right2.deprel                 12        1.336      2.2922  N
+  right_neighbor.xpos               13       1.2945      1.5239  J
+  left_neighbor.xpos                14       1.2172      1.4948  N
+  left_neighbor.upos                15       1.1693      1.5914  V
+  right_neighbor.upos               16       1.1242      1.4743  J
+* right_sibling.deprel              17       1.1034      1.3561  J
+* outer_sibling.upos                18       1.0854       1.222  R
+  left_neighbor.form                19       1.0111      1.2431  N
+* inner_sibling.deprel              20       0.9865      1.3127  N
+* left_sibling.deprel               21       0.9817      1.2533  R
+  right_neighbor.form               22       0.9709      1.3914  N
+* dep_right1.upos                   23       0.9165      1.1542  R
+* inner_sibling.upos                24       0.8698      1.2294  N
+* left_sibling.upos                 25       0.8638      1.1674  R
+* right_sibling.upos                26        0.853      1.0941  N
+* left_sibling_dist                 29       0.8144      1.0745  N
+* outer_sibling_dist                33       0.6712      0.8227  0
+* dep_right2.upos                   34       0.6404      0.7398  0
+* right_sibling_dist                36       0.5452      0.8691  0
+* inner_sibling_dist                38       0.5241      0.8829  N
+* outer_sibling_dir                 39       0.5103      0.7676  N
+* dep_right2_dist                   40       0.3786      0.8131  0
+* inner_sibling_dir                 42       0.3621      0.5654  N
+* dep_right1_dist                   43       0.3357      0.8124  R
+* dep_left1_dist                    44       0.1206      0.2186  J
+
+== number: 131526 records, 46 slots (23 relation slots), 0.1 s
+  slot                            rank  mean effect  max effect  (label)
+  xpos                               1       5.4181      6.4899  0
+  basepos                            2       5.2403      7.4425  0
+  upos                               3       3.9607      5.3191  0
+  form                               4       2.3865      2.7402  0
+* dep_left1.deprel                   5       2.2948      3.1459  0
+* dep_left1.upos                     6       1.8309      2.3788  0
+  tense                              7       1.5884      1.8011  0
+  person                             8       1.5539      1.9821  0
+* dep_right1.deprel                  9       1.3691      1.9007  0
+  len                               10       1.2048       1.341  0
+  left_neighbor.xpos                11        1.052      1.1356  singular
+  right_neighbor.xpos               12       1.0344      1.0665  0
+* dep_right2.deprel                 13       0.9733      1.3178  0
+  left_neighbor.form                14        0.973       1.041  singular
+* outer_sibling.deprel              15       0.9422       1.004  0
+* outer_sibling.upos                16       0.9322      1.0112  0
+  left_neighbor.upos                17       0.9213      1.0293  0
+* right_sibling.deprel              18       0.8559       0.915  0
+* inner_sibling.deprel              19       0.8524      0.9112  0
+  right_neighbor.form               20       0.8417      1.0048  0
+  right_neighbor.upos               21        0.829      0.8793  0
+* left_sibling_dist                 22       0.7646      0.9293  0
+* inner_sibling.upos                23       0.7577      0.8049  0
+* right_sibling.upos                24       0.6965      0.7534  0
+* inner_sibling_dist                25       0.5955      0.6745  0
+* outer_sibling_dist                26         0.59       0.708  0
+* left_sibling.deprel               28       0.5533      0.6496  0
+* dep_right1.upos                   29       0.5532      0.6907  singular
+* outer_sibling_dir                 30       0.4965      0.5995  0
+* left_sibling.upos                 32       0.4506      0.5261  0
+* dep_right2.upos                   35       0.4013      0.5138  singular
+* right_sibling_dist                36       0.3923      0.4566  0
+* inner_sibling_dir                 38       0.3486      0.3925  0
+* dep_right1_dist                   42       0.1121      0.1342  0
+* dep_left1_dist                    43        0.078       0.141  plural
+* dep_right2_dist                   44       0.0726      0.1566  plural
+
+== person: 175368 records, 46 slots (23 relation slots), 0.1 s
+  slot                            rank  mean effect  max effect  (label)
+  xpos                               1       3.8765      6.4626  0
+  upos                               2       3.5755      5.4772  0
+  basepos                            3       2.9421      3.7838  0
+* dep_left1.deprel                   4       2.3374      3.7596  0
+  form                               5       2.1907      3.0075  0
+* dep_right1.deprel                  6       2.1871      3.5657  0
+  number                             7       1.7855      2.1278  3rd
+* dep_left1.upos                     8       1.6772      2.5004  0
+  len                                9       1.6063      1.9648  2nd
+* dep_right2.deprel                 10       1.4401      2.2173  0
+* outer_sibling.deprel              11       1.3359      1.4985  0
+* inner_sibling.deprel              12        1.307      1.4844  0
+* right_sibling.deprel              13       1.3065       1.406  1st
+* inner_sibling.upos                14       1.2371      1.3963  0
+  left_neighbor.xpos                15        1.237      1.4227  3rd
+  right_neighbor.xpos               16       1.1967      1.4308  0
+  right_neighbor.upos               17       1.1298      1.2287  3rd
+  tense                             18       1.1284      1.5995  0
+  right_neighbor.form               19        1.086      1.3671  0
+  left_neighbor.upos                20       1.0505      1.1407  1st
+* right_sibling.upos                21       0.9721      1.1474  0
+  left_neighbor.form                22       0.9129      1.1623  3rd
+* left_sibling_dist                 23       0.8364      0.9619  3rd
+* outer_sibling.upos                24       0.8071       0.902  3rd
+* left_sibling.deprel               25        0.784      0.9299  2nd
+* inner_sibling_dist                26        0.776      0.9981  1st
+* dep_right1.upos                   27       0.7694      0.8845  0
+* left_sibling.upos                 28       0.6667      0.8423  2nd
+* inner_sibling_dir                 31        0.659      1.1329  1st
+* dep_right2.upos                   34        0.615      0.6624  3rd
+* outer_sibling_dist                37       0.5966      0.7265  3rd
+* outer_sibling_dir                 39       0.4787      0.6714  3rd
+* right_sibling_dist                41       0.3918      0.5526  2nd
+* dep_right1_dist                   42       0.2432      0.3304  1st
+* dep_right2_dist                   43       0.2293      0.5195  2nd
+* dep_left1_dist                    44       0.1662        0.28  2nd
+
+== tense: 175368 records, 46 slots (23 relation slots), 0.1 s
+  slot                            rank  mean effect  max effect  (label)
+  basepos                            1       2.8397      3.2986  0
+  xpos                               2       2.7538      3.8534  0
+  person                             3       2.5283      2.9391  0
+  upos                               4       2.3827      2.8311  0
+  number                             5       2.3253      3.0947  present
+* dep_left1.deprel                   6       2.3221      2.9245  0
+* dep_left1.upos                     7       2.1248      2.4545  0
+* dep_right1.deprel                  8       2.0766       2.612  0
+  left_neighbor.upos                 9        1.864      2.0224  0
+* outer_sibling.deprel              10        1.849      2.2281  0
+  len                               11       1.7872      2.0932  past
+* outer_sibling.upos                12       1.7411      1.9424  0
+  form                              13       1.7209      2.2431  0
+  left_neighbor.xpos                14       1.7074      1.9075  0
+  left_neighbor.form                15       1.2387      1.5086  0
+* left_sibling.deprel               16       1.1256      1.3135  present
+  right_neighbor.xpos               17       1.1081      1.2458  0
+* left_sibling.upos                 18       1.0666      1.3056  present
+* right_sibling.deprel              19       1.0123      1.2194  infinitive
+  head.xpos                         20       0.9472      1.0692  infinitive
+  head_xpos                         21       0.9472      1.0692  infinitive
+* inner_sibling.deprel              22       0.9421      1.0778  infinitive
+* dep_right2.deprel                 23       0.8846      1.2219  0
+  right_neighbor.upos               24       0.8377      0.8765  present
+  head.upos                         25        0.831      1.0992  infinitive
+* dep_right1.upos                   27       0.8142      0.9131  0
+* right_sibling.upos                29       0.7421      0.8719  infinitive
+* inner_sibling.upos                30       0.7153      0.7569  present
+* left_sibling_dist                 34       0.4638      0.5259  infinitive
+* outer_sibling_dist                35       0.4525      0.6072  infinitive
+* right_sibling_dist                36       0.4516      0.7677  infinitive
+* inner_sibling_dir                 38       0.3822      0.8439  infinitive
+* inner_sibling_dist                39       0.3792      0.7628  infinitive
+* dep_right2.upos                   40        0.351      0.4743  infinitive
+* outer_sibling_dir                 41       0.3177      0.6752  infinitive
+* dep_right2_dist                   42       0.2711       0.425  present
+* dep_left1_dist                    43       0.2021      0.2314  past
+* dep_right1_dist                   44       0.1444      0.1929  infinitive
+
+== head_upos: 789156 records, 46 slots (23 relation slots), 0.5 s
+  slot                            rank  mean effect  max effect  (label)
+  head_xpos                          1        1.948      6.4861  VERB
+  head_dist                          2       0.8624      3.7228  ROOT
+  head_dir                           3       0.8357      3.8644  ROOT
+  upos                               4        0.811       2.161  ROOT
+  xpos                               5        0.751       2.061  ROOT
+  right_neighbor.upos                6       0.7359      1.4938  VERB
+  right_neighbor.xpos                7        0.669      1.4635  NOUN
+  form                               8       0.5937      1.6339  VERB
+  basepos                            9        0.576      1.5999  ROOT
+  left_neighbor.upos                10       0.5271      1.3531  ROOT
+  left_neighbor.xpos                11       0.4875      1.0108  ROOT
+  len                               12        0.424      1.5281  ROOT
+* dep_left1.deprel                  13       0.3931      1.5038  ROOT
+* dep_left1.upos                    14       0.3601      1.2976  ROOT
+  right_neighbor.form               15       0.3463       0.833  NOUN
+* dep_right2.deprel                 16       0.3402       1.217  ROOT
+  left_neighbor.form                17       0.3361       0.931  ROOT
+  person                            18       0.3086      0.7802  X
+  number                            19       0.3021      0.7404  X
+* dep_right1.deprel                 20       0.3011      1.0711  ROOT
+* dep_right2.upos                   21       0.2993       0.952  ROOT
+* dep_right1.upos                   22       0.2831      0.9435  PROPN
+* dep_right2_dist                   23       0.1639      0.5567  PROPN
+  tense                             24       0.1587      0.6381  PROPN
+  caps                              25       0.1439      0.5012  PROPN
+* dep_right1_dist                   26       0.1395      0.5249  NUM
+* dep_left1_dist                    27       0.0819      0.2544  INTJ
+* left_sibling.upos                 33          0.0         0.0  
+* left_sibling.deprel               34          0.0         0.0  
+* left_sibling_dist                 35          0.0         0.0  
+* right_sibling.upos                36          0.0         0.0  
+* right_sibling.deprel              37          0.0         0.0  
+* right_sibling_dist                38          0.0         0.0  
+* inner_sibling.upos                39          0.0         0.0  
+* inner_sibling.deprel              40          0.0         0.0  
+* inner_sibling_dist                41          0.0         0.0  
+* outer_sibling.upos                42          0.0         0.0  
+* outer_sibling.deprel              43          0.0         0.0  
+* outer_sibling_dist                44          0.0         0.0  
+* inner_sibling_dir                 45          0.0         0.0  
+* outer_sibling_dir                 46          0.0         0.0  
+
+== head_xpos: 2367468 records, 46 slots (23 relation slots), 1.7 s
+  slot                            rank  mean effect  max effect  (label)
+  head_upos                          1       1.0794      4.2384  NN
+  upos                               2       0.4789       2.159  ROOT
+  right_neighbor.upos                3       0.4418      1.1863  VB
+  head_dist                          4       0.4406      3.7226  ROOT
+  head_dir                           5       0.4239      3.8643  ROOT
+  right_neighbor.xpos                6       0.4189      1.4374  NN
+  xpos                               7       0.4054      2.0647  ROOT
+  form                               8       0.3338       1.563  ROOT
+  basepos                            9       0.3049      1.5973  ROOT
+  left_neighbor.xpos                10        0.265      1.0128  ROOT
+  left_neighbor.upos                11       0.2647      1.3559  ROOT
+* dep_left1.deprel                  12       0.2103      1.5127  ROOT
+  len                               13       0.2066      1.5401  ROOT
+  right_neighbor.form               14       0.2025      0.7975  NN
+* dep_left1.upos                    15       0.1933      1.2989  ROOT
+  left_neighbor.form                16       0.1849      0.9285  ROOT
+* dep_right2.deprel                 17        0.184      1.2228  ROOT
+  person                            18       0.1639      0.8212  FW
+* dep_right1.deprel                 19       0.1634      1.0778  ROOT
+* dep_right2.upos                   20       0.1632       0.942  ROOT
+* dep_right1.upos                   21       0.1566      0.9864  NNP
+  number                            22       0.1449      0.7822  FW
+  tense                             23       0.1068      0.6095  NNP
+  caps                              24       0.0865      0.5081  NNP
+* dep_right2_dist                   25       0.0847      0.6121  NNP
+* dep_right1_dist                   26        0.069      0.5043  CD
+* dep_left1_dist                    27       0.0466      0.3462  WDT
+* left_sibling.upos                 33          0.0         0.0  
+* left_sibling.deprel               34          0.0         0.0  
+* left_sibling_dist                 35          0.0         0.0  
+* right_sibling.upos                36          0.0         0.0  
+* right_sibling.deprel              37          0.0         0.0  
+* right_sibling_dist                38          0.0         0.0  
+* inner_sibling.upos                39          0.0         0.0  
+* inner_sibling.deprel              40          0.0         0.0  
+* inner_sibling_dist                41          0.0         0.0  
+* outer_sibling.upos                42          0.0         0.0  
+* outer_sibling.deprel              43          0.0         0.0  
+* outer_sibling_dist                44          0.0         0.0  
+* inner_sibling_dir                 45          0.0         0.0  
+* outer_sibling_dir                 46          0.0         0.0  
+
+== head_dir: 131526 records, 46 slots (23 relation slots), 0.1 s
+  slot                            rank  mean effect  max effect  (label)
+  xpos                               1       2.4851      2.7206  right
+  head_dist                          2       2.4726      3.7234  root
+  head_upos                          3       2.4417      3.8248  root
+  head_xpos                          4       2.3713      3.5982  root
+  form                               5       2.3465      2.7728  right
+  upos                               6       2.0962       2.181  right
+  right_neighbor.xpos                7       1.3957      1.8754  right
+* dep_left1.deprel                   8       1.2409      1.5067  root
+  right_neighbor.upos                9       1.1506      1.3346  right
+  right_neighbor.form               10        1.146      1.7793  right
+* dep_right1.deprel                 11       1.0926      1.3071  right
+* dep_left1.upos                    12       1.0924      1.2986  root
+  len                               13        1.088       1.529  root
+  basepos                           14         1.08      1.6046  root
+* dep_right2.deprel                 15       1.0564      1.2256  left
+* dep_right2.upos                   16       0.8988      1.1694  left
+  left_neighbor.xpos                17       0.8335      1.0104  root
+  left_neighbor.upos                18        0.824      1.3543  root
+  left_neighbor.form                19        0.818      0.9233  root
+* dep_right1.upos                   20        0.654      0.8702  right
+  person                            21       0.5483      0.6241  left
+  number                            22       0.4766      0.6084  right
+  tense                             23       0.4052      0.5992  root
+* dep_right2_dist                   24        0.368       0.443  root
+* dep_right1_dist                   25       0.3586      0.5173  right
+* dep_left1_dist                    26       0.1828      0.2198  right
+* left_sibling.upos                 33          0.0         0.0  
+* left_sibling.deprel               34          0.0         0.0  
+* left_sibling_dist                 35          0.0         0.0  
+* right_sibling.upos                36          0.0         0.0  
+* right_sibling.deprel              37          0.0         0.0  
+* right_sibling_dist                38          0.0         0.0  
+* inner_sibling.upos                39          0.0         0.0  
+* inner_sibling.deprel              40          0.0         0.0  
+* inner_sibling_dist                41          0.0         0.0  
+* outer_sibling.upos                42          0.0         0.0  
+* outer_sibling.deprel              43          0.0         0.0  
+* outer_sibling_dist                44          0.0         0.0  
+* inner_sibling_dir                 45          0.0         0.0  
+* outer_sibling_dir                 46          0.0         0.0  
+
+== head_dist: 263052 records, 46 slots (23 relation slots), 0.2 s
+  slot                            rank  mean effect  max effect  (label)
+  head_dir                           1       1.8185      3.8651  root
+  head_upos                          2       1.7723      3.8248  root
+  head_xpos                          3       1.7374      3.5984  root
+  upos                               4       1.1586      2.1617  root
+  xpos                               5       1.0907      2.0683  root
+  right_neighbor.upos                6       1.0437      1.6505  1
+* dep_left1.deprel                   7       1.0206      1.7342  1
+  right_neighbor.xpos                8       0.9845      1.4517  1
+  form                               9       0.9278      1.5509  root
+* dep_left1.upos                    10       0.9073      1.4283  1
+* dep_right2.deprel                 11       0.8758      1.4828  1
+* dep_right2.upos                   12       0.8186      1.4423  1
+  len                               13       0.6295      1.5286  root
+  right_neighbor.form               14       0.5996      1.1147  1
+  left_neighbor.upos                15       0.5976      1.3539  root
+* dep_right1.deprel                 16       0.5939      1.0747  root
+  basepos                           17       0.5757      1.6039  root
+  left_neighbor.xpos                18       0.5578      1.0093  root
+  left_neighbor.form                19       0.5206      0.9231  root
+* dep_right2_dist                   20       0.3571      0.5042  2
+  ┌ Warning: Assignment to `t` in soft scope is ambiguous because a global variable by the same name exists: `t` will be treated as a new local. Disambiguate by using `local t` to suppress this warning or `global t` to assign to the existing global variable.
+└ @ timing.jl:464
+person                            21       0.3504      0.5082  11+
+* dep_right1.upos                   22       0.3432       0.764  1
+  number                            23       0.2385      0.4406  1
+* dep_left1_dist                    24       0.2314      0.4329  2
+  tense                             25       0.2104      0.5996  root
+* dep_right1_dist                   26       0.1878      0.3892  1
+* left_sibling.upos                 33          0.0         0.0  
+* left_sibling.deprel               34          0.0         0.0  
+* left_sibling_dist                 35          0.0         0.0  
+* right_sibling.upos                36          0.0         0.0  
+* right_sibling.deprel              37          0.0         0.0  
+* right_sibling_dist                38          0.0         0.0  
+* inner_sibling.upos                39          0.0         0.0  
+* inner_sibling.deprel              40          0.0         0.0  
+* inner_sibling_dist                41          0.0         0.0  
+* outer_sibling.upos                42          0.0         0.0  
+* outer_sibling.deprel              43          0.0         0.0  
+* outer_sibling_dist                44          0.0         0.0  
+* inner_sibling_dir                 45          0.0         0.0  
+* outer_sibling_dir                 46          0.0         0.0  
+
+	Command being timed: "julia --project=experiments experiments/rel_effects.jl model=chain select=maxdev events=gold dev_sents=5 jointmin=10000 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 relations=true"
+	User time (seconds): 52.10
+	System time (seconds): 1.45
+	Percent of CPU this job got: 100%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:53.11
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 10417248
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 3
+	Minor (reclaiming a frame) page faults: 633993
+	Voluntary context switches: 33
+	Involuntary context switches: 242
+	Swaps: 0
+	File system inputs: 520
+	File system outputs: 72
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

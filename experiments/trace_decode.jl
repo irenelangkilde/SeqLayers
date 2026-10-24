@@ -30,7 +30,7 @@ PPT = isempty(cfg["pptable"]) ? nothing : load_pptable(cfg["pptable"], joinpath(
 widx = CharIndex(idx.fwd, idx.rev, idx.gap, idx.saL, idx.saR, idx.cumL, idx.cumR, idx.prior, IdDict{Doc,Int}(), idx.maxlen, idx.mincount, idx.beta)
 specs = default_specs(charindex = widx, wordclasses = s.wc, suffixes = s.sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true",
   projective = cfg["projective"] == "true", relations = cfg["relations"] == "true", headsdist = cfg["headsdist"] == "true",
-  pptable = PPT)
+  pptable = PPT, pprel = cfg["pprel"] == "true")
 eventsdir, opts = s.recipe
 m = ChainModel(eventsdir; opts...)
 pc = S.load_counts(eventsdir, eventsig(eventsdir))
@@ -85,18 +85,17 @@ function ppdesc(st, t, c, k)
   name = k == 1 ? "cand.ppclass" : "cand.ppword"
   p = c == S.NONE ? nothing : S.case_prep(st, t)
   (p === nothing || !haskey(PPT.base, p)) && return "$name=absent"
-  w = lowercase(S.tokstr(st, Int(c)))
-  if k == 1
-    cl = get(PPT.formclass, w, Int32(0))
-    (cl == 0 || !haskey(PPT.classocc, cl)) && return "$name($p)=unknown"
-    npp, nocc = get(PPT.classpp, (cl, p), 0.0), PPT.classocc[cl]
-  else
-    haskey(PPT.formocc, w) || return "$name($p)=unknown"
-    npp, nocc = get(PPT.formpp, (w, p), 0.0), PPT.formocc[w]
+  r = S.pp_rate(PPT, lowercase(S.tokstr(st, Int(c))), p, k)
+  r === nothing && return "$name($p)=unknown"
+  cfg["pprel"] == "true" || return "$name($p)=$(S.pp_bucket(r / 100, 1.0, 0.0; k = 0.0)) ($(round(r; sigdigits = 2)) per 100)"
+  best, bh = nothing, nothing
+  for h in st.layers[:token].spec.decisions[1].candidates(st, t)
+    (h == c || h == S.NONE) && continue
+    rh = S.pp_rate(PPT, lowercase(S.tokstr(st, Int(h))), p, k)
+    rh !== nothing && (best === nothing || rh > best) && ((best, bh) = (rh, h))
   end
-  b = S.pp_bucket(npp, nocc, PPT.base[p])
-  rate = round(100 * (npp + 20 * PPT.base[p]) / (nocc + 20); sigdigits = 2)
-  "$name($p)=$b ($rate per 100)"
+  best === nothing && return "$(name)rel($p)=9 (no rival; $(round(r; sigdigits = 2)) per 100)"
+  "$(name)rel($p)=$(S.pp_relbucket(r, best)) ($(round(r; sigdigits = 2)) vs $(round(best; sigdigits = 2)) for $(S.tokstr(st, Int(bh))))"
 end
 
 function explain(st, key)
