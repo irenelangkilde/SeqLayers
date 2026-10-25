@@ -181,6 +181,7 @@ struct ChainOpts
   ctxsupport::Int                                 # greedy: a context step needs context + leftover with at least this many records (0: mincount)
   leftsmooth::Symbol                              # greedy: o(x|S∪E) smoothed toward o(x|S) (:odds) | by E's rates within x and ¬x (:evidence)
   ctxmode::Symbol                                 # greedy contexts: :greedy | :backoff / :limited (generalize the chain) | :cover (greedy, must cover the chain)
+  ctxattach::Bool                                 # ctxmode for the attachment decision only (labels keep :greedy)
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -287,7 +288,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
@@ -345,7 +346,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -1922,7 +1923,7 @@ the chain; while context ∪ X is unsupported, take the one step up a ladder tha
 odds least, |log o(x | context) - log o(x | chain)|.  Returns log o(x | C ∪ X) - log o(x | C) for the
 first supported context C, or nothing (no supported context: :limited, or nothing left to try).
 """
-function backoff_correction(m::ChainModel, st::ChainState, Ic, G, X, label, prior, base)
+function backoff_correction(m::ChainModel, st::ChainState, Ic, G, X, label, prior, base; mode = m.opts.ctxmode)
   ladders = Vector{Vector{UInt64}}()
   for w in st.members
     sw = findfirst(==(w), Ic)
@@ -1930,7 +1931,7 @@ function backoff_correction(m::ChainModel, st::ChainState, Ic, G, X, label, prio
     sort!(gens; by = g -> get(m.itemcount, g, typemax(Int)))
     push!(ladders, [w; gens])
   end
-  top(L) = m.opts.ctxmode == :backoff ? length(L) + 1 : length(L)          # length + 1: dropped
+  top(L) = mode == :backoff ? length(L) + 1 : length(L)          # length + 1: dropped
   rung = ones(Int, length(ladders))
   ochain = st.odds[end]
   # the context's state, final entry and odds (nothing if some step is unsupported)
@@ -2005,9 +2006,11 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
   end
   # adaptive: short chains (plus pool) need only as much context as they have, but at least 1
   m.opts.adaptctx && (needmin = max(1, min(m.opts.minctx, depth(st) + nred)))
-  G = m.opts.ctxmode == :greedy ? nothing : get(m.generalize, isempty(base) ? UInt64(0) : m.recs[base[1]].typekey, Dict{Int,Vector{Int}}())
+  tk = isempty(base) ? UInt64(0) : m.recs[base[1]].typekey
+  mode = m.opts.ctxattach && tk != typekey(:token, 1) ? :greedy : m.opts.ctxmode   # (ctxattach: labels keep greedy contexts)
+  G = mode == :greedy ? nothing : get(m.generalize, tk, Dict{Int,Vector{Int}}())
   # :cover: the chain forms' generalizations may stand in for them in contexts
-  if m.opts.ctxmode == :cover
+  if mode == :cover
     for w in st.members
       sw = findfirst(==(w), Ic)
       sw === nothing && continue
@@ -2021,8 +2024,8 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     X = Ic[s]
     X == ABSENT && continue
     m.opts.relevance > 0 && leftover_relevance(m, st, X, label, prior, base) < m.opts.relevance && continue
-    if m.opts.ctxmode in (:backoff, :limited)
-      c = backoff_correction(m, st, Ic, G, X, label, prior, base)
+    if mode in (:backoff, :limited)
+      c = backoff_correction(m, st, Ic, G, X, label, prior, base; mode)
       c === nothing || (total_ += c; X in avail || push!(avail, X))
       continue
     end
@@ -2066,7 +2069,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     end
     LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](s, length(chosen) >= m.opts.minctx,
       [something(findfirst(==(f), Ic), 0) for f in chosen], corr)
-    m.opts.ctxmode == :cover && !covers(st, Ic, G, chosen) && continue
+    mode == :cover && !covers(st, Ic, G, chosen) && continue
     if length(chosen) >= needmin
       W = isempty(poolw) ? 1.0 : prod(get(poolw, f, 1.0) for f in chosen; init = 1.0)
       if W < 1.0 && m.opts.poolmode == :local        # scale the correction by the generalizations' weights
