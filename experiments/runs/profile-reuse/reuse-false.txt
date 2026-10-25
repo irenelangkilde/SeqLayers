@@ -1,0 +1,18 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 24.9 s): 14 of 32 slots always, 283 gate values
+[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (20.2 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events
+count cache: loaded 0 feature sets
+warm-up: 1 docs, 86 tokens, 51.3 s
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=correction;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent]: 324 tokens, 86.1 s; heads 264/324, labels 242; cache emptied 1 times; max RSS 6.6 GB
+record lists built 313017 (695984605 records), 0 of them kept for prefixes counted in an earlier run
+
+chain   scans 28100, records read 103168834, per scan median 405, 90th pct 6966, max 186980
+greedy  scans 367453, records read 764353325, per scan median 32, 90th pct 1801, max 1921436
+
+chain   33488 pass decisions: skipped 5388 (16.1%); passes forced by 1 long trial 3521, 2: 2892, 3+: 21687; median trials 6
+greedy  380311 pass decisions: skipped 12858 (3.4%); passes forced by 1 long trial 76391, 2: 27657, 3+: 263405; median trials 5
+
+count cache: 125994 new feature sets, 125994 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events

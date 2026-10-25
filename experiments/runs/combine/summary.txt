@@ -1,0 +1,18 @@
+=== product0  Sat Oct 24 21:03:55 MDT 2026
+ALL         2899    0.9979  0.7789  0.733   0.0041  1.0     
+domains: attachment candidates 75104 -> 75104 after propagation (1.0)
+
+score 1473.7 s, run 20261024-213022 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== product0-odds  Sat Oct 24 21:30:23 MDT 2026
+ALL         2899    0.9983  0.7813  0.7389  0.0041  1.0     
+domains: attachment candidates 75104 -> 75104 after propagation (1.0)
+
+score 944.6 s, run 20261024-214743 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== product0-odds-fromchain  Sat Oct 24 21:47:43 MDT 2026
+recorded events in 286.2 s
+      From worker 5:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 37.9 s): 14 of 32 slots always, 283 gate values
+ALL         2899    0.9983  0.7813  0.7389  0.0041  1.0     
+domains: attachment candidates 75104 -> 75104 after propagation (1.0)
+
+score 828.1 s, run 20261024-220811 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Sat Oct 24 22:08:11 MDT 2026

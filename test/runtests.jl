@@ -244,6 +244,15 @@ end
       @test 0 <= r.uas <= 1
       @test SeqLayers.LDS_STATS[:branches] > 0
     end
+    # evidence-side leftover smoothing: Bayes' rule with E's smoothed rates among chosen / not chosen
+    me = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, leftsmooth = :evidence)
+    v0 = SeqLayers.RecView(Int32[])
+    y2, ok = SeqLayers.leftover_update(me, (v0, Dict(UInt32(0) => (100.0, 900.0))), (v0, Dict(UInt32(0) => (10.0, 10.0))), UInt32(0), 0.2)
+    oE = 20 / 980
+    px, pnx = SeqLayers.smoothOdds(10, 90, oE), SeqLayers.smoothOdds(10, 890, oE)
+    @test ok && y2 ≈ 0.2 * (px / (1 + px)) / (pnx / (1 + pnx))
+    @test 0.2 < y2 < 0.2 * 9                          # toward 1 from the unsmoothed ratio (10/100)/(10/900)
+    @test 0 <= eval_scores(evaluate_counts(docs, specs, me, lex)).uas <= 1
     # domain variables: a pruned head direction removes the candidates on that side
     sd = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, specs, lex)
     solve!(sd, OracleModel())

@@ -5,3 +5,9 @@ ALL         2899    0.9979  0.7496  0.7058  0.0041  1.0
 
 score 2310.4 s, run 20261024-151324 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
 === pprel-pairs  Sat Oct 24 15:13:25 MDT 2026
+recorded events in 395.1 s
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 41.7 s): 16 of 34 slots always, 295 gate values
+ALL         2899    0.9981  0.7723  0.7309  0.0041  1.0     
+
+score 18482.0 s, run 20261024-203008 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Sat Oct 24 20:30:08 MDT 2026

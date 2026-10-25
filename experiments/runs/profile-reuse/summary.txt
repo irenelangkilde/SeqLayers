@@ -1,0 +1,12 @@
+=== reuse=false  Sat Oct 24 20:30:23 MDT 2026
+warm-up: 1 docs, 86 tokens, 51.3 s
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=correction;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent]: 324 tokens, 86.1 s; heads 264/324, labels 242; cache emptied 1 times; max RSS 6.6 GB
+record lists built 313017 (695984605 records), 0 of them kept for prefixes counted in an earlier run
+chain   scans 28100, records read 103168834, per scan median 405, 90th pct 6966, max 186980
+greedy  scans 367453, records read 764353325, per scan median 32, 90th pct 1801, max 1921436
+=== reuse=true  Sat Oct 24 20:33:48 MDT 2026
+warm-up: 1 docs, 86 tokens, 19.0 s
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=correction;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent]: 324 tokens, 33.3 s; heads 264/324, labels 242; cache emptied 0 times; max RSS 6.6 GB
+record lists built 291948 (116454237 records), 6785 of them kept for prefixes counted in an earlier run
+chain   scans 24181, records read 24918232, per scan median 253, 90th pct 3189, max 9901
+greedy  scans 350390, records read 141972661, per scan median 27, 90th pct 999, max 9999

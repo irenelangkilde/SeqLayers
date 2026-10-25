@@ -1,0 +1,148 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 99.0 s): 27 of 66 slots always, 738 gate values
+[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+[ Info: ChainModel: joint tables for 1127 frequent items, 328962 pairs (104.7 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs-rel/events
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=correction;relevance=0.25;gate=0.5)[events=gold;noise=20;rootabsent;relations], all docs: 2899 tokens, 12442.8 s; heads 2333/2899, labels 2182
+
+attach
+slot                      chain        %    first        % left_try  left_in        %      ctx        %   |corr|
+cand upos                 26611     12.0    22358     27.0    48019    44103      2.8  1118314      6.6    596.1
+cand len                   6285      2.8     1175      1.4    76376    57726      3.6   794430      4.7   1014.9
+distance                  28829     13.0    15852     19.2    51023    34227      2.2  1283242      7.5   1126.9
+cand form                 13974      6.3    11564     14.0    59601    43389      2.7   546681      3.2   3141.7
+cand person                2950      1.3       43      0.1    72154    53794      3.4   681250      4.0     49.1
+cand number                1906      0.9        0      0.0    73198    54832      3.5   614547      3.6    220.9
+cand basepos               6624      3.0     2951      3.6    68072    49920      3.1   810426      4.8     63.8
+cand xpos                  6063      2.7     3705      4.5    68411    50410      3.2   664876      3.9    669.5
+cand left_neighbor.upos     3803      1.7      380      0.5    69774    52667      3.3   382107      2.2    671.5
+cand left_neighbor.xpos     2403      1.1        0      0.0    70773    53601      3.4   217495      1.3    246.4
+cand right_neighbor.upos     8446      3.8      366      0.4    63115    47546      3.0   385330      2.3    870.5
+cand right_neighbor.xpos     4639      2.1      648      0.8    67034    51316      3.2   199856      1.2    452.0
+direction                 10338      4.7      169      0.2    53501    45425      2.9  1260970      7.4     30.6
+cand right_neighbor.form     9237      4.2     6808      8.2    60745    45605      2.9   306079      1.8   2277.5
+dep  upos                  5303      2.4        0      0.0    48353    48300      3.0   739712      4.3    775.7
+dep  xpos                  4782      2.2        0      0.0    47673    47645      3.0   578375      3.4    384.0
+dep  right_neighbor.xpos     2043      0.9        0      0.0    48375    48353      3.0   134902      0.8    338.0
+dep  len                   3207      1.4        7      0.0    46673    46504      2.9   778717      4.6    692.5
+dep  right_neighbor.upos     3546      1.6        0      0.0    46056    46033      2.9   262224      1.5    688.6
+cand left_neighbor.form     2072      0.9      457      0.6    60450    46745      2.9   328178      1.9   1966.9
+dep  basepos               3550      1.6        0      0.0    43348    43329      2.7   612251      3.6    171.0
+dep  left_neighbor.xpos     1365      0.6        0      0.0    43714    43627      2.7   128523      0.8    364.3
+dep  left_neighbor.upos     2158      1.0        0      0.0    40694    40607      2.6   233610      1.4    796.7
+dep  form                  3400      1.5       28      0.0    39351    38929      2.5   508865      3.0   2442.4
+dep  right_neighbor.form     6392      2.9      957      1.2    31108    30832      1.9   179466      1.1   2161.7
+dep  left_neighbor.form     1475      0.7        8      0.0    24289    24117      1.5   147508      0.9   1471.7
+cand dep_left1.upos         853      0.4       48      0.1    22477    22247      1.4   138521      0.8    479.5
+cand dep_left1.deprel      1100      0.5       32      0.0    22230    21999      1.4   129848      0.8    415.8
+cand dep_left1_dist        1684      0.8      333      0.4    21461    21242      1.3   197842      1.2    444.4
+cand tense                 1182      0.5        0      0.0    20861    20662      1.3   223621      1.3     76.0
+dep  person                2050      0.9        0      0.0    17900    17898      1.1   270232      1.6     72.8
+dep  number                1118      0.5        0      0.0    17699    17695      1.1   253130      1.5     96.2
+hyp.inner_sibling.upos     2452      1.1      152      0.2    16346    16152      1.0   108105      0.6    569.5
+hyp.inner_sibling.dist     4485      2.0     2673      3.2    14316    14119      0.9   155973      0.9     47.0
+hyp.inner_sibling.deprel     1504      0.7      279      0.3    17279    17086      1.1    65249      0.4     44.8
+hyp.inner_sibling.dir      1481      0.7        0      0.0    17279    17082      1.1    55939      0.3     11.6
+cand dep_right1.deprel      605      0.3       22      0.0    16536    16313      1.0    78418      0.5    807.6
+cand dep_right1.upos        967      0.4       38      0.0    15999    15782      1.0    99841      0.6   1045.5
+cand dep_right1_dist        915      0.4      107      0.1    14951    14754      0.9    61462      0.4    957.7
+hyp.right_sibling.deprel     2610      1.2      219      0.3    12633    12563      0.8   118222      0.7    265.1
+hyp.right_sibling.upos     1752      0.8      126      0.2    13493    13420      0.8   103932      0.6    632.5
+hyp.right_sibling.dist     4881      2.2     2588      3.1    10364    10290      0.6   170463      1.0    268.2
+hyp.left_sibling.dist      4688      2.1     3015      3.6    10096     9812      0.6   148238      0.9    240.1
+cand caps                  2458      1.1       66      0.1    12084    12032      0.8   178993      1.1    101.2
+hyp.left_sibling.deprel     2598      1.2      871      1.1    12118    11878      0.7    94936      0.6    402.2
+hyp.left_sibling.upos      1629      0.7      601      0.7    13078    12837      0.8    82010      0.5    734.4
+dep  dep_left1.upos         428      0.2        0      0.0    12470    12469      0.8    34996      0.2    114.0
+dep  dep_left1.deprel       510      0.2        0      0.0    11141    11140      0.7    26233      0.2     53.4
+dep  dep_right1.deprel      399      0.2        0      0.0     7897     7897      0.5    15952      0.1     87.4
+dep  caps                   863      0.4      395      0.5     6157     6121      0.4    35881      0.2    105.9
+cand dep_right2.deprel      451      0.2       85      0.1     6329     6291      0.4    23159      0.1    797.1
+cand dep_right2.upos        534      0.2        1      0.0     5790     5682      0.4    30669      0.2    742.7
+dep  dep_right1.upos        501      0.2        0      0.0     5662     5662      0.4    21678      0.1    139.0
+cand dep_right2_dist        319      0.1       10      0.0     5840     5722      0.4    16361      0.1    970.8
+hyp.outer_sibling.upos     1366      0.6     1271      1.5     2853     2846      0.2    48265      0.3     57.5
+hyp.outer_sibling.dist     1400      0.6     1236      1.5     2819     2810      0.2    46869      0.3     35.2
+hyp.outer_sibling.dir       680      0.3      638      0.8     3539     3530      0.2    23153      0.1     38.1
+hyp.outer_sibling.deprel      985      0.4      381      0.5     3226     3223      0.2    32899      0.2     14.4
+dep  dep_right1_dist        160      0.1        0      0.0     2742     2742      0.2     7209      0.0     72.3
+dep  dep_right2.upos        195      0.1        0      0.0     2059     2059      0.1     5339      0.0     70.9
+dep  dep_right2.deprel       78      0.0        0      0.0     2140     2140      0.1     2048      0.0     30.5
+dep  dep_right2_dist         84      0.0        0      0.0     1463     1463      0.1     2253      0.0     46.7
+dep  tense                  328      0.1        0      0.0     1018     1017      0.1    22207      0.1      6.9
+dep  dep_left1_dist          57      0.0        0      0.0      608      608      0.0     5112      0.0      7.5
+
+deprel
+slot                      chain        %    first        % left_try  left_in        %      ctx        %   |corr|
+head_dir                  23450     15.1    16247     15.6    77630    21025      3.2   605865      7.5    162.7
+upos                      16868     10.8    14883     14.3    75894    22816      3.5   712356      8.9    319.0
+person                    11766      7.6     9028      8.7    78790    23496      3.6   577287      7.2     45.0
+basepos                   10469      6.7     8326      8.0    83601    23369      3.5   585850      7.3     27.5
+head.upos                 12795      8.2     9005      8.7    72783    18722      2.8   458945      5.7    417.9
+xpos                       8378      5.4     6945      6.7    78217    22707      3.4   473382      5.9    204.5
+number                     6335      4.1     4447      4.3    68869    23269      3.5   458454      5.7     55.3
+len                        6654      4.3     4881      4.7    77202    22329      3.4   485792      6.0    325.2
+right_neighbor.upos        3532      2.3     2035      2.0    80238    24004      3.6   275874      3.4    416.0
+head_upos                     0      0.0        0      0.0    85537    27104      4.1   222758      2.8      0.0
+left_neighbor.upos         2649      1.7     1428      1.4    80854    24153      3.7   287763      3.6    473.7
+head_dist                  4319      2.8     1615      1.6    73903    21913      3.3   159781      2.0    442.8
+head.xpos                  2307      1.5      978      0.9    79603    23465      3.6   166819      2.1    335.8
+left_neighbor.xpos         2046      1.3     1405      1.4    76461    23313      3.5   213017      2.6    199.0
+head_xpos                     0      0.0        0      0.0    81897    25266      3.8   100099      1.2      0.3
+right_neighbor.xpos        1502      1.0      823      0.8    75663    22997      3.5   180121      2.2    151.8
+left_sibling_dist          3508      2.3      978      0.9    48925    15391      2.3   125613      1.6    188.1
+right_sibling.deprel       1219      0.8      896      0.9    45742    15382      2.3    73678      0.9    185.6
+right_sibling_dist         1075      0.7      167      0.2    45607    15255      2.3    61726      0.8    299.9
+left_sibling.deprel        1836      1.2     1158      1.1    44872    14358      2.2    85567      1.1    219.0
+right_sibling.upos         1043      0.7      340      0.3    45583    15113      2.3    78523      1.0    327.0
+left_sibling.upos           856      0.5      242      0.2    46176    14962      2.3    76547      1.0    395.7
+dep_left1_dist             6297      4.0     4074      3.9    23685     8425      1.3   151882      1.9     36.7
+outer_sibling_dir          2617      1.7     1646      1.6    35846    11346      1.7    63851      0.8     29.3
+caps                       5422      3.5      822      0.8    23650     7891      1.2   268508      3.3     76.3
+outer_sibling_dist          543      0.3      179      0.2    35421    12700      1.9    23094      0.3     77.3
+left_neighbor.form          946      0.6      509      0.5    38353    12149      1.8   154472      1.9    581.3
+right_neighbor.form        1087      0.7      538      0.5    37817    11430      1.7   118735      1.5    621.9
+outer_sibling.deprel        580      0.4      481      0.5    32789    11586      1.8    30044      0.4     29.1
+outer_sibling.upos          921      0.6      654      0.6    32016    11196      1.7    44531      0.6     65.7
+form                       2179      1.4     1945      1.9    42313     9796      1.5   194123      2.4    322.9
+inner_sibling_dir          1173      0.8      501      0.5    37038    10070      1.5    28148      0.3     25.1
+inner_sibling_dist          926      0.6      556      0.5    34045     9771      1.5    37254      0.5     45.4
+tense                      1401      0.9        0      0.0    29260     8582      1.3   156606      1.9     19.9
+dep_left1.upos              845      0.5      547      0.5    24505     9060      1.4    40671      0.5     38.5
+dep_left1.deprel           1014      0.7      612      0.6    24442     8883      1.3    38899      0.5     43.1
+inner_sibling.deprel        546      0.4      398      0.4    31641     8994      1.4    26141      0.3     15.8
+inner_sibling.upos          528      0.3      358      0.3    31716     8956      1.4    34924      0.4     84.4
+noise                       401      0.3       83      0.1    20469     8620      1.3     7113      0.1    341.7
+head.form                  2912      1.9     2619      2.5    18416     5136      0.8    86026      1.1    325.3
+dep_right1_dist             729      0.5      214      0.2    19732     6499      1.0    18082      0.2    146.3
+dep_right1.upos            1097      0.7      808      0.8    17647     6022      0.9    33025      0.4    186.2
+dep_right1.deprel           481      0.3      251      0.2    17163     5911      0.9    16242      0.2     87.9
+dep_right2_dist             127      0.1       35      0.0     7740     2057      0.3     2468      0.0     99.2
+dep_right2.upos             190      0.1      142      0.1     7146     1854      0.3     4669      0.1     91.6
+dep_right2.deprel           120      0.1       88      0.1     6913     1916      0.3     2733      0.0     49.7
+
+count cache: 2373 new feature sets, 9964443 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs-rel/events
+	Command being timed: "julia --project=experiments experiments/slot_usage.jl model=chain select=maxdev events=gold dev_sents=5 maxcached=50000000 jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 relations=true docs=10000 out=experiments/runs/rel-analysis/usage.tsv"
+	User time (seconds): 12455.00
+	System time (seconds): 231.64
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 3:32:03
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 21087556
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 3537
+	Minor (reclaiming a frame) page faults: 86379063
+	Voluntary context switches: 34348
+	Involuntary context switches: 54043
+	Swaps: 0
+	File system inputs: 11034768
+	File system outputs: 478792
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

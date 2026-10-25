@@ -1,0 +1,34 @@
+=== soft-product-1e-4  Sat Oct 24 23:05:03 UTC 2026
+ALL         2899    0.9979  0.7779  0.7313  0.0166  1.0     
+
+pipeline: 514 attachments inferred (0.177 of tokens), 0.99 of them right; 0 left with no candidate
+domains: attachment candidates 75104 -> 17639 after propagation (0.235)
+
+score 581.7 s, run 20261024-231755 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true domains=product domeps=1e-4 note=soft-product-1e-4"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 12:53.38
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 13166388
+	Average resident set size (kbytes): 0
+=== soft-product-1e-5  Sat Oct 24 23:17:57 UTC 2026
+ALL         2899    0.9979  0.7779  0.7313  0.0062  1.0     
+
+pipeline: 170 attachments inferred (0.059 of tokens), 1.0 of them right; 0 left with no candidate
+domains: attachment candidates 75104 -> 31900 after propagation (0.425)
+
+score 572.1 s, run 20261024-233041 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true domains=product domeps=1e-5 note=soft-product-1e-5"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 12:46.21
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 13075272
+	Average resident set size (kbytes): 0
+=== soft-product-0  Sat Oct 24 23:30:43 UTC 2026
+ALL         2899    0.9979  0.7779  0.7316  0.0041  1.0     
+domains: attachment candidates 75104 -> 75104 after propagation (1.0)
+
+score 570.9 s, run 20261024-234330 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true domains=product domeps=0 note=soft-product-0"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 12:48.33
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 12908096
+	Average resident set size (kbytes): 0

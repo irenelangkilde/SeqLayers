@@ -1,0 +1,7 @@
+ALL         2899    0.9979  0.8675  0.8065  0.0162  1.0     
+domains: attachment candidates 8191 -> 8191 after propagation (1.0)
+
+score 1457.3 s, run 20261025-003603 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=2 maxcached=50000000 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 relations=true projective=true domains=product domeps=0 note=relproj-product-0"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 28:48.91
+	Average shared text size (kbytes): 0

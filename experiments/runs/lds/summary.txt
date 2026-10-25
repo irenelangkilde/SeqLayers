@@ -1,0 +1,35 @@
+=== greedy  Sat Oct 24 21:11:43 UTC 2026
+recorded events in 497.7 s
+      From worker 6:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 57.4 s): 14 of 32 slots always, 283 gate values
+ALL         2899    0.9926  0.6579  0.5824  0.9636  
+build 514.7 s, decode 24879.4 s, run 20261025-041749 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+	Command being timed: "julia --project=experiments experiments/dev_eval.jl model=chain select=maxdev events=gold dev_sents=5 workers=12 jointmin=10000 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true note=greedy"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 7:06:06
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 13021104
+	Average resident set size (kbytes): 0
+=== lds4-sum  Sun Oct 25 04:17:50 UTC 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events
+      From worker 12:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.6 s): 14 of 32 slots always, 283 gate values
+search: Dict(:segments => 25, :switched => 4, :branches => 100)
+count cache: 484 new feature sets, 3334320 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events
+ALL         2899    0.9926  0.6582  0.5828  0.9636  
+build 19.6 s, decode 3441.4 s, run 20261025-051815 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+	Command being timed: "julia --project=experiments experiments/dev_eval.jl model=chain select=maxdev events=gold dev_sents=5 workers=12 jointmin=10000 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true search=4 ldsscore=sum note=lds4-sum"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:00:26
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 13070580
+	Average resident set size (kbytes): 0
+=== lds4-mean  Sun Oct 25 05:18:16 UTC 2026
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events
+      From worker 7:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.1 s): 14 of 32 slots always, 283 gate values
+search: Dict(:segments => 25, :switched => 4, :branches => 100)
+count cache: 40 new feature sets, 3334360 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events
+ALL         2899    0.9926  0.6582  0.5828  0.9636  
+build 16.9 s, decode 3492.0 s, run 20261025-061928 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+	Command being timed: "julia --project=experiments experiments/dev_eval.jl model=chain select=maxdev events=gold dev_sents=5 workers=12 jointmin=10000 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true search=4 ldsscore=mean note=lds4-mean"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:01:12
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 13024544
+	Average resident set size (kbytes): 0
+=== all done Sun Oct 25 06:19:29 UTC 2026

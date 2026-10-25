@@ -179,6 +179,7 @@ struct ChainOpts
   poolscale::Symbol                               # soft pool distance: :logodds (d_g) | :z (d_g / SE of the chain's final log odds)
   ctxfromchain::Bool                              # greedy: a leftover's context starts as the chain (as far as supported), then extends
   ctxsupport::Int                                 # greedy: a context step needs context + leftover with at least this many records (0: mincount)
+  leftsmooth::Symbol                              # greedy: o(x|S∪E) smoothed toward o(x|S) (:odds) | by E's rates within x and ¬x (:evidence)
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -284,7 +285,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
@@ -292,6 +293,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   stepscore in (:abs, :signed, :maxmin, :maxmin2) || error("unknown stepscore $stepscore (use :abs, :signed, :maxmin or :maxmin2)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
   poolmarginal in (:off, :leftover, :drop) || error("unknown poolmarginal $poolmarginal (use :off, :leftover or :drop)")
+  leftsmooth in (:odds, :evidence) || error("unknown leftsmooth $leftsmooth (use :odds or :evidence)")
   poolscale in (:logodds, :z) || error("unknown poolscale $poolscale (use :logodds or :z)")
   poolmode in (:whole, :local) || error("unknown poolmode $poolmode (use :whole or :local)")
   restart in (:immediate, :exhaust) || error("unknown restart $restart")
@@ -340,7 +342,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -1867,12 +1869,32 @@ function context_correction(m::ChainModel, X, ctx, label, prior, base)
   for f in ctx
     eS, eSX = only(extend_all(m, S, depth(S), [f])), only(extend_all(m, SX, depth(SX), [f]))
     y1, ok1 = update_odds(m, eS, label, S.odds[end])
-    y2, ok2 = update_odds(m, eSX, label, y1)
+    y2, ok2 = leftover_update(m, eS, eSX, label, y1)
     (ok1 && ok2) || break
     advance!(m, S, f, eS, y1); advance!(m, SX, f, eSX, y2)
     corr = log(y2) - log(y1)
   end
   corr
+end
+
+"""
+o(x | S∪E) from the entries for context S (`eS`) and S∪E (`eSX`), given y1 = o(x | S) as smoothed:
+:odds -- the odds in S∪E's records smoothed toward y1 (one count, smoothOdds); :evidence -- Bayes' rule,
+y1 times the likelihood ratio P(E | x,S) / P(E | ¬x,S), each rate from E's odds among the x (¬x)
+records of S smoothed toward E's odds in all of S.  Supported as update_odds (S∪E's records).
+"""
+function leftover_update(m::ChainModel, eS, eSX, label::UInt32, y1::Float64)
+  m.opts.leftsmooth == :odds && return update_odds(m, eSX, label, y1)
+  (k1, k2) = get(eSX[2], label, (0.0, 0.0))
+  k1 + k2 < max(m.opts.mincount, 1) && return y1, false
+  (n1, n2) = get(eS[2], label, (0.0, 0.0))
+  rest = n1 + n2 - k1 - k2
+  rest <= 0 && return y1, true                    # E in every record of S: no evidence either way
+  oE = (k1 + k2) / rest
+  prob(o) = isinf(o) ? 1.0 : o / (1 + o)
+  px, pnx = prob(smoothOdds(k1, n1 - k1, oE)), prob(smoothOdds(k2, n2 - k2, oE))
+  (px > 0 && pnx > 0) || return y1, true
+  y1 * px / pnx, true
 end
 
 "Does a leftover context entry (context + leftover) have the records `ctxsupport` asks for?"
@@ -1919,7 +1941,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
       for f in st.members
         e1, e2 = only(extend_all(m, S, depth(S), [f])), only(extend_all(m, SX, depth(SX), [f]))
         y1, ok1 = update_odds(m, e1, label, S.odds[end])
-        y2, ok2 = update_odds(m, e2, label, y1)
+        y2, ok2 = leftover_update(m, e1, e2, label, y1)
         (ok1 && ok2 && ctxsupported(m, e2, label)) || break
         advance!(m, S, f, e1, y1); advance!(m, SX, f, e2, y2)
         push!(chosen, f)
@@ -1935,7 +1957,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
       best, bi, by1, by2, bcorr = -Inf, 0, 0.0, 0.0, 0.0
       for (i, f) in enumerate(fs)
         y1, ok1 = update_odds(m, eS[i], label, oS)          # o(S∪f)
-        y2, ok2 = update_odds(m, eSX[i], label, y1)         # o(S∪f∪X), toward o(S∪f)
+        y2, ok2 = leftover_update(m, eS[i], eSX[i], label, y1)   # o(S∪f∪X), from o(S∪f)
         (ok1 && ok2 && ctxsupported(m, eSX[i], label)) || continue   # S∪f∪X must be supported
         c = log(y2) - log(y1)
         sc = m.opts.greedyby == :correction ? abs(c - corr) : abs(log(y1) - log(oS))
