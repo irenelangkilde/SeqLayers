@@ -253,6 +253,12 @@ end
     @test ok && y2 ≈ 0.2 * (px / (1 + px)) / (pnx / (1 + pnx))
     @test 0.2 < y2 < 0.2 * 9                          # toward 1 from the unsmoothed ratio (10/100)/(10/900)
     @test 0 <= eval_scores(evaluate_counts(docs, specs, me, lex)).uas <= 1
+    # leftover contexts from the generalized chain (backoff, limited) or covering it (cover)
+    for cm_ in (:backoff, :limited, :cover)
+      mb = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = cm_)
+      mb.generalize = SeqLayers.generalization_slots(specs)
+      @test 0 <= eval_scores(evaluate_counts(docs, specs, mb, lex)).uas <= 1
+    end
     # domain variables: a pruned head direction removes the candidates on that side
     sd = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, specs, lex)
     solve!(sd, OracleModel())

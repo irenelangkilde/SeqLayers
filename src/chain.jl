@@ -180,6 +180,7 @@ struct ChainOpts
   ctxfromchain::Bool                              # greedy: a leftover's context starts as the chain (as far as supported), then extends
   ctxsupport::Int                                 # greedy: a context step needs context + leftover with at least this many records (0: mincount)
   leftsmooth::Symbol                              # greedy: o(x|S∪E) smoothed toward o(x|S) (:odds) | by E's rates within x and ¬x (:evidence)
+  ctxmode::Symbol                                 # greedy contexts: :greedy | :backoff / :limited (generalize the chain) | :cover (greedy, must cover the chain)
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -270,6 +271,7 @@ mutable struct ChainModel <: AbstractModel
   gates::Dict{UInt64,Gates}                      # decision type -> relevance gates (see Gates)
   leftalpha::Dict{UInt64,Float64}                # decision type -> weight of the greedy leftovers' corrections (default 1)
   generalize::Dict{UInt64,Dict{Int,Vector{Int}}} # decision type -> form slot -> its generalization slots (soft pool)
+  nochain::Dict{UInt64,Set{Int}}                 # decision type -> slots never chosen in chains (nor leftovers): stand-ins only
 end
 
 const MAXMEMO = 2_000_000
@@ -285,7 +287,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
@@ -293,6 +295,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   stepscore in (:abs, :signed, :maxmin, :maxmin2) || error("unknown stepscore $stepscore (use :abs, :signed, :maxmin or :maxmin2)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
   poolmarginal in (:off, :leftover, :drop) || error("unknown poolmarginal $poolmarginal (use :off, :leftover or :drop)")
+  ctxmode in (:greedy, :backoff, :limited, :cover) || error("unknown ctxmode $ctxmode (use :greedy, :backoff, :limited or :cover)")
   leftsmooth in (:odds, :evidence) || error("unknown leftsmooth $leftsmooth (use :odds or :evidence)")
   poolscale in (:logodds, :z) || error("unknown poolscale $poolscale (use :logodds or :z)")
   poolmode in (:whole, :local) || error("unknown poolmode $poolmode (use :whole or :local)")
@@ -342,7 +345,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -351,7 +354,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     Dict{UInt64,Vector{Tuple{Int16,Int16}}}(), lsid, lsets,
     Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), false, 10_000, Dict{UInt64,Int}(),
     Dict{UInt64,Vector{Int32}}(), zeros(Int32, length(lsets)), Dict{UInt64,Set{Int}}(), Dict{UInt64,Gates}(),
-    Dict{UInt64,Float64}(), Dict{UInt64,Dict{Int,Vector{Int}}}())
+    Dict{UInt64,Float64}(), Dict{UInt64,Dict{Int,Vector{Int}}}(), Dict{UInt64,Set{Int}}())
   tally_shapes!(m)
   if gate > 0
     t = @elapsed build_gates!(m)
@@ -1513,6 +1516,10 @@ end
 function run_single(m::ChainModel, Ic, label, prior, typerecs; tk = nothing)
   st = ChainState(prior, typerecs)
   remaining = tk === nothing ? collect(eachindex(Ic)) : admitted(m, tk, Ic)
+  if tk !== nothing && haskey(m.nochain, tk)        # stand-in slots (e.g. word classes): only for leftover contexts
+    nc = m.nochain[tk]
+    remaining = [s for s in remaining if !(s in nc)]
+  end
   order = m.opts.poolm > 0 && tk !== nothing ? get(m.pool, tk, nothing) : nothing
   if order === nothing
     nosingle = m.opts.pairsteps && m.opts.pairsfirst ? pair_covered(m, Ic, remaining) : NOSINGLE
@@ -1897,6 +1904,77 @@ function leftover_update(m::ChainModel, eS, eSX, label::UInt32, y1::Float64)
   y1 * px / pnx, true
 end
 
+"Does context `chosen` hold each chain feature itself or one of its generalizations (ctxmode :cover)?"
+function covers(st::ChainState, Ic, G, chosen)
+  for w in st.members
+    w in chosen && continue
+    sw = findfirst(==(w), Ic)
+    (sw !== nothing && any(sg -> Ic[sg] != ABSENT && Ic[sg] in chosen, get(G, sw, Int[]))) || return false
+  end
+  true
+end
+
+"""
+Leftover X's correction with a generalized chain as its context (ctxmode :backoff / :limited).  Each
+chain feature has a ladder: itself, then its generalizations on the same token (G: xpos, upos,
+basepos, classes, suffixes; rarer -- more specific -- first), then (:backoff only) dropped.  Start from
+the chain; while context ∪ X is unsupported, take the one step up a ladder that changes the chain's
+odds least, |log o(x | context) - log o(x | chain)|.  Returns log o(x | C ∪ X) - log o(x | C) for the
+first supported context C, or nothing (no supported context: :limited, or nothing left to try).
+"""
+function backoff_correction(m::ChainModel, st::ChainState, Ic, G, X, label, prior, base)
+  ladders = Vector{Vector{UInt64}}()
+  for w in st.members
+    sw = findfirst(==(w), Ic)
+    gens = sw === nothing ? UInt64[] : UInt64[Ic[sg] for sg in get(G, sw, Int[]) if Ic[sg] != ABSENT && Ic[sg] != w && Ic[sg] != X]
+    sort!(gens; by = g -> get(m.itemcount, g, typemax(Int)))
+    push!(ladders, [w; gens])
+  end
+  top(L) = m.opts.ctxmode == :backoff ? length(L) + 1 : length(L)          # length + 1: dropped
+  rung = ones(Int, length(ladders))
+  ochain = st.odds[end]
+  # the context's state, final entry and odds (nothing if some step is unsupported)
+  function build(r)
+    S, e = ChainState(prior, base), nothing
+    for (i, L) in enumerate(ladders)
+      r[i] > length(L) && continue
+      x = L[r[i]]
+      e = only(extend_all(m, S, depth(S), [x]))
+      y, ok = update_odds(m, e, label, S.odds[end])
+      ok || return nothing
+      advance!(m, S, x, e, y)
+    end
+    S, e
+  end
+  cur = build(rung)
+  while true
+    if cur !== nothing
+      S, e = cur
+      eX = only(extend_all(m, S, depth(S), [X]))
+      if e === nothing                                # every feature dropped: X's marginal correction
+        yX, okX = update_odds(m, eX, label, prior)
+        okX && ctxsupported(m, eX, label) && return log(yX) - log(prior)
+      else
+        y2, ok2 = leftover_update(m, e, eX, label, S.odds[end])
+        ok2 && ctxsupported(m, eX, label) && return log(y2) - log(S.odds[end])
+      end
+    end
+    best, bi, bst = Inf, 0, nothing
+    for i in eachindex(ladders)
+      rung[i] < top(ladders[i]) || continue
+      rung[i] += 1
+      c = build(rung)
+      rung[i] -= 1
+      c === nothing && continue
+      d = abs(log(c[1].odds[end]) - log(ochain))
+      d < best && ((best, bi, bst) = (d, i, c))
+    end
+    bi == 0 && return nothing
+    rung[bi] += 1
+    cur = bst
+  end
+end
+
 "Does a leftover context entry (context + leftover) have the records `ctxsupport` asks for?"
 function ctxsupported(m::ChainModel, e, label)
   m.opts.ctxsupport <= 0 && return true
@@ -1927,10 +2005,27 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
   end
   # adaptive: short chains (plus pool) need only as much context as they have, but at least 1
   m.opts.adaptctx && (needmin = max(1, min(m.opts.minctx, depth(st) + nred)))
+  G = m.opts.ctxmode == :greedy ? nothing : get(m.generalize, isempty(base) ? UInt64(0) : m.recs[base[1]].typekey, Dict{Int,Vector{Int}}())
+  # :cover: the chain forms' generalizations may stand in for them in contexts
+  if m.opts.ctxmode == :cover
+    for w in st.members
+      sw = findfirst(==(w), Ic)
+      sw === nothing && continue
+      for sg in get(G, sw, Int[])
+        g = Ic[sg]
+        (g == ABSENT || g in avail) || push!(avail, g)
+      end
+    end
+  end
   for s in remaining
     X = Ic[s]
     X == ABSENT && continue
     m.opts.relevance > 0 && leftover_relevance(m, st, X, label, prior, base) < m.opts.relevance && continue
+    if m.opts.ctxmode in (:backoff, :limited)
+      c = backoff_correction(m, st, Ic, G, X, label, prior, base)
+      c === nothing || (total_ += c; X in avail || push!(avail, X))
+      continue
+    end
     S, SX = ChainState(prior, base), ChainState(prior, base)
     eX = only(extend_all(m, S, 0, [X]))
     yX, okX = update_odds(m, eX, label, prior)
@@ -1949,7 +2044,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
       end
     end
     while length(chosen) < needmax
-      fs = UInt64[f for f in avail if !(f in chosen)]
+      fs = UInt64[f for f in avail if !(f in chosen) && f != X]    # (:cover: X may be among the stand-ins)
       isempty(fs) && break
       eS = extend_all(m, S, depth(S), fs)
       eSX = extend_all(m, SX, depth(SX), fs)
@@ -1971,6 +2066,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     end
     LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](s, length(chosen) >= m.opts.minctx,
       [something(findfirst(==(f), Ic), 0) for f in chosen], corr)
+    m.opts.ctxmode == :cover && !covers(st, Ic, G, chosen) && continue
     if length(chosen) >= needmin
       W = isempty(poolw) ? 1.0 : prod(get(poolw, f, 1.0) for f in chosen; init = 1.0)
       if W < 1.0 && m.opts.poolmode == :local        # scale the correction by the generalizations' weights
@@ -1979,7 +2075,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
         corr = W * corr + (1 - W) * context_correction(m, X, [f for f in chosen if !haskey(poolw, f)], label, prior, base)
       end
       total_ += corr
-      push!(avail, X)
+      X in avail || push!(avail, X)
     end
   end
   total_
