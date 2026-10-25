@@ -1,1 +1,8 @@
 === accum-heads  Sun Oct 25 17:21:27 MDT 2026
+ALL         2899    0.9983  0.7934  0.7478  0.0041  1.0     
+score 1009.1 s, run 20261025-174031 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== accum-all  Sun Oct 25 17:40:32 MDT 2026
+ALL         2899    0.9977  0.7937  0.7485  0.0041  1.0     
+score 585.3 s, run 20261025-175207 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== explain  Sun Oct 25 17:52:07 MDT 2026
+=== all done Sun Oct 25 17:53:26 MDT 2026
