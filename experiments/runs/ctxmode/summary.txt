@@ -1,0 +1,36 @@
+=== baseline  Sun Oct 25 18:15:15 UTC 2026
+ALL         2899    0.9983  0.7844  0.7406  0.0041  1.0     
+domains: attachment candidates 75104 -> 75104 after propagation (1.0)
+score 523.7 s, run 20261025-182735 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence domains=product domeps=0 note=baseline"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 12:21.21
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 13712540
+	Average resident set size (kbytes): 0
+=== backoff  Sun Oct 25 18:27:36 UTC 2026
+ALL         2899    0.9977  0.7868  0.7285  0.0041  1.0     
+domains: attachment candidates 75104 -> 75104 after propagation (1.0)
+score 189.6 s, run 20261025-183331 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence domains=product domeps=0 ctxmode=backoff note=backoff"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 5:55.36
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 8288184
+	Average resident set size (kbytes): 0
+=== limited  Sun Oct 25 18:15:15 UTC 2026
+ALL         2899    0.9987  0.7758  0.7261  0.0041  1.0     
+domains: attachment candidates 75104 -> 75104 after propagation (1.0)
+score 162.9 s, run 20261025-182133 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence domains=product domeps=0 ctxmode=limited note=limited"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 6:19.22
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 7992756
+	Average resident set size (kbytes): 0
+=== cover  Sun Oct 25 18:21:34 UTC 2026
+ALL         2899    0.9987  0.7813  0.7372  0.0041  1.0     
+domains: attachment candidates 75104 -> 75104 after propagation (1.0)
+score 422.4 s, run 20261025-183217 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=6 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence domains=product domeps=0 ctxmode=cover note=cover"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 10:43.95
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 12318876
+	Average resident set size (kbytes): 0

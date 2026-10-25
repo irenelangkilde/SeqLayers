@@ -1,0 +1,2 @@
+/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/runs/ctxmode-wc/run.sh: line 28: syntax error near unexpected token `}'
+/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/runs/ctxmode-wc/run.sh: line 28: `} > $OUT/partz.txt 2>&1 &'
