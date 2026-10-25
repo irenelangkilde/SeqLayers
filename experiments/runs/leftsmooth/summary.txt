@@ -1,1 +1,13 @@
 === evidence  Sun Oct 25 04:29:12 MDT 2026
+ALL         2899    0.9981  0.7423  0.6992  0.0041  1.0     
+
+score 1308.6 s, run 20261025-045257 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== evidence-odds-product0  Sun Oct 25 04:52:57 MDT 2026
+ALL         2899    0.9983  0.7844  0.7406  0.0041  1.0     
+domains: attachment candidates 75104 -> 75104 after propagation (1.0)
+score 604.9 s, run 20261025-050433 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== evidence-odds  Sun Oct 25 05:04:33 MDT 2026
+ALL         2899    0.9983  0.7613  0.7168  0.0041  1.0     
+
+score 528.5 s, run 20261025-051443 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Sun Oct 25 05:14:43 MDT 2026
