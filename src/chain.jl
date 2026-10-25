@@ -180,7 +180,7 @@ struct ChainOpts
   ctxfromchain::Bool                              # greedy: a leftover's context starts as the chain (as far as supported), then extends
   ctxsupport::Int                                 # greedy: a context step needs context + leftover with at least this many records (0: mincount)
   leftsmooth::Symbol                              # greedy: o(x|S∪E) smoothed toward o(x|S) (:odds) | by E's rates within x and ¬x (:evidence)
-  ctxmode::Symbol                                 # greedy contexts: :greedy | :backoff / :limited (generalize the chain) | :cover (greedy, must cover the chain)
+  ctxmode::Symbol                                 # greedy contexts: :greedy | :backoff / :limited (generalize the chain) | :cover (greedy, must cover the chain) | :accum (leftover chain)
   ctxattach::Bool                                 # ctxmode for the attachment decision only (labels keep :greedy)
 end
 
@@ -297,7 +297,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   stepscore in (:abs, :signed, :maxmin, :maxmin2) || error("unknown stepscore $stepscore (use :abs, :signed, :maxmin or :maxmin2)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
   poolmarginal in (:off, :leftover, :drop) || error("unknown poolmarginal $poolmarginal (use :off, :leftover or :drop)")
-  ctxmode in (:greedy, :backoff, :limited, :cover) || error("unknown ctxmode $ctxmode (use :greedy, :backoff, :limited or :cover)")
+  ctxmode in (:greedy, :backoff, :limited, :cover, :accum) || error("unknown ctxmode $ctxmode (use :greedy, :backoff, :limited, :cover or :accum)")
   leftsmooth in (:odds, :evidence) || error("unknown leftsmooth $leftsmooth (use :odds or :evidence)")
   poolscale in (:logodds, :z) || error("unknown poolscale $poolscale (use :logodds or :z)")
   poolmode in (:whole, :local) || error("unknown poolmode $poolmode (use :whole or :local)")
@@ -1977,6 +1977,98 @@ function backoff_correction(m::ChainModel, st::ChainState, Ic, G, X, label, prio
   end
 end
 
+"""
+Leftovers as a second chain over generalized contexts (ctxmode :accum).  The context starts as the chain;
+each feature in it has a ladder (itself, its generalizations on the same token -- rarer first --, then
+dropped) and a rung that only ever goes up.  Each round, every remaining leftover X is scored against the
+context generalized only as far as X needs: walking the generalization path -- from the current rungs,
+repeatedly the one step up a ladder that keeps the context's odds closest to the running estimate T (log
+o(x | chain) plus the corrections taken so far) -- until context ∪ X is supported; its correction is
+log o(x | C ∪ X) - log o(x | C) (leftover_update).  The X with the largest |correction| is taken: the
+rungs it needed stay, X joins the context with its own ladder, T grows by the correction, and the next
+round begins.  Leftovers already in the context (as a generalization of a feature) are redundant;
+unsupported ones (even with everything dropped) are left out.  Returns the summed correction.
+"""
+function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int}, label, prior, base)
+  ladder(x, slot) = (gens = slot === nothing ? UInt64[] : UInt64[Ic[sg] for sg in get(G, slot, Int[]) if Ic[sg] != ABSENT && Ic[sg] != x];
+    sort!(gens; by = g -> get(m.itemcount, g, typemax(Int))); [x; gens])
+  ladders = [ladder(w, findfirst(==(w), Ic)) for w in st.members]
+  rung = ones(Int, length(ladders))
+  T = log(st.odds[end])
+  total_ = 0.0
+  pending = copy(rel)
+  items(r) = UInt64[L[r[i]] for (i, L) in enumerate(ladders) if r[i] <= length(L)]
+  cache = Dict{Vector{Int},Any}()
+  function build(r)                                 # (state, final entry) of the context, or nothing if unsupported
+    get!(cache, copy(r)) do
+      S, e = ChainState(prior, base), nothing
+      for x in items(r)
+        e = only(extend_all(m, S, depth(S), [x]))
+        y, ok = update_odds(m, e, label, S.odds[end])
+        ok || return nothing
+        advance!(m, S, x, e, y)
+      end
+      (S, e)
+    end
+  end
+  while !isempty(pending)
+    # the generalization path from the current rungs (the same for every X), built as far as needed
+    path = Any[(copy(rung), build(rung))]
+    function step!(path)
+      r = path[end][1]
+      best, br, bc = Inf, nothing, nothing
+      for i in eachindex(ladders)
+        r[i] <= length(ladders[i]) || continue      # (already dropped)
+        r2 = copy(r); r2[i] += 1
+        c = build(r2)
+        c === nothing && continue
+        d = abs(log(c[1].odds[end]) - T)
+        d < best && ((best, br, bc) = (d, r2, c))
+      end
+      br === nothing && return false
+      push!(path, (br, bc))
+      true
+    end
+    bestX, bestc, bestk, bestctx = 0, 0.0, 0, UInt64[]
+    for (pi_, sx) in enumerate(pending)
+      X = Ic[sx]
+      X in items(rung) && continue                  # already in the context (as a generalization): redundant
+      k = 1
+      while true
+        c = path[k][2]
+        if c !== nothing
+          S, e = c
+          eX = only(extend_all(m, S, depth(S), [X]))
+          corr = nothing
+          if e === nothing
+            yX, okX = update_odds(m, eX, label, prior)
+            okX && ctxsupported(m, eX, label) && (corr = log(yX) - log(prior))
+          else
+            y2, ok2 = leftover_update(m, e, eX, label, S.odds[end])
+            ok2 && ctxsupported(m, eX, label) && (corr = log(y2) - log(S.odds[end]))
+          end
+          if corr !== nothing
+            abs(corr) > abs(bestc) || bestX == 0 ? ((bestX, bestc, bestk, bestctx) = (pi_, corr, k, items(path[k][1]))) : nothing
+            break
+          end
+        end
+        k == length(path) && !step!(path) && break   # nothing left to generalize: X unsupported
+        k += 1
+      end
+    end
+    bestX == 0 && break
+    sx = pending[bestX]
+    LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](sx, true, [something(findfirst(==(f), Ic), 0) for f in bestctx], bestc)
+    rung = copy(path[bestk][1])
+    push!(ladders, ladder(Ic[sx], sx)); push!(rung, 1)
+    total_ += bestc
+    T += bestc
+    deleteat!(pending, bestX)
+    filter!(s -> !(Ic[s] in items(rung)), pending)  # leftovers now in the context are redundant
+  end
+  total_
+end
+
 "Does a leftover context entry (context + leftover) have the records `ctxsupport` asks for?"
 function ctxsupported(m::ChainModel, e, label)
   m.opts.ctxsupport <= 0 && return true
@@ -2020,6 +2112,11 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
         (g == ABSENT || g in avail) || push!(avail, g)
       end
     end
+  end
+  if mode == :accum
+    rel = Int[s for s in remaining if Ic[s] != ABSENT &&
+      (m.opts.relevance <= 0 || leftover_relevance(m, st, Ic[s], label, prior, base) >= m.opts.relevance)]
+    return accum_leftovers(m, st, Ic, G, rel, label, prior, base)
   end
   for s in remaining
     X = Ic[s]
