@@ -273,6 +273,7 @@ mutable struct ChainModel <: AbstractModel
   leftalpha::Dict{UInt64,Float64}                # decision type -> weight of the greedy leftovers' corrections (default 1)
   generalize::Dict{UInt64,Dict{Int,Vector{Int}}} # decision type -> form slot -> its generalization slots (soft pool)
   nochain::Dict{UInt64,Set{Int}}                 # decision type -> slots never chosen in chains (nor leftovers): stand-ins only
+  ctxtypes::Set{UInt64}                          # decision types that use ctxmode (empty: all; the others keep greedy contexts)
 end
 
 const MAXMEMO = 2_000_000
@@ -355,7 +356,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     Dict{UInt64,Vector{Tuple{Int16,Int16}}}(), lsid, lsets,
     Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), false, 10_000, Dict{UInt64,Int}(),
     Dict{UInt64,Vector{Int32}}(), zeros(Int32, length(lsets)), Dict{UInt64,Set{Int}}(), Dict{UInt64,Gates}(),
-    Dict{UInt64,Float64}(), Dict{UInt64,Dict{Int,Vector{Int}}}(), Dict{UInt64,Set{Int}}())
+    Dict{UInt64,Float64}(), Dict{UInt64,Dict{Int,Vector{Int}}}(), Dict{UInt64,Set{Int}}(), Set{UInt64}())
   tally_shapes!(m)
   if gate > 0
     t = @elapsed build_gates!(m)
@@ -1920,8 +1921,8 @@ Leftover X's correction with a generalized chain as its context (ctxmode :backof
 chain feature has a ladder: itself, then its generalizations on the same token (G: xpos, upos,
 basepos, classes, suffixes; rarer -- more specific -- first), then (:backoff only) dropped.  Start from
 the chain; while context ∪ X is unsupported, take the one step up a ladder that changes the chain's
-odds least, |log o(x | context) - log o(x | chain)|.  Returns log o(x | C ∪ X) - log o(x | C) for the
-first supported context C, or nothing (no supported context: :limited, or nothing left to try).
+odds least, |log o(x | context) - log o(x | chain)|.  Returns (log o(x | C ∪ X) - log o(x | C), C's items)
+for the first supported context C, or nothing (no supported context: :limited, or nothing left to try).
 """
 function backoff_correction(m::ChainModel, st::ChainState, Ic, G, X, label, prior, base; mode = m.opts.ctxmode)
   ladders = Vector{Vector{UInt64}}()
@@ -1954,10 +1955,10 @@ function backoff_correction(m::ChainModel, st::ChainState, Ic, G, X, label, prio
       eX = only(extend_all(m, S, depth(S), [X]))
       if e === nothing                                # every feature dropped: X's marginal correction
         yX, okX = update_odds(m, eX, label, prior)
-        okX && ctxsupported(m, eX, label) && return log(yX) - log(prior)
+        okX && ctxsupported(m, eX, label) && return (log(yX) - log(prior), UInt64[])
       else
         y2, ok2 = leftover_update(m, e, eX, label, S.odds[end])
-        ok2 && ctxsupported(m, eX, label) && return log(y2) - log(S.odds[end])
+        ok2 && ctxsupported(m, eX, label) && return (log(y2) - log(S.odds[end]), copy(S.members))
       end
     end
     best, bi, bst = Inf, 0, nothing
@@ -2007,7 +2008,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
   # adaptive: short chains (plus pool) need only as much context as they have, but at least 1
   m.opts.adaptctx && (needmin = max(1, min(m.opts.minctx, depth(st) + nred)))
   tk = isempty(base) ? UInt64(0) : m.recs[base[1]].typekey
-  mode = m.opts.ctxattach && tk != typekey(:token, 1) ? :greedy : m.opts.ctxmode   # (ctxattach: labels keep greedy contexts)
+  mode = (m.opts.ctxattach && tk != typekey(:token, 1)) || (!isempty(m.ctxtypes) && !(tk in m.ctxtypes)) ? :greedy : m.opts.ctxmode
   G = mode == :greedy ? nothing : get(m.generalize, tk, Dict{Int,Vector{Int}}())
   # :cover: the chain forms' generalizations may stand in for them in contexts
   if mode == :cover
@@ -2026,7 +2027,9 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     m.opts.relevance > 0 && leftover_relevance(m, st, X, label, prior, base) < m.opts.relevance && continue
     if mode in (:backoff, :limited)
       c = backoff_correction(m, st, Ic, G, X, label, prior, base; mode)
-      c === nothing || (total_ += c; X in avail || push!(avail, X))
+      LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](s, c !== nothing,
+        c === nothing ? Int[] : [something(findfirst(==(f), Ic), 0) for f in c[2]], c === nothing ? 0.0 : c[1])
+      c === nothing || (total_ += c[1]; X in avail || push!(avail, X))
       continue
     end
     S, SX = ChainState(prior, base), ChainState(prior, base)

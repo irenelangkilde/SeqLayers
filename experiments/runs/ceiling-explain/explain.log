@@ -1,0 +1,111 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 25.5 s): 14 of 32 slots always, 283 gate values
+[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (20.9 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 275.0 s
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=odds;leftsmooth=evidence;ctxmode=backoff;ctxattach=false;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent]  [domains=product domeps=0.0]
+
+================ "From the AP comes this story :"
+  From          gold -> AP          ok
+  the           gold -> AP          ok
+  AP            gold -> comes       ok
+  comes         gold -> ROOT        ok
+  this          gold -> story       ok
+  story         gold -> comes       ok
+  :             gold -> comes       WRONG: predicted -> story
+
+  ---- ':': gold head 'comes', predicted 'story'
+    head properties predicted (with the attachment and all of them hidden):
+      head_upos VERB 0.463, PROPN 0.373, NOUN 0.122   (gold head: VERB, predicted head: NOUN)
+      head_xpos NNP 0.527, NN 0.194, VBP 0.063   (gold head: VBZ, predicted head: NN)
+      head_dir  left 0.669, right 0.331, root 0.0   (gold head: left, predicted head: left)
+      head_dist 1 0.9, 6-10 0.088, 3-5 0.008   (gold head: 3-5, predicted head: 1)
+    candidates: 6   (product score = log P(attach) + Σ log P(head property value))
+
+    -- GOLD -> comes:  P(attach) 0.0482, product score -13.41
+       head-property terms: head_xpos=VBZ 0.013, head_dist=3-5 0.008, head_dir=left 0.669, head_upos=VERB 0.463
+       prior odds 0.0146
+       chain 1: cand.form=comes                          odds -> 0.0781
+       chain 2: distance                                 odds -> 0.667
+       chain log odds -0.41; leftovers tried 16, included 16, total correction -3.86; final log odds -4.26
+         + dep.basepos=0                         -1.231   context: cand.xpos=VBZ, distance
+         + dep.number=0                          -0.906   context: cand.xpos=VBZ, distance
+         + dep.person=0                          -0.813   context: cand.xpos=VBZ, distance
+         + dep.right_neighbor.form=president     -0.632   context: distance
+         + cand.right_neighbor.form=this          0.604   context: cand.xpos=VBZ, distance
+         + cand.right_neighbor.upos=DET           0.565   context: cand.xpos=VBZ, distance
+         + dep.len=1                              -0.56   context: cand.xpos=VBZ, distance
+         + dep.right_neighbor.upos=PROPN         -0.493   context: cand.xpos=VBZ, distance
+         + dep.right_neighbor.xpos=NNP           -0.493   context: cand.xpos=VBZ, distance
+         + cand.right_neighbor.xpos=DT            0.491   context: cand.xpos=VBZ, distance
+         + dep.left_neighbor.upos=NOUN           -0.353   context: cand.xpos=VBZ, distance
+         + dep.left_neighbor.xpos=NN             -0.325   context: cand.xpos=VBZ, distance
+         + cand.left_neighbor.upos=PROPN          0.284   context: cand.xpos=VBZ, distance
+         + cand.left_neighbor.xpos=NNP            0.272   context: cand.xpos=VBZ, distance
+         + dep.xpos=:                            -0.265   context: cand.xpos=VBZ, distance
+         (1 more leftovers with corrections under 0.005)
+
+    -- PREDICTED -> story:  P(attach) 0.8687, product score -4.4
+       head-property terms: head_xpos=NN 0.194, head_dist=1 0.9, head_dir=left 0.669, head_upos=NOUN 0.122
+       prior odds 0.0146
+       chain 1: distance                                 odds -> 0.0886
+       chain 2: dep.upos=PUNCT                           odds -> 0.186
+       chain 3: cand.left_neighbor.form=this             odds -> 0.406
+       chain 4: cand.len=5                               odds -> 0.75
+       chain log odds -0.29; leftovers tried 8, included 8, total correction -1.08; final log odds -1.37
+         + cand.right_neighbor.xpos=:            -0.707   context: distance, dep.upos=PUNCT, cand.left_neighbor.upos=DET
+         + dep.xpos=:                            -0.574   context: distance, dep.upos=PUNCT, cand.left_neighbor.upos=DET
+         + dep.right_neighbor.form=president      0.226   context: distance
+         + dep.form=:                            -0.014   context: distance, dep.upos=PUNCT, cand.left_neighbor.upos=DET
+         + cand.right_neighbor.form=:            -0.014   context: distance, dep.upos=PUNCT, cand.left_neighbor.upos=DET
+         (3 more leftovers with corrections under 0.005)
+
+================ "How about right here ?"
+  How           gold -> ROOT        ok
+  about         gold -> here        WRONG: predicted -> right
+  right         gold -> here        ok
+  here          gold -> How         ok
+  ?             gold -> How         ok
+
+  ---- 'about': gold head 'here', predicted 'right'
+    head properties predicted (with the attachment and all of them hidden):
+      head_upos VERB 0.427, ADV 0.211, NOUN 0.143   (gold head: ADV, predicted head: ADV)
+      head_xpos NNS 0.664, RB 0.085, PRP 0.059   (gold head: RB, predicted head: RB)
+      head_dir  right 1.0, left 0.0, root 0.0   (gold head: right, predicted head: right)
+      head_dist 1 0.931, 3-5 0.064, 2 0.005   (gold head: 2, predicted head: 1)
+    candidates: 4   (product score = log P(attach) + Σ log P(head property value))
+
+    -- GOLD -> here:  P(attach) 0.0912, product score -11.72
+       head-property terms: head_xpos=RB 0.085, head_dist=2 0.005, head_dir=right 1.0, head_upos=ADV 0.211
+       prior odds 0.0146
+       chain 1: distance                                 odds -> 0.0863
+       chain 2: cand.xpos=RB                             odds -> 0.00906
+       chain 3: cand.left_neighbor.form=right            odds -> 0.1
+       chain 4: cand.form=here                           odds -> 0.286
+       chain 5: dep.right_neighbor.upos=ADV              odds -> 0.333
+       chain log odds -1.1; leftovers tried 11, included 11, total correction 2.21; final log odds 1.11
+         + dep.right_neighbor.form=right          1.031   context: distance, cand.left_neighbor.xpos=RB, cand.upos=ADV
+         + dep.left_neighbor.xpos=WRB             0.976   context: distance, cand.left_neighbor.xpos=RB
+         + dep.left_neighbor.upos=ADV              0.22   context: distance, cand.left_neighbor.xpos=RB, cand.upos=ADV
+         + dep.form=about                        -0.017   context: distance, cand.left_neighbor.xpos=RB
+         (7 more leftovers with corrections under 0.005)
+
+    -- PREDICTED -> right:  P(attach) 0.9066, product score -4.18
+       head-property terms: head_xpos=RB 0.085, head_dist=1 0.931, head_dir=right 1.0, head_upos=ADV 0.211
+       prior odds 0.0146
+       chain 1: distance                                 odds -> 0.31
+       chain 2: cand.xpos=RB                             odds -> 0.0592
+       chain 3: dep.form=about                           odds -> 1.0
+       chain log odds 0.0; leftovers tried 14, included 14, total correction 3.41; final log odds 3.41
+         + dep.left_neighbor.upos=ADV             1.071   context: distance, dep.form=about
+         + cand.upos=ADV                          0.953   context: distance, dep.form=about
+         + dep.right_neighbor.upos=ADV            0.953   context: distance, dep.form=about
+         + cand.right_neighbor.form=here            0.8   context: distance, dep.basepos=0
+         + dep.left_neighbor.xpos=WRB             0.304   context: distance, dep.basepos=0
+         + cand.left_neighbor.upos=ADP           -0.303   context: distance, dep.form=about
+         + cand.left_neighbor.xpos=IN            -0.242   context: distance, dep.form=about
+         + dep.upos=ADP                          -0.145   context: distance, dep.form=about
+         + cand.right_neighbor.upos=ADV           0.109   context: distance, dep.upos=ADP
+         + dep.xpos=IN                           -0.094   context: distance, dep.form=about
+         (4 more leftovers with corrections under 0.005)
