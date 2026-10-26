@@ -184,6 +184,7 @@ struct ChainOpts
   ctxattach::Bool                                 # ctxmode for the attachment decision only (labels keep :greedy)
   cidrop::Float64                                 # accum: drop a context feature B only if some A kept has D(A→B) < cidrop (0: always may)
   pairorder::Symbol                               # a chosen pair's members enter the chain in slot order (:slot) or larger single effect first (:maxdev)
+  accumwin::Int                                   # accum: a leftover's context minimizes |correction| over this many further generalization steps (0: the first supported)
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -292,7 +293,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
@@ -351,7 +352,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -2061,6 +2062,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       X = Ic[sx]
       X in items(rung) && continue                  # already in the context (as a generalization): redundant
       k = 1
+      k0, xc, xk = 0, 0.0, 0                          # (accumwin: the first supported step, and the smallest |correction| since)
       while true
         c = path[k][2]
         if c !== nothing
@@ -2075,13 +2077,16 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
             ok2 && ctxsupported(m, eX, label) && (corr = log(y2) - log(S.odds[end]))
           end
           if corr !== nothing
-            abs(corr) > abs(bestc) || bestX == 0 ? ((bestX, bestc, bestk, bestctx) = (pi_, corr, k, items(path[k][1]))) : nothing
-            break
+            k0 == 0 && (k0 = k)
+            (xk == 0 || abs(corr) < abs(xc)) && ((xc, xk) = (corr, k))
+            k - k0 >= m.opts.accumwin && break         # (accumwin 0: the first supported context, as before)
           end
         end
-        k == length(path) && !step!(path) && break   # nothing left to generalize: X unsupported
+        k == length(path) && !step!(path) && break   # nothing left to generalize
         k += 1
       end
+      # X's correction in its chosen context; the X with the largest |correction| is taken
+      xk > 0 && (abs(xc) > abs(bestc) || bestX == 0) && ((bestX, bestc, bestk, bestctx) = (pi_, xc, xk, items(path[xk][1])))
     end
     bestX == 0 && break
     sx = pending[bestX]
