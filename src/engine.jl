@@ -18,6 +18,7 @@ decisiondef(st::State, key::AgendaKey) = st.layers[key[1]].spec.decisions[key[2]
 "Append a column to layer `lname`.  `init` sets rows directly; other rows come from their defs."
 function addcol!(st::State, lname::Symbol, init::Pair{Symbol,<:Integer}...)
   seq = st.layers[lname]
+  TRAIL[] === nothing || push!(TRAIL[], (seq, 0, seq.ncols, UInt32(0)))   # (search: undo restores the count)
   i = seq.ncols += 1
   if i > size(seq.grid, 2)
     seq.grid = hcat(seq.grid, fill(PENDING, size(seq.grid)...))
@@ -145,6 +146,12 @@ function refresh!(st::State)
     st.memo = nothing
   end
 end
+
+"""
+Search (DFS) strictness: an attachment left with no candidate while no other head can appear is a
+failure (not settled as NONE), and projectivity doesn't fall back to crossing candidates.
+"""
+const STRICT = Ref(false)
 
 "Put newly created decisions on the agenda; ones with no candidates are settled as NONE."
 function activate!(st::State)

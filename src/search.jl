@@ -125,3 +125,155 @@ function solve_lds!(st::State, model, lds::LDS)
   bestst === nothing || (adopt!(st, bestst); LDS_STATS[:switched] += 1)
   st
 end
+
+
+## ======== depth-first search with failures (DFS)
+#
+# Every commit with a plausible alternative (probability >= eps besides the chosen value) is a
+# choice point: the grids are trailed (TRAIL: every write since the choice point can be undone) and
+# the small bookkeeping (agenda, best values, fresh decisions, reads, closed_through) is copied.
+# A failure -- an attachment with no candidate left while no other head can appear (which also
+# covers committed head properties no head satisfies, cycles, a second root, and with projectivity
+# a crossing arc, since candidates exclude those) -- backs up to the latest choice point and tries
+# its next value in probability order; a choice point out of values is popped.  The first complete
+# parse wins.  After `budget` failures (or with nothing left to try) the segment is finished by the
+# plain greedy decoder from the first choice point -- what solve! would have produced.
+
+"Depth-first search settings: alternatives need probability >= eps; at most `budget` failures per segment."
+struct DFS
+  eps::Float64
+  budget::Int
+end
+DFS(; eps = 0.05, budget = 200) = DFS(eps, budget)
+
+const DFS_STATS = Dict(:segments => 0, :choicepoints => 0, :failures => 0, :backtracked => 0, :gaveup => 0)
+
+mutable struct ChoicePoint
+  mark::Int
+  snap::Tuple
+  key::AgendaKey
+  alts::Vector{UInt32}
+  i::Int
+end
+
+snapshot(st::State) = (copy(st.agenda), copy(st.best), copy(st.fresh), copy(st.reads), st.closed_through)
+
+"Undo every trailed write after `mark` (newest first)."
+function undo!(mark::Int)
+  t = TRAIL[]
+  while length(t) > mark
+    (s, r, i, old) = pop!(t)
+    r == 0 ? (s.ncols = i) : (s.grid[r, i] = old)
+  end
+end
+
+"Take st back to choice point cp (before its decision was committed)."
+function restore!(st::State, cp::ChoicePoint)
+  undo!(cp.mark)
+  a, b, f, r, ct = cp.snap
+  st.agenda, st.best, st.fresh, st.reads, st.closed_through = copy(a), copy(b), copy(f), copy(r), ct
+  st.relcache = nothing
+  refresh!(st)
+  st
+end
+
+commit_choice!(st::State, key::AgendaKey, v::UInt32) =
+  (delete!(st.agenda, key); delete!(st.best, key); delete!(st.reads, key); commit!(st, key, v))
+
+"Is this attachment decision a failure: ready, no candidate, and no other head can still appear?"
+function attach_failed(st::State, key::AgendaKey)
+  d = decisiondef(st, key)
+  d.name == :attach || return false
+  t = key[3]
+  d.ready(st, t) && isempty(d.candidates(st, t)) && !more_heads_possible(st, t)
+end
+
+"activate!, but false (and nothing done) if a new attachment decision has already failed."
+function activate_strict!(st::State)
+  any(key -> attach_failed(st, key), st.fresh) && return false
+  activate!(st)
+  true
+end
+
+"rescore!, but false as soon as a rescored attachment decision has failed."
+function rescore_strict!(st::State, model)
+  for key in collect(keys(st.agenda))
+    reads = get(st.reads, key, nothing)
+    if reads !== nothing && haskey(st.best, key) && !any(cell -> read_changed(st, cell), reads)
+      continue
+    end
+    choice, margin = tracked_decide(model, st, key)
+    margin == -Inf && attach_failed(st, key) && return false
+    st.agenda[key] = margin
+    st.best[key] = choice
+  end
+  true
+end
+
+"Solve `st` by depth-first search with failures (see above)."
+function solve_dfs!(st::State, model, opts::DFS)
+  DFS_STATS[:segments] += 1
+  stack = ChoicePoint[]
+  failures = 0
+  TRAIL[] = Tuple{Any,Int,Int,UInt32}[]
+  STRICT[] = true
+  giveup = false
+  try
+    while true
+      ok = activate_strict!(st)
+      ok && isempty(st.agenda) && break
+      ok = ok && rescore_strict!(st, model)
+      if ok
+        key, margin = first(st.agenda)
+        margin == -Inf && break
+        choice = st.best[key]
+        if margin < Inf
+          dist = commit_dist(model, st, key)
+          if dist !== nothing
+            cands, lps = dist
+            others = [(c, l) for (c, l) in zip(cands, lps) if c != choice && exp(l) >= opts.eps]
+            if !isempty(others)
+              sort!(others; by = x -> -x[2])
+              push!(stack, ChoicePoint(length(TRAIL[]), snapshot(st), key, [choice; first.(others)], 1))
+              DFS_STATS[:choicepoints] += 1
+            end
+          end
+        end
+        commit_choice!(st, key, choice)
+        continue
+      end
+      # a failure: back up to the latest choice point with a value left
+      failures += 1
+      DFS_STATS[:failures] += 1
+      resumed = false
+      while failures <= opts.budget && !isempty(stack)
+        cp = stack[end]
+        restore!(st, cp)
+        if cp.i < length(cp.alts)
+          cp.i += 1
+          DFS_STATS[:backtracked] += 1
+          commit_choice!(st, cp.key, cp.alts[cp.i])
+          resumed = true
+          break
+        end
+        pop!(stack)
+      end
+      resumed && continue
+      giveup = true
+      break
+    end
+    if giveup                                         # finish greedily, from the first choice point if any
+      DFS_STATS[:gaveup] += 1
+      if !isempty(stack)
+        cp = stack[1]
+        restore!(st, cp)
+        commit_choice!(st, cp.key, cp.alts[1])
+      end
+    end
+  finally
+    TRAIL[] = nothing
+    STRICT[] = false
+  end
+  giveup && solve!(st, model)
+  st
+end

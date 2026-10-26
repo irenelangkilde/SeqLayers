@@ -143,7 +143,19 @@ function Base.getindex(s::Sequence, row::Symbol, i::Integer)
   rowi = s.spec.rows[row]
   track_read(s, rowi, Int(i), s.grid[rowi, i])
 end
-Base.setindex!(s::Sequence, v, row::Symbol, i::Integer) = (s.grid[s.spec.rows[row], i] = UInt32(v))
+"""
+Search (search.jl, DFS): while set, every grid write through setindex! (decisions, constraints, new
+columns) and every new column is logged here, so undo! can take the state back to a choice point.
+Entries: (sequence, row, column, old value); row 0: a column count (column = the old count).
+"""
+const TRAIL = Ref{Union{Nothing,Vector{Tuple{Any,Int,Int,UInt32}}}}(nothing)
+
+function Base.setindex!(s::Sequence, v, row::Symbol, i::Integer)
+  r = s.spec.rows[row]
+  t = TRAIL[]
+  t === nothing || push!(t, (s, r, Int(i), s.grid[r, i]))
+  s.grid[r, i] = UInt32(v)
+end
 function Base.length(s::Sequence)
   n = s.ncols
   trace = READ_TRACE[]

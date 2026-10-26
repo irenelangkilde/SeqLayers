@@ -55,7 +55,8 @@ function process(doc::Doc, specs, model, lex::Lexicon; words = 128, edge = 16, o
     final = e == n
     st = State(doc, s:e, final, final ? 0 : edge, specs, lex)
     st.infer = !(model isa OracleModel)          # the oracle commits gold itself
-    search === nothing || observer !== nothing ? solve!(st, model; observer) : solve_lds!(st, model, search)
+    search === nothing || observer !== nothing ? solve!(st, model; observer) :
+      search isa DFS ? solve_dfs!(st, model, search) : solve_lds!(st, model, search)
     if final || grow >= MAX_GROW
       force_close!(st)
     elseif st.closed_through == 0

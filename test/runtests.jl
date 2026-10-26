@@ -244,6 +244,32 @@ end
       @test 0 <= r.uas <= 1
       @test SeqLayers.LDS_STATS[:branches] > 0
     end
+    # DFS with failures: budget 0 is the greedy decoder; undoing a commit restores the grids exactly
+    @test evaluate_counts(docs, specs, mg, lex; search = DFS(budget = 0)) == g
+    rd = eval_scores(evaluate_counts(docs, specs, mg, lex; search = DFS(eps = 0.01, budget = 50)))
+    @test 0 <= rd.uas <= 1
+    sd2 = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, specs, lex)
+    SeqLayers.activate!(sd2); SeqLayers.rescore!(sd2, mg)
+    for _ in 1:30                                   # some greedy steps first
+      isempty(sd2.agenda) && break
+      k_, mrg = first(sd2.agenda); mrg == -Inf && break
+      SeqLayers.commit_choice!(sd2, k_, sd2.best[k_]); SeqLayers.activate!(sd2); SeqLayers.rescore!(sd2, mg)
+    end
+    before = Dict(l => (copy(sd2.layers[l].grid[:, 1:sd2.layers[l].ncols]), sd2.layers[l].ncols) for l in sd2.order)
+    SeqLayers.TRAIL[] = Tuple{Any,Int,Int,UInt32}[]
+    try
+      k_, _ = first(sd2.agenda)
+      cp_ = SeqLayers.ChoicePoint(0, SeqLayers.snapshot(sd2), k_, [sd2.best[k_]], 1)
+      for _ in 1:20                                 # commit and propagate a while, then undo all of it
+        isempty(sd2.agenda) && break
+        k2, m2 = first(sd2.agenda); m2 == -Inf && break
+        SeqLayers.commit_choice!(sd2, k2, sd2.best[k2]); SeqLayers.activate!(sd2); SeqLayers.rescore!(sd2, mg)
+      end
+      SeqLayers.restore!(sd2, cp_)
+    finally
+      SeqLayers.TRAIL[] = nothing
+    end
+    @test all(sd2.layers[l].ncols == before[l][2] && sd2.layers[l].grid[:, 1:before[l][2]] == before[l][1] for l in sd2.order)
     # evidence-side leftover smoothing: Bayes' rule with E's smoothed rates among chosen / not chosen
     me = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, leftsmooth = :evidence)
     v0 = SeqLayers.RecView(Int32[])

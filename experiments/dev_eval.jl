@@ -73,6 +73,9 @@
 #                D(A→B) < cidrop (the pairwise table ci_table.jls next to the events: experiments/ci_table.jl)
 #   classchain   with wclasses: may word-class slots be chosen in chains (false: stand-ins for forms
 #                in leftover contexts only, never chains or leftovers): true | false
+#   dfs          depth-first search with failures in the full decode (src/search.jl DFS): true | false
+#   dfseps       DFS: a commit is a choice point if some other value has at least this probability
+#   dfsbudget    DFS: failures allowed per segment before finishing greedily
 #   ldsscore     how search compares paths: sum | mean (of the commits' log probabilities)
 #   ldsall       search may branch on char and sentence decisions too (default: token decisions only)
 #   pprel        with pptable: each PP item compares the candidate's rate with the best of the token's
@@ -147,7 +150,7 @@ const RESULTS = joinpath(HERE, "results.csv")
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
   "wmo" => 1e-3, "train_sents" => 500, "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
-  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "pairorder" => "slot", "relbounded" => "false", "relnone" => "false", "classchain" => "true", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
+  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "pairorder" => "slot", "relbounded" => "false", "relnone" => "false", "classchain" => "true", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
 
 function parse_cfg(args)
@@ -338,7 +341,7 @@ function start_workers(cfg, s)
       pptable = $(isempty(cfg["pptable"]) ? nothing : :(load_pptable($(cfg["pptable"]), $(joinpath(dirname(dirname(cfg["pptable"])), "classes5"))))),
       pprel = $(cfg["pprel"] == "true"), relbounded = $(cfg["relbounded"] == "true"), relnone = $(cfg["relnone"] == "true"))
     const WLEX = deserialize(joinpath($rundir, "lex.jls"))
-    const WSEARCH = $(cfg["search"] > 0 ? :(SeqLayers.LDS($(cfg["search"]); score = $(QuoteNode(Symbol(cfg["ldsscore"]))),
+    const WSEARCH = $(cfg["dfs"] == "true" ? :(SeqLayers.DFS(eps = $(cfg["dfseps"]), budget = $(cfg["dfsbudget"]))) : cfg["search"] > 0 ? :(SeqLayers.LDS($(cfg["search"]); score = $(QuoteNode(Symbol(cfg["ldsscore"]))),
       tokenonly = $(cfg["ldsall"] != "true"))) : nothing)
     const WMODEL = let m = deserialize(joinpath($rundir, "model.jls"))
       if m isa Tuple
@@ -380,7 +383,10 @@ function main(cfg)
   t1 = time()
   order = sortperm(devdocs; by = p -> length(p[2].text), rev = true)     # biggest first, for load balance
   counts = pmap(p -> (p[1], evaluate_counts([p[2]], WSPECS, WMODEL, WLEX; search = WSEARCH)), devdocs[order])
-  if cfg["search"] > 0
+  if cfg["dfs"] == "true"
+    st = [remotecall_fetch(() -> copy(SeqLayers.DFS_STATS), w) for w in workers()]
+    println("dfs: ", Dict(k => sum(d[k] for d in st) for k in keys(first(st))))
+  elseif cfg["search"] > 0
     st = [remotecall_fetch(() -> copy(SeqLayers.LDS_STATS), w) for w in workers()]
     println("search: ", Dict(k => sum(d[k] for d in st) for k in keys(first(st))))
   end

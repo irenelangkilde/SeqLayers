@@ -251,7 +251,7 @@ function attach_candidates(st, t; maxchars = MAX_LINK_CHARS, projective = false)
   cands = attach_candidates_(st, t; maxchars)
   projective || return cands
   proj = filter(h -> !crosses_arc(st, t, h), cands)
-  isempty(proj) ? cands : proj
+  isempty(proj) && !STRICT[] ? cands : proj            # (search: no fallback; an empty set is a failure)
 end
 
 function attach_candidates_(st, t; maxchars = MAX_LINK_CHARS)
