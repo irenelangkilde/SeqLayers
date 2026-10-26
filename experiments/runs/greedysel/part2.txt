@@ -1,0 +1,18 @@
+=== greedy-sel  Mon Oct 26 18:44:48 UTC 2026
+ALL         2899    0.9974  0.8389  0.7823  0.0162  1.0     
+domains: attachment candidates 8191 -> 8191 after propagation (1.0)
+score 402.8 s, run 20261026-185525 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=4 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence projective=true domains=product domeps=0 greedysel=true note=greedy-sel"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 10:37.93
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 16497140
+	Average resident set size (kbytes): 0
+=== greedy-min  Mon Oct 26 18:55:26 UTC 2026
+ALL         2899    0.9983  0.8393  0.7813  0.0162  1.0     
+domains: attachment candidates 8191 -> 8191 after propagation (1.0)
+score 220.1 s, run 20261026-190243 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=4 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence projective=true domains=product domeps=0 greedymin=true note=greedy-min"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 7:17.74
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 15709608
+	Average resident set size (kbytes): 0
