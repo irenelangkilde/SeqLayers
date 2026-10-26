@@ -151,8 +151,9 @@ struct DFS
   budget::Int
   jump::Bool
   order::Symbol
+  epshead::Float64                                 # the threshold for head-property decisions (eps if NaN)
 end
-DFS(; eps = 0.05, budget = 200, jump = false, order = :prob) = DFS(eps, budget, jump, order)
+DFS(; eps = 0.05, budget = 200, jump = false, order = :prob, epshead = NaN) = DFS(eps, budget, jump, order, epshead)
 
 const DFS_STATS = Dict(:segments => 0, :choicepoints => 0, :failures => 0, :backtracked => 0, :gaveup => 0,
   :jumps => 0, :jumped => 0, :reordered => 0)
@@ -384,7 +385,8 @@ function solve_dfs!(st::State, model, opts::DFS)
           dist = commit_dist(model, st, key)
           if dist !== nothing
             cands, lps = dist
-            others = [(c, l) for (c, l) in zip(cands, lps) if c != choice && exp(l) >= opts.eps]
+            ek = !isnan(opts.epshead) && haskey(ALLHEADSETS, decisiondef(st, key).name) ? opts.epshead : opts.eps
+            others = [(c, l) for (c, l) in zip(cands, lps) if c != choice && exp(l) >= ek]
             alts = [choice; first.(sort!(others; by = x -> -x[2]))]
             if opts.order == :product && length(alts) > 1
               po = product_order(model, st, key, cands, lps, opts.eps)

@@ -328,6 +328,13 @@ FWDCHECK, or while more heads may appear, every value.  Outside search, an empty
 """
 const FWDCHECK = Ref(false)
 
+"""
+Soft head properties (set for decoding): head-property decisions are never committed by the model (only
+derived from the committed attachment); instead they weight the attachment's candidates (decide: the
+product of the ceiling's domains=product).
+"""
+const SOFTHEADS = Ref(false)
+
 function head_candidates(st, t, name, projective)
   all_ = HEAD_CODES[name]
   (FWDCHECK[] && st.infer) || return all_
@@ -1084,7 +1091,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
           items = (st, t, c) -> label_items(st, :token, HEAD_ITEMTAGS[name], t),
           mask = head_mask,
           # once the attachment is committed, the backward step derives it (the oracle decides it itself)
-          ready = (st, t) -> !st.infer || st.layers[:token][:attach, t] == PENDING)
+          ready = (st, t) -> !st.infer || (!SOFTHEADS[] && st.layers[:token][:attach, t] == PENDING))
         for name in (headsdist ? keys(ALLHEADSETS) : keys(HEADSETS))],
       [DecisionDef(wnames[l];
           candidates = (st, t) -> wclass_candidates(wc, l, lowercase(tokstr(st, t))),

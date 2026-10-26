@@ -2285,8 +2285,45 @@ end
 function decide(m::ChainModel, st::State, key::AgendaKey)
   d, i = decisiondef(st, key), key[3]
   d.ready(st, i) || return (NONE, -Inf)
+  r = chain_scores(m, st, key)
+  r === nothing && return (NONE, -Inf)
+  cands, scores = r
+  # soft head properties: each candidate head also scored by the (uncommitted) head properties' log
+  # probabilities of the values it implies -- the product of the ceiling's domains=product
+  SOFTHEADS[] && st.infer && d.name == :attach && (scores = scores .+ soft_head_terms(m, st, i, cands))
+  choose(cands, scores, d.open ? waitscore(m, st, key) : nothing)
+end
+
+"""
+For soft head properties (SOFTHEADS): per attachment candidate of token t, the sum over t's uncommitted
+head properties of log P(property = the value the candidate implies), the properties scored as their
+decisions would be (whether or not they're ready).
+"""
+function soft_head_terms(m::ChainModel, st::State, t, cands)
+  toks = st.layers[:token]
+  add = zeros(length(cands))
+  for (k, dd) in enumerate(toks.spec.decisions)
+    haskey(ALLHEADSETS, dd.name) && toks[dd.name, t] == PENDING || continue
+    r = chain_scores(m, st, (:token, k, t))
+    r === nothing && continue
+    vals, sc = r
+    mx = maximum(sc)
+    lz = mx + log(sum(x -> exp(x - mx), sc))
+    for (j, c) in enumerate(cands)
+      v = head_value(st, t, c, dd.name)
+      v == PENDING && continue
+      q = findfirst(==(v), vals)
+      add[j] += q === nothing ? log(1e-12) : sc[q] - lz
+    end
+  end
+  add
+end
+
+"A decision's candidates and their chain log odds (with leftovers), or nothing if it has none; readiness not checked."
+function chain_scores(m::ChainModel, st::State, key::AgendaKey)
+  d, i = decisiondef(st, key), key[3]
   cands = d.candidates(st, i)
-  isempty(cands) && return (NONE, -Inf)
+  isempty(cands) && return nothing
   tk = typekey(key[1], key[2])
   CHAIN_TRACE[] === nothing || (TRACE_KEY[] = key)
   labels = [d.labeled ? c : UInt32(0) for c in cands]
@@ -2295,7 +2332,7 @@ function decide(m::ChainModel, st::State, key::AgendaKey)
   isempty(m.climb) || (I = [[haskey(m.climb, x) ? climbkey!(m, x, labels[c]) : x for x in I[c]] for c in eachindex(I)])
   memokey = hash((tk, labels, I))
   scores = get(m.memo, memokey, nothing)
-  scores === nothing || return choose(cands, copy(scores), d.open ? waitscore(m, st, key) : nothing)
+  scores === nothing || return (cands, copy(scores))
   priors = [priorodds(m, lpriorkey(tk, l)) for l in labels]
   tr = get(m.typerecs, tk, NOLIST)
   # leftovers are sampled by the ranking the chains end with
@@ -2322,7 +2359,7 @@ function decide(m::ChainModel, st::State, key::AgendaKey)
   m.opts.contest && (scores = contest!(m, scores, I, labels, priors, tr, tk))
   length(m.memo) >= MAXMEMO && empty!(m.memo)
   m.memo[memokey] = copy(scores)
-  choose(cands, scores, d.open ? waitscore(m, st, key) : nothing)
+  (cands, scores)
 end
 
 """

@@ -248,6 +248,14 @@ end
     @test evaluate_counts(docs, specs, mg, lex; search = DFS(budget = 0)) == g
     rd = eval_scores(evaluate_counts(docs, specs, mg, lex; search = DFS(eps = 0.01, budget = 50)))
     @test 0 <= rd.uas <= 1
+    SeqLayers.SOFTHEADS[] = true                     # soft head properties: the decoder still decodes, greedy and DFS
+    try
+      @test 0 <= eval_scores(evaluate_counts(docs, specs, mg, lex)).uas <= 1
+      @test 0 <= eval_scores(evaluate_counts(docs, specs, mg, lex; search = DFS(eps = 0.01, budget = 50, jump = true, epshead = 0.001))).uas <= 1
+    finally
+      SeqLayers.SOFTHEADS[] = false
+    end
+    @test evaluate_counts(docs, specs, mg, lex) == g    # (and switched off again: the greedy decoder as before)
     SeqLayers.FWDCHECK[] = true                      # forward checking: greedy and DFS still decode
     try
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mg, lex)).uas <= 1
