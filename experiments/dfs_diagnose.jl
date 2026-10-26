@@ -14,7 +14,7 @@ cfg = parse_cfg(["model=chain"; ARGS])
 s = setup(cfg)
 specs = default_specs(charindex = s.idx, wordclasses = s.wc, suffixes = s.sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true",
   projective = cfg["projective"] == "true", relations = cfg["relations"] == "true", headsdist = cfg["headsdist"] == "true",
-  relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true")
+  relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true", treerank = cfg["treerank"] == "true")
 eventsdir, opts = s.recipe
 m = ChainModel(eventsdir; opts...)
 pc = S.load_counts(eventsdir, eventsig(eventsdir))

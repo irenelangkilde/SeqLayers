@@ -19,7 +19,7 @@ cfg = parse_cfg(["model=chain"; ARGS])
 s = setup(cfg)
 dir = s.recipe[1]
 specs = default_specs(wordclasses = s.wc, suffixes = s.sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true",
-  projective = cfg["projective"] == "true", relations = cfg["relations"] == "true", headsdist = cfg["headsdist"] == "true", relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true")
+  projective = cfg["projective"] == "true", relations = cfg["relations"] == "true", headsdist = cfg["headsdist"] == "true", relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true", treerank = cfg["treerank"] == "true")
 toks = specs[2]
 ctx = toks.context
 linkpaths = S.LINKPATHS[toks]

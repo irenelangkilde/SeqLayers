@@ -32,7 +32,7 @@ s = setup(cfg)
 idx = s.idx
 widx = CharIndex(idx.fwd, idx.rev, idx.gap, idx.saL, idx.saR, idx.cumL, idx.cumR, idx.prior, IdDict{Doc,Int}(), idx.maxlen, idx.mincount, idx.beta)
 specs = default_specs(charindex = widx, wordclasses = s.wc, suffixes = s.sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true",
-  projective = cfg["projective"] == "true", relations = cfg["relations"] == "true", headsdist = cfg["headsdist"] == "true", relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true")
+  projective = cfg["projective"] == "true", relations = cfg["relations"] == "true", headsdist = cfg["headsdist"] == "true", relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true", treerank = cfg["treerank"] == "true")
 eventsdir, opts = s.recipe
 m = ChainModel(eventsdir; opts...)
 pc = S.load_counts(eventsdir, eventsig(eventsdir))
@@ -67,7 +67,11 @@ function slotdesc(st, t, c, sl)
   end
   lp = S.LINKPATHS[st.layers[:token].spec]
   a = (sl - 3) ÷ 2 + 1
-  a > length(lp) && return "slot $sl"
+  if a > length(lp)
+    k = sl - 2 - 2 * length(lp) - (cfg["relations"] == "true" ? 14 : 0)
+    cfg["treerank"] == "true" && k == 1 && return "cand.treerank=" * (c == NONE ? "root" : string(S.tree_rank(st, t, c)))
+    return "slot $sl"
+  end
   side, u = isodd(sl - 3) ? ("cand", c) : ("dep", UInt32(t))
   "$side.$(ctxname(ctx[lp[a]]))=$(u == NONE ? "none" : ctxval(st, Int(u), ctx[lp[a]]))"
 end

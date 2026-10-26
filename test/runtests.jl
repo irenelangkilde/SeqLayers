@@ -339,6 +339,15 @@ end
         @test SeqLayers.child_value(so, t, kind, fb) != PENDING
       end
     end
+    # tree rank: t's rank under its gold head counts the head's other dependents between them
+    for t in 1:length(to)
+      h = to[:attach, t]
+      (h == PENDING || h == NONE) && continue
+      lo, hi = minmax(pos_(t), pos_(Int(h)))
+      @test SeqLayers.tree_rank(so, t, h) == 1 + count(u -> u != t && to[:attach, u] == h && lo < pos_(u) < hi, 1:length(to))
+    end
+    tspecs = default_specs(treerank = true)
+    @test evaluate(docs, tspecs, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
     rspecs = default_specs(relations = true, relbounded = true, relnone = true)
     @test evaluate(docs, rspecs, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
     rdir = record_events(docs, rspecs, Lexicon(), mktempdir())

@@ -521,6 +521,23 @@ const CHILD_KINDS = (:dep_left1, :dep_right1, :dep_right2)
 const REL_KINDS = (SIB_KINDS..., CHILD_KINDS...)
 const DIR_KINDS = (:inner_sibling, :outer_sibling)          # the others have a fixed direction
 const SIB_TAG = hash("token.attach.sibling")
+const TRANK_TAG = hash("token.attach.treerank")
+
+"""
+Tree rank of t under head h: 1 + h's attached dependents (t excluded) between h and t, i.e. t would be h's
+k-th dependent on its side counting outward (1 = nearest).  The root: 0.  Counts committed dependents only.
+"""
+function tree_rank(st, t, h)
+  h == NONE && return 0
+  h == PENDING && return -1
+  toks = st.layers[:token]
+  pt, ph = toks[:first_char, t], toks[:first_char, Int(h)]
+  lo, hi = minmax(pt, ph)
+  1 + count(u -> u != t && lo < toks[:first_char, u] < hi, children_index(st)[Int(h)])
+end
+
+"Tree-rank bucket code for attachment items: 1, 2, 3, 4+; root 5."
+trank_code(r) = r < 0 ? PENDING : r == 0 ? UInt32(5) : UInt32(min(r, 4))
 
 """
 Each token's committed children, by position: shared during a refresh! via st.memo, and between
@@ -1011,7 +1028,7 @@ of the token's other candidates.
 function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclasses::Union{WordClasses,Nothing} = nothing,
   suffixes::Vector{Int} = Int[], noise::Int = 0, rootabsent::Bool = false, projective::Bool = false,
   relations::Bool = false, headsdist::Bool = false, pptable = nothing, pprel::Bool = false,
-  relbounded::Bool = false, relnone::Bool = false)
+  relbounded::Bool = false, relnone::Bool = false, treerank::Bool = false)
   safeats = charindex === nothing ? FeatDef[] : [sa_feats(charindex, :left); sa_feats(charindex, :right)]
   sapaths = charindex === nothing ? FeatPath[] : [FeatPath(:sa_left), FeatPath(:sa_right)]
   chars = LayerSpec{CharLayer}(:char,
@@ -1069,7 +1086,9 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
         candidates = (st, t) -> attach_candidates(st, t; projective),
         features = (st, t, c) -> attach_features(st, t, c, linkpaths),
         items = (st, t, c) -> vcat(attach_items(st, t, c, linkpaths; rootabsent),
-          relations ? hypothetical_sibling_items(st, t, c, relf) : UInt64[], pptable === nothing ? UInt64[] :
+          relations ? hypothetical_sibling_items(st, t, c, relf) : UInt64[],
+          treerank ? (v = trank_code(tree_rank(st, t, c)); UInt64[item(v, (TRANK_TAG, v))]) : UInt64[],
+          pptable === nothing ? UInt64[] :
             pp_items(pptable, st, t, c; cands = pprel ? attach_candidates(st, t; projective) : nothing)),
         allcandidates = attach_allcandidates,
         mask = attach_mask,
