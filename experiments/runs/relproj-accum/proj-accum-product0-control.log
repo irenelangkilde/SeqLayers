@@ -1,0 +1,120 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 65.8 s): 14 of 34 slots always, 283 gate values
+      From worker 4:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 5:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 65.8 s): 14 of 34 slots always, 283 gate values
+      From worker 5:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 65.8 s): 14 of 34 slots always, 283 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 66.1 s): 14 of 34 slots always, 283 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 5:	[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (76.8 s)
+      From worker 4:	[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (77.5 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (77.4 s)
+      From worker 2:	[ Info: ChainModel: joint tables for 829 frequent items, 165924 pairs (79.5 s)
+count cache: 14645 new feature sets, 4875001 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-noise20-rootabs/events
+treebank    words   gap_acc uas     las     head_lost coverage
+CHILDES     324     1.0     0.8796  0.8086  0.0093  1.0     
+ESLSpok     502     0.9983  0.8546  0.8088  0.004   1.0     
+EWT         86      0.9924  0.8837  0.814   0.0     1.0     
+GUM         963     0.9973  0.8266  0.7788  0.0322  1.0     
+GUMReddit   1024    0.9977  0.8486  0.7881  0.0107  1.0     
+ALL         2899    0.9977  0.8468  0.7917  0.0162  1.0     
+domains: attachment candidates 8191 -> 8191 after propagation (1.0)
+
+dist          n       share   uas     las
+R1            842     0.29    0.983   0.963
+R2            417     0.144   0.909   0.882
+L3-5          310     0.107   0.732   0.59
+R3-5          309     0.107   0.832   0.783
+L1            265     0.091   0.94    0.868
+L6+           261     0.09    0.395   0.303
+L2            236     0.081   0.775   0.682
+root          179     0.062   1.0     1.0
+R6+           80      0.028   0.625   0.525
+
+deprel        n       share   uas     las
+punct         478     0.165   0.703   0.703
+case          258     0.089   0.93    0.915
+nsubj         252     0.087   0.968   0.901
+det           181     0.062   0.967   0.967
+root          179     0.062   1.0     1.0
+advmod        178     0.061   0.882   0.848
+obl           145     0.05    0.752   0.641
+nmod          136     0.047   0.779   0.721
+obj           132     0.046   0.871   0.765
+amod          121     0.042   0.942   0.909
+conj          115     0.04    0.513   0.365
+cc            103     0.036   0.816   0.796
+aux           97      0.033   1.0     1.0
+mark          91      0.031   0.956   0.956
+compound      80      0.028   0.975   0.838
+cop           49      0.017   0.939   0.898
+parataxis     44      0.015   0.477   0.295
+advcl         41      0.014   0.683   0.366
+acl           41      0.014   0.707   0.659
+xcomp         35      0.012   0.886   0.8
+nummod        33      0.011   0.848   0.636
+ccomp         26      0.009   0.885   0.769
+discourse     18      0.006   0.833   0.667
+flat          14      0.005   0.714   0.643
+expl          11      0.004   1.0     0.909
+iobj          11      0.004   0.909   0.364
+fixed         8       0.003   0.75    0.625
+appos         6       0.002   0.667   0.667
+vocative      4       0.001   0.75    0.0
+reparandum    3       0.001   1.0     0.0
+csubj         3       0.001   1.0     0.333
+dep           2       0.001   1.0     0.5
+orphan        2       0.001   0.5     0.0
+goeswith      1       0.0     0.0     0.0
+dislocated    1       0.0     1.0     0.0
+
+depfreq       n       share   uas     las
+50+           1616    0.557   0.861   0.844
+5-49          711     0.245   0.848   0.758
+1-4           354     0.122   0.797   0.675
+0             218     0.075   0.821   0.702
+
+headfreq      n       share   uas     las
+5-49          1170    0.404   0.861   0.815
+1-4           841     0.29    0.823   0.753
+0             435     0.15    0.816   0.768
+50+           274     0.095   0.81    0.712
+root          179     0.062   1.0     1.0
+
+err           n       share   
+too_near      260     0.586   
+wrong_side    109     0.245   
+too_far       75      0.169   
+
+tag           n       share   acc
+head_xpos     2899    0.25    0.5788
+head_upos     2899    0.25    0.7344
+head_dir      2899    0.25    0.8872
+head_dist     2899    0.25    0.6592
+score 188.3 s, run 20261026-132857 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence ctxmode=accum projective=true workers=4 domains=product domeps=0 note=proj-accum-product0-control"
+	User time (seconds): 1203.70
+	System time (seconds): 13.71
+	Percent of CPU this job got: 276%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 7:20.50
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 8839696
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 27754
+	Minor (reclaiming a frame) page faults: 4535203
+	Voluntary context switches: 131275
+	Involuntary context switches: 2488
+	Swaps: 0
+	File system inputs: 5960232
+	File system outputs: 564104
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

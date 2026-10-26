@@ -1,0 +1,20 @@
+=== relproj-accum-product0  Mon Oct 26 13:21:38 UTC 2026
+ALL         2899    0.9977  0.8769  0.8179  0.0162  1.0     
+domains: attachment candidates 8191 -> 8191 after propagation (1.0)
+score 374.2 s, run 20261026-133420 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence ctxmode=accum projective=true relations=true workers=2 maxcached=50000000 domains=product domeps=0 note=relproj-accum-product0"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 12:42.93
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 13320148
+	Average resident set size (kbytes): 0
+=== relproj-accum  Mon Oct 26 13:34:21 UTC 2026
+ALL         2899    0.9977  0.8675  0.8092  0.0162  1.0     
+
+pipeline: 255 attachments inferred (0.088 of tokens), 0.984 of them right; 0 left with no candidate
+
+score 310.4 s, run 20261026-134443 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence ctxmode=accum projective=true relations=true workers=2 maxcached=50000000 note=relproj-accum"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 10:23.08
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 12962868
+	Average resident set size (kbytes): 0
