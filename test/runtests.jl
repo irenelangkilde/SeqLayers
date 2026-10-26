@@ -248,6 +248,13 @@ end
     @test evaluate_counts(docs, specs, mg, lex; search = DFS(budget = 0)) == g
     rd = eval_scores(evaluate_counts(docs, specs, mg, lex; search = DFS(eps = 0.01, budget = 50)))
     @test 0 <= rd.uas <= 1
+    SeqLayers.FWDCHECK[] = true                      # forward checking: greedy and DFS still decode
+    try
+      @test 0 <= eval_scores(evaluate_counts(docs, specs, mg, lex)).uas <= 1
+      @test 0 <= eval_scores(evaluate_counts(docs, specs, mg, lex; search = DFS(eps = 0.01, budget = 50, jump = true))).uas <= 1
+    finally
+      SeqLayers.FWDCHECK[] = false
+    end
     for o in (DFS(eps = 0.01, budget = 50, jump = true), DFS(eps = 0.01, budget = 50, order = :product),
               DFS(eps = 0.01, budget = 50, jump = true, order = :product))
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mg, lex; search = o)).uas <= 1

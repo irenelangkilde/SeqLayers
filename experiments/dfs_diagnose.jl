@@ -21,6 +21,7 @@ pc = S.load_counts(eventsdir, eventsig(eventsdir))
 pc !== nothing && (m.pcounts = pc)
 (cfg["poolsigma"] > 0 || cfg["ctxmode"] != "greedy") && (m.generalize = S.generalization_slots(specs))
 docs = sort([d for (_, d) in s.devdocs]; by = d -> length(d.text))[1:min(cfg["docs"], end)]
+cfg["fwdcheck"] == "true" && (S.FWDCHECK[] = true)
 S.DFS_DIAG[] = true
 empty!(S.DFS_LOG)
 t = @elapsed c = evaluate_counts(docs, specs, m, s.lex; search = DFS(eps = cfg["dfseps"], budget = cfg["dfsbudget"], jump = cfg["dfsjump"] == "true", order = Symbol(cfg["dfsorder"])))

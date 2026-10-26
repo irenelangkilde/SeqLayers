@@ -189,10 +189,10 @@ end
 commit_choice!(st::State, key::AgendaKey, v::UInt32) =
   (delete!(st.agenda, key); delete!(st.best, key); delete!(st.reads, key); commit!(st, key, v))
 
-"Is this attachment decision a failure: ready, no candidate, and no other head can still appear?"
+"Is this attachment (or, with forward checking, head-property) decision a failure: ready, no candidate, and no other head can still appear?"
 function attach_failed(st::State, key::AgendaKey)
   d = decisiondef(st, key)
-  d.name == :attach || return false
+  (d.name == :attach || (FWDCHECK[] && haskey(ALLHEADSETS, d.name))) || return false
   t = key[3]
   d.ready(st, t) && isempty(d.candidates(st, t)) && !more_heads_possible(st, t)
 end

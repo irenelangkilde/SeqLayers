@@ -320,6 +320,29 @@ function head_consistent_one(st, t, h, name)
   end
 end
 
+"""
+Forward checking (FWDCHECK, set for decoding): once no other head can appear for t, a value of head
+property `name` is a candidate only if some possible head of t (attach_candidates: t's other committed head
+properties, cycles, a root already taken, projectivity) has it, or its value isn't known yet.  Without
+FWDCHECK, or while more heads may appear, every value.  Outside search, an empty set falls back to every value.
+"""
+const FWDCHECK = Ref(false)
+
+function head_candidates(st, t, name, projective)
+  all_ = HEAD_CODES[name]
+  (FWDCHECK[] && st.infer) || return all_
+  more_heads_possible(st, t) && return all_
+  heads = attach_candidates(st, t; projective)
+  ok = falses(length(all_))
+  for h in heads
+    v = head_value(st, t, h, name)
+    v == PENDING && return all_                         # some head's value isn't known yet: no pruning
+    ok[v] = true
+  end
+  out = all_[ok]
+  isempty(out) && !STRICT[] ? all_ : out
+end
+
 "Could another attachment candidate for t still appear?  Not once its sentence is closed, or every char in reach is tokenized."
 function more_heads_possible(st, t)
   toks, chars = st.layers[:token], st.layers[:char]
@@ -1056,7 +1079,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
           items = (st, t, c) -> label_items(st, :token, TAG_ITEMTAGS[name], t))
         for name in keys(TAGSETS)],
       [DecisionDef(name;
-          candidates = (st, t) -> HEAD_CODES[name],
+          candidates = (st, t) -> head_candidates(st, t, name, projective),
           features = (st, t, c) -> label_features(st, :token, HEAD_ITEMTAGS[name], t, c),
           items = (st, t, c) -> label_items(st, :token, HEAD_ITEMTAGS[name], t),
           mask = head_mask,
