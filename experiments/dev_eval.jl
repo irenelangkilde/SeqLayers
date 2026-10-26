@@ -64,6 +64,8 @@
 #   ctxattach    with ctxmode: use it for the attachment decision only (labels keep greedy contexts)
 #   ctxscope     with ctxmode: all (every decision type) | heads (the attachment and the head-property
 #                decisions; deprel and the word's own tags keep greedy contexts)
+#   cidrop       ctxmode=accum: a context feature B may be dropped only if some feature A kept has
+#                D(A→B) < cidrop (the pairwise table ci_table.jls next to the events: experiments/ci_table.jl)
 #   classchain   with wclasses: may word-class slots be chosen in chains (false: stand-ins for forms
 #                in leftover contexts only, never chains or leftovers): true | false
 #   ldsscore     how search compares paths: sum | mean (of the commits' log probabilities)
@@ -140,7 +142,7 @@ const RESULTS = joinpath(HERE, "results.csv")
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
   "wmo" => 1e-3, "train_sents" => 500, "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
-  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "classchain" => "true", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
+  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "classchain" => "true", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
 
 function parse_cfg(args)
@@ -266,7 +268,8 @@ function setup(cfg)
       cfg["ctxfromchain"] == "true" && (chainopts = merge(chainopts, (ctxfromchain = true,)))
       cfg["ctxsupport"] > 0 && (chainopts = merge(chainopts, (ctxsupport = cfg["ctxsupport"],)))
       cfg["leftsmooth"] != "odds" && (chainopts = merge(chainopts, (leftsmooth = Symbol(cfg["leftsmooth"]),)))
-      cfg["ctxmode"] != "greedy" && (chainopts = merge(chainopts, (ctxmode = Symbol(cfg["ctxmode"]), ctxattach = cfg["ctxattach"] == "true")))
+      cfg["ctxmode"] != "greedy" && (chainopts = merge(chainopts, (ctxmode = Symbol(cfg["ctxmode"]), ctxattach = cfg["ctxattach"] == "true",
+        cidrop = cfg["cidrop"])))
       cfg["leftovers"] == "greedy" && cfg["relevance"] > 0 && (chainopts = merge(chainopts, (relevance = cfg["relevance"],)))
       cfg["gate"] > 0 && (chainopts = merge(chainopts, (gate = cfg["gate"],)))
       cfg["pairsteps"] == "true" && (chainopts = merge(chainopts, (pairsteps = true, pairscore = Symbol(cfg["pairscore"]),
@@ -347,6 +350,7 @@ function start_workers(cfg, s)
         end
         $(cfg["poolsigma"] > 0 || cfg["ctxmode"] != "greedy") && (cm.generalize = SeqLayers.generalization_slots(WSPECS))
         $(cfg["classchain"] == "true") || (cm.nochain = SeqLayers.wclass_slots(WSPECS))
+        $(cfg["cidrop"] > 0) && (cm.ci = deserialize(joinpath($(s.recipe[1]), "..", "ci_table.jls")))
         $(cfg["ctxscope"] == "heads") && (cm.ctxtypes = Set(SeqLayers.typekey(:token, k) for (k, d) in enumerate(WSPECS[2].decisions)
           if k == 1 || haskey(SeqLayers.ALLHEADSETS, d.name)))
         $(isempty(cfg["leftalpha"])) || (cm.leftalpha = Dict(parse(UInt64, split(l, '\t')[1]; base = 16) => parse(Float64, split(l, '\t')[3])

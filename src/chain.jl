@@ -182,6 +182,7 @@ struct ChainOpts
   leftsmooth::Symbol                              # greedy: o(x|S∪E) smoothed toward o(x|S) (:odds) | by E's rates within x and ¬x (:evidence)
   ctxmode::Symbol                                 # greedy contexts: :greedy | :backoff / :limited (generalize the chain) | :cover (greedy, must cover the chain) | :accum (leftover chain)
   ctxattach::Bool                                 # ctxmode for the attachment decision only (labels keep :greedy)
+  cidrop::Float64                                 # accum: drop a context feature B only if some A kept has D(A→B) < cidrop (0: always may)
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -274,6 +275,7 @@ mutable struct ChainModel <: AbstractModel
   generalize::Dict{UInt64,Dict{Int,Vector{Int}}} # decision type -> form slot -> its generalization slots (soft pool)
   nochain::Dict{UInt64,Set{Int}}                 # decision type -> slots never chosen in chains (nor leftovers): stand-ins only
   ctxtypes::Set{UInt64}                          # decision types that use ctxmode (empty: all; the others keep greedy contexts)
+  ci::Dict{UInt64,Matrix{Float32}}               # decision type -> D[A, B]: B's effect on o(x) given A (ci_table)
 end
 
 const MAXMEMO = 2_000_000
@@ -289,7 +291,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
@@ -347,7 +349,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -356,7 +358,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     Dict{UInt64,Vector{Tuple{Int16,Int16}}}(), lsid, lsets,
     Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), false, 10_000, Dict{UInt64,Int}(),
     Dict{UInt64,Vector{Int32}}(), zeros(Int32, length(lsets)), Dict{UInt64,Set{Int}}(), Dict{UInt64,Gates}(),
-    Dict{UInt64,Float64}(), Dict{UInt64,Dict{Int,Vector{Int}}}(), Dict{UInt64,Set{Int}}(), Set{UInt64}())
+    Dict{UInt64,Float64}(), Dict{UInt64,Dict{Int,Vector{Int}}}(), Dict{UInt64,Set{Int}}(), Set{UInt64}(), Dict{UInt64,Matrix{Float32}}())
   tally_shapes!(m)
   if gate > 0
     t = @elapsed build_gates!(m)
@@ -1990,9 +1992,21 @@ round begins.  Leftovers already in the context (as a generalization of a featur
 unsupported ones (even with everything dropped) are left out.  Returns the summed correction.
 """
 function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int}, label, prior, base)
-  ladder(x, slot) = (gens = slot === nothing ? UInt64[] : UInt64[Ic[sg] for sg in get(G, slot, Int[]) if Ic[sg] != ABSENT && Ic[sg] != x];
-    sort!(gens; by = g -> get(m.itemcount, g, typemax(Int))); [x; gens])
-  ladders = [ladder(w, findfirst(==(w), Ic)) for w in st.members]
+  function ladder(x, slot)                          # (items, their slots): x, then its generalizations, rarer first
+    gens = slot === nothing ? Int[] : Int[sg for sg in get(G, slot, Int[]) if Ic[sg] != ABSENT && Ic[sg] != x]
+    sort!(gens; by = sg -> get(m.itemcount, Ic[sg], typemax(Int)))
+    [x; UInt64[Ic[sg] for sg in gens]], [something(slot, 0); gens]
+  end
+  lad = [ladder(w, findfirst(==(w), Ic)) for w in st.members]
+  ladders, lslots = first.(lad), last.(lad)
+  D = m.opts.cidrop > 0 && !isempty(base) ? get(m.ci, m.recs[base[1]].typekey, nothing) : nothing
+  # may feature i (at rung r[i]) be dropped?  Only if some other kept feature A makes it redundant: D(A→B) < cidrop
+  function maydrop(r, i)
+    D === nothing && return true
+    sb = lslots[i][r[i]]
+    sb == 0 && return false
+    any(j -> j != i && r[j] <= length(ladders[j]) && lslots[j][r[j]] > 0 && D[lslots[j][r[j]], sb] < m.opts.cidrop, eachindex(ladders))
+  end
   rung = ones(Int, length(ladders))
   T = log(st.odds[end])
   total_ = 0.0
@@ -2019,6 +2033,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       best, br, bc = Inf, nothing, nothing
       for i in eachindex(ladders)
         r[i] <= length(ladders[i]) || continue      # (already dropped)
+        r[i] == length(ladders[i]) && !maydrop(r, i) && continue   # dropping B: only if redundant given a kept A
         r2 = copy(r); r2[i] += 1
         c = build(r2)
         c === nothing && continue
@@ -2060,13 +2075,45 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
     sx = pending[bestX]
     LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](sx, true, [something(findfirst(==(f), Ic), 0) for f in bestctx], bestc)
     rung = copy(path[bestk][1])
-    push!(ladders, ladder(Ic[sx], sx)); push!(rung, 1)
+    (li, ls) = ladder(Ic[sx], sx)
+    push!(ladders, li); push!(lslots, ls); push!(rung, 1)
     total_ += bestc
     T += bestc
     deleteat!(pending, bestX)
     filter!(s -> !(Ic[s] in items(rung)), pending)  # leftovers now in the context are redundant
   end
   total_
+end
+
+"""
+Pairwise conditional independence for decision type `tk` (attachment-style records: one per candidate):
+D[A, B] = how much feature slot B still changes o(x) once A's value is known -- slot_effects' split-half
+measure with A as the gate, averaged over A's values weighted by their records -- from a sample of
+`sample` records.  D[A, B] ≈ 0: o(x | A, B) ≈ o(x | A) for the values seen.  NaN rows: types without
+attachment-style records.
+"""
+function ci_table(m::ChainModel, tk::UInt64; sample = 200_000)
+  recs = get(m.typerecs, tk, Int32[])
+  isempty(recs) && return nothing
+  n = Int(m.recs[recs[1]].n)
+  all(j -> m.recs[j].label == 0 && m.lsid[j] == 0 && m.recs[j].n == n, recs) || return nothing
+  rs = recs[1:max(1, length(recs) ÷ sample):end]
+  p0 = priorodds(m, lpriorkey(tk, UInt32(0)))
+  D = fill(NaN32, n, n)
+  for a in 1:n
+    e, vc = slot_effects(m, rs, n, a, p0)
+    num, den = zeros(n), zeros(n)
+    for ((v, s), x) in e
+      w = Float64(sum(vc[v]))
+      w >= max(m.opts.mincount, 1) || continue
+      num[s] += w * x; den[s] += w
+    end
+    for s in 1:n
+      s == a && continue
+      den[s] > 0 && (D[a, s] = Float32(num[s] / den[s]))
+    end
+  end
+  D
 end
 
 "Does a leftover context entry (context + leftover) have the records `ctxsupport` asks for?"

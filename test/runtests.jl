@@ -259,6 +259,14 @@ end
       mb.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mb, lex)).uas <= 1
     end
+    # pairwise conditional-independence table, and accum dropping only redundant features
+    Dt = SeqLayers.ci_table(mg, SeqLayers.typekey(:token, 1); sample = 1000)
+    @test Dt isa Matrix{Float32} && size(Dt, 1) == size(Dt, 2) && all(x -> isnan(x) || x >= 0, Dt)
+    @test SeqLayers.ci_table(mg, SeqLayers.typekey(:token, 2)) === nothing     # labeled records: not attachment-style
+    mc = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum, cidrop = 0.1)
+    mc.generalize = SeqLayers.generalization_slots(specs)
+    mc.ci[SeqLayers.typekey(:token, 1)] = Dt
+    @test 0 <= eval_scores(evaluate_counts(docs, specs, mc, lex)).uas <= 1
     # domain variables: a pruned head direction removes the candidates on that side
     sd = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, specs, lex)
     solve!(sd, OracleModel())
