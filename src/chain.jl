@@ -183,6 +183,7 @@ struct ChainOpts
   ctxmode::Symbol                                 # greedy contexts: :greedy | :backoff / :limited (generalize the chain) | :cover (greedy, must cover the chain) | :accum (leftover chain)
   ctxattach::Bool                                 # ctxmode for the attachment decision only (labels keep :greedy)
   cidrop::Float64                                 # accum: drop a context feature B only if some A kept has D(A→B) < cidrop (0: always may)
+  pairorder::Symbol                               # a chosen pair's members enter the chain in slot order (:slot) or larger single effect first (:maxdev)
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -291,7 +292,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
@@ -299,6 +300,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   stepscore in (:abs, :signed, :maxmin, :maxmin2) || error("unknown stepscore $stepscore (use :abs, :signed, :maxmin or :maxmin2)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
   poolmarginal in (:off, :leftover, :drop) || error("unknown poolmarginal $poolmarginal (use :off, :leftover or :drop)")
+  pairorder in (:slot, :maxdev) || error("unknown pairorder $pairorder (use :slot or :maxdev)")
   ctxmode in (:greedy, :backoff, :limited, :cover, :accum) || error("unknown ctxmode $ctxmode (use :greedy, :backoff, :limited, :cover or :accum)")
   leftsmooth in (:odds, :evidence) || error("unknown leftsmooth $leftsmooth (use :odds or :evidence)")
   poolscale in (:logodds, :z) || error("unknown poolscale $poolscale (use :logodds or :z)")
@@ -349,7 +351,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -1251,6 +1253,8 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
   stop && return false
   if pair !== nothing                                # (a pair only wins with best above every single's score)
     a, b, e, y = pair                                  # the pair as two members: a's own odds, then the pair's
+    # (pairorder :maxdev: the member with the larger single effect first; set keys don't depend on order)
+    m.opts.pairorder == :maxdev && single[b][3] > single[a][3] && ((a, b) = (b, a))
     advance!(m, st, Ic[a], single[a][1], single[a][2])
     advance!(m, st, Ic[b], e, y)
     rec && (push!(st.alts, alts); push!(st.alts, Dict{UInt64,Float64}()))   # (b's step: no alternatives: weight 1)
