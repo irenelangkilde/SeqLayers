@@ -282,7 +282,9 @@ function word_distance(st, t, h)
   toks, chars = st.layers[:token], st.layers[:char]
   l, r = toks[:first_char, t] < toks[:first_char, h] ? (t, Int(h)) : (Int(h), t)
   n, prev = 0, UInt32(0)
-  for j in Int(toks[:last_char, l])+1:Int(toks[:first_char, r])-1
+  a, b = Int(toks[:last_char, l]), Int(toks[:first_char, r])
+  (toks[:last_char, l] == PENDING || b - 1 > nchars(st)) && return nothing   # (a token not fully in this segment yet)
+  for j in a+1:b-1
     isspace(segchar(st, j)) && continue
     u = chars[:token_of, j]
     u == PENDING && return nothing

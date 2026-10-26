@@ -139,14 +139,23 @@ end
 # parse wins.  After `budget` failures (or with nothing left to try) the segment is finished by the
 # plain greedy decoder from the first choice point -- what solve! would have produced.
 
-"Depth-first search settings: alternatives need probability >= eps; at most `budget` failures per segment."
+"""
+Depth-first search settings: alternatives need probability >= eps; at most `budget` failures per segment;
+`jump`: conflict-directed backjumping (back to the latest choice point among the failure's causes);
+`order`: a choice point's values in probability order (:prob) or by the product score (:product: an
+attachment's heads by P(head) times its uncommitted head properties' probabilities of the values the head
+implies; a head property's values by P(value) times the attachment probability of the heads consistent with it).
+"""
 struct DFS
   eps::Float64
   budget::Int
+  jump::Bool
+  order::Symbol
 end
-DFS(; eps = 0.05, budget = 200) = DFS(eps, budget)
+DFS(; eps = 0.05, budget = 200, jump = false, order = :prob) = DFS(eps, budget, jump, order)
 
-const DFS_STATS = Dict(:segments => 0, :choicepoints => 0, :failures => 0, :backtracked => 0, :gaveup => 0)
+const DFS_STATS = Dict(:segments => 0, :choicepoints => 0, :failures => 0, :backtracked => 0, :gaveup => 0,
+  :jumps => 0, :jumped => 0, :reordered => 0)
 
 mutable struct ChoicePoint
   mark::Int
@@ -252,6 +261,105 @@ function diagnose(st::State, key::AgendaKey, stack)
     back = back, depth = length(stack))
 end
 
+"""
+The decisions whose commits excluded token t's possible heads (the conflict set of t's failed attachment):
+its committed head properties; for head-tag conflicts, the candidate head's tag; for cycles, the
+attachments along the path from the head back to t; for crossing arcs, the crossing tokens' attachments;
+the token attached to the root (if that excluded the root); the E gaps between t and a head.
+"""
+function conflict_keys(st::State, key::AgendaKey)
+  toks = st.layers[:token]
+  decs = toks.spec.decisions
+  kof = Dict(d.name => k for (k, d) in enumerate(decs))
+  t = key[3]
+  s = toks[:sentence, t]
+  out = Set{AgendaKey}()
+  root = findfirst(u -> u != t && toks[:sentence, u] == s && toks[:attach, u] == NONE, 1:length(toks))
+  s != PENDING && root !== nothing && push!(out, (:token, 1, root))
+  names = headnames(toks)
+  pos(u) = Int(toks[:first_char, u])
+  for h in (u for u in 1:length(toks) if u != t && toks[:sentence, u] == s)
+    abs(pos(h) - pos(t)) > MAX_LINK_CHARS && continue
+    if creates_cycle(st, t, h)
+      u = h
+      while u != t                                     # the attachments on the path from h up to t
+        push!(out, (:token, 1, u))
+        v = toks[:attach, u]
+        (v == NONE || v == PENDING) && break
+        u = Int(v)
+      end
+      continue
+    end
+    if crosses_E(st, t, h)
+      chars = st.layers[:char]
+      l, r = pos(t) < pos(h) ? (t, h) : (h, t)
+      for j in Int(toks[:last_char, l]):Int(toks[:first_char, r])-1
+        chars[:gap, j] == GAP_E && push!(out, (:char, 1, j))
+      end
+      continue
+    end
+    bad = findfirst(n -> toks[n, t] != PENDING && !head_consistent_one(st, t, UInt32(h), n), names)
+    if bad !== nothing
+      n = names[bad]
+      push!(out, (:token, kof[n], t))
+      n in (:head_upos, :head_xpos) && push!(out, (:token, kof[n == :head_upos ? :upos : :xpos], h))
+      continue
+    end
+    a, b = minmax(pos(t), pos(h))                      # crossing arcs
+    for u in 1:length(toks)
+      u == t && continue
+      g = toks[:attach, u]
+      g == PENDING && continue
+      c, d = g == NONE ? (0, pos(u)) : minmax(pos(u), pos(Int(g)))
+      (a < c < b < d || c < a < d < b) && push!(out, (:token, 1, u))
+    end
+  end
+  for n in names                                       # (and t's committed head properties in any case)
+    toks[n, t] != PENDING && push!(out, (:token, kof[n], t))
+  end
+  out
+end
+
+"""
+A choice point's values ordered by the product score (DFS order :product), or nothing to keep the
+probability order: attachments and head properties only.
+"""
+function product_order(model, st::State, key::AgendaKey, cands, lps, eps)
+  toks = st.layers[:token]
+  decs = toks.spec.decisions
+  t = key[3]
+  name = decs[key[2]].name
+  keep = [i for i in eachindex(cands) if exp(lps[i]) >= eps]
+  if name == :attach
+    sc = Dict{UInt32,Float64}(cands[i] => lps[i] for i in keep)
+    for (k, d) in enumerate(decs)
+      haskey(ALLHEADSETS, d.name) && toks[d.name, t] == PENDING || continue
+      dist = commit_dist(model, st, (:token, k, t))
+      dist === nothing && continue
+      vals, vlps = dist
+      for c in keys(sc)
+        v = head_value(st, t, c, d.name)
+        v == PENDING && continue
+        j = findfirst(==(v), vals)
+        sc[c] += j === nothing ? log(1e-12) : vlps[j]
+      end
+    end
+    return sort(collect(keys(sc)); by = c -> -sc[c])
+  elseif haskey(ALLHEADSETS, name) && toks[:attach, t] == PENDING
+    adist = commit_dist(model, st, (:token, 1, t))
+    adist === nothing && return nothing
+    hs, hlps = adist
+    sc = Dict{UInt32,Float64}()
+    for i in keep
+      v = cands[i]
+      sup = sum((exp(hlps[j]) for j in eachindex(hs) if (hv = head_value(st, t, hs[j], name)) == v || hv == PENDING); init = 0.0)
+      sc[v] = lps[i] + log(sup + 1e-12)
+    end
+    return sort(collect(keys(sc)); by = c -> -sc[c])
+  end
+  nothing
+end
+
 const DFS_DIAG = Ref(false)
 const DFS_LOG = Any[]
 
@@ -277,9 +385,17 @@ function solve_dfs!(st::State, model, opts::DFS)
           if dist !== nothing
             cands, lps = dist
             others = [(c, l) for (c, l) in zip(cands, lps) if c != choice && exp(l) >= opts.eps]
-            if !isempty(others)
-              sort!(others; by = x -> -x[2])
-              push!(stack, ChoicePoint(length(TRAIL[]), snapshot(st), key, [choice; first.(others)], 1))
+            alts = [choice; first.(sort!(others; by = x -> -x[2]))]
+            if opts.order == :product && length(alts) > 1
+              po = product_order(model, st, key, cands, lps, opts.eps)
+              if po !== nothing && !isempty(po)
+                po[1] != choice && (DFS_STATS[:reordered] += 1)
+                alts = po
+                choice = po[1]
+              end
+            end
+            if length(alts) > 1
+              push!(stack, ChoicePoint(length(TRAIL[]), snapshot(st), key, alts, 1))
               DFS_STATS[:choicepoints] += 1
             end
           end
@@ -291,6 +407,15 @@ function solve_dfs!(st::State, model, opts::DFS)
       DFS_DIAG[] && length(DFS_LOG) < 100_000 && push!(DFS_LOG, diagnose(st, fk, stack))
       failures += 1
       DFS_STATS[:failures] += 1
+      if opts.jump && !isempty(stack)                 # backjump: to the latest choice point among the failure's causes
+        ck = conflict_keys(st, fk)
+        j = findlast(cp -> cp.key in ck, stack)
+        if j !== nothing && j < length(stack)
+          DFS_STATS[:jumps] += 1
+          DFS_STATS[:jumped] += length(stack) - j
+          resize!(stack, j)
+        end
+      end
       resumed = false
       while failures <= opts.budget && !isempty(stack)
         cp = stack[end]

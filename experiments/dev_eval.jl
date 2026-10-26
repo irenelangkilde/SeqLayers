@@ -79,11 +79,15 @@
 #                with the larger single effect first (maxdev)
 #   cidrop       ctxmode=accum: a context feature B may be dropped only if some feature A kept has
 #                D(A→B) < cidrop (the pairwise table ci_table.jls next to the events: experiments/ci_table.jl)
+#   wclevels     with wclasses: use only these class levels (sizes, e.g. 30,300); the others are kept out
+#                of chains, leftovers and generalization ladders ("" = all)
 #   classchain   with wclasses: may word-class slots be chosen in chains (false: stand-ins for forms
 #                in leftover contexts only, never chains or leftovers): true | false
 #   dfs          depth-first search with failures in the full decode (src/search.jl DFS): true | false
 #   dfseps       DFS: a commit is a choice point if some other value has at least this probability
 #   dfsbudget    DFS: failures allowed per segment before finishing greedily
+#   dfsjump      DFS: conflict-directed backjumping (to the latest choice point among a failure's causes)
+#   dfsorder     DFS: choice points' values in probability order (prob) or by the product score (product)
 #   ldsscore     how search compares paths: sum | mean (of the commits' log probabilities)
 #   ldsall       search may branch on char and sentence decisions too (default: token decisions only)
 #   pprel        with pptable: each PP item compares the candidate's rate with the best of the token's
@@ -158,7 +162,7 @@ const RESULTS = joinpath(HERE, "results.csv")
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
   "wmo" => 1e-3, "train_sents" => 500, "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
-  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "relbounded" => "false", "relnone" => "false", "classchain" => "true", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
+  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "relbounded" => "false", "relnone" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
 
 function parse_cfg(args)
@@ -351,7 +355,7 @@ function start_workers(cfg, s)
       pptable = $(isempty(cfg["pptable"]) ? nothing : :(load_pptable($(cfg["pptable"]), $(joinpath(dirname(dirname(cfg["pptable"])), "classes5"))))),
       pprel = $(cfg["pprel"] == "true"), relbounded = $(cfg["relbounded"] == "true"), relnone = $(cfg["relnone"] == "true"))
     const WLEX = deserialize(joinpath($rundir, "lex.jls"))
-    const WSEARCH = $(cfg["dfs"] == "true" ? :(SeqLayers.DFS(eps = $(cfg["dfseps"]), budget = $(cfg["dfsbudget"]))) : cfg["search"] > 0 ? :(SeqLayers.LDS($(cfg["search"]); score = $(QuoteNode(Symbol(cfg["ldsscore"]))),
+    const WSEARCH = $(cfg["dfs"] == "true" ? :(SeqLayers.DFS(eps = $(cfg["dfseps"]), budget = $(cfg["dfsbudget"]), jump = $(cfg["dfsjump"] == "true"), order = $(QuoteNode(Symbol(cfg["dfsorder"]))))) : cfg["search"] > 0 ? :(SeqLayers.LDS($(cfg["search"]); score = $(QuoteNode(Symbol(cfg["ldsscore"]))),
       tokenonly = $(cfg["ldsall"] != "true"))) : nothing)
     const WMODEL = let m = deserialize(joinpath($rundir, "model.jls"))
       if m isa Tuple
@@ -369,6 +373,14 @@ function start_workers(cfg, s)
         end
         $(cfg["poolsigma"] > 0 || cfg["ctxmode"] != "greedy") && (cm.generalize = SeqLayers.generalization_slots(WSPECS))
         $(cfg["classchain"] == "true") || (cm.nochain = SeqLayers.wclass_slots(WSPECS))
+        if $(!isempty(cfg["wclevels"]))                   # only these class levels: the others out of chains, leftovers and ladders
+          keep = Set($(isempty(cfg["wclevels"]) ? Int[] : parse.(Int, split(cfg["wclevels"], ','))))
+          drop = SeqLayers.wclass_slots(WSPECS; levels = [l for (l, sz) in enumerate($(s.wc === nothing ? Int[] : s.wc.sizes)) if !(sz in keep)])
+          for (tk, sl) in drop
+            cm.nochain[tk] = union(get(cm.nochain, tk, Set{Int}()), sl)
+            haskey(cm.generalize, tk) && (cm.generalize[tk] = Dict(f => [g for g in gs if !(g in sl)] for (f, gs) in cm.generalize[tk]))
+          end
+        end
         $(cfg["cidrop"] > 0) && (cm.ci = deserialize(joinpath($(s.recipe[1]), "..", "ci_table.jls")))
         $(cfg["ctxscope"] == "heads") && (cm.ctxtypes = Set(SeqLayers.typekey(:token, k) for (k, d) in enumerate(WSPECS[2].decisions)
           if k == 1 || haskey(SeqLayers.ALLHEADSETS, d.name)))

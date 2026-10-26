@@ -248,6 +248,10 @@ end
     @test evaluate_counts(docs, specs, mg, lex; search = DFS(budget = 0)) == g
     rd = eval_scores(evaluate_counts(docs, specs, mg, lex; search = DFS(eps = 0.01, budget = 50)))
     @test 0 <= rd.uas <= 1
+    for o in (DFS(eps = 0.01, budget = 50, jump = true), DFS(eps = 0.01, budget = 50, order = :product),
+              DFS(eps = 0.01, budget = 50, jump = true, order = :product))
+      @test 0 <= eval_scores(evaluate_counts(docs, specs, mg, lex; search = o)).uas <= 1
+    end
     sd2 = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, specs, lex)
     SeqLayers.activate!(sd2); SeqLayers.rescore!(sd2, mg)
     for _ in 1:30                                   # some greedy steps first

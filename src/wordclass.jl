@@ -79,15 +79,16 @@ Slots of the word-class values in each token decision's records (attachment: the
 the candidate's value of each class path; label decisions: the class context paths), for
 ChainModel's `noleft` -- classes in chains only, not as leftovers.
 """
-function wclass_slots(specs)
+function wclass_slots(specs; levels = nothing)
   toks = specs[2]
   nlev = count(d -> iswclass(d.name), toks.decisions)
   nlev == 0 && return Dict{UInt64,Set{Int}}()
-  paths = 22 .+ (1:nlev)                                 # the class context paths (see default_specs)
+  ls = levels === nothing ? (1:nlev) : [l for l in levels if 1 <= l <= nlev]   # (levels: indices into the class sizes)
+  paths = 22 .+ ls                                       # the class context paths (see default_specs)
   a0 = length(LINK_PATHS)                                # their positions among the link paths follow LINK_PATHS
   out = Dict{UInt64,Set{Int}}()
   for (k, d) in enumerate(toks.decisions)
-    out[typekey(:token, k)] = k == 1 ? Set([s for l in 1:nlev for s in (2(a0 + l) + 1, 2(a0 + l) + 2)]) : Set(paths)
+    out[typekey(:token, k)] = k == 1 ? Set([s for l in ls for s in (2(a0 + l) + 1, 2(a0 + l) + 2)]) : Set(paths)
   end
   out
 end

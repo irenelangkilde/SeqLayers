@@ -23,7 +23,7 @@ pc !== nothing && (m.pcounts = pc)
 docs = sort([d for (_, d) in s.devdocs]; by = d -> length(d.text))[1:min(cfg["docs"], end)]
 S.DFS_DIAG[] = true
 empty!(S.DFS_LOG)
-t = @elapsed c = evaluate_counts(docs, specs, m, s.lex; search = DFS(eps = cfg["dfseps"], budget = cfg["dfsbudget"]))
+t = @elapsed c = evaluate_counts(docs, specs, m, s.lex; search = DFS(eps = cfg["dfseps"], budget = cfg["dfsbudget"], jump = cfg["dfsjump"] == "true", order = Symbol(cfg["dfsorder"])))
 println("$(length(docs)) docs, $(c[:tok_gold]) words, $(round(t; digits = 1)) s; UAS $(round(eval_scores(c).uas; digits = 4)); ", S.DFS_STATS)
 L = S.DFS_LOG
 println("\n$(length(L)) failures")
