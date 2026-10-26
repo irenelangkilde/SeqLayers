@@ -346,6 +346,17 @@ end
       lo, hi = minmax(pos_(t), pos_(Int(h)))
       @test SeqLayers.tree_rank(so, t, h) == 1 + count(u -> u != t && to[:attach, u] == h && lo < pos_(u) < hi, 1:length(to))
     end
+    for t in 1:length(to)                            # the gold head_trank label is the rank under the gold head
+      h = to[:attach, t]
+      (h == PENDING || h == NONE) && continue
+      r = SeqLayers.tree_rank(so, t, h)
+      @test SeqLayers.head_value(so, t, h, :head_trank) == SeqLayers.headcode(:head_trank, SeqLayers.tranklabel(r))
+    end
+    hspecs = default_specs(headtrank = true)
+    @test evaluate(docs, hspecs, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
+    hdir = record_events(docs, hspecs, Lexicon(), mktempdir())
+    mh = ChainModel(hdir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1)
+    @test 0 <= eval_scores(evaluate_counts(docs, hspecs, mh, Lexicon())).uas <= 1
     tspecs = default_specs(treerank = true)
     @test evaluate(docs, tspecs, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
     rspecs = default_specs(relations = true, relbounded = true, relnone = true)

@@ -71,8 +71,12 @@ const HEADSETS = (
   head_dist = ["1", "2", "3-5", "6-10", "11+", "root"])
 # Optional head properties (default_specs(headsdist = true)): the head's signed distance, direction
 # and distance in one label (L = head to the left).
+# head_trank (default_specs(headtrank = true)): the token's tree rank under its head -- its rank among the head's
+# dependents on its side counting outward (1 = nearest; see tree_rank).
 const ALLHEADSETS = merge(HEADSETS, (
-  head_sdist = ["L11+", "L6-10", "L3-5", "L2", "L1", "R1", "R2", "R3-5", "R6-10", "R11+", "root"],))
+  head_sdist = ["L11+", "L6-10", "L3-5", "L2", "L1", "R1", "R2", "R3-5", "R6-10", "R11+", "root"],
+  head_trank = ["1", "2", "3", "4+", "root"]))
+tranklabel(r::Int) = r >= 4 ? "4+" : string(r)
 headcode(name::Symbol, s::AbstractString) =
   UInt32(something(findfirst(==(s), ALLHEADSETS[name]), length(ALLHEADSETS[name])))
 const HEAD_CODES = map(ls -> UInt32.(1:length(ls)), ALLHEADSETS)
@@ -85,10 +89,13 @@ headnames(toks) = [d.name for d in toks.spec.decisions if haskey(ALLHEADSETS, d.
 "Gold head-property label codes of word i, whose head is word h (0: root)."
 function gold_head(i::Int, h::Int, words)
   h == 0 && return (head_upos = headcode(:head_upos, "ROOT"), head_xpos = headcode(:head_xpos, "ROOT"),
-    head_dir = headcode(:head_dir, "root"), head_dist = headcode(:head_dist, "root"), head_sdist = headcode(:head_sdist, "root"))
+    head_dir = headcode(:head_dir, "root"), head_dist = headcode(:head_dist, "root"), head_sdist = headcode(:head_sdist, "root"),
+    head_trank = headcode(:head_trank, "root"))
+  lo, hi = minmax(i, h)
+  rank = 1 + count(j -> j != i && words[j].head == h, lo+1:hi-1)   # h's other dependents between h and i
   (head_upos = headcode(:head_upos, words[h].upos), head_xpos = headcode(:head_xpos, words[h].xpos),
     head_dir = headcode(:head_dir, h < i ? "left" : "right"), head_dist = headcode(:head_dist, distlabel(abs(h - i))),
-    head_sdist = headcode(:head_sdist, (h < i ? "L" : "R") * distlabel(abs(h - i))))
+    head_sdist = headcode(:head_sdist, (h < i ? "L" : "R") * distlabel(abs(h - i))), head_trank = headcode(:head_trank, tranklabel(rank)))
 end
 
 const MAX_LINK_CHARS = 200     # head candidates must start within this many chars
@@ -312,6 +319,12 @@ function head_consistent_one(st, t, h, name)
   elseif name == :head_upos || name == :head_xpos
     tag = toks[name == :head_upos ? :upos : :xpos, h]
     tag == PENDING || HEADSETS[name][v] == TAGSETS[name == :head_upos ? :upos : :xpos][tag]
+  elseif name == :head_trank                         # the rank only grows as dependents attach between h and t
+    want = v == headcode(:head_trank, "4+") ? 4 : parse(Int, ALLHEADSETS.head_trank[v])
+    r = tree_rank(st, t, h)
+    r >= want && return want == 4 || r == want
+    lo, hi = minmax(toks[:first_char, t], toks[:first_char, h])
+    any(u -> u != t && lo < toks[:first_char, u] < hi && toks[:attach, u] == PENDING, 1:length(toks))   # may still reach it
   elseif name == :head_dir
     HEADSETS.head_dir[v] == (toks[:first_char, h] < toks[:first_char, t] ? "left" : "right")
   else
@@ -403,6 +416,8 @@ function head_value(st, t, h, name)
   elseif name == :head_sdist
     d = word_distance(st, t, h)
     d === nothing ? PENDING : headcode(name, (toks[:first_char, h] < toks[:first_char, t] ? "L" : "R") * distlabel(d))
+  elseif name == :head_trank
+    headcode(name, tranklabel(tree_rank(st, t, h)))
   elseif name == :head_dir
     headcode(name, toks[:first_char, h] < toks[:first_char, t] ? "left" : "right")
   elseif name == :head_dist
@@ -1028,7 +1043,7 @@ of the token's other candidates.
 function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclasses::Union{WordClasses,Nothing} = nothing,
   suffixes::Vector{Int} = Int[], noise::Int = 0, rootabsent::Bool = false, projective::Bool = false,
   relations::Bool = false, headsdist::Bool = false, pptable = nothing, pprel::Bool = false,
-  relbounded::Bool = false, relnone::Bool = false, treerank::Bool = false)
+  relbounded::Bool = false, relnone::Bool = false, treerank::Bool = false, headtrank::Bool = false)
   safeats = charindex === nothing ? FeatDef[] : [sa_feats(charindex, :left); sa_feats(charindex, :right)]
   sapaths = charindex === nothing ? FeatPath[] : [FeatPath(:sa_left), FeatPath(:sa_right)]
   chars = LayerSpec{CharLayer}(:char,
@@ -1111,7 +1126,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
           mask = head_mask,
           # once the attachment is committed, the backward step derives it (the oracle decides it itself)
           ready = (st, t) -> !st.infer || (!SOFTHEADS[] && st.layers[:token][:attach, t] == PENDING))
-        for name in (headsdist ? keys(ALLHEADSETS) : keys(HEADSETS))],
+        for name in [collect(keys(HEADSETS)); headsdist ? [:head_sdist] : Symbol[]; headtrank ? [:head_trank] : Symbol[]]],
       [DecisionDef(wnames[l];
           candidates = (st, t) -> wclass_candidates(wc, l, lowercase(tokstr(st, t))),
           features = (st, t, c) -> label_features(st, :token, witemtags[l], t, c),
@@ -1130,10 +1145,11 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
       [FeatPath(name) for name in snames],                   # then the suffixes, also in them
       [FeatPath(name) for name in nnames],                   # then the noise feature
       relpaths,                                              # then the relations
-      headsdist ? [FeatPath(:head_sdist)] : FeatPath[]),     # then optional head properties (not in LINK_PATHS)
+      headsdist ? [FeatPath(:head_sdist)] : FeatPath[],      # then optional head properties (not in LINK_PATHS)
+      headtrank ? [FeatPath(:head_trank)] : FeatPath[]),
     (st, t) -> Int(st.layers[:token][:last_char, t]))
 
-  length(tokens.context) == 22 + extra + length(relpaths) + headsdist || error("token context paths moved: update linkpaths")
+  length(tokens.context) == 22 + extra + length(relpaths) + headsdist + headtrank || error("token context paths moved: update linkpaths")
   LINKPATHS[tokens] = linkpaths
   sentences = LayerSpec{SentenceLayer}(:sentence,
     FeatDef[],
