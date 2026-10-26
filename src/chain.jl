@@ -1136,10 +1136,18 @@ Run the decision-level chain over slots for all candidates at once.  `I[c][s]` i
 item in slot s.  Returns the chain states and the slots left unused.  With a `target`, steps
 are chosen to approach it; otherwise to maximize the criterion.
 """
-function run_chain(m::ChainModel, I, labels, priors, typerecs; target = nothing, restarts = 0)
+function run_chain(m::ChainModel, I, labels, priors, typerecs; target = nothing, restarts = 0, tk = nothing)
   K, nslots = length(I), length(I[1])
   states = [ChainState(p, typerecs) for p in priors]
   remaining = collect(1:nslots)
+  # each candidate's admitted slots (relevance gates; stand-in slots excluded): for the others, a step
+  # on the slot leaves that candidate's set and odds as they are, as an absent item does
+  adm = map(I) do Ic
+    a = tk === nothing ? collect(1:nslots) : admitted(m, tk, Ic)
+    tk !== nothing && haskey(m.nochain, tk) && (a = [s for s in a if !(s in m.nochain[tk])])
+    BitSet(a)
+  end
+  absent(c, s) = I[c][s] == ABSENT || !(s in adm[c])
   dist(y) = criterion(m.opts.select, y, target)
   while !isempty(remaining)
     x = [s.odds[end] for s in states]
@@ -1147,12 +1155,12 @@ function run_chain(m::ChainModel, I, labels, priors, typerecs; target = nothing,
     # each candidate's entries for all its remaining (present) items, in one pass per candidate
     cap = samplecap(m, x; nlabels = all(iszero, labels) ? 1 : K)
     E = map(enumerate(states)) do (c, st)
-      slots = [s for s in remaining if I[c][s] != ABSENT]
+      slots = [s for s in remaining if !absent(c, s)]
       Dict(zip(slots, extend_all(m, st, depth(st), present_items(I[c], slots); cap)))
     end
     for s in remaining
       # a candidate whose item in this slot is absent (still pending) keeps its current set and odds
-      es = [I[c][s] == ABSENT ? nothing : E[c][s] for c in 1:K]
+      es = [absent(c, s) ? nothing : E[c][s] for c in 1:K]
       y = similar(x)
       any_ok = false
       for c in 1:K
@@ -1172,11 +1180,11 @@ function run_chain(m::ChainModel, I, labels, priors, typerecs; target = nothing,
     if m.opts.target && restarts < m.opts.maxrestarts && K > 1
       changed = top2(by) != top2(x)
       if changed && (target === nothing || top2(by) != top2(target))
-        return run_chain(m, I, labels, priors, typerecs; target = copy(by), restarts = restarts + 1)
+        return run_chain(m, I, labels, priors, typerecs; target = copy(by), restarts = restarts + 1, tk)
       end
     end
   end
-  states, remaining
+  states, [Int[s for s in remaining if s in adm[c]] for c in 1:K]   # each candidate's leftovers: its admitted slots
 end
 
 """
@@ -2266,7 +2274,7 @@ function decide(m::ChainModel, st::State, key::AgendaKey)
       lo
     end for c in eachindex(cands)]
   else
-    logodds(run_chain(m, I, labels, priors, tr)...)
+    logodds(run_chain(m, I, labels, priors, tr; tk)...)
   end
   m.opts.contest && (scores = contest!(m, scores, I, labels, priors, tr, tk))
   length(m.memo) >= MAXMEMO && empty!(m.memo)
