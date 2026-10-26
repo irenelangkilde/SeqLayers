@@ -544,9 +544,131 @@ function child_of(st, t, kind)
 end
 
 """
+Relation variants (default_specs relbounded / relnone).  `bounded`: left and right siblings don't
+cross the head (a token whose head is on its left has as left sibling only a sibling between the head
+and itself; likewise on the right).  `none`: a relation that certainly doesn't exist -- every token
+where it could be is attached (in a closed sentence) and none is it -- is NONE, a value of its own,
+while one that may still appear stays PENDING (absent).
+"""
+struct RelFlags
+  bounded::Bool
+  none::Bool
+end
+const RELPLAIN = RelFlags(false, false)
+
+"""
+Tokens by position for range checks during a refresh! (st.memo): each token's rank, its sentence's
+first and last rank, and running counts of unattached tokens by rank.
+"""
+function relranks(st)
+  build() = begin
+    toks = st.layers[:token]
+    n = toks.ncols
+    ord = sortperm([toks[:first_char, u] for u in 1:n])
+    rank = zeros(Int, n)
+    foreach(((r, u),) -> (rank[u] = r), enumerate(ord))
+    cp = zeros(Int, n + 1)                              # cp[r+1]: unattached tokens among ranks 1..r
+    for (r, u) in enumerate(ord)
+      cp[r+1] = cp[r] + (toks[:attach, u] == PENDING)
+    end
+    sfirst, slast = zeros(Int, n), zeros(Int, n)        # by rank: the rank range of the token's sentence
+    r = 1
+    while r <= n
+      sid = toks[:sentence, ord[r]]
+      q = r
+      while q < n && toks[:sentence, ord[q+1]] == sid
+        q += 1
+      end
+      sfirst[r:q] .= r; slast[r:q] .= q
+      r = q + 1
+    end
+    (ord, rank, cp, sfirst, slast)
+  end
+  m = st.memo
+  m === nothing && return build()
+  get!(build, m, :relranks)
+end
+
+"""
+Is every token strictly between ranks lo and hi attached, with t in a closed sentence (so nothing more
+can appear there)?  lo / hi: ranks (0 and n + 1 for the sentence's edges are clamped to it).
+"""
+function rel_range_done(st, rk, t, lo, hi)
+  st.layers[:token][:sentence, t] == PENDING && return false
+  ord, rank, cp, sfirst, slast = rk
+  r = rank[t]
+  lo = max(lo, sfirst[r] - 1); hi = min(hi, slast[r] + 1)
+  hi - lo <= 1 && return true
+  cp[hi] - cp[lo+1] == 0
+end
+
+"""
+t's sibling of the given kind under head h (t excluded), under flags f: the token, NONE (certainly
+none: f.none), or PENDING.
+"""
+function sibling_value(st, t, h, kind, f::RelFlags)
+  h == PENDING && return PENDING
+  toks = st.layers[:token]
+  rk = relranks(st)
+  if h == NONE                                         # a root has no siblings (one root per sentence)
+    return f.none && toks[:sentence, t] != PENDING ? NONE : PENDING
+  end
+  ord, rank, _, sfirst, slast = rk
+  rt, rh = rank[t], rank[Int(h)]
+  lo, hi = if kind == :left_sibling
+    (f.bounded && rh < rt ? rh : 0, rt)
+  elseif kind == :right_sibling
+    (rt, f.bounded && rh > rt ? rh : length(rank) + 1)
+  elseif kind == :inner_sibling
+    rh < rt ? (rh, rt) : (rt, rh)
+  else                                                 # :outer_sibling: beyond t, away from the head
+    rh < rt ? (rt, length(rank) + 1) : (0, rt)
+  end
+  lo = max(lo, sfirst[rt] - 1); hi = min(hi, slast[rt] + 1)
+  sibs = [u for u in children_index(st)[Int(h)] if u != t && lo < rank[u] < hi]
+  if !isempty(sibs)                                    # the nearest to t
+    return UInt32(rank[sibs[1]] > rt ? sibs[argmin([rank[u] for u in sibs])] : sibs[argmax([rank[u] for u in sibs])])
+  end
+  f.none && rel_range_done(st, rk, t, lo, hi) ? NONE : PENDING
+end
+
+"t's child of the given kind (dep_left1, dep_right1, dep_right2) under flags f: the token, NONE, or PENDING."
+function child_value(st, t, kind, f::RelFlags)
+  u = child_of(st, t, kind)
+  (u != PENDING || !f.none) && return u
+  rk = relranks(st)
+  rt = rk[2][t]
+  kind == :dep_left1 ? (rel_range_done(st, rk, t, 0, rt) ? NONE : PENDING) :
+    (rel_range_done(st, rk, t, rt, length(rk[2]) + 1) ? NONE : PENDING)
+end
+
+"""
 Every token's relations at once, from the children lists sorted by position (during a refresh!,
 shared via st.memo): a sibling is a neighbour in its head's list, a child an entry in its own.
+With flags other than RELPLAIN, from sibling_value / child_value.
 """
+function relation_table(st, f::RelFlags)
+  f == RELPLAIN && return relation_table(st)
+  m = st.memo
+  key = f.bounded ? (f.none ? :reltable_bn : :reltable_b) : :reltable_n
+  haskey(m, key) && return m[key]
+  toks = st.layers[:token]
+  n = toks.ncols
+  tab = Dict{Symbol,Vector{UInt32}}()
+  for kind in SIB_KINDS
+    tab[kind] = [sibling_value(st, t, toks[:attach, t], kind, f) for t in 1:n]
+  end
+  for kind in CHILD_KINDS
+    tab[kind] = [child_value(st, t, kind, f) for t in 1:n]
+  end
+  for kind in REL_KINDS
+    rel = tab[kind]
+    tab[Symbol(kind, :_dist)] = [relation_dist(st, t, rel[t]) for t in 1:n]
+    kind in DIR_KINDS && (tab[Symbol(kind, :_dir)] = [relation_dir(st, t, rel[t]) for t in 1:n])
+  end
+  m[key] = tab
+end
+
 function relation_table(st)
   m = st.memo
   haskey(m, :reltable) && return m[:reltable]
@@ -586,6 +708,9 @@ end
 
 relation_of(st, t, kind) = st.memo !== nothing ? relation_table(st)[kind][t] :
   kind in SIB_KINDS ? sibling_of(st, t, st.layers[:token][:attach, t], kind) : child_of(st, t, kind)
+relation_of(st, t, kind, f::RelFlags) = f == RELPLAIN ? relation_of(st, t, kind) :
+  st.memo !== nothing ? relation_table(st, f)[kind][t] :
+  kind in SIB_KINDS ? sibling_value(st, t, st.layers[:token][:attach, t], kind, f) : child_value(st, t, kind, f)
 
 """
 Word distance from t to u as `word_distance` computes it, in constant time during a refresh!: the
@@ -616,26 +741,26 @@ end
 
 "Word-distance bucket code (1: 1, 2: 2, 3: 3-5, 4: 6-10, 5: 11+) from t to u, or PENDING."
 function relation_dist(st, t, u)
-  u == PENDING && return PENDING
+  (u == PENDING || u == NONE) && return u
   d = word_distance_fast(st, t, Int(u))
   d === nothing ? PENDING : UInt32(d == 1 ? 1 : d == 2 ? 2 : d <= 5 ? 3 : d <= 10 ? 4 : 5)
 end
 
-relation_dir(st, t, u) = u == PENDING ? PENDING :
+relation_dir(st, t, u) = u == PENDING || u == NONE ? u :
   UInt32(st.layers[:token][:first_char, Int(u)] < st.layers[:token][:first_char, t] ? 1 : 2)
 
 """
 Items for the siblings t would have under candidate head c: for each kind, its upos, deprel and
 distance from t (and the direction for inner and outer siblings).
 """
-function hypothetical_sibling_items(st, t, c)
+function hypothetical_sibling_items(st, t, c, f::RelFlags = RELPLAIN)
   toks = st.layers[:token]
   items = UInt64[]
   j = 0
   for kind in SIB_KINDS
-    u = c == NONE ? PENDING : sibling_of(st, t, c, kind)
-    vals = UInt32[u == PENDING ? PENDING : toks[:upos, Int(u)], u == PENDING ? PENDING : toks[:deprel, Int(u)],
-      relation_dist(st, t, u)]
+    u = f == RELPLAIN ? (c == NONE ? PENDING : sibling_of(st, t, c, kind)) : sibling_value(st, t, c, kind, f)
+    nv = u == PENDING || u == NONE                     # (no sibling token: its upos and deprel are the same value)
+    vals = UInt32[nv ? u : toks[:upos, Int(u)], nv ? u : toks[:deprel, Int(u)], relation_dist(st, t, u)]
     kind in DIR_KINDS && push!(vals, relation_dir(st, t, u))
     for v in vals
       j += 1
@@ -646,21 +771,21 @@ function hypothetical_sibling_items(st, t, c)
 end
 
 "The relation rows (dynamic) and their context paths; the link paths among them (children only)."
-function relation_rows()
+function relation_rows(f::RelFlags = RELPLAIN)
   rels = RelDef[]
   for kind in REL_KINDS
-    push!(rels, RelDef(kind, :token, true, (st, t) -> relation_of(st, t, kind)))
+    push!(rels, RelDef(kind, :token, true, (st, t) -> relation_of(st, t, kind, f)))
   end
   # distance and direction rows hold bucket codes, not columns: they're only ever read, never followed
   for kind in REL_KINDS
     dk = Symbol(kind, :_dist)
-    push!(rels, RelDef(dk, :token, true, (st, t) -> st.memo !== nothing ? relation_table(st)[dk][t] :
-      relation_dist(st, t, relation_of(st, t, kind))))
+    push!(rels, RelDef(dk, :token, true, (st, t) -> st.memo !== nothing ? relation_table(st, f)[dk][t] :
+      relation_dist(st, t, relation_of(st, t, kind, f))))
   end
   for kind in DIR_KINDS
     rk = Symbol(kind, :_dir)
-    push!(rels, RelDef(rk, :token, true, (st, t) -> st.memo !== nothing ? relation_table(st)[rk][t] :
-      relation_dir(st, t, relation_of(st, t, kind))))
+    push!(rels, RelDef(rk, :token, true, (st, t) -> st.memo !== nothing ? relation_table(st, f)[rk][t] :
+      relation_dir(st, t, relation_of(st, t, kind, f))))
   end
   paths = FeatPath[]
   link = Int[]                       # positions (within these paths) of the children's paths
@@ -853,7 +978,8 @@ of the token's other candidates.
 """
 function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclasses::Union{WordClasses,Nothing} = nothing,
   suffixes::Vector{Int} = Int[], noise::Int = 0, rootabsent::Bool = false, projective::Bool = false,
-  relations::Bool = false, headsdist::Bool = false, pptable = nothing, pprel::Bool = false)
+  relations::Bool = false, headsdist::Bool = false, pptable = nothing, pprel::Bool = false,
+  relbounded::Bool = false, relnone::Bool = false)
   safeats = charindex === nothing ? FeatDef[] : [sa_feats(charindex, :left); sa_feats(charindex, :right)]
   sapaths = charindex === nothing ? FeatPath[] : [FeatPath(:sa_left), FeatPath(:sa_right)]
   chars = LayerSpec{CharLayer}(:char,
@@ -887,7 +1013,8 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
   snames = [Symbol(:suffix, n) for n in suffixes]
   nnames = noise > 0 ? [:noise] : Symbol[]
   extra = length(wlevels) + length(suffixes) + length(nnames)
-  relrels, relpaths, rellink = relations ? relation_rows() : (RelDef[], FeatPath[], Int[])
+  relf = RelFlags(relbounded, relnone)
+  relrels, relpaths, rellink = relations ? relation_rows(relf) : (RelDef[], FeatPath[], Int[])
   linkpaths = [LINK_PATHS; 22 .+ (1:extra); 22 + extra .+ rellink]   # classes, suffixes, noise, then relations: after the 22 below
   tokens = LayerSpec{TokenLayer}(:token,
     vcat([FeatDef(:form, (st, t) -> intern!(st.lex, :form, lowercase(tokstr(st, t)))),
@@ -910,7 +1037,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
         candidates = (st, t) -> attach_candidates(st, t; projective),
         features = (st, t, c) -> attach_features(st, t, c, linkpaths),
         items = (st, t, c) -> vcat(attach_items(st, t, c, linkpaths; rootabsent),
-          relations ? hypothetical_sibling_items(st, t, c) : UInt64[], pptable === nothing ? UInt64[] :
+          relations ? hypothetical_sibling_items(st, t, c, relf) : UInt64[], pptable === nothing ? UInt64[] :
             pp_items(pptable, st, t, c; cands = pprel ? attach_candidates(st, t; projective) : nothing)),
         allcandidates = attach_allcandidates,
         mask = attach_mask,

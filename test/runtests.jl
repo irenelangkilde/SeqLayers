@@ -267,6 +267,38 @@ end
     mc.generalize = SeqLayers.generalization_slots(specs)
     mc.ci[SeqLayers.typekey(:token, 1)] = Dt
     @test 0 <= eval_scores(evaluate_counts(docs, specs, mc, lex)).uas <= 1
+    # relation variants: bounded left/right siblings never cross the head; with everything attached
+    # (oracle) and sentences closed, a missing relation is NONE, never PENDING
+    so = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, specs, lex)
+    solve!(so, OracleModel())
+    to = so.layers[:token]
+    pos_(u) = to[:first_char, u]
+    fb, fu = SeqLayers.RelFlags(true, true), SeqLayers.RelFlags(false, true)
+    for t in 1:length(to)
+      (to[:sentence, t] == PENDING || to[:attach, t] == PENDING) && continue
+      h = to[:attach, t]
+      for kind in SeqLayers.SIB_KINDS
+        vb = SeqLayers.sibling_value(so, t, h, kind, fb)
+        @test vb != PENDING
+        vu = SeqLayers.sibling_value(so, t, h, kind, fu)
+        old = h == NONE ? PENDING : SeqLayers.sibling_of(so, t, h, kind)
+        @test vu == (old == PENDING ? NONE : old)                 # unbounded = the old relation, none made explicit
+        if kind == :left_sibling && vb != NONE && h != NONE && pos_(Int(h)) < pos_(t)
+          @test pos_(Int(vb)) > pos_(Int(h))
+        end
+        if kind == :right_sibling && vb != NONE && h != NONE && pos_(Int(h)) > pos_(t)
+          @test pos_(Int(vb)) < pos_(Int(h))
+        end
+      end
+      for kind in SeqLayers.CHILD_KINDS
+        @test SeqLayers.child_value(so, t, kind, fb) != PENDING
+      end
+    end
+    rspecs = default_specs(relations = true, relbounded = true, relnone = true)
+    @test evaluate(docs, rspecs, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
+    rdir = record_events(docs, rspecs, Lexicon(), mktempdir())
+    mr = ChainModel(rdir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1)
+    @test 0 <= eval_scores(evaluate_counts(docs, rspecs, mr, Lexicon())).uas <= 1
     # domain variables: a pruned head direction removes the candidates on that side
     sd = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, specs, lex)
     solve!(sd, OracleModel())
