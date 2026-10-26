@@ -1,0 +1,36 @@
+=== accumwin2  Mon Oct 26 18:36:08 UTC 2026
+ALL         2899    0.998   0.8403  0.7851  0.0162  1.0     
+domains: attachment candidates 8191 -> 8191 after propagation (1.0)
+score 184.9 s, run 20261026-184239 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=4 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence ctxmode=accum projective=true domains=product domeps=0 accumwin=2 note=accumwin2"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 6:32.36
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 9503756
+	Average resident set size (kbytes): 0
+=== accumwin-all  Mon Oct 26 18:42:40 UTC 2026
+ALL         2899    0.998   0.8368  0.7785  0.0162  1.0     
+domains: attachment candidates 8191 -> 8191 after propagation (1.0)
+score 136.9 s, run 20261026-184805 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=4 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence ctxmode=accum projective=true domains=product domeps=0 accumwin=1000 note=accumwin-all"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 5:26.32
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 9005576
+	Average resident set size (kbytes): 0
+=== accumwin5  Mon Oct 26 18:36:08 UTC 2026
+ALL         2899    0.998   0.8351  0.7768  0.0162  1.0     
+domains: attachment candidates 8191 -> 8191 after propagation (1.0)
+score 175.2 s, run 20261026-184229 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=4 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence ctxmode=accum projective=true domains=product domeps=0 accumwin=5 note=accumwin5"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 6:22.76
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 9762492
+	Average resident set size (kbytes): 0
+=== accumreset  Mon Oct 26 18:42:30 UTC 2026
+ALL         2899    0.997   0.8424  0.7882  0.0162  1.0     
+domains: attachment candidates 8191 -> 8191 after propagation (1.0)
+score 133.6 s, run 20261026-184751 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+	Command being timed: "julia --project=experiments experiments/ceiling.jl model=chain select=maxdev events=gold dev_sents=5 workers=4 tags=false jointmin=10000 headconf=1.0 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true noise=20 redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence ctxmode=accum projective=true domains=product domeps=0 accumreset=true note=accumreset"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 5:21.30
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 8793640
+	Average resident set size (kbytes): 0
