@@ -58,8 +58,13 @@ function ctxval(st, t, p)
 end
 function slotdesc(st, t, c, sl)
   ctx = st.layers[:token].spec.context
-  sl == 1 && return "distance"
-  sl == 2 && return "direction"
+  if sl <= 2                                       # distance (word bucket) and direction, with their values for this candidate
+    c == NONE && return sl == 1 ? "distance=root" : "direction=root"
+    d = word_dist(st, t, Int(c))
+    sl == 2 && return "direction=" * (d < 0 ? "left" : "right")
+    a = abs(d)
+    return "distance=$(a) word" * (a == 1 ? "" : "s") * " (bucket " * (a == 1 ? "1" : a == 2 ? "2" : a <= 5 ? "3-5" : a <= 10 ? "6-10" : "11+") * ")"
+  end
   lp = S.LINKPATHS[st.layers[:token].spec]
   a = (sl - 3) ÷ 2 + 1
   a > length(lp) && return "slot $sl"
@@ -130,9 +135,12 @@ function explain_attach(st, t, gold, pred)
     end
     f === nothing && (println("       (no chain)"); continue)
     println("       prior odds $(round(f.odds[1]; sigdigits = 3))")
+    println("       chain steps (each conditioned on all the steps before it; Δ = change in log odds):")
     for (j, x) in enumerate(f.members)
       sl = slotof(c, x)
-      println("       chain $j: ", rpad(sl === nothing ? "?" : slotdesc(st, t, c, sl), 40), " odds -> $(round(f.odds[j+1]; sigdigits = 3))")
+      dl = log(f.odds[j+1]) - log(f.odds[j])
+      println("       $j. ", rpad(sl === nothing ? "?" : slotdesc(st, t, c, sl), 44), " Δ ", lpad((dl >= 0 ? "+" : "") * string(round(dl; digits = 2)), 6),
+        "   odds $(round(f.odds[j]; sigdigits = 3)) -> $(round(f.odds[j+1]; sigdigits = 3))")
     end
     inc = [l for l in events[c].left if l[2]]
     println("       chain log odds $(round(log(f.odds[end]); digits = 2)); leftovers tried $(length(events[c].left)), ",

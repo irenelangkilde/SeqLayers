@@ -187,6 +187,9 @@ struct ChainOpts
   accumwin::Int                                   # accum: a leftover's context minimizes |correction| over this many further generalization steps (0: the first supported)
   accumreset::Bool                                # accum: each leftover generalizes from the most specific context (generalizations not carried forward)
   greedymin::Bool                                 # greedy: a leftover's context is the growth prefix (>= minctx) with the smallest |correction|
+  driftsigma::Float64                             # accum: a correction weighted exp(-d/sigma), d = |log o(x|context) - running estimate| (0: off)
+  drifttau::Float64                               # accum: a leftover whose context has d > tau is left out (0: off)
+  driftstep::Float64                              # accum: a correction weighted driftstep^(generalization / drop steps of its context) (0: off)
   greedysel::Bool                                 # greedy: leftovers taken in rounds, largest |correction| first (else in slot order)
 end
 
@@ -296,7 +299,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
@@ -355,7 +358,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -2078,6 +2081,17 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
           else
             y2, ok2 = leftover_update(m, e, eX, label, S.odds[end])
             ok2 && ctxsupported(m, eX, label) && (corr = log(y2) - log(S.odds[end]))
+          end
+          if corr !== nothing && (m.opts.driftsigma > 0 || m.opts.drifttau > 0 || m.opts.driftstep > 0)
+            # drift: how far this context has moved from the running estimate, and how many ladder steps it took
+            d = abs((e === nothing ? log(prior) : log(S.odds[end])) - T)
+            steps = sum(path[k][1] .- 1)
+            if m.opts.drifttau > 0 && d > m.opts.drifttau
+              corr = nothing
+            else
+              m.opts.driftsigma > 0 && (corr *= exp(-d / m.opts.driftsigma))
+              m.opts.driftstep > 0 && (corr *= m.opts.driftstep ^ steps)
+            end
           end
           if corr !== nothing
             k0 == 0 && (k0 = k)
