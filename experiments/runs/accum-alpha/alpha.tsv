@@ -1,0 +1,8 @@
+# typekey (hex)	decision	alpha  -- ceiling.jl calibrate=true on=tune, chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=odds;leftsmooth=evidence;ctxmode=accum;ctxattach=false;cidrop=0.0;accumwin=0;accumreset=false;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective]
+4cd000c7b6833d03	attach	0.34
+1b39b1153cf665d	deprel	0.34
+ec1e185c8d75729a	gap	0.24
+797310dd0831b85a	head_dir	0.4
+ef0ca4d861babb53	head_dist	0.4
+6a942260135aa557	head_upos	0.4
+f97c6c41ee7fc31f	head_xpos	0.42

@@ -1,1 +1,34 @@
 === calibrate  Mon Oct 26 13:06:39 MDT 2026
+calibration: weight of the leftovers' corrections per decision type (fit on tune docs)
+decision          n  alpha     ll(1)  ll(alpha)  acc(1)  acc(a)
+attach         7469   0.34   -5327.4    -4508.1  0.8305  0.8249
+    alpha=1     [0.0,0.5): n 312 conf 0.37 acc 0.519; [0.5,0.8): n 957 conf 0.658 acc 0.552; [0.8,0.9): n 511 conf 0.855 acc 0.642; [0.9,0.95): n 455 conf 0.927 acc 0.734; [0.95,0.99): n 946 conf 0.975 acc 0.791; [0.99,1.0): n 4288 conf 0.999 acc 0.957
+    alpha=0.34  [0.0,0.5): n 386 conf 0.386 acc 0.451; [0.5,0.8): n 1240 conf 0.657 acc 0.536; [0.8,0.9): n 609 conf 0.856 acc 0.716; [0.9,0.95): n 560 conf 0.928 acc 0.709; [0.95,0.99): n 1053 conf 0.975 acc 0.876; [0.99,1.0): n 3621 conf 0.998 acc 0.985
+deprel         8289   0.34   -3024.2    -2536.4  0.9171  0.9225
+    alpha=1     [0.0,0.5): n 143 conf 0.417 acc 0.294; [0.5,0.8): n 485 conf 0.659 acc 0.493; [0.8,0.9): n 255 conf 0.853 acc 0.643; [0.9,0.95): n 259 conf 0.927 acc 0.737; [0.95,0.99): n 620 conf 0.976 acc 0.861; [0.99,1.0): n 6527 conf 0.999 acc 0.985
+    alpha=0.34  [0.0,0.5): n 196 conf 0.414 acc 0.342; [0.5,0.8): n 555 conf 0.647 acc 0.517; [0.8,0.9): n 316 conf 0.854 acc 0.696; [0.9,0.95): n 311 conf 0.926 acc 0.83; [0.95,0.99): n 754 conf 0.976 acc 0.919; [0.99,1.0): n 6157 conf 0.999 acc 0.994
+gap           27170   0.24    -497.0     -290.3  0.9962   0.997
+    alpha=1     [0.5,0.8): n 44 conf 0.689 acc 0.409; [0.8,0.9): n 36 conf 0.843 acc 0.722; [0.9,0.95): n 35 conf 0.931 acc 0.657; [0.95,0.99): n 85 conf 0.975 acc 0.835; [0.99,1.0): n 26970 conf 1.0 acc 0.999
+    alpha=0.24  [0.5,0.8): n 61 conf 0.671 acc 0.508; [0.8,0.9): n 26 conf 0.85 acc 0.538; [0.9,0.95): n 33 conf 0.931 acc 0.818; [0.95,0.99): n 96 conf 0.976 acc 0.844; [0.99,1.0): n 26954 conf 1.0 acc 0.999
+head_dir       8289    0.4   -3131.5    -2896.1  0.8906  0.8903
+    alpha=1     [0.0,0.5): n 45 conf 0.462 acc 0.578; [0.5,0.8): n 767 conf 0.668 acc 0.589; [0.8,0.9): n 464 conf 0.856 acc 0.655; [0.9,0.95): n 449 conf 0.929 acc 0.739; [0.95,0.99): n 963 conf 0.976 acc 0.829; [0.99,1.0): n 5601 conf 0.999 acc 0.977
+    alpha=0.4   [0.0,0.5): n 44 conf 0.472 acc 0.364; [0.5,0.8): n 848 conf 0.662 acc 0.572; [0.8,0.9): n 469 conf 0.857 acc 0.699; [0.9,0.95): n 448 conf 0.928 acc 0.757; [0.95,0.99): n 1079 conf 0.976 acc 0.849; [0.99,1.0): n 5401 conf 0.999 acc 0.981
+head_dist      8289    0.4   -8968.3    -8597.4  0.6464  0.6472
+    alpha=1     [0.0,0.5): n 1004 conf 0.422 acc 0.363; [0.5,0.8): n 2566 conf 0.655 acc 0.477; [0.8,0.9): n 1080 conf 0.853 acc 0.602; [0.9,0.95): n 730 conf 0.925 acc 0.712; [0.95,0.99): n 1095 conf 0.973 acc 0.801; [0.99,1.0): n 1814 conf 0.998 acc 0.95
+    alpha=0.4   [0.0,0.5): n 1093 conf 0.418 acc 0.349; [0.5,0.8): n 2736 conf 0.653 acc 0.49; [0.8,0.9): n 1089 conf 0.853 acc 0.656; [0.9,0.95): n 718 conf 0.926 acc 0.703; [0.95,0.99): n 1018 conf 0.974 acc 0.828; [0.99,1.0): n 1635 conf 0.997 acc 0.967
+head_upos      8289    0.4   -7750.5    -7380.7  0.7315  0.7335
+    alpha=1     [0.0,0.5): n 572 conf 0.417 acc 0.357; [0.5,0.8): n 1905 conf 0.657 acc 0.52; [0.8,0.9): n 1007 conf 0.854 acc 0.623; [0.9,0.95): n 806 conf 0.926 acc 0.707; [0.95,0.99): n 1328 conf 0.974 acc 0.813; [0.99,1.0): n 2671 conf 0.998 acc 0.97
+    alpha=0.4   [0.0,0.5): n 651 conf 0.423 acc 0.378; [0.5,0.8): n 2041 conf 0.658 acc 0.529; [0.8,0.9): n 1028 conf 0.853 acc 0.655; [0.9,0.95): n 813 conf 0.927 acc 0.702; [0.95,0.99): n 1311 conf 0.974 acc 0.85; [0.99,1.0): n 2445 conf 0.998 acc 0.98
+head_xpos      8289   0.42  -12317.3   -11901.7  0.5845  0.5881
+    alpha=1     [0.0,0.5): n 2418 conf 0.338 acc 0.215; [0.5,0.8): n 1713 conf 0.644 acc 0.45; [0.8,0.9): n 724 conf 0.855 acc 0.648; [0.9,0.95): n 570 conf 0.927 acc 0.719; [0.95,0.99): n 978 conf 0.974 acc 0.864; [0.99,1.0): n 1886 conf 0.997 acc 0.97
+    alpha=0.42  [0.0,0.5): n 2654 conf 0.336 acc 0.228; [0.5,0.8): n 1715 conf 0.64 acc 0.492; [0.8,0.9): n 719 conf 0.854 acc 0.676; [0.9,0.95): n 553 conf 0.929 acc 0.788; [0.95,0.99): n 957 conf 0.974 acc 0.886; [0.99,1.0): n 1691 conf 0.997 acc 0.979
+alpha table -> /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events/alpha.tsv
+=== leftalpha  Mon Oct 26 13:57:17 MDT 2026
+CHILDES     324     1.0     0.8796  0.7994  0.0093  1.0     
+ESLSpok     502     0.9983  0.8466  0.7968  0.004   1.0     
+EWT         86      0.9899  0.8605  0.7907  0.0     1.0     
+GUM         963     1.0     0.8235  0.7788  0.0322  1.0     
+GUMReddit   1024    0.9987  0.8398  0.791   0.0107  1.0     
+ALL         2899    0.9989  0.8406  0.7889  0.0162  1.0     
+score 488.3 s, run 20261026-140801 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Mon Oct 26 14:08:02 MDT 2026
