@@ -1,0 +1,41 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 26.5 s): 14 of 32 slots always, 283 gate values
+[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (26.7 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events
+3 docs, 912 words, 736.2 s; UAS 0.7283; Dict(:backtracked => 401, :gaveup => 6, :jumps => 364, :jumped => 6003, :reordered => 0, :segments => 9, :failures => 407, :choicepoints => 6362)
+
+407 failures
+
+main cause (the filter excluding most possible heads):
+  head_upos     360  (88.5%)
+  cycle         40  (9.8%)
+  head_dir      6  (1.5%)
+  head_dist     1  (0.2%)
+
+possible heads excluded, by filter (all failures):
+  head_upos     10326
+  projective    1026
+  head_dir      630
+  cycle         537
+  head_dist     10
+
+the failing token's committed head properties:
+  head_dir  committed in 404 failures; at a choice point in 6, choice points back: median 39, max 41
+  head_upos committed in 386 failures; at a choice point in 18, choice points back: median 32, max 32
+  head_dist committed in 8 failures; at a choice point in 0
+  head_xpos committed in 2 failures; at a choice point in 0
+  no head property committed: 1
+
+examples:
+  '.': 30 possible heads; excluded by Dict(:head_dir => 2, :head_upos => 28); head properties Dict(:head_dir => "left", :head_upos => "VERB"); back Dict{Symbol, Any}(:head_dir => nothing, :head_upos => nothing); stack depth 35
+  '.': 30 possible heads; excluded by Dict(:head_dir => 2, :head_upos => 28); head properties Dict(:head_dir => "left", :head_upos => "VERB"); back Dict{Symbol, Any}(:head_dir => nothing, :head_upos => nothing); stack depth 38
+  '.': 30 possible heads; excluded by Dict(:head_dir => 2, :head_upos => 28); head properties Dict(:head_dir => "left", :head_upos => "VERB"); back Dict{Symbol, Any}(:head_dir => nothing, :head_upos => nothing); stack depth 39
+  '.': 30 possible heads; excluded by Dict(:head_dir => 2, :head_upos => 28); head properties Dict(:head_dir => "left", :head_upos => "VERB"); back Dict{Symbol, Any}(:head_dir => nothing, :head_upos => nothing); stack depth 35
+  '.': 30 possible heads; excluded by Dict(:head_dir => 2, :head_upos => 28); head properties Dict(:head_dir => "left", :head_upos => "VERB"); back Dict{Symbol, Any}(:head_dir => nothing, :head_upos => nothing); stack depth 36
+  '.': 30 possible heads; excluded by Dict(:head_dir => 2, :head_upos => 28); head properties Dict(:head_dir => "left", :head_upos => "VERB"); back Dict{Symbol, Any}(:head_dir => nothing, :head_upos => nothing); stack depth 37
+  '.': 36 possible heads; excluded by Dict(:head_upos => 30, :projective => 6); head properties Dict(:head_dir => "left", :head_upos => "VERB"); back Dict{Symbol, Any}(:head_dir => nothing, :head_upos => nothing); stack depth 49
+  '.': 36 possible heads; excluded by Dict(:head_upos => 30, :projective => 6); head properties Dict(:head_dir => "left", :head_upos => "VERB"); back Dict{Symbol, Any}(:head_dir => nothing, :head_upos => nothing); stack depth 49
+  '.': 36 possible heads; excluded by Dict(:head_upos => 29, :projective => 7); head properties Dict(:head_dir => "left", :head_upos => "VERB"); back Dict{Symbol, Any}(:head_dir => nothing, :head_upos => nothing); stack depth 52
+  '.': 36 possible heads; excluded by Dict(:head_upos => 30, :projective => 6); head properties Dict(:head_dir => "left", :head_upos => "VERB"); back Dict{Symbol, Any}(:head_dir => nothing, :head_upos => nothing); stack depth 52
