@@ -292,30 +292,30 @@ function word_distance(st, t, h)
 end
 
 "Does head candidate h (NONE: root) agree with t's committed head-property decisions?  Undecided values agree."
-function head_consistent(st, t, h)
+head_consistent(st, t, h) = all(name -> head_consistent_one(st, t, h, name), headnames(st.layers[:token]))
+
+"Does head candidate h agree with t's committed head property `name` (pending: yes)?"
+function head_consistent_one(st, t, h, name)
   toks = st.layers[:token]
-  for name in headnames(toks)
-    v = toks[name, t]
-    v == PENDING && continue
-    isrootlabel(name, v) == (h == NONE) || return false
-    h == NONE && continue
-    if name == :head_sdist                          # direction and distance in one label
-      dirc = toks[:first_char, h] < toks[:first_char, t] ? "L" : "R"
-      lab = ALLHEADSETS.head_sdist[v]
-      startswith(lab, dirc) || return false
-      d = word_distance(st, t, h)
-      d === nothing || lab == dirc * distlabel(d) || return false
-    elseif name == :head_upos || name == :head_xpos
-      tag = toks[name == :head_upos ? :upos : :xpos, h]
-      tag == PENDING || HEADSETS[name][v] == TAGSETS[name == :head_upos ? :upos : :xpos][tag] || return false
-    elseif name == :head_dir
-      HEADSETS.head_dir[v] == (toks[:first_char, h] < toks[:first_char, t] ? "left" : "right") || return false
-    else
-      d = word_distance(st, t, h)
-      d === nothing || HEADSETS.head_dist[v] == distlabel(d) || return false
-    end
+  v = toks[name, t]
+  v == PENDING && return true
+  isrootlabel(name, v) == (h == NONE) || return false
+  h == NONE && return true
+  if name == :head_sdist                            # direction and distance in one label
+    dirc = toks[:first_char, h] < toks[:first_char, t] ? "L" : "R"
+    lab = ALLHEADSETS.head_sdist[v]
+    startswith(lab, dirc) || return false
+    d = word_distance(st, t, h)
+    d === nothing || lab == dirc * distlabel(d)
+  elseif name == :head_upos || name == :head_xpos
+    tag = toks[name == :head_upos ? :upos : :xpos, h]
+    tag == PENDING || HEADSETS[name][v] == TAGSETS[name == :head_upos ? :upos : :xpos][tag]
+  elseif name == :head_dir
+    HEADSETS.head_dir[v] == (toks[:first_char, h] < toks[:first_char, t] ? "left" : "right")
+  else
+    d = word_distance(st, t, h)
+    d === nothing || HEADSETS.head_dist[v] == distlabel(d)
   end
-  true
 end
 
 "Could another attachment candidate for t still appear?  Not once its sentence is closed, or every char in reach is tokenized."

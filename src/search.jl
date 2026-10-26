@@ -188,14 +188,15 @@ function attach_failed(st::State, key::AgendaKey)
   d.ready(st, t) && isempty(d.candidates(st, t)) && !more_heads_possible(st, t)
 end
 
-"activate!, but false (and nothing done) if a new attachment decision has already failed."
+"activate!, but the failed key (and nothing done) if a new attachment decision has already failed; else nothing."
 function activate_strict!(st::State)
-  any(key -> attach_failed(st, key), st.fresh) && return false
+  k = findfirst(key -> attach_failed(st, key), st.fresh)
+  k === nothing || return st.fresh[k]
   activate!(st)
-  true
+  nothing
 end
 
-"rescore!, but false as soon as a rescored attachment decision has failed."
+"rescore!, but the failed key as soon as a rescored attachment decision has failed; else nothing."
 function rescore_strict!(st::State, model)
   for key in collect(keys(st.agenda))
     reads = get(st.reads, key, nothing)
@@ -203,12 +204,56 @@ function rescore_strict!(st::State, model)
       continue
     end
     choice, margin = tracked_decide(model, st, key)
-    margin == -Inf && attach_failed(st, key) && return false
+    margin == -Inf && attach_failed(st, key) && return key
     st.agenda[key] = margin
     st.best[key] = choice
   end
-  true
+  nothing
 end
+
+"""
+Failure diagnosis (DFS_DIAG[] = true): why token t's attachment has no candidate.  Every possible head
+(same sentence, plus the root if the sentence has none yet) is put down to the first filter that excludes
+it: :distance, :cycle, :sentence_end (an E gap between), a committed head property (:head_dir etc.), or
+:projective (crosses a committed arc).  Also: t's committed head properties, and for each, how many choice
+points back it was chosen (nothing: not a choice point, e.g. forced or inferred).
+"""
+function diagnose(st::State, key::AgendaKey, stack)
+  toks = st.layers[:token]
+  t = key[3]
+  s = toks[:sentence, t]
+  hasroot = s != PENDING && any(u -> u != t && toks[:sentence, u] == s && toks[:attach, u] == NONE, 1:length(toks))
+  heads = UInt32[u for u in 1:length(toks) if u != t && toks[:sentence, u] == s]
+  hasroot || pushfirst!(heads, NONE)
+  ft = Int(toks[:first_char, t])
+  why = Dict{Symbol,Int}()
+  names = headnames(toks)
+  for h in heads
+    r = if h != NONE && abs(Int(toks[:first_char, h]) - ft) > MAX_LINK_CHARS
+      :distance
+    elseif h != NONE && creates_cycle(st, t, Int(h))
+      :cycle
+    elseif h != NONE && crosses_E(st, t, Int(h))
+      :sentence_end
+    else
+      bad = findfirst(n -> (v = toks[n, t]; v != PENDING && !head_consistent_one(st, t, h, n)), names)
+      bad !== nothing ? names[bad] : crosses_arc(st, t, h) ? :projective : :none
+    end
+    why[r] = get(why, r, 0) + 1
+  end
+  props = Dict(n => toks[n, t] for n in names if toks[n, t] != PENDING)
+  back = Dict{Symbol,Any}()
+  for (n, v) in props
+    k = findfirst(d -> d.name == n, toks.spec.decisions)
+    j = findlast(cp -> cp.key == (:token, k, t), stack)
+    back[n] = j === nothing ? nothing : length(stack) - j
+  end
+  (token = tokstr(st, t), nheads = length(heads), why = why, props = Dict(n => ALLHEADSETS[n][v] for (n, v) in props),
+    back = back, depth = length(stack))
+end
+
+const DFS_DIAG = Ref(false)
+const DFS_LOG = Any[]
 
 "Solve `st` by depth-first search with failures (see above)."
 function solve_dfs!(st::State, model, opts::DFS)
@@ -220,10 +265,10 @@ function solve_dfs!(st::State, model, opts::DFS)
   giveup = false
   try
     while true
-      ok = activate_strict!(st)
-      ok && isempty(st.agenda) && break
-      ok = ok && rescore_strict!(st, model)
-      if ok
+      fk = activate_strict!(st)
+      fk === nothing && isempty(st.agenda) && break
+      fk === nothing && (fk = rescore_strict!(st, model))
+      if fk === nothing
         key, margin = first(st.agenda)
         margin == -Inf && break
         choice = st.best[key]
@@ -243,6 +288,7 @@ function solve_dfs!(st::State, model, opts::DFS)
         continue
       end
       # a failure: back up to the latest choice point with a value left
+      DFS_DIAG[] && length(DFS_LOG) < 100_000 && push!(DFS_LOG, diagnose(st, fk, stack))
       failures += 1
       DFS_STATS[:failures] += 1
       resumed = false
