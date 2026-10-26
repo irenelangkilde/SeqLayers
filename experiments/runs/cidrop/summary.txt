@@ -1,10 +1,19 @@
-=== ci table  Sun Oct 25 18:37:52 MDT 2026
-   @ ~/Projects/crystallization/juliaNLP/SeqLayers/experiments/ci_table.jl:11
- [4] include(mod::Module, _path::String)
-   @ Base ./Base.jl:309
- [5] exec_options(opts::Base.JLOptions)
-   @ Base ./client.jl:344
- [6] _start()
-   @ Base ./client.jl:577
-in expression starting at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ci_table.jl:11
-=== cidrop 0.05  Sun Oct 25 18:37:54 MDT 2026
+=== ci table  Sun Oct 25 18:38:19 MDT 2026
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events
+attach: 32 slots, 4.7 s; D quantiles 10% 0.013, 25% 0.054, 50% 0.204, 75% 0.562, 90% 1.137
+  pairs with D < 0.05: 235 of 992
+  pairs with D < 0.1: 362 of 992
+  pairs with D < 0.25: 540 of 992
+→ /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/ci_table.jls
+=== cidrop 0.05  Sun Oct 25 18:41:11 MDT 2026
+ALL         2899    0.9977  0.7896  0.744   0.0041  1.0     
+score 1130.6 s, run 20261025-190257 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== cidrop 0.1  Sun Oct 25 19:02:58 MDT 2026
+ALL         2899    0.9977  0.7899  0.7434  0.0041  1.0     
+score 521.4 s, run 20261025-191406 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== cidrop 0.25  Sun Oct 25 19:14:07 MDT 2026
+ALL         2899    0.9977  0.7848  0.742   0.0041  1.0     
+score 574.9 s, run 20261025-192554 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Sun Oct 25 19:25:55 MDT 2026

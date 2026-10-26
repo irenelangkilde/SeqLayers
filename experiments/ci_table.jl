@@ -8,6 +8,7 @@
 include(joinpath(@__DIR__, "dev_eval.jl"))
 const S = SeqLayers
 DEFAULTS["sample"] = 200_000
+DEFAULTS["domains"] = "off"; DEFAULTS["domeps"] = 1e-3           # (ceiling.jl options: accepted, unused here)
 cfg = parse_cfg(["model=chain"; ARGS])
 s = setup(cfg)
 eventsdir, opts = s.recipe

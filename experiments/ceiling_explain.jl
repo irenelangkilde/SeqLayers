@@ -10,6 +10,8 @@
 # best others, up to `explaintop` in all): the chain (feature = value, odds after each step), the
 # included leftovers with their contexts and corrections, the chain + leftover log odds, the
 # attachment probability, and with domains=product the head-property terms of the product score.
+# chainonly=true: only errors the chains alone already make (scoring every candidate by its chain log odds,
+# without leftovers -- and with domains=product, times the head-property terms -- gives the same wrong head).
 
 include(joinpath(@__DIR__, "dev_eval.jl"))
 include(joinpath(@__DIR__, "ceiling_lib.jl"))
@@ -21,6 +23,7 @@ DEFAULTS["nsent"] = 2
 DEFAULTS["maxerr"] = 2
 DEFAULTS["maxlen"] = 16
 DEFAULTS["explaintop"] = 2
+DEFAULTS["chainonly"] = "false"
 DEFAULTS["headconf"] = 1.0
 DEFAULTS["domains"] = "off"
 DEFAULTS["domeps"] = 1e-3
@@ -144,6 +147,44 @@ function explain_attach(st, t, gold, pred)
   end
 end
 
+"""
+The head chosen for t from the chains alone (no leftover corrections): softmax over the candidates'
+chain log odds, with domains=product plus the head properties' log probabilities of each candidate's
+values.  t's attachment and head properties must be hidden.
+"""
+function chain_only_choice(st, t)
+  toks = st.layers[:token]
+  decs = toks.spec.decisions
+  cands = decs[1].candidates(st, t)
+  lo = Dict{UInt32,Float64}()
+  S.CHAIN_TRACE[] = (ev, data) -> ev == :final && (lo[data.cand] = log(data.odds[end]))
+  empty!(m.memo)
+  try
+    decide(m, st, (:token, 1, t))
+  finally
+    S.CHAIN_TRACE[] = nothing
+  end
+  isempty(lo) && return PENDING
+  mx = maximum(values(lo))
+  lz = mx + log(sum(exp(v - mx) for v in values(lo)))
+  sc = Dict(c => get(lo, c, -Inf) - lz for c in cands)
+  if domains == :product
+    for (k, d) in enumerate(decs)
+      haskey(S.ALLHEADSETS, d.name) || continue
+      dist = S.commit_dist(m, st, (:token, k, t))
+      dist === nothing && continue
+      vals, lps = dist
+      for c in cands
+        v = S.head_value(st, t, c, d.name)
+        v == PENDING && continue
+        j = findfirst(==(v), vals)
+        sc[c] += j === nothing ? log(1e-12) : lps[j]
+      end
+    end
+  end
+  argmax(sc)
+end
+
 mutable struct ExplainRec
   r0::CeilingRecorder
   rgold::CeilingRecorder                           # the same with all head properties given (gold): the head-property ceiling
@@ -163,6 +204,21 @@ function segment_done!(r::ExplainRec, st)
     1 <= length(wrong) <= cfg["maxerr"] || continue
     # only errors the head-property ceiling (gold head properties) gets right
     all(((t, g, p),) -> first(pipeline_attach!(r.rgold, st, t, g)) == g, wrong) || continue
+    if cfg["chainonly"] == "true"                     # only errors the chains alone already make
+      chainsame = all(wrong) do (t, g, p)
+        names = [:attach; S.headnames(toks)]
+        old = [toks[n, t] for n in names]
+        foreach(n -> (toks[n, t] = PENDING), names)
+        S.refresh!(st)
+        try
+          chain_only_choice(st, t) == p
+        finally
+          foreach(((n, v),) -> (toks[n, t] = v), zip(names, old))
+          S.refresh!(st)
+        end
+      end
+      chainsame || continue
+    end
     r.shown += 1
     println("\n================ \"", join([S.tokstr(st, t) for t in ts], " "), "\"")
     for (t, g, p) in res
