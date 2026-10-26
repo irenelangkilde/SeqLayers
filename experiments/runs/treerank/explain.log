@@ -1,0 +1,202 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 27.1 s): 14 of 33 slots always, 329 gate values
+[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+[ Info: ChainModel: joint tables for 794 frequent items, 144112 pairs (22.2 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-trank/events
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=odds;leftsmooth=evidence;ctxmode=accum;ctxattach=false;cidrop=0.0;accumwin=0;accumreset=false;driftsigma=0.0;drifttau=0.0;driftstep=0.0;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective;treerank]  [domains=product domeps=0.0]
+
+================ "From the AP comes this story :"
+  From          gold -> AP          ok
+  the           gold -> AP          ok
+  AP            gold -> comes       ok
+  comes         gold -> ROOT        ok
+  this          gold -> story       ok
+  story         gold -> comes       ok
+  :             gold -> comes       WRONG: predicted -> story
+
+  ---- ':': gold head 'comes', predicted 'story'
+    head properties predicted (with the attachment and all of them hidden):
+      head_upos PROPN 0.519, VERB 0.343, NOUN 0.101   (gold head: VERB, predicted head: NOUN)
+      head_xpos NNP 0.54, NN 0.27, VBP 0.062   (gold head: VBZ, predicted head: NN)
+      head_dir  right 0.628, left 0.372, root 0.0   (gold head: left, predicted head: left)
+      head_dist 1 0.82, 6-10 0.112, 3-5 0.055   (gold head: 3-5, predicted head: 1)
+    candidates: 2   (product score = log P(attach) + Σ log P(head property value))
+
+    -- GOLD -> comes:  P(attach) 0.2559, product score -11.17
+       head-property terms: head_xpos=VBZ 0.008, head_dist=3-5 0.055, head_dir=left 0.372, head_upos=VERB 0.343
+       prior odds 0.0146
+       chain steps (each conditioned on all the steps before it; Δ = change in log odds):
+       1. cand.form=comes                              Δ  +1.68   odds 0.0146 -> 0.0781
+       2. distance=3 words (bucket 3-5)                Δ  +2.14   odds 0.0781 -> 0.667
+       chain log odds -0.41; leftovers tried 15, included 15, total correction -2.08; final log odds -2.49
+         + dep.right_neighbor.upos=PROPN         -1.692   context: cand.upos=VERB, distance=3 words (bucket 3-5), cand.right_neighbor.upos=DET
+         + cand.right_neighbor.form=this          1.506   context: cand.xpos=VBZ, distance=3 words (bucket 3-5), dep.basepos=0
+         + dep.person=0                          -1.266   context: distance=3 words (bucket 3-5), dep.right_neighbor.xpos=NNP, cand.treerank=2, cand.left_neighbor.upos=PROPN
+         + dep.basepos=0                         -1.231   context: cand.xpos=VBZ, distance=3 words (bucket 3-5)
+         + dep.len=1                              1.147   context: cand.upos=VERB, distance=3 words (bucket 3-5), cand.right_neighbor.upos=DET, dep.right_neighbor.upos=PROPN
+         + cand.treerank=2                        1.122   context: distance=3 words (bucket 3-5), dep.right_neighbor.xpos=NNP
+         + dep.form=:                            -0.919   context: cand.basepos=V, distance=3 words (bucket 3-5)
+         + cand.left_neighbor.upos=PROPN          0.835   context: distance=3 words (bucket 3-5), dep.right_neighbor.xpos=NNP, cand.treerank=2
+         + cand.right_neighbor.xpos=DT           -0.722   context: dep.right_neighbor.upos=PROPN, cand.treerank=2, cand.left_neighbor.upos=PROPN
+         + dep.right_neighbor.form=president     -0.632   context: distance=3 words (bucket 3-5)
+         + dep.xpos=:                            -0.574   context: dep.right_neighbor.xpos=NNP, cand.treerank=2, cand.left_neighbor.upos=PROPN
+         + dep.left_neighbor.xpos=NN              0.341   context: dep.right_neighbor.upos=PROPN, cand.treerank=2, cand.left_neighbor.upos=PROPN, cand.right_neighbor.xpos=DT
+         (3 more leftovers with corrections under 0.005)
+
+    -- PREDICTED -> story:  P(attach) 0.6992, product score -5.15
+       head-property terms: head_xpos=NN 0.27, head_dist=1 0.82, head_dir=left 0.372, head_upos=NOUN 0.101
+       prior odds 0.0146
+       chain steps (each conditioned on all the steps before it; Δ = change in log odds):
+       1. distance=1 word (bucket 1)                   Δ  +1.81   odds 0.0146 -> 0.0886
+       2. dep.upos=PUNCT                               Δ  +0.74   odds 0.0886 -> 0.186
+       3. cand.left_neighbor.form=this                 Δ  +0.78   odds 0.186 -> 0.406
+       4. cand.len=5                                   Δ  +0.61   odds 0.406 -> 0.75
+       chain log odds -0.29; leftovers tried 8, included 8, total correction -1.2; final log odds -1.48
+         + dep.form=:                             1.556   context: dep.right_neighbor.xpos=NNP, cand.right_neighbor.form=:
+         + dep.right_neighbor.xpos=NNP           -1.421   context: distance=1 word (bucket 1), dep.upos=PUNCT, dep.xpos=:
+         + cand.right_neighbor.xpos=:            -0.707   context: distance=1 word (bucket 1), dep.upos=PUNCT, cand.left_neighbor.upos=DET
+         + dep.xpos=:                            -0.574   context: distance=1 word (bucket 1), dep.upos=PUNCT, cand.left_neighbor.upos=DET
+         + cand.right_neighbor.form=:             0.443   context: dep.right_neighbor.xpos=NNP
+         + dep.right_neighbor.upos=PROPN         -0.377   context: distance=1 word (bucket 1), dep.upos=PUNCT, cand.left_neighbor.upos=DET
+         + cand.form=story                       -0.117   context: cand.right_neighbor.upos=PUNCT, dep.upos=PUNCT
+         (1 more leftovers with corrections under 0.005)
+
+================ "How about right here ?"
+  How           gold -> ROOT        ok
+  about         gold -> here        WRONG: predicted -> right
+  right         gold -> here        ok
+  here          gold -> How         ok
+  ?             gold -> How         ok
+
+  ---- 'about': gold head 'here', predicted 'right'
+    head properties predicted (with the attachment and all of them hidden):
+      head_upos ADV 0.824, VERB 0.071, PRON 0.033   (gold head: ADV, predicted head: ADV)
+      head_xpos NN 0.38, RB 0.219, NNS 0.185   (gold head: RB, predicted head: RB)
+      head_dir  right 1.0, left 0.0, root 0.0   (gold head: right, predicted head: right)
+      head_dist 1 0.956, 3-5 0.04, 2 0.004   (gold head: 2, predicted head: 1)
+    candidates: 3   (product score = log P(attach) + Σ log P(head property value))
+
+    -- GOLD -> here:  P(attach) 0.2983, product score -8.4
+       head-property terms: head_xpos=RB 0.219, head_dist=2 0.004, head_dir=right 1.0, head_upos=ADV 0.824
+       prior odds 0.0146
+       chain steps (each conditioned on all the steps before it; Δ = change in log odds):
+       1. distance=2 words (bucket 2)                  Δ  +1.78   odds 0.0146 -> 0.0863
+       2. cand.xpos=RB                                 Δ  -2.25   odds 0.0863 -> 0.00906
+       3. cand.left_neighbor.form=right                Δ   +2.4   odds 0.00906 -> 0.1
+       4. cand.form=here                               Δ  +1.05   odds 0.1 -> 0.286
+       5. dep.right_neighbor.upos=ADV                  Δ  +0.15   odds 0.286 -> 0.333
+       chain log odds -1.1; leftovers tried 10, included 10, total correction 2.07; final log odds 0.98
+         + dep.xpos=IN                            1.322   context: distance=2 words (bucket 2), cand.right_neighbor.form=?
+         + cand.right_neighbor.form=?            -1.066   context: distance=2 words (bucket 2), cand.left_neighbor.xpos=RB
+         + dep.right_neighbor.form=right          1.031   context: distance=2 words (bucket 2), cand.left_neighbor.xpos=RB, cand.upos=ADV
+         + dep.form=about                         1.027   context: distance=2 words (bucket 2), cand.right_neighbor.upos=PUNCT
+         + dep.len=5                             -0.148   context: distance=2 words (bucket 2), cand.right_neighbor.form=?, dep.xpos=IN
+         + dep.left_neighbor.upos=ADV            -0.143   context: distance=2 words (bucket 2), cand.right_neighbor.upos=PUNCT, dep.xpos=IN, dep.upos=ADP
+         + dep.upos=ADP                           0.124   context: distance=2 words (bucket 2), cand.right_neighbor.form=?, dep.xpos=IN
+         + dep.left_neighbor.xpos=WRB            -0.124   context: distance=2 words (bucket 2), cand.right_neighbor.upos=PUNCT
+         + dep.basepos=0                          0.051   context: distance=2 words (bucket 2), cand.right_neighbor.upos=PUNCT, dep.form=about
+         (1 more leftovers with corrections under 0.005)
+
+    -- PREDICTED -> right:  P(attach) 0.6894, product score -2.13
+       head-property terms: head_xpos=RB 0.219, head_dist=1 0.956, head_dir=right 1.0, head_upos=ADV 0.824
+       prior odds 0.0146
+       chain steps (each conditioned on all the steps before it; Δ = change in log odds):
+       1. distance=1 word (bucket 1)                   Δ  +3.06   odds 0.0146 -> 0.31
+       2. cand.xpos=RB                                 Δ  -1.66   odds 0.31 -> 0.0592
+       3. dep.form=about                               Δ  +2.83   odds 0.0592 -> 1.0
+       chain log odds 0.0; leftovers tried 12, included 12, total correction 1.81; final log odds 1.81
+         + cand.right_neighbor.upos=ADV           1.942   context: distance=1 word (bucket 1), dep.upos=ADP, dep.left_neighbor.upos=ADV
+         + cand.upos=ADV                         -1.335   context: distance=1 word (bucket 1), dep.xpos=IN
+         + cand.form=right                       -1.086   context: distance=1 word (bucket 1), cand.right_neighbor.form=here
+         + dep.left_neighbor.upos=ADV             1.071   context: distance=1 word (bucket 1), dep.form=about
+         + cand.left_neighbor.upos=ADP            0.896   context: distance=1 word (bucket 1), dep.xpos=IN, cand.upos=ADV
+         + cand.right_neighbor.form=here            0.8   context: distance=1 word (bucket 1), dep.basepos=0
+         + dep.right_neighbor.upos=ADV           -0.744   context: distance=1 word (bucket 1)
+         + cand.right_neighbor.xpos=RB           -0.525   context: distance=1 word (bucket 1), dep.right_neighbor.upos=ADV
+         + dep.left_neighbor.xpos=WRB             0.422   context: distance=1 word (bucket 1)
+         + cand.len=5                             0.368   context: distance=1 word (bucket 1), dep.right_neighbor.upos=ADV, cand.right_neighbor.xpos=RB
+         + cand.left_neighbor.xpos=IN             0.167   context: distance=1 word (bucket 1), cand.right_neighbor.upos=ADV
+         + dep.right_neighbor.form=right         -0.163   context: distance=1 word (bucket 1), dep.right_neighbor.upos=ADV, cand.right_neighbor.xpos=RB, cand.len=5
+
+================ "Adam a home ."
+  Adam          gold -> ROOT        ok
+  a             gold -> home        ok
+  home          gold -> Adam        ok
+  .             gold -> Adam        WRONG: predicted -> home
+
+  ---- '.': gold head 'Adam', predicted 'home'
+    head properties predicted (with the attachment and all of them hidden):
+      head_upos VERB 0.938, NOUN 0.044, ADJ 0.007   (gold head: PROPN, predicted head: NOUN)
+      head_xpos NN 0.264, VBP 0.236, VBD 0.169   (gold head: NNP, predicted head: NN)
+      head_dir  left 1.0, root 0.0, right 0.0   (gold head: left, predicted head: left)
+      head_dist 3-5 0.504, 11+ 0.215, 6-10 0.134   (gold head: 3-5, predicted head: 1)
+    candidates: 2   (product score = log P(attach) + Σ log P(head property value))
+
+    -- GOLD -> Adam:  P(attach) 0.0841, product score -13.64
+       head-property terms: head_xpos=NNP 0.011, head_dist=3-5 0.504, head_dir=left 1.0, head_upos=PROPN 0.003
+       prior odds 0.0146
+       chain steps (each conditioned on all the steps before it; Δ = change in log odds):
+       1. cand.form=adam                               Δ  -1.73   odds 0.0146 -> 0.00258
+       2. direction=left                               Δ  -0.37   odds 0.00258 -> 0.00179
+       chain log odds -6.33; leftovers tried 6, included 6, total correction 1.37; final log odds -4.95
+         + cand.treerank=2                        1.374   context: dep.right_neighbor.upos=INTJ, cand.right_neighbor.form=a
+         (5 more leftovers with corrections under 0.005)
+
+    -- PREDICTED -> home:  P(attach) 0.7426, product score -7.13
+       head-property terms: head_xpos=NN 0.264, head_dist=1 0.092, head_dir=left 1.0, head_upos=NOUN 0.044
+       prior odds 0.0146
+       chain steps (each conditioned on all the steps before it; Δ = change in log odds):
+       1. distance=1 word (bucket 1)                   Δ  +1.81   odds 0.0146 -> 0.0886
+       2. dep.right_neighbor.xpos=UH                   Δ   +0.8   odds 0.0886 -> 0.197
+       3. cand.left_neighbor.xpos=DT                   Δ  -0.77   odds 0.197 -> 0.0909
+       chain log odds -2.4; leftovers tried 2, included 2, total correction -0.38; final log odds -2.77
+         + cand.form=home                        -0.522   context: distance=1 word (bucket 1)
+         + cand.left_neighbor.form=a              0.145   context: distance=1 word (bucket 1), cand.xpos=NN
+
+================ "No no don 't play with that ."
+  No            gold -> no          ok
+  no            gold -> play        ok
+  don           gold -> play        ok
+  't            gold -> play        ok
+  play          gold -> ROOT        ok
+  with          gold -> that        ok
+  that          gold -> play        ok
+  .             gold -> play        WRONG: predicted -> that
+
+  ---- '.': gold head 'play', predicted 'that'
+    head properties predicted (with the attachment and all of them hidden):
+      head_upos VERB 0.586, PRON 0.297, NOUN 0.065   (gold head: VERB, predicted head: PRON)
+      head_xpos VBP 0.586, VB 0.15, WP 0.083   (gold head: VB, predicted head: DT)
+      head_dir  left 1.0, right 0.0, root 0.0   (gold head: left, predicted head: left)
+      head_dist 3-5 0.657, 1 0.208, 6-10 0.063   (gold head: 3-5, predicted head: 1)
+    candidates: 2   (product score = log P(attach) + Σ log P(head property value))
+
+    -- GOLD -> play:  P(attach) 0.0411, product score -6.04
+       head-property terms: head_xpos=VB 0.15, head_dist=3-5 0.657, head_dir=left 1.0, head_upos=VERB 0.586
+       prior odds 0.0146
+       chain steps (each conditioned on all the steps before it; Δ = change in log odds):
+       1. distance=3 words (bucket 3-5)                Δ   +1.4   odds 0.0146 -> 0.0588
+       2. cand.left_neighbor.form='t                   Δ  +1.95   odds 0.0588 -> 0.413
+       3. dep.left_neighbor.xpos=DT                    Δ  +1.58   odds 0.413 -> 2.0
+       chain log odds 0.69; leftovers tried 13, included 13, total correction -5.4; final log odds -4.71
+         + dep.number=0                          -2.276   context: distance=3 words (bucket 3-5), cand.left_neighbor.upos=PART, dep.left_neighbor.xpos=DT
+         + dep.right_neighbor.upos=VERB          -2.259   context: distance=3 words (bucket 3-5), cand.left_neighbor.upos=PART, dep.number=0
+         + cand.right_neighbor.upos=ADP          -1.426   context: cand.left_neighbor.upos=PART, cand.treerank=2, dep.xpos=., cand.xpos=VB
+         + cand.len=4                             0.773   context: cand.left_neighbor.upos=PART, dep.number=0, dep.right_neighbor.upos=VERB, cand.treerank=2, dep.form=.
+         + cand.treerank=2                       -0.213   context: distance=3 words (bucket 3-5), cand.left_neighbor.upos=PART, dep.number=0, dep.right_neighbor.upos=VERB
+         (8 more leftovers with corrections under 0.005)
+
+    -- PREDICTED -> that:  P(attach) 0.8925, product score -5.66
+       head-property terms: head_xpos=DT 0.063, head_dist=1 0.208, head_dir=left 1.0, head_upos=PRON 0.297
+       prior odds 0.0146
+       chain steps (each conditioned on all the steps before it; Δ = change in log odds):
+       1. cand.basepos=0                               Δ  -3.02   odds 0.0146 -> 0.000713
+       2. distance=1 word (bucket 1)                   Δ  +2.55   odds 0.000713 -> 0.00911
+       3. cand.right_neighbor.upos=PUNCT               Δ  +1.57   odds 0.00911 -> 0.0436
+       4. dep.left_neighbor.form=that                  Δ  +1.75   odds 0.0436 -> 0.25
+       5. cand.left_neighbor.upos=ADP                  Δ  +0.54   odds 0.25 -> 0.429
+       chain log odds -0.85; leftovers tried 3, included 3, total correction -0.78; final log odds -1.63
+         + dep.right_neighbor.form=turn          -0.668   context: distance=1 word (bucket 1)
+         + dep.right_neighbor.xpos=VB            -0.115   context: distance=1 word (bucket 1), cand.left_neighbor.upos=ADP
+         (1 more leftovers with corrections under 0.005)
