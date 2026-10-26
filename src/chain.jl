@@ -186,6 +186,8 @@ struct ChainOpts
   pairorder::Symbol                               # a chosen pair's members enter the chain in slot order (:slot) or larger single effect first (:maxdev)
   accumwin::Int                                   # accum: a leftover's context minimizes |correction| over this many further generalization steps (0: the first supported)
   accumreset::Bool                                # accum: each leftover generalizes from the most specific context (generalizations not carried forward)
+  greedymin::Bool                                 # greedy: a leftover's context is the growth prefix (>= minctx) with the smallest |correction|
+  greedysel::Bool                                 # greedy: leftovers taken in rounds, largest |correction| first (else in slot order)
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -294,7 +296,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
@@ -353,7 +355,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -2183,6 +2185,63 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
       (m.opts.relevance <= 0 || leftover_relevance(m, st, Ic[s], label, prior, base) >= m.opts.relevance)]
     return accum_leftovers(m, st, Ic, G, rel, label, prior, base)
   end
+  pending = Int[]
+  # X's greedy context (from `avail`): (correction, context) or nothing if it never reaches needmin features;
+  # greedymin: the context, among the growth's prefixes with at least needmin features, with the smallest |correction|
+  function greedy_context(X)
+    S, SX = ChainState(prior, base), ChainState(prior, base)
+    eX = only(extend_all(m, S, 0, [X]))
+    yX, okX = update_odds(m, eX, label, prior)
+    advance!(m, SX, X, eX, yX)
+    corr = okX ? log(yX) - log(prior) : 0.0
+    chosen = UInt64[]
+    best = nothing                                   # (greedymin) the smallest |correction| so far
+    note!() = length(chosen) >= needmin && (best === nothing || abs(corr) < abs(best[1])) && (best = (corr, copy(chosen)))
+    if m.opts.ctxfromchain                            # the chain first, in its order, as far as S∪X stays supported
+      for f in st.members
+        e1, e2 = only(extend_all(m, S, depth(S), [f])), only(extend_all(m, SX, depth(SX), [f]))
+        y1, ok1 = update_odds(m, e1, label, S.odds[end])
+        y2, ok2 = leftover_update(m, e1, e2, label, y1)
+        (ok1 && ok2 && ctxsupported(m, e2, label)) || break
+        advance!(m, S, f, e1, y1); advance!(m, SX, f, e2, y2)
+        push!(chosen, f)
+        corr = log(y2) - log(y1)
+        note!()
+      end
+    end
+    while length(chosen) < needmax
+      fs = UInt64[f for f in avail if !(f in chosen) && f != X]    # (:cover: X may be among the stand-ins)
+      isempty(fs) && break
+      eS = extend_all(m, S, depth(S), fs)
+      eSX = extend_all(m, SX, depth(SX), fs)
+      oS = S.odds[end]
+      bs, bi, by1, by2, bcorr = -Inf, 0, 0.0, 0.0, 0.0
+      for (i, f) in enumerate(fs)
+        y1, ok1 = update_odds(m, eS[i], label, oS)          # o(S∪f)
+        y2, ok2 = leftover_update(m, eS[i], eSX[i], label, y1)   # o(S∪f∪X), from o(S∪f)
+        (ok1 && ok2 && ctxsupported(m, eSX[i], label)) || continue   # S∪f∪X must be supported
+        c = log(y2) - log(y1)
+        sc = m.opts.greedyby == :correction ? abs(c - corr) : abs(log(y1) - log(oS))
+        sc > bs && ((bs, bi, by1, by2, bcorr) = (sc, i, y1, y2, c))
+      end
+      bi == 0 && break
+      advance!(m, S, fs[bi], eS[bi], by1)
+      advance!(m, SX, fs[bi], eSX[bi], by2)
+      push!(chosen, fs[bi])
+      corr = bcorr
+      note!()
+    end
+    m.opts.greedymin && best !== nothing && ((corr, chosen) = best)
+    length(chosen) >= needmin || return nothing
+    mode == :cover && !covers(st, Ic, G, chosen) && return nothing
+    W = isempty(poolw) ? 1.0 : prod(get(poolw, f, 1.0) for f in chosen; init = 1.0)
+    if W < 1.0 && m.opts.poolmode == :local          # scale the correction by the generalizations' weights
+      corr *= W
+    elseif W < 1.0                                   # blend toward conditioning without the pool features
+      corr = W * corr + (1 - W) * context_correction(m, X, [f for f in chosen if !haskey(poolw, f)], label, prior, base)
+    end
+    (corr, chosen)
+  end
   for s in remaining
     X = Ic[s]
     X == ABSENT && continue
@@ -2194,57 +2253,31 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
       c === nothing || (total_ += c[1]; X in avail || push!(avail, X))
       continue
     end
-    S, SX = ChainState(prior, base), ChainState(prior, base)
-    eX = only(extend_all(m, S, 0, [X]))
-    yX, okX = update_odds(m, eX, label, prior)
-    advance!(m, SX, X, eX, yX)
-    corr = okX ? log(yX) - log(prior) : 0.0
-    chosen = UInt64[]
-    if m.opts.ctxfromchain                            # the chain first, in its order, as far as S∪X stays supported
-      for f in st.members
-        e1, e2 = only(extend_all(m, S, depth(S), [f])), only(extend_all(m, SX, depth(SX), [f]))
-        y1, ok1 = update_odds(m, e1, label, S.odds[end])
-        y2, ok2 = leftover_update(m, e1, e2, label, y1)
-        (ok1 && ok2 && ctxsupported(m, e2, label)) || break
-        advance!(m, S, f, e1, y1); advance!(m, SX, f, e2, y2)
-        push!(chosen, f)
-        corr = log(y2) - log(y1)
-      end
+    if m.opts.greedysel                              # (rounds below: the largest correction first)
+      push!(pending, s)
+      continue
     end
-    while length(chosen) < needmax
-      fs = UInt64[f for f in avail if !(f in chosen) && f != X]    # (:cover: X may be among the stand-ins)
-      isempty(fs) && break
-      eS = extend_all(m, S, depth(S), fs)
-      eSX = extend_all(m, SX, depth(SX), fs)
-      oS = S.odds[end]
-      best, bi, by1, by2, bcorr = -Inf, 0, 0.0, 0.0, 0.0
-      for (i, f) in enumerate(fs)
-        y1, ok1 = update_odds(m, eS[i], label, oS)          # o(S∪f)
-        y2, ok2 = leftover_update(m, eS[i], eSX[i], label, y1)   # o(S∪f∪X), from o(S∪f)
-        (ok1 && ok2 && ctxsupported(m, eSX[i], label)) || continue   # S∪f∪X must be supported
-        c = log(y2) - log(y1)
-        sc = m.opts.greedyby == :correction ? abs(c - corr) : abs(log(y1) - log(oS))
-        sc > best && ((best, bi, by1, by2, bcorr) = (sc, i, y1, y2, c))
-      end
-      bi == 0 && break
-      advance!(m, S, fs[bi], eS[bi], by1)
-      advance!(m, SX, fs[bi], eSX[bi], by2)
-      push!(chosen, fs[bi])
-      corr = bcorr
+    c = greedy_context(X)
+    c === nothing && continue
+    LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](s, true, [something(findfirst(==(f), Ic), 0) for f in c[2]], c[1])
+    total_ += c[1]
+    X in avail || push!(avail, X)
+  end
+  # greedysel: in rounds, every remaining leftover's context against the current pool, the one with the
+  # largest |correction| taken (it joins the pool), until none has a supported context
+  while !isempty(pending)
+    bi, bc = 0, nothing
+    for (i, s) in enumerate(pending)
+      c = greedy_context(Ic[s])
+      c === nothing && continue
+      (bc === nothing || abs(c[1]) > abs(bc[1])) && ((bi, bc) = (i, c))
     end
-    LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](s, length(chosen) >= m.opts.minctx,
-      [something(findfirst(==(f), Ic), 0) for f in chosen], corr)
-    mode == :cover && !covers(st, Ic, G, chosen) && continue
-    if length(chosen) >= needmin
-      W = isempty(poolw) ? 1.0 : prod(get(poolw, f, 1.0) for f in chosen; init = 1.0)
-      if W < 1.0 && m.opts.poolmode == :local        # scale the correction by the generalizations' weights
-        corr *= W
-      elseif W < 1.0                                 # blend toward conditioning without the pool features
-        corr = W * corr + (1 - W) * context_correction(m, X, [f for f in chosen if !haskey(poolw, f)], label, prior, base)
-      end
-      total_ += corr
-      X in avail || push!(avail, X)
-    end
+    bi == 0 && break
+    s = pending[bi]
+    LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](s, true, [something(findfirst(==(f), Ic), 0) for f in bc[2]], bc[1])
+    total_ += bc[1]
+    Ic[s] in avail || push!(avail, Ic[s])
+    deleteat!(pending, bi)
   end
   total_
 end
