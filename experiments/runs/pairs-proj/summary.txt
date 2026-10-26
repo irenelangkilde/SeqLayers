@@ -1,1 +1,7 @@
 === proj-pairs-slot  Mon Oct 26 08:37:56 MDT 2026
+ALL         2899    0.9978  0.8537  0.803   0.0162  1.0     
+score 1364.7 s, run 20261026-090235 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== proj-pairs-maxdev  Mon Oct 26 09:02:35 MDT 2026
+ALL         2899    0.9978  0.8537  0.8034  0.0162  1.0     
+score 490.2 s, run 20261026-091220 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Mon Oct 26 09:12:21 MDT 2026
