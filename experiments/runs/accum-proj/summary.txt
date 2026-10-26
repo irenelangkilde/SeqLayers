@@ -1,0 +1,8 @@
+=== proj-product0  Mon Oct 26 06:53:41 MDT 2026
+ALL         2899    0.9977  0.8465  0.7927  0.0162  1.0     
+score 320.7 s, run 20261026-070102 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== proj-nodomains  Mon Oct 26 07:01:03 MDT 2026
+ALL         2899    0.9977  0.8313  0.7799  0.0162  1.0     
+pipeline: 255 attachments inferred (0.088 of tokens), 0.984 of them right; 0 left with no candidate
+score 292.9 s, run 20261026-070732 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Mon Oct 26 07:07:32 MDT 2026
