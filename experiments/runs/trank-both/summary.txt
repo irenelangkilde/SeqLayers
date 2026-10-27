@@ -1,0 +1,8 @@
+recorded events in 320.7 s
+CHILDES     324     1.0     0.8981  0.8241  0.0093  1.0     
+ESLSpok     502     0.9983  0.8566  0.8187  0.004   1.0     
+EWT         86      0.9924  0.8837  0.8488  0.0     1.0     
+GUM         963     0.9973  0.8328  0.7892  0.0322  1.0     
+GUMReddit   1024    0.9977  0.8545  0.792   0.0107  1.0     
+ALL         2899    0.9977  0.8534  0.801   0.0162  1.0     
+score 484.6 s, run 20261026-183855 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
