@@ -1,1 +1,11 @@
 === hwc30  Tue Oct 27 16:34:23 MDT 2026
+recorded events in 319.9 s
+ALL         2899    0.9977  0.8472  0.7934  0.0162  1.0     
+score 264.7 s, run 20261027-164545 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+head: illegal line count -- 0
+=== hwc300-30  Tue Oct 27 16:45:46 MDT 2026
+recorded events in 358.0 s
+ALL         2899    0.9977  0.8375  0.7861  0.0162  1.0     
+score 555.4 s, run 20261027-170314 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+head: illegal line count -- 0
+=== all done Tue Oct 27 17:03:14 MDT 2026
