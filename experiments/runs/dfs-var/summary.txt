@@ -1,0 +1,31 @@
+=== dfs-jump  Mon Oct 26 19:51:36 UTC 2026
+dfs: Dict(:backtracked => 1527, :gaveup => 21, :jumps => 914, :jumped => 8401, :reordered => 0, :segments => 25, :failures => 1548, :choicepoints => 9829)
+count cache: 124187 new feature sets, 3558871 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events
+ALL         2899    0.9904  0.677   0.5999  0.9636  
+build 14.2 s, decode 2637.3 s, run 20261026-203845 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+	Command being timed: "julia --project=experiments experiments/dev_eval.jl model=chain select=maxdev events=gold dev_sents=5 workers=12 jointmin=10000 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence ctxmode=accum projective=true dfs=true dfseps=0.05 dfsbudget=200 dfsjump=true note=dfs-jump"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 47:08.91
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 11021944
+	Average resident set size (kbytes): 0
+=== dfs-product  Mon Oct 26 20:38:45 UTC 2026
+dfs: Dict(:backtracked => 1548, :gaveup => 21, :jumps => 0, :jumped => 0, :reordered => 126, :segments => 25, :failures => 1569, :choicepoints => 1807)
+count cache: 397 new feature sets, 3559268 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events
+ALL         2899    0.9909  0.6774  0.6     0.9636  
+build 14.2 s, decode 2375.1 s, run 20261026-212111 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+	Command being timed: "julia --project=experiments experiments/dev_eval.jl model=chain select=maxdev events=gold dev_sents=5 workers=12 jointmin=10000 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence ctxmode=accum projective=true dfs=true dfseps=0.05 dfsbudget=200 dfsorder=product note=dfs-product"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 42:26.53
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 11038932
+	Average resident set size (kbytes): 0
+=== dfs-jump-product  Mon Oct 26 21:21:12 UTC 2026
+dfs: Dict(:backtracked => 1548, :gaveup => 21, :jumps => 930, :jumped => 11075, :reordered => 897, :segments => 25, :failures => 1569, :choicepoints => 12557)
+count cache: 98 new feature sets, 3559366 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events
+ALL         2899    0.9909  0.6774  0.6     0.9636  
+build 14.0 s, decode 2461.3 s, run 20261026-220503 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+	Command being timed: "julia --project=experiments experiments/dev_eval.jl model=chain select=maxdev events=gold dev_sents=5 workers=12 jointmin=10000 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence ctxmode=accum projective=true dfs=true dfseps=0.05 dfsbudget=200 dfsjump=true dfsorder=product note=dfs-jump-product"
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 43:51.52
+	Average shared text size (kbytes): 0
+	Maximum resident set size (kbytes): 11622628
+	Average resident set size (kbytes): 0
+=== all done Mon Oct 26 22:05:03 UTC 2026

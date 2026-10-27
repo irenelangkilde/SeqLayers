@@ -1,0 +1,10 @@
+recorded events in 299.4 s
+CHILDES     324     1.0     0.8981  0.821   0.0093  1.0     
+ESLSpok     502     0.9983  0.8566  0.8187  0.004   1.0     
+EWT         86      0.9924  0.907   0.8721  0.0     1.0     
+GUM         963     0.9973  0.8224  0.7819  0.0322  1.0     
+GUMReddit   1024    0.9977  0.8613  0.8008  0.0107  1.0     
+ALL         2899    0.9977  0.8531  0.802   0.0162  1.0     
+score 433.8 s, run 20261026-171728 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+20261026-171728,"chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=odds;leftsmooth=evidence;ctxmode=accum;ctxattach=false;cidrop=0.0;accumwin=0;accumreset=false;driftsigma=0.0;drifttau=0.0;driftstep=0.0;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective;headtrank]",tag,head_trank,2899,0.2,0.6947223180407037,NaN,"headtrank"
+20261026-171728,"chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=odds;leftsmooth=evidence;ctxmode=accum;ctxattach=false;cidrop=0.0;accumwin=0;accumreset=false;driftsigma=0.0;drifttau=0.0;driftstep=0.0;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective;headtrank]",tag,head_dir,2899,0.2,0.887547430148327,NaN,"headtrank"

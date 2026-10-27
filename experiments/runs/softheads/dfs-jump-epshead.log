@@ -1,0 +1,72 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 496.8 s
+      From worker 12:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.3 s): 14 of 32 slots always, 283 gate values
+      From worker 12:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 13:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.3 s): 14 of 32 slots always, 283 gate values
+      From worker 13:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.4 s): 14 of 32 slots always, 283 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.4 s): 14 of 32 slots always, 283 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.4 s): 14 of 32 slots always, 283 gate values
+      From worker 4:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 9:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.6 s): 14 of 32 slots always, 283 gate values
+      From worker 9:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 11:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.7 s): 14 of 32 slots always, 283 gate values
+      From worker 11:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 10:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.7 s): 14 of 32 slots always, 283 gate values
+      From worker 10:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 5:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.9 s): 14 of 32 slots always, 283 gate values
+      From worker 5:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 8:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.4 s): 14 of 32 slots always, 283 gate values
+      From worker 8:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 7:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.7 s): 14 of 32 slots always, 283 gate values
+      From worker 7:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 6:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.9 s): 14 of 32 slots always, 283 gate values
+      From worker 6:	[ Info: ChainModel: grouped decisions into 3723196 records (666808 grouped, 13 label sets)
+      From worker 12:	[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (57.8 s)
+      From worker 13:	[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (58.4 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (58.5 s)
+      From worker 2:	[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (58.6 s)
+      From worker 4:	[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (58.8 s)
+      From worker 9:	[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (59.0 s)
+      From worker 11:	[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (59.2 s)
+      From worker 10:	[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (60.2 s)
+      From worker 5:	[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (60.3 s)
+      From worker 7:	[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (60.9 s)
+      From worker 8:	[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (61.2 s)
+      From worker 6:	[ Info: ChainModel: joint tables for 789 frequent items, 141524 pairs (61.1 s)
+dfs: Dict(:backtracked => 3105, :gaveup => 18, :jumps => 1577, :jumped => 19762, :reordered => 0, :segments => 25, :failures => 3123, :choicepoints => 22669)
+count cache: 566592 new feature sets, 566592 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs/events
+treebank    words   token_f1  uas     las     sent_f1
+CHILDES     324     1.0     0.7222  0.6019  0.9901  
+ESLSpok     502     0.997   0.7365  0.6747  0.9796  
+EWT         86      0.9655  0.6905  0.5952  0.8889  
+GUM         963     0.9845  0.6803  0.6225  0.9388  
+GUMReddit   1024    0.9917  0.6359  0.5525  0.94    
+ALL         2899    0.9904  0.6794  0.6037  0.9636  
+build 511.4 s, decode 6113.2 s, run 20261026-223101 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+	Command being timed: "julia --project=experiments experiments/dev_eval.jl model=chain select=maxdev events=gold dev_sents=5 jointmin=10000 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence ctxmode=accum projective=true workers=12 dfs=true dfseps=0.05 dfsbudget=200 dfsjump=true dfsepshead=0.005 note=dfs-jump-epshead"
+	User time (seconds): 12724.64
+	System time (seconds): 593.36
+	Percent of CPU this job got: 196%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:53:02
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 16695112
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1801
+	Minor (reclaiming a frame) page faults: 284914510
+	Voluntary context switches: 3984
+	Involuntary context switches: 42757
+	Swaps: 0
+	File system inputs: 735648
+	File system outputs: 5813248
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
