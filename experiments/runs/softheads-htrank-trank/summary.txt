@@ -1,0 +1,10 @@
+recorded events in 534.5 s
+CHILDES     324     1.0     0.7407  0.6481  0.9709  
+ESLSpok     502     0.997   0.7126  0.6766  0.9796  
+EWT         86      0.9655  0.75    0.6429  0.8889  
+GUM         963     0.9845  0.6866  0.6351  0.9167  
+GUMReddit   1024    0.9917  0.6408  0.5554  0.932   
+ALL         2899    0.9904  0.6829  0.6158  0.9529  
+build 548.4 s, decode 4515.3 s, run 20261027-022719 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:27:11
+	Maximum resident set size (kbytes): 15966244

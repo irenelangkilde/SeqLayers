@@ -1,0 +1,71 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 518.9 s
+      From worker 10:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.0 s): 14 of 32 slots always, 280 gate values
+      From worker 10:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.0 s): 14 of 32 slots always, 280 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.1 s): 14 of 32 slots always, 280 gate values
+      From worker 4:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 8:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.3 s): 14 of 32 slots always, 280 gate values
+      From worker 8:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 7:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.3 s): 14 of 32 slots always, 280 gate values
+      From worker 7:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 9:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.2 s): 14 of 32 slots always, 280 gate values
+      From worker 9:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 13:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.4 s): 14 of 32 slots always, 280 gate values
+      From worker 13:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 11:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.5 s): 14 of 32 slots always, 280 gate values
+      From worker 6:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.4 s): 14 of 32 slots always, 280 gate values
+      From worker 11:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 6:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 5:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.6 s): 14 of 32 slots always, 280 gate values
+      From worker 5:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 12:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.7 s): 14 of 32 slots always, 280 gate values
+      From worker 12:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.7 s): 14 of 32 slots always, 280 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 10:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (63.8 s)
+      From worker 4:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (63.7 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (64.0 s)
+      From worker 9:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (63.8 s)
+      From worker 13:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (64.3 s)
+      From worker 7:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (64.5 s)
+      From worker 8:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (65.0 s)
+      From worker 5:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (65.1 s)
+      From worker 12:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (65.1 s)
+      From worker 11:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (65.7 s)
+      From worker 6:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (65.7 s)
+      From worker 2:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (65.8 s)
+count cache: 583061 new feature sets, 583061 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/events
+treebank    words   token_f1  uas     las     sent_f1
+CHILDES     324     1.0     0.7222  0.6389  0.9709  
+ESLSpok     502     0.997   0.7206  0.6786  0.9796  
+EWT         86      0.9655  0.7143  0.6429  0.8889  
+GUM         963     0.9845  0.6951  0.6446  0.9388  
+GUMReddit   1024    0.9917  0.6497  0.5662  0.8972  
+ALL         2899    0.9904  0.687   0.6221  0.9454  
+build 536.0 s, decode 4001.1 s, run 20261027-021826 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+	Command being timed: "julia --project=experiments experiments/dev_eval.jl model=chain select=maxdev events=gold dev_sents=5 workers=12 jointmin=10000 leftovers=greedy minctx=2 relevance=0.25 gate=0.5 countmin=10000 rootabsent=true redundant=true poolsigma=0.1 poolmarginal=drop poolkeepgen=true greedyby=odds leftsmooth=evidence ctxmode=accum projective=true softheads=true headtrank=true note=softheads-htrank"
+	User time (seconds): 11106.69
+	System time (seconds): 193.11
+	Percent of CPU this job got: 240%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:18:23
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 17134820
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1916
+	Minor (reclaiming a frame) page faults: 79473293
+	Voluntary context switches: 4633
+	Involuntary context switches: 33423
+	Swaps: 0
+	File system inputs: 735368
+	File system outputs: 6041608
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
