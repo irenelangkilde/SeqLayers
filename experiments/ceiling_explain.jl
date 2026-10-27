@@ -10,6 +10,10 @@
 # best others, up to `explaintop` in all): the chain (feature = value, odds after each step), the
 # included leftovers with their contexts and corrections, the chain + leftover log odds, the
 # attachment probability, and with domains=product the head-property terms of the product score.
+# detail=true: per chain step the feature's prior (marginal) effect, its effect in the chain, and the records behind
+#   each; per leftover (in the order taken, accum) the running estimate and the generalization walk: each context
+#   tried, its odds and records, the leftover's correction there; and positive vs negative evidence summed apart.
+# sent=text: only sentences containing this text.
 # chainonly=true: only errors the chains alone already make (scoring every candidate by its chain log odds,
 # without leftovers -- and with domains=product, times the head-property terms -- gives the same wrong head).
 
@@ -24,6 +28,8 @@ DEFAULTS["maxerr"] = 2
 DEFAULTS["maxlen"] = 16
 DEFAULTS["explaintop"] = 2
 DEFAULTS["chainonly"] = "false"
+DEFAULTS["detail"] = "false"
+DEFAULTS["sent"] = ""
 DEFAULTS["headconf"] = 1.0
 DEFAULTS["domains"] = "off"
 DEFAULTS["domeps"] = 1e-3
@@ -101,11 +107,13 @@ function explain_attach(st, t, gold, pred)
   events = Dict{Any,Any}(c => (left = Any[], final = nothing) for c in cands)
   S.CHAIN_TRACE[] = (ev, data) -> ev == :final && (events[data.cand] = (left = events[data.cand].left, final = data))
   S.LEFTOVER_TRACE[] = (sl, inc, ctxs, corr) -> push!(events[S.CHAIN_TRACE_CAND[]].left, (sl, inc, ctxs, corr))
+  accum = Dict{Any,Vector{Any}}(c => Any[] for c in cands)
+  S.ACCUM_TRACE[] = (sx, T, tries, k, corr) -> push!(accum[S.CHAIN_TRACE_CAND[]], (sx = sx, T = T, tries = tries, corr = corr))
   empty!(m.memo)
   try
     decide(m, st, key)
   finally
-    S.CHAIN_TRACE[] = nothing; S.LEFTOVER_TRACE[] = nothing
+    S.CHAIN_TRACE[] = nothing; S.LEFTOVER_TRACE[] = nothing; S.ACCUM_TRACE[] = nothing
   end
   dist = S.commit_dist(m, st, key)
   pa = dist === nothing ? Dict{UInt32,Float64}() : Dict(zip(dist[1], exp.(dist[2])))
@@ -138,6 +146,10 @@ function explain_attach(st, t, gold, pred)
         for (name, (vals, ps)) in props], ", "))
     end
     f === nothing && (println("       (no chain)"); continue)
+    if cfg["detail"] == "true"
+      detail(st, t, c, f, items[findfirst(==(c), cands)], accum[c])
+      continue
+    end
     println("       prior odds $(round(f.odds[1]; sigdigits = 3))")
     println("       chain steps (each conditioned on all the steps before it; Δ = change in log odds):")
     for (j, x) in enumerate(f.members)
@@ -197,6 +209,58 @@ function chain_only_choice(st, t)
   argmax(sc)
 end
 
+fmtn(n) = n === nothing ? "-" : "$(round(Int, n[1]))/$(round(Int, n[2]))"
+fmtd(x) = (x >= 0 ? "+" : "") * string(round(x; digits = 2))
+
+"The detailed view of candidate c's score (detail=true): see the header."
+function detail(st, t, c, f, Ic, acc)
+  tk = S.typekey(:token, 1)
+  base = get(m.typerecs, tk, Int32[])
+  p0 = f.odds[1]
+  name(x) = (sl = findfirst(==(x), Ic); sl === nothing ? "?" : slotdesc(st, t, c, sl))
+  function marginal(x)                              # x alone: its odds from the prior, and its records (chosen / not)
+    S0 = S.ChainState(p0, base)
+    e = only(S.extend_all(m, S0, 0, [x]))
+    y, ok = S.update_odds(m, e, UInt32(0), p0)
+    (ok ? log(y) - log(p0) : NaN, get(e[2], UInt32(0), (0.0, 0.0)))
+  end
+  pos, neg = 0.0, 0.0
+  println("       prior log odds $(fmtd(log(p0)))   (n = chosen/not-chosen records)")
+  println("       CHAIN", " "^41, "alone (prior effect)     in the chain")
+  Sc = S.ChainState(p0, base)
+  for (j, x) in enumerate(f.members)
+    e = only(S.extend_all(m, Sc, S.depth(Sc), [x]))
+    dl = log(f.odds[j+1]) - log(f.odds[j])
+    mΔ, mn = marginal(x)
+    println("       $j. ", rpad(name(x), 40), lpad(fmtd(mΔ), 7), "  n ", rpad(fmtn(mn), 14), lpad(fmtd(dl), 7), "  n ", fmtn(get(e[2], UInt32(0), (0.0, 0.0))),
+      sign(mΔ) != sign(dl) && abs(dl) > 0.2 ? "   <- sign flips" : "")
+    dl >= 0 ? (pos += dl) : (neg += dl)
+    S.advance!(m, Sc, x, e, f.odds[j+1])
+  end
+  println("       chain log odds $(fmtd(log(f.odds[end])))")
+  if isempty(acc)
+    println("       (no accum leftovers traced)")
+  end
+  for (r, a) in enumerate(acc)
+    X = Ic[a.sx]
+    mΔ, mn = marginal(X)
+    println("\n       LEFTOVER $r: ", name(X), "   alone ", fmtd(mΔ), " (n ", fmtn(mn), ");  running estimate before: ", fmtd(a.T))
+    prev = nothing
+    taken = false
+    for (i, tr) in enumerate(a.tries)
+      ctxn = [name(x) for x in tr.ctx]
+      moves = prev === nothing ? "" : "   [" * join([["-" * x for x in setdiff(prev, ctxn)]; ["+" * x for x in setdiff(ctxn, prev)]], ", ") * "]"
+      mark = !taken && tr.corr !== nothing ? (taken = true; "  <= TAKEN") : ""
+      println("         ctx $i: log odds ", lpad(fmtd(log(tr.odds)), 6), "  n ", rpad(fmtn(tr.n), 12), " with X: n ", rpad(fmtn(tr.nX), 10),
+        "  corr ", tr.corr === nothing ? "unsupported" : fmtd(tr.corr), mark, moves)
+      i == 1 && println("                 context: ", join(ctxn, ", "))
+      prev = ctxn
+    end
+    a.corr >= 0 ? (pos += a.corr) : (neg += a.corr)
+  end
+  println("\n       evidence: positive ", fmtd(pos), ", negative ", fmtd(neg), ";  final log odds ", fmtd(f.logodds))
+end
+
 mutable struct ExplainRec
   r0::CeilingRecorder
   rgold::CeilingRecorder                           # the same with all head properties given (gold): the head-property ceiling
@@ -214,6 +278,7 @@ function segment_done!(r::ExplainRec, st)
     res = [(t, toks[:attach, t], first(pipeline_attach!(r.r0, st, t, toks[:attach, t]))) for t in ts]
     wrong = [(t, g, p) for (t, g, p) in res if g != p]
     1 <= length(wrong) <= cfg["maxerr"] || continue
+    isempty(cfg["sent"]) || occursin(cfg["sent"], join([S.tokstr(st, t) for t in ts], " ")) || continue
     # only errors the head-property ceiling (gold head properties) gets right
     all(((t, g, p),) -> first(pipeline_attach!(r.rgold, st, t, g)) == g, wrong) || continue
     if cfg["chainonly"] == "true"                     # only errors the chains alone already make

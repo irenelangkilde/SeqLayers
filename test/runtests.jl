@@ -289,6 +289,17 @@ end
       SeqLayers.TRAIL[] = nothing
     end
     @test all(sd2.layers[l].ncols == before[l][2] && sd2.layers[l].grid[:, 1:before[l][2]] == before[l][1] for l in sd2.order)
+    # every option lands in its own ChainOpts field (positional constructor)
+    mo = ChainModel(dir; select = :maxdev, leftovers = :greedy, mincount = 1, ctxmode = :accum, greedymin = true, greedysel = false,
+      driftsigma = 0.25, drifttau = 0.5, driftstep = 0.75, distback = true, shrink = 7.0, accumwin = 3, accumreset = true, cidrop = 0.125)
+    o = mo.opts
+    @test (o.greedymin, o.greedysel, o.driftsigma, o.drifttau, o.driftstep, o.distback, o.shrink, o.accumwin, o.accumreset, o.cidrop) ==
+      (true, false, 0.25, 0.5, 0.75, true, 7.0, 3, true, 0.125)
+    # Beta shrinkage: n records move the estimate n/(n+k) of the way from the parent's
+    @test SeqLayers.shrinkOdds(7, 1, 0.0146, 20.0) ≈ (p = (7 + 20 * 0.0146 / 1.0146) / 28; p / (1 - p))
+    @test SeqLayers.shrinkOdds(0, 0, 0.3, 10.0) ≈ 0.3
+    ms = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, shrink = 20.0)
+    @test 0 <= eval_scores(evaluate_counts(docs, specs, ms, lex)).uas <= 1
     # evidence-side leftover smoothing: Bayes' rule with E's smoothed rates among chosen / not chosen
     me = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, leftsmooth = :evidence)
     v0 = SeqLayers.RecView(Int32[])
