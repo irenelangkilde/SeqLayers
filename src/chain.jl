@@ -938,9 +938,10 @@ odds e), as odds -- a set of n records moves the estimate from the parent's in p
 one-sided its counts.
 """
 function shrinkOdds(c1, c2, e, k)
-  p0 = isinf(e) ? 1.0 : e / (1 + e)
-  p = (c1 + k * p0) / (c1 + c2 + k)
-  p >= 1 ? Inf : p / (1 - p)
+  c1, c2 = max(c1, 0.0), max(c2, 0.0)            # (sampled counts can come out slightly inconsistent)
+  p0 = isnan(e) ? 0.5 : isinf(e) ? 1.0 : e / (1 + e)
+  p = clamp((c1 + k * p0) / (c1 + c2 + k), 1e-9, 1 - 1e-9)
+  p / (1 - p)
 end
 
 ##======== criteria

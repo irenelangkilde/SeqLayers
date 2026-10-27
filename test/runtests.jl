@@ -298,6 +298,7 @@ end
     # Beta shrinkage: n records move the estimate n/(n+k) of the way from the parent's
     @test SeqLayers.shrinkOdds(7, 1, 0.0146, 20.0) ≈ (p = (7 + 20 * 0.0146 / 1.0146) / 28; p / (1 - p))
     @test SeqLayers.shrinkOdds(0, 0, 0.3, 10.0) ≈ 0.3
+    @test isfinite(SeqLayers.shrinkOdds(10, -3, 0.5, 20.0)) && SeqLayers.shrinkOdds(10, -3, 0.5, 20.0) > 0   # (inconsistent sampled counts)
     ms = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, shrink = 20.0)
     @test 0 <= eval_scores(evaluate_counts(docs, specs, ms, lex)).uas <= 1
     # evidence-side leftover smoothing: Bayes' rule with E's smoothed rates among chosen / not chosen
