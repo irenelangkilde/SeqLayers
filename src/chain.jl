@@ -190,6 +190,7 @@ struct ChainOpts
   driftsigma::Float64                             # accum: a correction weighted exp(-d/sigma), d = |log o(x|context) - running estimate| (0: off)
   drifttau::Float64                               # accum: a leftover whose context has d > tau is left out (0: off)
   driftstep::Float64                              # accum: a correction weighted driftstep^(generalization / drop steps of its context) (0: off)
+  distback::Bool                                  # leftover contexts: the attachment's distance generalizes to its direction
   greedysel::Bool                                 # greedy: leftovers taken in rounds, largest |correction| first (else in slot order)
 end
 
@@ -299,7 +300,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
@@ -358,7 +359,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -2030,7 +2031,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
   T = log(st.odds[end])
   total_ = 0.0
   pending = copy(rel)
-  items(r) = UInt64[L[r[i]] for (i, L) in enumerate(ladders) if r[i] <= length(L)]
+  items(r) = unique!(UInt64[L[r[i]] for (i, L) in enumerate(ladders) if r[i] <= length(L)])   # (a generalization may equal another feature)
   cache = Dict{Vector{Int},Any}()
   function build(r)                                 # (state, final entry) of the context, or nothing if unsupported
     get!(cache, copy(r)) do
@@ -2183,6 +2184,10 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
   tk = isempty(base) ? UInt64(0) : m.recs[base[1]].typekey
   mode = (m.opts.ctxattach && tk != typekey(:token, 1)) || (!isempty(m.ctxtypes) && !(tk in m.ctxtypes)) ? :greedy : m.opts.ctxmode
   G = mode == :greedy ? nothing : get(m.generalize, tk, Dict{Int,Vector{Int}}())
+  if G !== nothing && m.opts.distback && tk == typekey(:token, 1)   # attachment records: slot 1 distance, slot 2 direction
+    G = copy(G)
+    G[1] = [2]
+  end
   # :cover: the chain forms' generalizations may stand in for them in contexts
   if mode == :cover
     for w in st.members
