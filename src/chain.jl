@@ -193,6 +193,8 @@ struct ChainOpts
   driftstep::Float64                              # accum: a correction weighted driftstep^(generalization / drop steps of its context) (0: off)
   distback::Bool                                  # leftover contexts: the attachment's distance generalizes to its direction
   shrink::Float64                                 # > 0: estimates shrunk toward the parent's with a Beta prior of this many pseudo-records (else one-count smoothOdds)
+  shrinkleft::Float64                             # > 0: the same, for the leftovers' corrections only (chain steps keep their rule)
+  leftmin2::Int                                   # > 0: a leftover counts only with this many chosen and this many not-chosen records (with its context)
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -301,7 +303,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
@@ -360,7 +362,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -1928,7 +1930,12 @@ y1 times the likelihood ratio P(E | x,S) / P(E | ¬x,S), each rate from E's odds
 records of S smoothed toward E's odds in all of S.  Supported as update_odds (S∪E's records).
 """
 function leftover_update(m::ChainModel, eS, eSX, label::UInt32, y1::Float64)
-  m.opts.leftsmooth == :odds && return update_odds(m, eSX, label, y1)
+  if m.opts.leftsmooth == :odds
+    m.opts.shrinkleft > 0 || return update_odds(m, eSX, label, y1)
+    (c1, c2) = get(eSX[2], label, (0.0, 0.0))
+    c1 + c2 < max(m.opts.mincount, 1) && return y1, false
+    return shrinkOdds(c1, c2, y1, m.opts.shrinkleft), true
+  end
   (k1, k2) = get(eSX[2], label, (0.0, 0.0))
   k1 + k2 < max(m.opts.mincount, 1) && return y1, false
   (n1, n2) = get(eS[2], label, (0.0, 0.0))
@@ -1936,7 +1943,8 @@ function leftover_update(m::ChainModel, eS, eSX, label::UInt32, y1::Float64)
   rest <= 0 && return y1, true                    # E in every record of S: no evidence either way
   oE = (k1 + k2) / rest
   prob(o) = isinf(o) ? 1.0 : o / (1 + o)
-  sm(a, b) = m.opts.shrink > 0 ? shrinkOdds(a, b, oE, m.opts.shrink) : smoothOdds(a, b, oE)
+  ks = m.opts.shrinkleft > 0 ? m.opts.shrinkleft : m.opts.shrink
+  sm(a, b) = ks > 0 ? shrinkOdds(a, b, oE, ks) : smoothOdds(a, b, oE)
   px, pnx = prob(sm(k1, n1 - k1)), prob(sm(k2, n2 - k2))
   (px > 0 && pnx > 0) || return y1, true
   y1 * px / pnx, true
@@ -2094,6 +2102,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
           corr = nothing
           if e === nothing
             yX, okX = update_odds(m, eX, label, prior)
+            okX && m.opts.shrinkleft > 0 && (yX = shrinkOdds(get(eX[2], label, (0.0, 0.0))..., prior, m.opts.shrinkleft))
             okX && ctxsupported(m, eX, label) && (corr = log(yX) - log(prior))
           else
             y2, ok2 = leftover_update(m, e, eX, label, S.odds[end])
@@ -2177,8 +2186,9 @@ const ACCUM_TRACE = Ref{Any}(nothing)
 
 "Does a leftover context entry (context + leftover) have the records `ctxsupport` asks for?"
 function ctxsupported(m::ChainModel, e, label)
-  m.opts.ctxsupport <= 0 && return true
   (c1, c2) = get(e[2], label, (0.0, 0.0))
+  m.opts.leftmin2 > 0 && (c1 < m.opts.leftmin2 || c2 < m.opts.leftmin2) && return false   # two-sided support
+  m.opts.ctxsupport <= 0 && return true
   c1 + c2 >= m.opts.ctxsupport
 end
 
