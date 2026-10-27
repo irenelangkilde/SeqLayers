@@ -87,6 +87,8 @@
 #                it and t: 1, 2, 3, 4+; root); events apart
 #   headtrank    a sixth head-property decision, head_trank: the token's tree rank under its head (1, 2, 3, 4+,
 #                root); narrows the attachment like the others; events apart
+#   headwc       head-property decisions for the head word's class: head_wc300 / head_wc30 (e.g. 300,30), from
+#                headwcdir (clusters/classes5); events apart
 #   pairorder    with pairsteps: a chosen pair's members enter the chain in slot order (slot) or the one
 #                with the larger single effect first (maxdev)
 #   cidrop       ctxmode=accum: a context feature B may be dropped only if some feature A kept has
@@ -179,7 +181,7 @@ const RESULTS = joinpath(HERE, "results.csv")
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
   "wmo" => 1e-3, "train_sents" => 500, "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
-  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "fwdcheck" => "false", "softheads" => "false", "dfsepshead" => NaN, "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "driftsigma" => 0.0, "distback" => "false", "shrink" => 0.0, "drifttau" => 0.0, "driftstep" => 0.0, "relbounded" => "false", "relnone" => "false", "treerank" => "false", "headtrank" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
+  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "fwdcheck" => "false", "softheads" => "false", "dfsepshead" => NaN, "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "driftsigma" => 0.0, "distback" => "false", "shrink" => 0.0, "headwc" => "", "headwcdir" => "/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5", "drifttau" => 0.0, "driftstep" => 0.0, "relbounded" => "false", "relnone" => "false", "treerank" => "false", "headtrank" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
 
 function parse_cfg(args)
@@ -255,16 +257,21 @@ function setup(cfg)
   wc = isempty(cfg["wclasses"]) ? nothing : load_wordclasses(cfg["wclasses"])
   pp = isempty(cfg["pptable"]) ? nothing : load_pptable(cfg["pptable"], joinpath(dirname(dirname(cfg["pptable"])), "classes5"))
   sfx = isempty(cfg["suffixes"]) ? Int[] : parse.(Int, split(cfg["suffixes"], ','))
+  hwl = isempty(cfg["headwc"]) ? Int[] : parse.(Int, split(cfg["headwc"], ','))
+  hwc = isempty(hwl) ? nothing : something(wc, load_wordclasses(cfg["headwcdir"]))
+  hwc === nothing || foreach(ds -> SeqLayers.add_head_wclass_gold!(ds, hwc, hwl), alltrain)
   specs = default_specs(charindex = idx, wordclasses = wc, suffixes = sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true",
     projective = cfg["projective"] == "true", relations = cfg["relations"] == "true",
     headsdist = cfg["headsdist"] == "true", pptable = pp, pprel = cfg["pprel"] == "true",
-    relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true", treerank = cfg["treerank"] == "true", headtrank = cfg["headtrank"] == "true")
+    relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true", treerank = cfg["treerank"] == "true", headtrank = cfg["headtrank"] == "true",
+    headwc = hwl, headwcclasses = hwc)
   # same Doc objects as in the index, so their suffix-array features are leave-one-out
   trainsample = reduce(vcat, [firstsents(ds, cfg["train_sents"]) for ds in alltrain])
   # held-out tuning docs: the training docs right after the sample's
   tunedocs = [(tb, d) for (tb, ds) in zip(tbs, alltrain)
               for d in firstsents(ds[length(firstsents(ds, cfg["train_sents"]))+1:end], cfg["tune_sents"])]
   devdocs = [(tb, d) for (tb, f) in zip(tbs, devfiles) for d in firstsents(read_conllu(f), cfg["dev_sents"])]
+  hwc === nothing || SeqLayers.add_head_wclass_gold!(last.(devdocs), hwc, hwl)
   println("train sample: ", sum(nsents, trainsample), " sentences;  dev: ", sum(p -> nsents(p[2]), devdocs), " sentences")
 
   # model
@@ -273,7 +280,7 @@ function setup(cfg)
     (isempty(cfg["suffixes"]) ? "" : "-sfx" * replace(cfg["suffixes"], ',' => "")) *
     (cfg["noise"] > 0 ? "-noise$(cfg["noise"])" : "") * (cfg["rootabsent"] == "true" ? "-rootabs" : "") *
     (cfg["relations"] == "true" ? "-rel" * (cfg["relbounded"] == "true" ? "b" : "") * (cfg["relnone"] == "true" ? "n" : "") : "") * (cfg["headsdist"] == "true" ? "-sdist" : "") *
-    (isempty(cfg["pptable"]) ? "" : cfg["pprel"] == "true" ? "-pprel" : "-pp") * (cfg["treerank"] == "true" ? "-trank" : "") * (cfg["headtrank"] == "true" ? "-htrank" : ""))
+    (isempty(cfg["pptable"]) ? "" : cfg["pprel"] == "true" ? "-pprel" : "-pp") * (cfg["treerank"] == "true" ? "-trank" : "") * (cfg["headtrank"] == "true" ? "-htrank" : "") * (isempty(cfg["headwc"]) ? "" : "-hwc" * replace(cfg["headwc"], ',' => "")))
   mkpath(workdir)
   local model, lex
   modelname = cfg["model"]
@@ -339,7 +346,7 @@ function setup(cfg)
       (isempty(cfg["suffixes"]) ? "" : ";suffixes=" * cfg["suffixes"]) * (cfg["noise"] > 0 ? ";noise=$(cfg["noise"])" : "") *
       (cfg["rootabsent"] == "true" ? ";rootabsent" : "") * (cfg["projective"] == "true" ? ";projective" : "") *
       (cfg["relations"] == "true" ? ";relations" * (cfg["relbounded"] == "true" ? ";relbounded" : "") * (cfg["relnone"] == "true" ? ";relnone" : "") : "") * (cfg["headsdist"] == "true" ? ";headsdist" : "") *
-      (isempty(cfg["pptable"]) ? "" : cfg["pprel"] == "true" ? ";pptable;pprel" : ";pptable") * (cfg["treerank"] == "true" ? ";treerank" : "") * (cfg["headtrank"] == "true" ? ";headtrank" : "") * "]"
+      (isempty(cfg["pptable"]) ? "" : cfg["pprel"] == "true" ? ";pptable;pprel" : ";pptable") * (cfg["treerank"] == "true" ? ";treerank" : "") * (cfg["headtrank"] == "true" ? ";headtrank" : "") * (isempty(cfg["headwc"]) ? "" : ";headwc=" * cfg["headwc"]) * "]"
   elseif cfg["model"] == "count"
     lex = Lexicon()
     model = train!(CountModel(), trainsample, specs, lex)
@@ -373,7 +380,9 @@ function start_workers(cfg, s)
       projective = $(cfg["projective"] == "true"), relations = $(cfg["relations"] == "true"),
       headsdist = $(cfg["headsdist"] == "true"),
       pptable = $(isempty(cfg["pptable"]) ? nothing : :(load_pptable($(cfg["pptable"]), $(joinpath(dirname(dirname(cfg["pptable"])), "classes5"))))),
-      pprel = $(cfg["pprel"] == "true"), relbounded = $(cfg["relbounded"] == "true"), relnone = $(cfg["relnone"] == "true"), treerank = $(cfg["treerank"] == "true"), headtrank = $(cfg["headtrank"] == "true"))
+      pprel = $(cfg["pprel"] == "true"), relbounded = $(cfg["relbounded"] == "true"), relnone = $(cfg["relnone"] == "true"), treerank = $(cfg["treerank"] == "true"), headtrank = $(cfg["headtrank"] == "true"),
+      headwc = $(isempty(cfg["headwc"]) ? Int[] : parse.(Int, split(cfg["headwc"], ','))),
+      headwcclasses = $(isempty(cfg["headwc"]) ? nothing : :(load_wordclasses($(isempty(cfg["wclasses"]) ? cfg["headwcdir"] : cfg["wclasses"])))))
     const WLEX = deserialize(joinpath($rundir, "lex.jls"))
     $(cfg["fwdcheck"] == "true") && (SeqLayers.FWDCHECK[] = true)
     $(cfg["softheads"] == "true") && (SeqLayers.SOFTHEADS[] = true)

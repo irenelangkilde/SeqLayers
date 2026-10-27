@@ -368,6 +368,17 @@ end
     hdir = record_events(docs, hspecs, Lexicon(), mktempdir())
     mh = ChainModel(hdir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1)
     @test 0 <= eval_scores(evaluate_counts(docs, hspecs, mh, Lexicon())).uas <= 1
+    # head word classes as head properties (head_wc30): gold from the gold head's class; the oracle stays exact
+    wdir = mktempdir()
+    write(joinpath(wdir, "wordclasses.tsv"), "#sizes\t30\n" * join(["the\t90\t3", "rain\t40\t7", "fell\t30\t12", "like\t20\t12"], '\n') * "\n")
+    wc30 = load_wordclasses(wdir)
+    hdocs = deepcopy(docs)
+    SeqLayers.add_head_wclass_gold!(hdocs, wc30, [30])
+    wspecs = default_specs(headwc = [30], headwcclasses = wc30)
+    @test evaluate(hdocs, wspecs, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
+    wdir2 = record_events(hdocs, wspecs, Lexicon(), mktempdir())
+    mw = ChainModel(wdir2; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1)
+    @test 0 <= eval_scores(evaluate_counts(hdocs, wspecs, mw, Lexicon())).uas <= 1
     tspecs = default_specs(treerank = true)
     @test evaluate(docs, tspecs, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
     rspecs = default_specs(relations = true, relbounded = true, relnone = true)

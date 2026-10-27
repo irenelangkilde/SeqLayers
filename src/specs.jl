@@ -75,7 +75,15 @@ const HEADSETS = (
 # dependents on its side counting outward (1 = nearest; see tree_rank).
 const ALLHEADSETS = merge(HEADSETS, (
   head_sdist = ["L11+", "L6-10", "L3-5", "L2", "L1", "R1", "R2", "R3-5", "R6-10", "R11+", "root"],
-  head_trank = ["1", "2", "3", "4+", "root"]))
+  head_trank = ["1", "2", "3", "4+", "root"],
+  # head_wc300 / head_wc30 (default_specs(headwc = [300, 30])): the head word's class at that level (clusters/classes5;
+  # codes as wclass_gold: 1..N, N+1 unknown), or root
+  head_wc300 = [string.(1:300); "unk"; "root"],
+  head_wc30 = [string.(1:30); "unk"; "root"]))
+
+"Word classes for the head_wc properties (set by default_specs(headwc = ...))."
+const HEADWC = Ref{Any}(nothing)
+headwc_level(name::Symbol) = (n = parse(Int, String(name)[8:end]); something(findfirst(==(n), HEADWC[].sizes), 0))
 tranklabel(r::Int) = r >= 4 ? "4+" : string(r)
 headcode(name::Symbol, s::AbstractString) =
   UInt32(something(findfirst(==(s), ALLHEADSETS[name]), length(ALLHEADSETS[name])))
@@ -319,6 +327,8 @@ function head_consistent_one(st, t, h, name)
   elseif name == :head_upos || name == :head_xpos
     tag = toks[name == :head_upos ? :upos : :xpos, h]
     tag == PENDING || HEADSETS[name][v] == TAGSETS[name == :head_upos ? :upos : :xpos][tag]
+  elseif name == :head_wc300 || name == :head_wc30
+    head_value(st, t, h, name) == v
   elseif name == :head_trank                         # the rank only grows as dependents attach between h and t
     want = v == headcode(:head_trank, "4+") ? 4 : parse(Int, ALLHEADSETS.head_trank[v])
     r = tree_rank(st, t, h)
@@ -418,6 +428,8 @@ function head_value(st, t, h, name)
     d === nothing ? PENDING : headcode(name, (toks[:first_char, h] < toks[:first_char, t] ? "L" : "R") * distlabel(d))
   elseif name == :head_trank
     headcode(name, tranklabel(tree_rank(st, t, h)))
+  elseif name == :head_wc300 || name == :head_wc30
+    wclass_gold(HEADWC[], headwc_level(name), lowercase(tokstr(st, Int(h))))
   elseif name == :head_dir
     headcode(name, toks[:first_char, h] < toks[:first_char, t] ? "left" : "right")
   elseif name == :head_dist
@@ -1043,7 +1055,8 @@ of the token's other candidates.
 function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclasses::Union{WordClasses,Nothing} = nothing,
   suffixes::Vector{Int} = Int[], noise::Int = 0, rootabsent::Bool = false, projective::Bool = false,
   relations::Bool = false, headsdist::Bool = false, pptable = nothing, pprel::Bool = false,
-  relbounded::Bool = false, relnone::Bool = false, treerank::Bool = false, headtrank::Bool = false)
+  relbounded::Bool = false, relnone::Bool = false, treerank::Bool = false, headtrank::Bool = false,
+  headwc::Vector{Int} = Int[], headwcclasses = nothing)
   safeats = charindex === nothing ? FeatDef[] : [sa_feats(charindex, :left); sa_feats(charindex, :right)]
   sapaths = charindex === nothing ? FeatPath[] : [FeatPath(:sa_left), FeatPath(:sa_right)]
   chars = LayerSpec{CharLayer}(:char,
@@ -1078,6 +1091,13 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
   nnames = noise > 0 ? [:noise] : Symbol[]
   extra = length(wlevels) + length(suffixes) + length(nnames)
   relf = RelFlags(relbounded, relnone)
+  hwnames = Symbol[Symbol(:head_wc, n) for n in headwc]
+  all(n -> n in (300, 30), headwc) || error("headwc: levels 300 and 30 only")
+  if !isempty(headwc)
+    headwcclasses === nothing && error("headwc needs headwcclasses (load_wordclasses)")
+    HEADWC[] = headwcclasses
+    all(n -> n in headwcclasses.sizes, headwc) || error("headwc: the classes have sizes $(headwcclasses.sizes)")
+  end
   relrels, relpaths, rellink = relations ? relation_rows(relf) : (RelDef[], FeatPath[], Int[])
   linkpaths = [LINK_PATHS; 22 .+ (1:extra); 22 + extra .+ rellink]   # classes, suffixes, noise, then relations: after the 22 below
   tokens = LayerSpec{TokenLayer}(:token,
@@ -1126,7 +1146,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
           mask = head_mask,
           # once the attachment is committed, the backward step derives it (the oracle decides it itself)
           ready = (st, t) -> !st.infer || (!SOFTHEADS[] && st.layers[:token][:attach, t] == PENDING))
-        for name in [collect(keys(HEADSETS)); headsdist ? [:head_sdist] : Symbol[]; headtrank ? [:head_trank] : Symbol[]]],
+        for name in [collect(keys(HEADSETS)); headsdist ? [:head_sdist] : Symbol[]; headtrank ? [:head_trank] : Symbol[]; hwnames]],
       [DecisionDef(wnames[l];
           candidates = (st, t) -> wclass_candidates(wc, l, lowercase(tokstr(st, t))),
           features = (st, t, c) -> label_features(st, :token, witemtags[l], t, c),
@@ -1146,10 +1166,11 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
       [FeatPath(name) for name in nnames],                   # then the noise feature
       relpaths,                                              # then the relations
       headsdist ? [FeatPath(:head_sdist)] : FeatPath[],      # then optional head properties (not in LINK_PATHS)
-      headtrank ? [FeatPath(:head_trank)] : FeatPath[]),
+      headtrank ? [FeatPath(:head_trank)] : FeatPath[],
+      [FeatPath(n) for n in hwnames]),
     (st, t) -> Int(st.layers[:token][:last_char, t]))
 
-  length(tokens.context) == 22 + extra + length(relpaths) + headsdist + headtrank || error("token context paths moved: update linkpaths")
+  length(tokens.context) == 22 + extra + length(relpaths) + headsdist + headtrank + length(hwnames) || error("token context paths moved: update linkpaths")
   LINKPATHS[tokens] = linkpaths
   sentences = LayerSpec{SentenceLayer}(:sentence,
     FeatDef[],

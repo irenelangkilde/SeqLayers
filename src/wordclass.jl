@@ -70,6 +70,23 @@ function wclass_candidates(wc::WordClasses, l::Int, form::AbstractString)
   cands
 end
 
+"""
+Fill in the gold head_wc labels (the gold head word's class at each level in `levels`, or root) of documents read
+by read_conllu, once the classes are loaded.
+"""
+function add_head_wclass_gold!(docs, wc::WordClasses, levels)
+  for d in docs, n in levels
+    l = findfirst(==(n), wc.sizes)
+    name = Symbol(:head_wc, n)
+    tags = get!(() -> Dict{UnitRange{Int},UInt32}(), d.gold.tags, name)
+    root = UInt32(length(ALLHEADSETS[name]))
+    for (s, hs) in d.gold.head
+      tags[s] = isempty(hs) ? root : wclass_gold(wc, l, lowercase(String(d.text[hs])))
+    end
+  end
+  docs
+end
+
 "Gold class of `form` at level l: its class, or unknown."
 wclass_gold(wc::WordClasses, l::Int, form::AbstractString) =
   (w = get(wc.index, form, 0); w > 0 ? wc.class[w, l] : wclass_unknown(wc, l))
