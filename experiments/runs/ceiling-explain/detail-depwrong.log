@@ -1,0 +1,629 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/events
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=odds;leftsmooth=evidence;accumby=dep;ctxmode=accum;ctxattach=false;cidrop=0.0;ciorder=off;telescope=false;branches=1;combine=avg;accumwin=0;accumreset=false;driftsigma=0.0;drifttau=0.0;driftstep=0.0;distback=false;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective;headtrank]  [domains=product domeps=0.0]
+
+================ "Mummy more berry ."
+  Mummy         gold -> berry       WRONG: predicted -> more
+  more          gold -> berry       ok
+  berry         gold -> ROOT        ok
+  .             gold -> berry       ok
+
+  ---- 'Mummy': gold head 'berry', predicted 'more'
+
+  ==== THIS MODEL (wrong)
+    head properties predicted (with the attachment and all of them hidden):
+      head_upos ROOT 0.99, ADJ 0.006, NOUN 0.002   (gold head: NOUN, predicted head: ADJ)
+      head_xpos ROOT 0.726, JJR 0.264, NNS 0.004   (gold head: NN, predicted head: JJR)
+      head_dir  root 0.849, right 0.151, left 0.0   (gold head: right, predicted head: right)
+      head_dist root 0.926, 1 0.051, 2 0.021   (gold head: 2, predicted head: 1)
+      head_trankroot 0.951, 1 0.045, 2 0.004   (gold head: 2, predicted head: 1)
+    log margins predicted - gold:  attach -0.38;  head_xpos +7.14, head_trank +2.54, head_upos +0.98, head_dist +0.88, head_dir +0.0;  total +11.16
+    candidates: 2   (product score = log P(attach) + Σ log P(head property value))
+
+    -- GOLD -> berry:  P(attach) 0.5927, product score -26.44
+       head-property terms: head_xpos=NN 0.0, head_dist=2 0.021, head_dir=right 0.151, head_upos=NOUN 0.002, head_trank=2 0.004
+       prior log odds -4.23   (n = chosen/not-chosen records)
+       CHAIN                                         alone (prior effect)     in the chain
+       1. distance=2 words (bucket 2)               +1.78  n 8391/97268      +1.78  n 8391/97268
+       2. cand.left_neighbor.upos=ADJ               +0.65  n 5468/195415     +1.74  n 2485/5057
+       3. dep.upos=NOUN                             +0.02  n 7815/526510     -2.49  n 21/539   <- sign flips
+       4. dep.right_neighbor.upos=ADJ               +0.03  n 3028/201174     +0.65  n 6/64
+       5. cand.upos=NOUN                            +0.79  n 16335/508711    +1.52  n 6/14
+       6. cand.right_neighbor.upos=PUNCT            +0.58  n 10010/386425    +0.34  n 4/6
+       7. dep.xpos=NN                               +0.01  n 5816/395502     +0.18  n 4/5
+       chain log odds -0.51
+
+       LEFTOVER 1: cand.left_neighbor.form=more   alone +0.39 (n 136/6293);  running estimate before: -0.51
+         ctx 1: log odds  -0.51  n 4/5          with X: n 0/0         corr unsupported
+                 context: distance=2 words (bucket 2), cand.left_neighbor.upos=ADJ, dep.upos=NOUN, dep.right_neighbor.upos=ADJ, cand.upos=NOUN, cand.right_neighbor.upos=PUNCT, dep.xpos=NN
+         ctx 2: log odds  -2.42  n 6/56         with X: n 0/1         corr unsupported   [-distance=2 words (bucket 2)]
+         ctx 3: log odds  -2.15  n 6/60         with X: n 0/1         corr unsupported   [-dep.upos=NOUN]
+         ctx 4: log odds  -1.69  n 517/2789     with X: n 0/13        corr -0.8  <= TAKEN   [-dep.xpos=NN]
+
+       LEFTOVER 2: cand.form=berry   alone +1.27 (n 4/58);  running estimate before: -1.31
+         ctx 1: log odds  -2.56  n 0/13         with X: n 0/0         corr unsupported
+                 context: cand.left_neighbor.upos=ADJ, dep.right_neighbor.upos=ADJ, cand.upos=NOUN, cand.right_neighbor.upos=PUNCT, cand.left_neighbor.form=more
+         ctx 2: log odds  -1.88  n 6/46         with X: n 0/0         corr unsupported   [-cand.left_neighbor.form=more, +cand.left_neighbor.xpos=JJR]
+         ctx 3: log odds  -1.69  n 517/2789     with X: n 0/0         corr unsupported   [-cand.left_neighbor.xpos=JJR]
+         ctx 4: log odds  -3.05  n 1747/36944   with X: n 0/0         corr unsupported   [-dep.right_neighbor.upos=ADJ]
+         ctx 5: log odds  -3.05  n 1747/36944   with X: n 0/0         corr unsupported   []
+         ctx 6: log odds  -3.35  n 5645/160470  with X: n 4/58        corr +0.37  <= TAKEN   [-cand.left_neighbor.upos=ADJ]
+
+       LEFTOVER 3: dep.right_neighbor.xpos=JJR   alone +0.05 (n 98/6316);  running estimate before: -0.94
+         ctx 1: log odds  -2.96  n 4/58         with X: n 0/0         corr unsupported
+                 context: cand.upos=NOUN, cand.right_neighbor.upos=PUNCT, cand.form=berry
+         ctx 2: log odds  -2.96  n 4/58         with X: n 0/0         corr unsupported   [-cand.upos=NOUN]
+         ctx 3: log odds  -2.96  n 4/58         with X: n 0/0         corr unsupported   [-cand.right_neighbor.upos=PUNCT]
+         ctx 4: log odds  -3.46  n 12044/382089 with X: n 28/810      corr +0.05  <= TAKEN   [-cand.form=berry, +cand.xpos=NN]
+
+       LEFTOVER 4: cand.left_neighbor.xpos=JJR   alone +0.51 (n 150/6174);  running estimate before: -0.89
+         ctx 1: log odds   -3.4  n 28/810       with X: n 18/59       corr +2.13  <= TAKEN
+                 context: cand.xpos=NN, dep.right_neighbor.xpos=JJR
+
+       LEFTOVER 5: cand.len=5   alone +0.46 (n 5768/250048);  running estimate before: +1.24
+         ctx 1: log odds  -1.24  n 18/59        with X: n 1/5         corr +0.0  <= TAKEN
+                 context: cand.xpos=NN, dep.right_neighbor.xpos=JJR, cand.left_neighbor.xpos=JJR
+
+       LEFTOVER 6: cand.right_neighbor.form=.   alone +0.55 (n 3517/138851);  running estimate before: +1.24
+         ctx 1: log odds  -1.24  n 1/5          with X: n 0/0         corr unsupported
+                 context: cand.xpos=NN, dep.right_neighbor.xpos=JJR, cand.left_neighbor.xpos=JJR, cand.len=5
+         ctx 2: log odds  -1.06  n 4/14         with X: n 0/0         corr unsupported   [-cand.xpos=NN, +cand.upos=NOUN]
+         ctx 3: log odds  -1.03  n 4/14         with X: n 0/0         corr unsupported   [-cand.upos=NOUN, +cand.basepos=N]
+         ctx 4: log odds  -3.07  n 19/386       with X: n 0/0         corr unsupported   [-dep.right_neighbor.xpos=JJR]
+         ctx 5: log odds  -3.57  n 3052/108901  with X: n 478/15297   corr +0.11  <= TAKEN   [-cand.left_neighbor.xpos=JJR]
+
+       evidence: positive +8.86, negative -3.29;  final log odds +1.34
+
+    -- PREDICTED -> more:  P(attach) 0.4051, product score -15.28
+       head-property terms: head_xpos=JJR 0.264, head_dist=1 0.051, head_dir=right 0.151, head_upos=ADJ 0.006, head_trank=1 0.045
+       prior log odds -4.23   (n = chosen/not-chosen records)
+       CHAIN                                         alone (prior effect)     in the chain
+       1. distance=1 word (bucket 1)                +3.06  n 10046/32367     +3.06  n 10046/32367
+       2. cand.right_neighbor.xpos=NN                -1.4  n 1412/392578      -1.4  n 385/5033
+       3. cand.len=4                                +0.26  n 8440/444977     +0.48  n 78/624
+       4. dep.len=5                                  -0.0  n 3714/255488     +0.89  n 13/40   <- sign flips
+       5. dep.basepos=N                             +0.02  n 10995/740521    +0.62  n 6/9
+       6. cand.left_neighbor.upos=NOUN               -0.6  n 4141/518674     -0.33  n 1/5
+       7. cand.number=0                             -0.58  n 17010/2087195   -0.69  n 0/5
+       chain log odds -1.61
+
+       LEFTOVER 1: dep.right_neighbor.upos=ADJ   alone +0.03 (n 3028/201174);  running estimate before: -1.61
+         ctx 1: log odds  -1.61  n 0/5          with X: n 0/0         corr unsupported
+                 context: distance=1 word (bucket 1), cand.right_neighbor.xpos=NN, cand.len=4, dep.len=5, dep.basepos=N, cand.left_neighbor.upos=NOUN, cand.number=0
+         ctx 2: log odds   -3.4  n 2/90         with X: n 0/2         corr unsupported   [-cand.right_neighbor.xpos=NN]
+         ctx 3: log odds  -1.59  n 20/103       with X: n 0/2         corr unsupported   [-cand.number=0]
+         ctx 4: log odds  -1.83  n 160/995      with X: n 5/11        corr +0.74  <= TAKEN   [-cand.len=4]
+
+       LEFTOVER 2: dep.xpos=NN   alone +0.01 (n 5816/395502);  running estimate before: -0.87
+         ctx 1: log odds  -1.01  n 5/11         with X: n 2/8         corr -0.29  <= TAKEN
+                 context: distance=1 word (bucket 1), dep.len=5, dep.basepos=N, cand.left_neighbor.upos=NOUN, dep.right_neighbor.upos=ADJ
+
+       LEFTOVER 3: cand.form=more   alone -0.33 (n 66/6380);  running estimate before: -1.16
+         ctx 1: log odds  -1.01  n 2/8          with X: n 0/0         corr unsupported
+                 context: distance=1 word (bucket 1), dep.len=5, dep.basepos=N, cand.left_neighbor.upos=NOUN, dep.right_neighbor.upos=ADJ, dep.xpos=NN
+         ctx 2: log odds  -4.05  n 3/115        with X: n 0/0         corr unsupported   [-distance=1 word (bucket 1)]
+         ctx 3: log odds  -3.98  n 15/746       with X: n 0/3         corr unsupported   [-dep.len=5]
+         ctx 4: log odds  -3.92  n 1503/75441   with X: n 1/49        corr +0.0  <= TAKEN   [-dep.right_neighbor.upos=ADJ]
+
+       LEFTOVER 4: dep.right_neighbor.form=more   alone +0.0 (n 91/6232);  running estimate before: -1.16
+         ctx 1: log odds  -3.92  n 1/49         with X: n 1/4         corr +1.61  <= TAKEN
+                 context: dep.basepos=N, cand.left_neighbor.upos=NOUN, dep.xpos=NN, cand.form=more
+
+       LEFTOVER 5: dep.right_neighbor.xpos=JJR   alone +0.05 (n 98/6316);  running estimate before: +0.45
+         ctx 1: log odds  -3.92  n 1/4          with X: n 0/1         corr unsupported
+                 context: dep.basepos=N, cand.left_neighbor.upos=NOUN, dep.xpos=NN, cand.form=more, dep.right_neighbor.form=more
+         ctx 2: log odds  -1.61  n 2/5          with X: n 0/1         corr unsupported   [-cand.left_neighbor.upos=NOUN]
+         ctx 3: log odds  -1.61  n 2/5          with X: n 0/1         corr unsupported   [-dep.basepos=N]
+         ctx 4: log odds  -1.07  n 28/79        with X: n 14/22       corr +0.52  <= TAKEN   [-dep.xpos=NN]
+
+       LEFTOVER 6: cand.upos=ADJ   alone -0.11 (n 2609/199296);  running estimate before: +0.96
+         ctx 1: log odds  -0.53  n 14/22        with X: n 13/21       corr +0.0  <= TAKEN
+                 context: cand.form=more, dep.right_neighbor.form=more, dep.right_neighbor.xpos=JJR
+
+       LEFTOVER 7: cand.xpos=JJR   alone +0.26 (n 119/6228);  running estimate before: +0.96
+         ctx 1: log odds  -0.53  n 13/21        with X: n 13/21       corr +0.0  <= TAKEN
+                 context: cand.form=more, dep.right_neighbor.form=more, dep.right_neighbor.xpos=JJR, cand.upos=ADJ
+
+       LEFTOVER 8: cand.basepos=J   alone -0.06 (n 2610/191387);  running estimate before: +0.96
+         ctx 1: log odds  -0.53  n 13/21        with X: n 13/21       corr +0.0  <= TAKEN
+                 context: cand.form=more, dep.right_neighbor.form=more, dep.right_neighbor.xpos=JJR, cand.upos=ADJ, cand.xpos=JJR
+
+       LEFTOVER 9: cand.left_neighbor.xpos=NN   alone -0.5 (n 3444/389021);  running estimate before: +0.96
+         ctx 1: log odds  -0.53  n 13/21        with X: n 0/1         corr unsupported
+                 context: cand.form=more, dep.right_neighbor.form=more, dep.right_neighbor.xpos=JJR, cand.upos=ADJ, cand.xpos=JJR, cand.basepos=J
+         ctx 2: log odds  -0.65  n 13/25        with X: n 0/1         corr unsupported   [-cand.form=more]
+         ctx 3: log odds  -0.73  n 13/25        with X: n 0/1         corr unsupported   []
+         ctx 4: log odds  -0.73  n 13/25        with X: n 0/1         corr unsupported   []
+         ctx 5: log odds  -1.23  n 13/41        with X: n 0/1         corr unsupported   [-dep.right_neighbor.xpos=JJR]
+         ctx 6: log odds  -1.41  n 31/123       with X: n 1/1         corr unsupported   [-dep.right_neighbor.form=more, +dep.right_neighbor.xpos=JJR]
+         ctx 7: log odds   -2.8  n 32/512       with X: n 1/7         corr +0.0  <= TAKEN   [-dep.right_neighbor.xpos=JJR, +dep.right_neighbor.upos=ADJ]
+
+       evidence: positive +7.9, negative -2.71;  final log odds +0.96
+
+  ==== CONTRAST MODEL (accumby:odds; right)
+    head properties predicted (with the attachment and all of them hidden):
+      head_upos ROOT 0.981, NOUN 0.01, ADJ 0.007   (gold head: NOUN, predicted head: ADJ)
+      head_xpos ROOT 0.979, JJR 0.01, NN 0.003   (gold head: NN, predicted head: JJR)
+      head_dir  root 0.827, right 0.173, left 0.0   (gold head: right, predicted head: right)
+      head_dist root 0.96, 2 0.028, 1 0.01   (gold head: 2, predicted head: 1)
+      head_trankroot 0.982, 2 0.015, 1 0.002   (gold head: 2, predicted head: 1)
+    log margins predicted - gold:  attach -1.3;  head_xpos +1.28, head_dir +0.0, head_upos -0.38, head_dist -1.04, head_trank -2.06;  total -3.49
+    candidates: 2   (product score = log P(attach) + Σ log P(head property value))
+
+    -- GOLD -> berry:  P(attach) 0.7846, product score -20.25
+       head-property terms: head_xpos=NN 0.003, head_dist=2 0.028, head_dir=right 0.173, head_upos=NOUN 0.01, head_trank=2 0.015
+       prior log odds -4.23   (n = chosen/not-chosen records)
+       CHAIN                                         alone (prior effect)     in the chain
+       1. distance=2 words (bucket 2)               +1.78  n 8391/97268      +1.78  n 8391/97268
+       2. cand.left_neighbor.upos=ADJ               +0.65  n 5468/195415     +1.74  n 2485/5057
+       3. dep.upos=NOUN                             +0.02  n 7815/526510     -2.49  n 21/539   <- sign flips
+       4. dep.right_neighbor.upos=ADJ               +0.03  n 3028/201174     +0.65  n 6/64
+       5. cand.upos=NOUN                            +0.79  n 16335/508711    +1.52  n 6/14
+       6. cand.right_neighbor.upos=PUNCT            +0.58  n 10010/386425    +0.34  n 4/6
+       7. dep.xpos=NN                               +0.01  n 5816/395502     +0.18  n 4/5
+       chain log odds -0.51
+
+       LEFTOVER 1: cand.form=berry   alone +1.27 (n 4/58);  running estimate before: -0.51
+         ctx 1: log odds  -0.51  n 4/5          with X: n 0/0         corr unsupported
+                 context: distance=2 words (bucket 2), cand.left_neighbor.upos=ADJ, dep.upos=NOUN, dep.right_neighbor.upos=ADJ, cand.upos=NOUN, cand.right_neighbor.upos=PUNCT, dep.xpos=NN
+         ctx 2: log odds  -0.69  n 4/6          with X: n 0/0         corr unsupported   [-cand.left_neighbor.upos=ADJ]
+         ctx 3: log odds  -0.18  n 4/6          with X: n 0/0         corr unsupported   [-dep.upos=NOUN]
+         ctx 4: log odds  -0.63  n 7/15         with X: n 0/0         corr unsupported   [-cand.right_neighbor.upos=PUNCT]
+         ctx 5: log odds  +0.29  n 1135/845     with X: n 0/0         corr unsupported   [-dep.xpos=NN]
+         ctx 6: log odds  -1.09  n 4638/13750   with X: n 0/3         corr unsupported   [-dep.right_neighbor.upos=ADJ]
+         ctx 7: log odds  -2.45  n 8391/97268   with X: n 0/3         corr unsupported   [-cand.upos=NOUN]
+         ctx 8: log odds  -4.23  n -            with X: n 4/58        corr +1.27  <= TAKEN   [-distance=2 words (bucket 2)]
+
+       LEFTOVER 2: cand.left_neighbor.xpos=JJR   alone +0.51 (n 150/6174);  running estimate before: +0.76
+         ctx 1: log odds  -2.96  n 4/58         with X: n 0/0         corr unsupported
+                 context: cand.form=berry
+         ctx 2: log odds  -3.46  n 12044/382089 with X: n 99/2436     corr +0.24  <= TAKEN   [-cand.form=berry, +cand.xpos=NN]
+
+       LEFTOVER 3: dep.right_neighbor.xpos=JJR   alone +0.05 (n 98/6316);  running estimate before: +1.0
+         ctx 1: log odds  -3.21  n 99/2436      with X: n 18/59       corr +1.95  <= TAKEN
+                 context: cand.xpos=NN, cand.left_neighbor.xpos=JJR
+
+       LEFTOVER 4: cand.len=5   alone +0.46 (n 5768/250048);  running estimate before: +2.95
+         ctx 1: log odds  -1.24  n 18/59        with X: n 1/5         corr +0.0  <= TAKEN
+                 context: cand.xpos=NN, cand.left_neighbor.xpos=JJR, dep.right_neighbor.xpos=JJR
+
+       LEFTOVER 5: cand.left_neighbor.form=more   alone +0.39 (n 136/6293);  running estimate before: +2.95
+         ctx 1: log odds  -1.24  n 1/5          with X: n 0/0         corr unsupported
+                 context: cand.xpos=NN, cand.left_neighbor.xpos=JJR, dep.right_neighbor.xpos=JJR, cand.len=5
+         ctx 2: log odds  -1.06  n 4/14         with X: n 2/5         corr +0.0  <= TAKEN   [-cand.xpos=NN, +cand.upos=NOUN]
+
+       LEFTOVER 6: cand.right_neighbor.form=.   alone +0.55 (n 3517/138851);  running estimate before: +2.95
+         ctx 1: log odds  -1.06  n 2/5          with X: n 0/0         corr unsupported
+                 context: cand.upos=NOUN, cand.left_neighbor.xpos=JJR, dep.right_neighbor.xpos=JJR, cand.len=5, cand.left_neighbor.form=more
+         ctx 2: log odds  -1.03  n 2/5          with X: n 0/0         corr unsupported   [-cand.upos=NOUN, +cand.basepos=N]
+         ctx 3: log odds  -0.99  n 6/16         with X: n 0/4         corr unsupported   [-cand.len=5]
+         ctx 4: log odds  -0.99  n 29/75        with X: n 3/8         corr +0.0  <= TAKEN   [-cand.left_neighbor.form=more]
+
+       evidence: positive +9.67, negative -2.49;  final log odds +2.95
+
+    -- PREDICTED -> more:  P(attach) 0.2148, product score -23.74
+       head-property terms: head_xpos=JJR 0.01, head_dist=1 0.01, head_dir=right 0.173, head_upos=ADJ 0.007, head_trank=1 0.002
+       prior log odds -4.23   (n = chosen/not-chosen records)
+       CHAIN                                         alone (prior effect)     in the chain
+       1. distance=1 word (bucket 1)                +3.06  n 10046/32367     +3.06  n 10046/32367
+       2. cand.right_neighbor.xpos=NN                -1.4  n 1412/392578      -1.4  n 385/5033
+       3. cand.len=4                                +0.26  n 8440/444977     +0.48  n 78/624
+       4. dep.len=5                                  -0.0  n 3714/255488     +0.89  n 13/40   <- sign flips
+       5. dep.basepos=N                             +0.02  n 10995/740521    +0.62  n 6/9
+       6. cand.left_neighbor.upos=NOUN               -0.6  n 4141/518674     -0.33  n 1/5
+       7. cand.number=0                             -0.58  n 17010/2087195   -0.69  n 0/5
+       chain log odds -1.61
+
+       LEFTOVER 1: cand.left_neighbor.xpos=NN   alone -0.5 (n 3444/389021);  running estimate before: -1.61
+         ctx 1: log odds  -1.61  n 0/5          with X: n 0/3         corr unsupported
+                 context: distance=1 word (bucket 1), cand.right_neighbor.xpos=NN, cand.len=4, dep.len=5, dep.basepos=N, cand.left_neighbor.upos=NOUN, cand.number=0
+         ctx 2: log odds  -1.61  n 0/5          with X: n 0/3         corr unsupported   [-dep.basepos=N]
+         ctx 3: log odds   -1.2  n 9/32         with X: n 0/3         corr unsupported   [-cand.left_neighbor.upos=NOUN]
+         ctx 4: log odds   -1.6  n 72/363       with X: n 2/54        corr -1.27  <= TAKEN   [-cand.right_neighbor.xpos=NN]
+
+       LEFTOVER 2: dep.right_neighbor.form=more   alone +0.0 (n 91/6232);  running estimate before: -2.88
+         ctx 1: log odds  -2.89  n 2/54         with X: n 0/0         corr unsupported
+                 context: distance=1 word (bucket 1), cand.len=4, dep.len=5, cand.number=0, cand.left_neighbor.xpos=NN
+         ctx 2: log odds  -2.89  n 15/289       with X: n 1/2         corr unsupported   [-dep.len=5]
+         ctx 3: log odds  -3.94  n 70/3642      with X: n 1/2         corr unsupported   [-cand.len=4]
+         ctx 4: log odds  -2.03  n 3378/25619   with X: n 23/53       corr +1.13  <= TAKEN   [-cand.left_neighbor.xpos=NN]
+
+       LEFTOVER 3: cand.xpos=JJR   alone +0.26 (n 119/6228);  running estimate before: -1.75
+         ctx 1: log odds  -0.88  n 23/53        with X: n 9/10        corr +0.58  <= TAKEN
+                 context: distance=1 word (bucket 1), cand.number=0, dep.right_neighbor.form=more
+
+       LEFTOVER 4: dep.xpos=NN   alone +0.01 (n 5816/395502);  running estimate before: -1.17
+         ctx 1: log odds  -0.22  n 9/10         with X: n 0/0         corr unsupported
+                 context: distance=1 word (bucket 1), cand.number=0, dep.right_neighbor.form=more, cand.xpos=JJR
+         ctx 2: log odds  -1.15  n 14/41        with X: n 0/4         corr unsupported   [-distance=1 word (bucket 1)]
+         ctx 3: log odds  -1.15  n 14/41        with X: n 0/4         corr unsupported   [-cand.number=0]
+         ctx 4: log odds  -1.38  n 32/123       with X: n 1/1         corr unsupported   [-dep.right_neighbor.form=more, +dep.right_neighbor.xpos=JJR]
+         ctx 5: log odds  -2.81  n 32/513       with X: n 2/6         corr +0.86  <= TAKEN   [-dep.right_neighbor.xpos=JJR, +dep.right_neighbor.upos=ADJ]
+
+       LEFTOVER 5: dep.right_neighbor.xpos=JJR   alone +0.05 (n 98/6316);  running estimate before: -0.31
+         ctx 1: log odds  -1.79  n 2/6          with X: n 1/1         corr unsupported
+                 context: dep.right_neighbor.upos=ADJ, cand.xpos=JJR, dep.xpos=NN
+         ctx 2: log odds  -2.81  n 32/513       with X: n 31/123      corr +1.36  <= TAKEN   [-dep.xpos=NN]
+
+       LEFTOVER 6: cand.form=more   alone -0.33 (n 66/6380);  running estimate before: +1.05
+         ctx 1: log odds  -1.41  n 31/123       with X: n 13/26       corr +0.61  <= TAKEN
+                 context: dep.right_neighbor.upos=ADJ, cand.xpos=JJR, dep.right_neighbor.xpos=JJR
+
+       LEFTOVER 7: cand.upos=ADJ   alone -0.11 (n 2609/199296);  running estimate before: +1.66
+         ctx 1: log odds  -0.77  n 13/26        with X: n 13/26       corr +0.0  <= TAKEN
+                 context: dep.right_neighbor.upos=ADJ, cand.xpos=JJR, dep.right_neighbor.xpos=JJR, cand.form=more
+
+       LEFTOVER 8: cand.basepos=J   alone -0.06 (n 2610/191387);  running estimate before: +1.66
+         ctx 1: log odds  -0.77  n 13/26        with X: n 13/26       corr +0.0  <= TAKEN
+                 context: dep.right_neighbor.upos=ADJ, cand.xpos=JJR, dep.right_neighbor.xpos=JJR, cand.form=more, cand.upos=ADJ
+
+       evidence: positive +9.58, negative -3.69;  final log odds +1.66
+
+================ "Wan na go get your cards ?"
+  Wan           gold -> ROOT        ok
+  na            gold -> go          ok
+  go            gold -> Wan         ok
+  get           gold -> go          ok
+  your          gold -> cards       ok
+  cards         gold -> get         WRONG: predicted -> go
+  ?             gold -> Wan         WRONG: predicted -> cards
+
+  ---- 'cards': gold head 'get', predicted 'go'
+
+  ==== THIS MODEL (wrong)
+    head properties predicted (with the attachment and all of them hidden):
+      head_upos PRON 0.48, VERB 0.365, ROOT 0.084   (gold head: VERB, predicted head: VERB)
+      head_xpos WP 0.266, VB 0.26, VBP 0.165   (gold head: VB, predicted head: VB)
+      head_dir  left 0.989, root 0.011, right 0.0   (gold head: left, predicted head: left)
+      head_dist 3-5 0.66, 2 0.185, root 0.119   (gold head: 2, predicted head: 3-5)
+      head_trank1 0.945, 2 0.028, root 0.022   (gold head: 1, predicted head: 2)
+    log margins predicted - gold:  attach +2.32;  head_dist +1.27, head_xpos +0.0, head_dir +0.0, head_upos +0.0, head_trank -3.52;  total +0.08
+    candidates: 4   (product score = log P(attach) + Σ log P(head property value))
+
+    -- GOLD -> get:  P(attach) 0.0885, product score -6.53
+       head-property terms: head_xpos=VB 0.26, head_dist=2 0.185, head_dir=left 0.989, head_upos=VERB 0.365, head_trank=1 0.945
+       prior log odds -4.23   (n = chosen/not-chosen records)
+       CHAIN                                         alone (prior effect)     in the chain
+       1. cand.left_neighbor.form=go                 -2.6  n 4/4636           -2.6  n 4/4636
+       2. distance=2 words (bucket 2)                +1.4  n 5741/97633      +1.64  n 2/180
+       chain log odds -5.19
+
+       LEFTOVER 1: cand.upos=VERB   alone +1.31 (n 16680/307908);  running estimate before: -5.19
+         ctx 1: log odds  -5.19  n 2/180        with X: n 0/0         corr unsupported
+                 context: cand.left_neighbor.form=go, distance=2 words (bucket 2)
+         ctx 2: log odds  -6.83  n 4/4636       with X: n 0/0         corr unsupported   [-distance=2 words (bucket 2)]
+         ctx 3: log odds  -4.81  n 951/116950   with X: n 577/7944    corr +2.19  <= TAKEN   [-cand.left_neighbor.form=go, +cand.left_neighbor.xpos=VB]
+
+       LEFTOVER 2: dep.left_neighbor.xpos=PRP$   alone -0.02 (n 529/37005);  running estimate before: -3.0
+         ctx 1: log odds  -2.62  n 577/7944     with X: n 0/80        corr -1.75  <= TAKEN
+                 context: cand.left_neighbor.xpos=VB, cand.upos=VERB
+
+       LEFTOVER 3: cand.right_neighbor.xpos=PRP$   alone -0.04 (n 504/36146);  running estimate before: -4.75
+         ctx 1: log odds  -4.38  n 0/80         with X: n 0/1         corr unsupported
+                 context: cand.left_neighbor.xpos=VB, cand.upos=VERB, dep.left_neighbor.xpos=PRP$
+         ctx 2: log odds   -4.1  n 0/59         with X: n 0/3         corr unsupported   [-cand.left_neighbor.xpos=VB, +cand.left_neighbor.upos=VERB]
+         ctx 3: log odds  -2.87  n 231/4038     with X: n 89/163      corr +2.24  <= TAKEN   [-cand.left_neighbor.upos=VERB]
+
+       LEFTOVER 4: dep.xpos=NNS   alone +0.04 (n 2085/137427);  running estimate before: -2.51
+         ctx 1: log odds  -0.62  n 89/163       with X: n 22/15       corr +0.89  <= TAKEN
+                 context: cand.upos=VERB, dep.left_neighbor.xpos=PRP$, cand.right_neighbor.xpos=PRP$
+
+       LEFTOVER 5: dep.left_neighbor.form=your   alone -0.02 (n 75/5344);  running estimate before: -1.62
+         ctx 1: log odds  +0.32  n 22/15        with X: n 1/3         corr unsupported
+                 context: cand.upos=VERB, dep.left_neighbor.xpos=PRP$, cand.right_neighbor.xpos=PRP$, dep.xpos=NNS
+         ctx 2: log odds  -1.66  n 22/110       with X: n 1/19        corr -0.64  <= TAKEN   [-cand.upos=VERB]
+
+       LEFTOVER 6: dep.right_neighbor.form=?   alone -0.14 (n 257/20295);  running estimate before: -2.26
+         ctx 1: log odds  -2.25  n 1/19         with X: n 0/0         corr unsupported
+                 context: dep.left_neighbor.xpos=PRP$, cand.right_neighbor.xpos=PRP$, dep.xpos=NNS, dep.left_neighbor.form=your
+         ctx 2: log odds  -2.68  n 13/205       with X: n 3/5         corr +1.74  <= TAKEN   [-dep.xpos=NNS]
+
+       LEFTOVER 7: cand.right_neighbor.form=your   alone +0.14 (n 90/5326);  running estimate before: -0.51
+         ctx 1: log odds  -0.92  n 3/5          with X: n 3/3         corr +0.0  <= TAKEN
+                 context: dep.left_neighbor.xpos=PRP$, cand.right_neighbor.xpos=PRP$, dep.left_neighbor.form=your, dep.right_neighbor.form=?
+
+       LEFTOVER 8: cand.form=get   alone +1.31 (n 179/3292);  running estimate before: -0.51
+         ctx 1: log odds  -0.41  n 3/3          with X: n 0/0         corr unsupported
+                 context: dep.left_neighbor.xpos=PRP$, cand.right_neighbor.xpos=PRP$, dep.left_neighbor.form=your, dep.right_neighbor.form=?, cand.right_neighbor.form=your
+         ctx 2: log odds  -0.92  n 3/5          with X: n 0/0         corr unsupported   [-cand.right_neighbor.form=your]
+         ctx 3: log odds  -0.92  n 3/5          with X: n 0/0         corr unsupported   [+cand.right_neighbor.upos=PRON]
+         ctx 4: log odds  -0.92  n 3/5          with X: n 0/0         corr unsupported   [-dep.left_neighbor.xpos=PRP$]
+         ctx 5: log odds  -1.25  n 5/14         with X: n 0/0         corr unsupported   [-dep.left_neighbor.form=your, +dep.left_neighbor.xpos=PRP$]
+         ctx 6: log odds  -2.51  n 5/49         with X: n 0/0         corr unsupported   [-dep.left_neighbor.xpos=PRP$, +dep.left_neighbor.upos=PRON]
+         ctx 7: log odds  -2.56  n 2/13         with X: n 0/0         corr unsupported   [-dep.right_neighbor.form=?, +dep.right_neighbor.xpos=?]
+         ctx 8: log odds  -4.27  n 2/113        with X: n 0/0         corr unsupported   [-dep.left_neighbor.upos=PRON]
+         ctx 9: log odds  -3.93  n 95/4768      with X: n 0/37        corr +0.0  <= TAKEN   [-dep.right_neighbor.xpos=?, +dep.right_neighbor.upos=PUNCT]
+
+       LEFTOVER 9: dep.right_neighbor.xpos=?   alone -0.19 (n 84/7033);  running estimate before: -0.51
+         ctx 1: log odds  -3.93  n 0/37         with X: n 0/0         corr unsupported
+                 context: cand.right_neighbor.xpos=PRP$, dep.right_neighbor.upos=PUNCT, cand.right_neighbor.upos=PRON, cand.form=get
+         ctx 2: log odds  -2.62  n 11/138       with X: n 2/11        corr +0.15  <= TAKEN   [-cand.right_neighbor.xpos=PRP$]
+
+       LEFTOVER 10: cand.xpos=VB   alone +1.14 (n 5173/113373);  running estimate before: -0.37
+         ctx 1: log odds   -2.4  n 2/11         with X: n 2/11        corr +0.0  <= TAKEN
+                 context: dep.right_neighbor.upos=PUNCT, cand.right_neighbor.upos=PRON, cand.form=get, dep.right_neighbor.xpos=?
+
+       LEFTOVER 11: cand.basepos=V   alone +0.94 (n 16775/448947);  running estimate before: -0.37
+         ctx 1: log odds   -2.4  n 2/11         with X: n 2/11        corr +0.0  <= TAKEN
+                 context: dep.right_neighbor.upos=PUNCT, cand.right_neighbor.upos=PRON, cand.form=get, dep.right_neighbor.xpos=?, cand.xpos=VB
+
+       LEFTOVER 12: cand.tense=infinitive   alone +1.14 (n 5173/113373);  running estimate before: -0.37
+         ctx 1: log odds   -2.4  n 2/11         with X: n 2/11        corr +0.0  <= TAKEN
+                 context: dep.right_neighbor.upos=PUNCT, cand.right_neighbor.upos=PRON, cand.form=get, dep.right_neighbor.xpos=?, cand.xpos=VB, cand.basepos=V
+
+       evidence: positive +8.86, negative -4.99;  final log odds -0.37
+
+    -- PREDICTED -> go:  P(attach) 0.9019, product score -6.46
+       head-property terms: head_xpos=VB 0.26, head_dist=3-5 0.66, head_dir=left 0.989, head_upos=VERB 0.365, head_trank=2 0.028
+       prior log odds -4.23   (n = chosen/not-chosen records)
+       CHAIN                                         alone (prior effect)     in the chain
+       1. cand.right_neighbor.xpos=VB               -2.93  n 91/118200       -2.93  n 91/118200
+       2. cand.upos=VERB                            +1.31  n 16680/307908    +4.08  n 41/866
+       3. distance=3 words (bucket 3-5)              +1.4  n 5741/97633      +1.86  n 9/27
+       4. cand.xpos=VB                              +1.14  n 5173/113373     -0.98  n 0/9   <- sign flips
+       chain log odds -2.2
+
+       LEFTOVER 1: cand.right_neighbor.form=get   alone -2.13 (n 5/3475);  running estimate before: -2.2
+         ctx 1: log odds   -2.2  n 0/9          with X: n 0/0         corr unsupported
+                 context: cand.right_neighbor.xpos=VB, cand.upos=VERB, distance=3 words (bucket 3-5), cand.xpos=VB
+         ctx 2: log odds  -3.39  n 9/296        with X: n 0/0         corr unsupported   [-distance=3 words (bucket 3-5)]
+         ctx 3: log odds  -2.92  n 5165/95946   with X: n 0/0         corr unsupported   [-cand.right_neighbor.xpos=VB]
+         ctx 4: log odds  -2.92  n 16680/307908 with X: n 0/0         corr unsupported   [-cand.xpos=VB]
+         ctx 5: log odds  -4.23  n -            with X: n 5/3475      corr -2.13  <= TAKEN   [-cand.upos=VERB]
+
+       LEFTOVER 2: cand.form=go   alone +1.23 (n 220/4411);  running estimate before: -4.33
+         ctx 1: log odds  -6.36  n 5/3475       with X: n 0/0         corr unsupported
+                 context: cand.right_neighbor.form=get
+         ctx 2: log odds  -7.16  n 91/118200    with X: n 0/0         corr unsupported   [-cand.right_neighbor.form=get, +cand.right_neighbor.xpos=VB]
+         ctx 3: log odds  -5.51  n 1302/322759  with X: n 0/0         corr unsupported   [-cand.right_neighbor.xpos=VB, +cand.right_neighbor.upos=VERB]
+         ctx 4: log odds  -4.23  n -            with X: n 220/4411    corr +1.23  <= TAKEN   [-cand.right_neighbor.upos=VERB]
+
+       LEFTOVER 3: cand.left_neighbor.form=na   alone +0.4 (n 27/1194);  running estimate before: -3.1
+         ctx 1: log odds   -3.0  n 220/4411     with X: n 0/0         corr unsupported
+                 context: cand.form=go
+         ctx 2: log odds  -3.09  n 5173/113373  with X: n 25/1000     corr -0.56  <= TAKEN   [-cand.form=go, +cand.xpos=VB]
+
+       LEFTOVER 4: dep.left_neighbor.xpos=PRP$   alone -0.02 (n 529/37005);  running estimate before: -3.66
+         ctx 1: log odds  -3.65  n 25/1000      with X: n 2/14        corr +1.02  <= TAKEN
+                 context: cand.xpos=VB, cand.left_neighbor.form=na
+
+       LEFTOVER 5: dep.len=5   alone -0.0 (n 3714/255488);  running estimate before: -2.64
+         ctx 1: log odds  -2.64[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 52.4 s): 14 of 32 slots always, 280 gate values
+[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (41.1 s)
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 36.0 s): 14 of 32 slots always, 280 gate values
+[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (30.1 s)
+  n 2/14         with X: n 2/1         corr unsupported
+                 context: cand.xpos=VB, cand.left_neighbor.form=na, dep.left_neighbor.xpos=PRP$
+         ctx 2: log odds  -2.94  n 2/19         with X: n 2/1         corr unsupported   [-cand.xpos=VB, +cand.upos=VERB]
+         ctx 3: log odds   -3.0  n 2/20         with X: n 2/1         corr unsupported   [-cand.upos=VERB, +cand.basepos=V]
+         ctx 4: log odds  -3.18  n 2/24         with X: n 2/4         corr +1.2  <= TAKEN   [-cand.basepos=V]
+
+       LEFTOVER 6: dep.number=plural   alone +0.01 (n 4069/276610);  running estimate before: -1.44
+         ctx 1: log odds  -1.39  n 2/4          with X: n 2/0         corr unsupported
+                 context: cand.left_neighbor.form=na, dep.left_neighbor.xpos=PRP$, dep.len=5
+         ctx 2: log odds  -3.14  n 4/87         with X: n 3/11        corr +1.48  <= TAKEN   [-cand.left_neighbor.form=na, +cand.left_neighbor.xpos=TO]
+
+       LEFTOVER 7: dep.left_neighbor.form=your   alone -0.02 (n 75/5344);  running estimate before: +0.04
+         ctx 1: log odds   -1.7  n 3/11         with X: n 1/1         corr unsupported
+                 context: cand.left_neighbor.xpos=TO, dep.left_neighbor.xpos=PRP$, dep.len=5, dep.number=plural
+         ctx 2: log odds  -1.87  n 3/13         with X: n 1/2         corr unsupported   [-cand.left_neighbor.xpos=TO, +cand.left_neighbor.upos=PART]
+         ctx 3: log odds  -3.34  n 5/170        with X: n 3/29        corr +1.05  <= TAKEN   [-dep.number=plural]
+
+       LEFTOVER 8: dep.xpos=NNS   alone +0.04 (n 2085/137427);  running estimate before: +1.09
+         ctx 1: log odds  -2.67  n 3/29         with X: n 1/2         corr unsupported
+                 context: cand.left_neighbor.upos=PART, dep.left_neighbor.xpos=PRP$, dep.len=5, dep.left_neighbor.form=your
+         ctx 2: log odds  -3.34  n 5/170        with X: n 3/13        corr +1.81  <= TAKEN   [-dep.left_neighbor.form=your]
+
+       LEFTOVER 9: cand.len=2   alone -1.64 (n 1398/493675);  running estimate before: +2.9
+         ctx 1: log odds  -1.87  n 3/13         with X: n 0/1         corr unsupported
+                 context: cand.left_neighbor.upos=PART, dep.left_neighbor.xpos=PRP$, dep.len=5, dep.xpos=NNS
+         ctx 2: log odds  -1.87  n 3/13         with X: n 0/1         corr unsupported   [+dep.left_neighbor.upos=PRON]
+         ctx 3: log odds  -2.32  n 15/142       with X: n 0/11        corr -0.13  <= TAKEN   [-dep.len=5]
+
+       LEFTOVER 10: dep.right_neighbor.upos=PUNCT   alone -0.02 (n 5767/405512);  running estimate before: +2.78
+         ctx 1: log odds   -2.4  n 0/11         with X: n 0/3         corr unsupported
+                 context: cand.left_neighbor.upos=PART, dep.left_neighbor.xpos=PRP$, dep.left_neighbor.upos=PRON, dep.xpos=NNS, cand.len=2
+         ctx 2: log odds  -2.32  n 15/142       with X: n 2/61        corr -0.82  <= TAKEN   [-cand.len=2]
+
+       LEFTOVER 11: dep.right_neighbor.form=?   alone -0.14 (n 257/20295);  running estimate before: +1.96
+         ctx 1: log odds  -3.01  n 2/61         with X: n 0/0         corr unsupported
+                 context: cand.left_neighbor.upos=PART, dep.left_neighbor.xpos=PRP$, dep.left_neighbor.upos=PRON, dep.xpos=NNS, dep.right_neighbor.upos=PUNCT
+         ctx 2: log odds  -3.38  n 12/383       with X: n 0/28        corr +0.0  <= TAKEN   [-dep.xpos=NNS]
+
+       LEFTOVER 12: dep.upos=NOUN   alone +0.02 (n 7815/526510);  running estimate before: +1.96
+         ctx 1: log odds  -3.38  n 0/28         with X: n 0/28        corr +0.0  <= TAKEN
+                 context: cand.left_neighbor.upos=PART, dep.left_neighbor.xpos=PRP$, dep.left_neighbor.upos=PRON, dep.right_neighbor.upos=PUNCT, dep.right_neighbor.form=?
+
+       LEFTOVER 13: dep.basepos=N   alone +0.02 (n 10995/740521);  running estimate before: +1.96
+         ctx 1: log odds  -3.38  n 0/28         with X: n 0/28        corr +0.0  <= TAKEN
+                 context: cand.left_neighbor.upos=PART, dep.left_neighbor.xpos=PRP$, dep.left_neighbor.upos=PRON, dep.right_neighbor.upos=PUNCT, dep.right_neighbor.form=?, dep.upos=NOUN
+
+       LEFTOVER 14: dep.person=3rd   alone +0.02 (n 11451/773943);  running estimate before: +1.96
+         ctx 1: log odds  -3.38  n 0/28         with X: n 0/28        corr +0.0  <= TAKEN
+                 context: cand.left_neighbor.upos=PART, dep.left_neighbor.xpos=PRP$, dep.left_neighbor.upos=PRON, dep.right_neighbor.upos=PUNCT, dep.right_neighbor.form=?, dep.upos=NOUN, dep.basepos=N
+
+       LEFTOVER 15: dep.right_neighbor.xpos=?   alone -0.19 (n 84/7033);  running estimate before: +1.96
+         ctx 1: log odds  -3.38  n 0/28         with X: n 0/3         corr unsupported
+                 context: cand.left_neighbor.upos=PART, dep.left_neighbor.xpos=PRP$, dep.left_neighbor.upos=PRON, dep.right_neighbor.upos=PUNCT, dep.right_neighbor.form=?, dep.upos=NOUN, dep.basepos=N, dep.person=3rd
+         ctx 2: log odds  -4.31  n 10/818       with X: n 2/180       corr +0.0  <= TAKEN   [-cand.left_neighbor.upos=PART]
+
+       evidence: positive +13.73, negative -7.55;  final log odds +1.96
+
+  ==== CONTRAST MODEL (accumby:odds; right)
+    head properties predicted (with the attachment and all of them hidden):
+      head_upos PRON 0.362, VERB 0.293, ROOT 0.276   (gold head: VERB, predicted head: VERB)
+      head_xpos ROOT 0.305, VB 0.239, WP 0.169   (gold head: VB, predicted head: VB)
+      head_dir  left 0.784, root 0.215, right 0.001   (gold head: left, predicted head: left)
+      head_dist 3-5 0.574, root 0.308, 2 0.082   (gold head: 2, predicted head: 3-5)
+      head_trank1 0.88, root 0.089, 2 0.027   (gold head: 1, predicted head: 2)
+    log margins predicted - gold:  attach -1.65;  head_dist +1.95, head_xpos +0.0, head_dir +0.0, head_upos +0.0, head_trank -3.5;  total -3.21
+    candidates: 4   (product score = log P(attach) + Σ log P(head property value))
+
+    -- GOLD -> get:  P(attach) 0.7102, product score -5.88
+       head-property terms: head_xpos=VB 0.239, head_dist=2 0.082, head_dir=left 0.784, head_upos=VERB 0.293, head_trank=1 0.88
+       prior log odds -4.23   (n = chosen/not-chosen records)
+       CHAIN                                         alone (prior effect)     in the chain
+       1. cand.left_neighbor.form=go                 -2.6  n 4/4636           -2.6  n 4/4636
+       2. distance=2 words (bucket 2)                +1.4  n 5741/97633      +1.64  n 2/180
+       chain log odds -5.19
+
+       LEFTOVER 1: cand.upos=VERB   alone +1.31 (n 16680/307908);  running estimate before: -5.19
+         ctx 1: log odds  -5.19  n 2/180        with X: n 0/0         corr unsupported
+                 context: cand.left_neighbor.form=go, distance=2 words (bucket 2)
+         ctx 2: log odds  -6.83  n 4/4636       with X: n 0/0         corr unsupported   [-distance=2 words (bucket 2)]
+         ctx 3: log odds  -4.81  n 951/116950   with X: n 577/7944    corr +2.19  <= TAKEN   [-cand.left_neighbor.form=go, +cand.left_neighbor.xpos=VB]
+
+       LEFTOVER 2: dep.left_neighbor.xpos=PRP$   alone -0.02 (n 529/37005);  running estimate before: -3.0
+         ctx 1: log odds  -2.62  n 577/7944     with X: n 0/80        corr -1.75  <= TAKEN
+                 context: cand.left_neighbor.xpos=VB, cand.upos=VERB
+
+       LEFTOVER 3: cand.form=get   alone +1.31 (n 179/3292);  running estimate before: -4.75
+         ctx 1: log odds  -4.38  n 0/80         with X: n 0/0         corr unsupported
+                 context: cand.left_neighbor.xpos=VB, cand.upos=VERB, dep.left_neighbor.xpos=PRP$
+         ctx 2: log odds  -5.41  n 6/1559       with X: n 0/0         corr unsupported   [-cand.upos=VERB]
+         ctx 3: log odds  -4.81  n 951/116950   with X: n 0/0         corr unsupported   [-dep.left_neighbor.xpos=PRP$]
+         ctx 4: log odds  -5.99  n 809/322263   with X: n 0/0         corr unsupported   [-cand.left_neighbor.xpos=VB, +cand.left_neighbor.upos=VERB]
+         ctx 5: log odds  -4.23  n -            with X: n 179/3292    corr +1.31  <= TAKEN   [-cand.left_neighbor.upos=VERB]
+
+       LEFTOVER 4: dep.right_neighbor.form=?   alone -0.14 (n 257/20295);  running estimate before: -3.44
+         ctx 1: log odds  -2.92  n 179/3292     with X: n 6/51        corr +0.58  <= TAKEN
+                 context: cand.form=get
+
+       LEFTOVER 5: cand.right_neighbor.form=your   alone +0.14 (n 90/5326);  running estimate before: -2.87
+         ctx 1: log odds  -2.32  n 6/51         with X: n 0/0         corr unsupported
+                 context: cand.form=get, dep.right_neighbor.form=?
+         ctx 2: log odds  -2.84  n 68/1148      with X: n 2/11        corr +0.36  <= TAKEN   [-cand.form=get, +cand.xpos=VB]
+
+       LEFTOVER 6: dep.left_neighbor.form=your   alone -0.02 (n 75/5344);  running estimate before: -2.51
+         ctx 1: log odds   -2.4  n 2/11         with X: n 1/1         corr unsupported
+                 context: cand.xpos=VB, dep.right_neighbor.form=?, cand.right_neighbor.form=your
+         ctx 2: log odds  -2.56  n 4/39         with X: n 1/2         corr unsupported   [-cand.right_neighbor.form=your, +cand.right_neighbor.xpos=PRP$]
+         ctx 3: log odds  -2.62  n 6/69         with X: n 2/2         corr unsupported   [-cand.xpos=VB, +cand.upos=VERB]
+         ctx 4: log odds  -2.71  n 7/90         with X: n 3/3         corr +2.03  <= TAKEN   [-cand.upos=VERB, +cand.basepos=V]
+
+       LEFTOVER 7: dep.xpos=NNS   alone +0.04 (n 2085/137427);  running estimate before: -0.48
+         ctx 1: log odds  -0.41  n 3/3          with X: n 0/0         corr unsupported
+                 context: cand.basepos=V, dep.right_neighbor.form=?, cand.right_neighbor.xpos=PRP$, dep.left_neighbor.form=your
+         ctx 2: log odds  -0.22  n 5/5          with X: n 0/1         corr unsupported   [-dep.left_neighbor.form=your, +dep.left_neighbor.xpos=PRP$]
+         ctx 3: log odds  -1.01  n 5/11         with X: n 0/1         corr unsupported   [-dep.left_neighbor.xpos=PRP$, +dep.left_neighbor.upos=PRON]
+         ctx 4: log odds   -1.1  n 2/3          with X: n 0/0         corr unsupported   [-dep.right_neighbor.form=?, +dep.right_neighbor.xpos=?]
+         ctx 5: log odds  -1.19  n 36/115       with X: n 5/5         corr +0.79  <= TAKEN   [-dep.right_neighbor.xpos=?, +dep.right_neighbor.upos=PUNCT]
+
+       LEFTOVER 8: cand.tense=infinitive   alone +1.14 (n 5173/113373);  running estimate before: +0.31
+         ctx 1: log odds  -0.22  n 5/5          with X: n 4/3         corr +0.0  <= TAKEN
+                 context: cand.basepos=V, dep.right_neighbor.upos=PUNCT, cand.right_neighbor.xpos=PRP$, dep.left_neighbor.upos=PRON, dep.xpos=NNS
+
+       LEFTOVER 9: dep.right_neighbor.xpos=?   alone -0.19 (n 84/7033);  running estimate before: +0.31
+         ctx 1: log odds   +0.0  n 4/3          with X: n 0/0         corr unsupported
+                 context: cand.basepos=V, dep.right_neighbor.upos=PUNCT, cand.right_neighbor.xpos=PRP$, dep.left_neighbor.upos=PRON, dep.xpos=NNS, cand.tense=infinitive
+         ctx 2: log odds  +0.17  n 13/10        with X: n 0/0         corr unsupported   [-dep.right_neighbor.upos=PUNCT]
+         ctx 3: log odds  +0.17  n 13/10        with X: n 0/0         corr unsupported   [-cand.basepos=V]
+         ctx 4: log odds  -1.22  n 14/44        with X: n 0/0         corr unsupported   [-cand.right_neighbor.xpos=PRP$, +cand.right_neighbor.upos=PRON]
+         ctx 5: log odds  -2.39  n 24/250       with X: n 0/0         corr unsupported   [-cand.right_neighbor.upos=PRON]
+         ctx 6: log odds  -2.64  n 327/4548     with X: n 0/7         corr +0.0  <= TAKEN   [-dep.left_neighbor.upos=PRON]
+
+       evidence: positive +8.89, negative -4.35;  final log odds +0.31
+
+    -- PREDICTED -> go:  P(attach) 0.1363, product score -9.08
+       head-property terms: head_xpos=VB 0.239, head_dist=3-5 0.574, head_dir=left 0.784, head_upos=VERB 0.293, head_trank=2 0.027
+       prior log odds -4.23   (n = chosen/not-chosen records)
+       CHAIN                                         alone (prior effect)     in the chain
+       1. cand.right_neighbor.xpos=VB               -2.93  n 91/118200       -2.93  n 91/118200
+       2. cand.upos=VERB                            +1.31  n 16680/307908    +4.08  n 41/866
+       3. distance=3 words (bucket 3-5)              +1.4  n 5741/97633      +1.86  n 9/27
+       4. cand.xpos=VB                              +1.14  n 5173/113373     -0.98  n 0/9   <- sign flips
+       chain log odds -2.2
+
+       LEFTOVER 1: cand.right_neighbor.form=get   alone -2.13 (n 5/3475);  running estimate before: -2.2
+         ctx 1: log odds   -2.2  n 0/9          with X: n 0/0         corr unsupported
+                 context: cand.right_neighbor.xpos=VB, cand.upos=VERB, distance=3 words (bucket 3-5), cand.xpos=VB
+         ctx 2: log odds  -1.22  n 9/27         with X: n 0/0         corr unsupported   [-cand.xpos=VB]
+         ctx 3: log odds  -3.08  n 41/866       with X: n 0/0         corr unsupported   [-distance=3 words (bucket 3-5)]
+         ctx 4: log odds  -2.92  n 16680/307908 with X: n 0/0         corr unsupported   [-cand.right_neighbor.xpos=VB]
+         ctx 5: log odds  -4.23  n -            with X: n 5/3475      corr -2.13  <= TAKEN   [-cand.upos=VERB]
+
+       LEFTOVER 2: cand.form=go   alone +1.23 (n 220/4411);  running estimate before: -4.33
+         ctx 1: log odds  -6.36  n 5/3475       with X: n 0/0         corr unsupported
+                 context: cand.right_neighbor.form=get
+         ctx 2: log odds  -7.16  n 91/118200    with X: n 0/0         corr unsupported   [-cand.right_neighbor.form=get, +cand.right_neighbor.xpos=VB]
+         ctx 3: log odds  -5.51  n 1302/322759  with X: n 0/0         corr unsupported   [-cand.right_neighbor.xpos=VB, +cand.right_neighbor.upos=VERB]
+         ctx 4: log odds  -4.23  n -            with X: n 220/4411    corr +1.23  <= TAKEN   [-cand.right_neighbor.upos=VERB]
+
+       LEFTOVER 3: cand.left_neighbor.form=na   alone +0.4 (n 27/1194);  running estimate before: -3.1
+         ctx 1: log odds   -3.0  n 220/4411     with X: n 0/0         corr unsupported
+                 context: cand.form=go
+         ctx 2: log odds  -3.09  n 5173/113373  with X: n 25/1000     corr -0.56  <= TAKEN   [-cand.form=go, +cand.xpos=VB]
+
+       LEFTOVER 4: dep.left_neighbor.xpos=PRP$   alone -0.02 (n 529/37005);  running estimate before: -3.66
+         ctx 1: log odds  -3.65  n 25/1000      with X: n 2/14        corr +1.02  <= TAKEN
+                 context: cand.xpos=VB, cand.left_neighbor.form=na
+
+       LEFTOVER 5: dep.xpos=NNS   alone +0.04 (n 2085/137427);  running estimate before: -2.64
+         ctx 1: log odds  -2.64  n 2/14         with X: n 2/0         corr unsupported
+                 context: cand.xpos=VB, cand.left_neighbor.form=na, dep.left_neighbor.xpos=PRP$
+         ctx 2: log odds  -2.94  n 2/19         with X: n 2/0         corr unsupported   [-cand.xpos=VB, +cand.upos=VERB]
+         ctx 3: log odds   -2.9  n 29/507       with X: n 11/58       corr +1.12  <= TAKEN   [-cand.left_neighbor.form=na, +cand.left_neighbor.xpos=TO]
+
+       LEFTOVER 6: dep.right_neighbor.upos=PUNCT   alone -0.02 (n 5767/405512);  running estimate before: -1.52
+         ctx 1: log odds  -1.76  n 11/58        with X: n 2/29        corr -0.68  <= TAKEN
+                 context: cand.upos=VERB, cand.left_neighbor.xpos=TO, dep.left_neighbor.xpos=PRP$, dep.xpos=NNS
+
+       LEFTOVER 7: dep.len=5   alone -0.0 (n 3714/255488);  running estimate before: -2.19
+         ctx 1: log odds  -2.27  n 2/29         with X: n 0/4         corr unsupported
+                 context: cand.upos=VERB, cand.left_neighbor.xpos=TO, dep.left_neighbor.xpos=PRP$, dep.xpos=NNS, dep.right_neighbor.upos=PUNCT
+         ctx 2: log odds  -2.27  n 2/29         with X: n 0/4         corr unsupported   [-cand.upos=VERB, +cand.basepos=V]
+         ctx 3: log odds  -2.37  n 2/32         with X: n 0/4         corr unsupported   [-cand.basepos=V]
+         ctx 4: log odds  -1.97  n 11/72        with X: n 3/11        corr +0.2  <= TAKEN   [-dep.right_neighbor.upos=PUNCT]
+
+       LEFTOVER 8: cand.len=2   alone -1.64 (n 1398/493675);  running estimate before: -2.0
+         ctx 1: log odds   -1.7  n 3/11         with X: n 0/1         corr unsupported
+                 context: cand.left_neighbor.xpos=TO, dep.left_neighbor.xpos=PRP$, dep.xpos=NNS, dep.len=5
+         ctx 2: log odds  -1.97  n 11/72        with X: n 0/8         corr -0.17  <= TAKEN   [-dep.len=5]
+
+       LEFTOVER 9: dep.right_neighbor.xpos=?   alone -0.19 (n 84/7033);  running estimate before: -2.16
+         ctx 1: log odds  -2.08  n 0/8          with X: n 0/0         corr unsupported
+                 context: cand.left_neighbor.xpos=TO, dep.left_neighbor.xpos=PRP$, dep.xpos=NNS, cand.len=2
+         ctx 2: log odds  -1.97  n 11/72        with X: n 0/0         corr unsupported   [-cand.len=2]
+         ctx 3: log odds  -2.32  n 15/142       with X: n 0/0         corr unsupported   [-cand.left_neighbor.xpos=TO, +cand.left_neighbor.upos=PART]
+         ctx 4: log odds   -2.8  n 213/3493     with X: n 0/4         corr unsupported   [-dep.left_neighbor.xpos=PRP$]
+         ctx 5: log odds  -3.33  n 3148/88086   with X: n 6/230       corr -0.16  <= TAKEN   [-dep.xpos=NNS]
+
+       LEFTOVER 10: dep.basepos=N   alone +0.02 (n 10995/740521);  running estimate before: -2.32
+         ctx 1: log odds  -3.49  n 6/230        with X: n 4/85        corr +0.43  <= TAKEN
+                 context: cand.left_neighbor.upos=PART, dep.right_neighbor.xpos=?
+
+       LEFTOVER 11: dep.upos=NOUN   alone +0.02 (n 7815/526510);  running estimate before: -1.89
+         ctx 1: log odds  -3.34  n 4/85         with X: n 2/66        corr -0.25  <= TAKEN
+                 context: cand.left_neighbor.upos=PART, dep.right_neighbor.xpos=?, dep.basepos=N
+
+       LEFTOVER 12: dep.number=plural   alone +0.01 (n 4069/276610);  running estimate before: -2.14
+         ctx 1: log odds  -3.34  n 2/66         with X: n 0/4         corr unsupported
+                 context: cand.left_neighbor.upos=PART, dep.right_neighbor.xpos=?, dep.basepos=N, dep.upos=NOUN
+         ctx 2: log odds  -3.06  n 658/13954    with X: n 213/3489    corr +0.25  <= TAKEN   [-dep.right_neighbor.xpos=?]
+
+       LEFTOVER 13: dep.left_neighbor.upos=PRON   alone -0.05 (n 3521/253627);  running estimate before: -1.88
+         ctx 1: log odds   -2.8  n 213/3489     with X: n 15/173      corr +0.28  <= TAKEN
+                 context: cand.left_neighbor.upos=PART, dep.basepos=N, dep.upos=NOUN, dep.number=plural
+
+       LEFTOVER 14: dep.left_neighbor.form=your   alone -0.02 (n 75/5344);  running estimate before: -1.6
+         ctx 1: log odds  -2.51  n 15/173       with X: n 1/22        corr +0.0  <= TAKEN
+                 context: cand.left_neighbor.upos=PART, dep.basepos=N, dep.upos=NOUN, dep.number=plural, dep.left_neighbor.upos=PRON
+
+       LEFTOVER 15: dep.right_neighbor.form=?   alone -0.14 (n 257/20295);  running estimate before: -1.6
+         ctx 1: log odds  -2.51  n 1/22         with X: n 0/0         corr unsupported
+                 context: cand.left_neighbor.upos=PART, dep.basepos=N, dep.upos=NOUN, dep.number=plural, dep.left_neighbor.upos=PRON, dep.left_neighbor.form=your
+         ctx 2: log odds  -2.32  n 15/142       with X: n 0/0         corr unsupported   [-dep.left_neighbor.form=your, +dep.left_neighbor.xpos=PRP$]
+         ctx 3: log odds  -2.32  n 15/142       with X: n 0/0         corr unsupported   [-dep.basepos=N]
+         ctx 4: log odds  -2.32  n 15/142       with X: n 0/0         corr unsupported   [-dep.upos=NOUN]
+         ctx 5: log odds  -2.32  n 15/142       with X: n 0/0         corr unsupported   [-dep.left_neighbor.upos=PRON]
+         ctx 6: log odds  -3.16  n 93/2205      with X: n 0/9         corr +0.0  <= TAKEN   [-dep.left_neighbor.xpos=PRP$, +dep.left_neighbor.upos=PRON]
+
+       LEFTOVER 16: dep.person=3rd   alone +0.02 (n 11451/773943);  running estimate before: -1.6
+         ctx 1: log odds  -3.16  n 0/9          with X: n 0/0         corr unsupported
+                 context: cand.left_neighbor.upos=PART, dep.number=plural, dep.left_neighbor.upos=PRON, dep.right_neighbor.form=?
+         ctx 2: log odds  -3.08  n 3/60         with X: n 3/34        corr +0.26  <= TAKEN   [-dep.left_neighbor.upos=PRON]
+
+       evidence: positive +10.74, negative -7.85;  final log odds -1.34

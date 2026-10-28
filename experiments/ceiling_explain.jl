@@ -14,6 +14,9 @@
 #   each; per leftover (in the order taken, accum) the running estimate and the generalization walk: each context
 #   tried, its odds and records, the leftover's correction there; and positive vs negative evidence summed apart.
 # sent=text: only sentences containing this text.
+# contrast=accumby:odds,ctxmode:accum: only errors a second model (these chain options overriding this run's) gets
+#   right; each wrong head is then explained under both models.
+# nopunct=true: skip errors where the token, its gold head or its predicted head is punctuation (upos PUNCT).
 # headblame=true (domains=product): only errors the attachment alone gets right (argmax P(attach) is the gold head) --
 #   the head-property terms flip them; per property, the log margin log P(pred's value) - log P(gold's value).
 # chainonly=true: only errors the chains alone already make (scoring every candidate by its chain log odds,
@@ -33,6 +36,8 @@ DEFAULTS["chainonly"] = "false"
 DEFAULTS["headblame"] = "false"
 DEFAULTS["detail"] = "false"
 DEFAULTS["sent"] = ""
+DEFAULTS["contrast"] = ""
+DEFAULTS["nopunct"] = "false"
 DEFAULTS["headconf"] = 1.0
 DEFAULTS["domains"] = "off"
 DEFAULTS["domeps"] = 1e-3
@@ -43,12 +48,21 @@ widx = CharIndex(idx.fwd, idx.rev, idx.gap, idx.saL, idx.saR, idx.cumL, idx.cumR
 specs = default_specs(charindex = widx, wordclasses = s.wc, suffixes = s.sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true",
   projective = cfg["projective"] == "true", relations = cfg["relations"] == "true", headsdist = cfg["headsdist"] == "true", relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true", treerank = cfg["treerank"] == "true", headtrank = cfg["headtrank"] == "true", headwc = isempty(cfg["headwc"]) ? Int[] : parse.(Int, split(cfg["headwc"], ',')), headwcclasses = S.HEADWC[])
 eventsdir, opts = s.recipe
-m = ChainModel(eventsdir; opts...)
 pc = S.load_counts(eventsdir, eventsig(eventsdir))
-pc !== nothing && (m.pcounts = pc)
-(cfg["poolsigma"] > 0 || cfg["ctxmode"] != "greedy") && (m.generalize = S.generalization_slots(specs))
-cfg["classchain"] == "true" || (m.nochain = S.wclass_slots(specs))
-cfg["ctxscope"] == "heads" && (m.ctxtypes = Set(S.typekey(:token, k) for (k, d) in enumerate(specs[2].decisions) if k == 1 || haskey(S.ALLHEADSETS, d.name)))
+function build_model(opts)
+  m = ChainModel(eventsdir; opts...)
+  pc !== nothing && (m.pcounts = pc)
+  (cfg["poolsigma"] > 0 || get(opts, :ctxmode, :greedy) != :greedy) && (m.generalize = S.generalization_slots(specs))
+  cfg["classchain"] == "true" || (m.nochain = S.wclass_slots(specs))
+  cfg["ctxscope"] == "heads" && (m.ctxtypes = Set(S.typekey(:token, k) for (k, d) in enumerate(specs[2].decisions) if k == 1 || haskey(S.ALLHEADSETS, d.name)))
+  m
+end
+optval(v) = v in ("true", "false") ? v == "true" : (x = tryparse(Int, v)) !== nothing ? x : (x = tryparse(Float64, v)) !== nothing ? x : Symbol(v)
+m = build_model(opts)
+contrast_opts = isempty(cfg["contrast"]) ? nothing :
+  merge(opts, NamedTuple(Symbol(k) => optval(v) for (k, v) in (split(kv, ':') for kv in split(cfg["contrast"], ','))))
+m2 = contrast_opts === nothing ? nothing : build_model(contrast_opts)
+mainmodel = m
 domains, domeps = Symbol(cfg["domains"]), cfg["domeps"]
 
 # names (as trace_decode.jl)
@@ -274,8 +288,10 @@ end
 mutable struct ExplainRec
   r0::CeilingRecorder
   rgold::CeilingRecorder                           # the same with all head properties given (gold): the head-property ceiling
+  r2::Union{Nothing,CeilingRecorder}               # the contrast model (contrast=)
   shown::Int
 end
+ispunct_tok(st, t) = t != NONE && S.TAGSETS[:upos][st.layers[:token][:upos, Int(t)]] == "PUNCT"
 observe!(::ExplainRec, st, key, choice) = nothing
 segment_discard!(::ExplainRec) = nothing
 function segment_done!(r::ExplainRec, st)
@@ -287,10 +303,12 @@ function segment_done!(r::ExplainRec, st)
     (length(ts) <= cfg["maxlen"] && all(t -> Int(toks[:last_char, t]) <= st.closed_through && toks[:attach, t] != PENDING, ts)) || continue
     res = [(t, toks[:attach, t], first(pipeline_attach!(r.r0, st, t, toks[:attach, t]))) for t in ts]
     wrong = [(t, g, p) for (t, g, p) in res if g != p]
+    cfg["nopunct"] == "true" && (wrong = [(t, g, p) for (t, g, p) in wrong if !(ispunct_tok(st, t) || ispunct_tok(st, g) || ispunct_tok(st, p))])
     1 <= length(wrong) <= cfg["maxerr"] || continue
     isempty(cfg["sent"]) || occursin(cfg["sent"], join([S.tokstr(st, t) for t in ts], " ")) || continue
     # only errors the head-property ceiling (gold head properties) gets right
     all(((t, g, p),) -> first(pipeline_attach!(r.rgold, st, t, g)) == g, wrong) || continue
+    r.r2 === nothing || all(((t, g, p),) -> first(pipeline_attach!(r.r2, st, t, g)) == g, wrong) || continue
     if cfg["headblame"] == "true"                     # only errors the attachment alone gets right
       blamed = all(wrong) do (t, g, p)
         names = [:attach; S.headnames(toks)]
@@ -335,7 +353,17 @@ function segment_done!(r::ExplainRec, st)
       foreach(n -> (toks[n, t] = PENDING), names)
       S.refresh!(st)
       try
-        explain_attach(st, t, g, p)
+        if m2 === nothing
+          explain_attach(st, t, g, p)
+        else
+          println("\n  ==== THIS MODEL (wrong)")
+          global m = mainmodel; empty!(m.memo)
+          explain_attach(st, t, g, p)
+          println("\n  ==== CONTRAST MODEL ($(cfg["contrast"]); right)")
+          global m = m2; empty!(m.memo)
+          explain_attach(st, t, g, p)
+          global m = mainmodel
+        end
       finally
         foreach(((n, v),) -> (toks[n, t] = v), zip(names, old))
         S.refresh!(st)
@@ -347,10 +375,11 @@ end
 println(s.modelname, (domains == :off ? "" : "  [domains=$domains domeps=$domeps]"))
 docs = sort([d for (_, d) in s.devdocs]; by = d -> length(d.text))[1:min(cfg["docs"], end)]
 rec = ExplainRec(CeilingRecorder(m, first(docs), false, cfg["headconf"]; domains, domeps),
-  CeilingRecorder(m, first(docs), false, 1.0, collect(keys(S.ALLHEADSETS))), 0)
+  CeilingRecorder(m, first(docs), false, 1.0, collect(keys(S.ALLHEADSETS))),
+  m2 === nothing ? nothing : CeilingRecorder(m2, first(docs), false, cfg["headconf"]; domains, domeps), 0)
 for d in docs
   rec.shown >= cfg["nsent"] && break
-  rec.r0.doc = d; rec.rgold.doc = d
+  rec.r0.doc = d; rec.rgold.doc = d; rec.r2 === nothing || (rec.r2.doc = d)
   process(d, specs, OracleModel(), s.lex; observer = rec)
 end
 rec.shown == 0 && println("no sentence with 1..$(cfg["maxerr"]) wrong heads and at most $(cfg["maxlen"]) words in these docs")

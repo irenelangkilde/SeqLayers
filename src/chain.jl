@@ -204,6 +204,7 @@ struct ChainOpts
   accumby::Symbol                                 # accum walk step: :odds (closest to the running estimate, shared) | :dep (per leftover: least dependence lost) | :depodds (both, in log odds)
   depweight::Bool                                 # leftovers: correction times 1 - max ρ(X, a) over counted features a outside X's context
   smoothn::Symbol                                 # n in d: the set's own records (:set) or its parent's (:parent: chain steps and accum leftovers)
+  depmeasure::Symbol                              # ρ for greedyby=dep / accumby=dep: :yule (|Yule's Q|) | :pmi (log p(e,a) / p(e)p(a)) | :pmipos (max(pmi, 0))
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -313,10 +314,11 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr) || error("unknown greedyby $greedyby")
+  depmeasure in (:yule, :pmi, :pmipos) || error("unknown depmeasure $depmeasure (use :yule, :pmi or :pmipos)")
   accumby in (:odds, :dep, :depodds) || error("unknown accumby $accumby (use :odds, :dep or :depodds)")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
   stepscore in (:abs, :signed, :maxmin, :maxmin2) || error("unknown stepscore $stepscore (use :abs, :signed, :maxmin or :maxmin2)")
@@ -377,7 +379,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -2366,11 +2368,13 @@ const DEPQ = Dict{Tuple{UInt64,UInt64,UInt32},Float64}()
 """
 ρ(E, a): how strongly leftover E and feature a go together, label-blind -- |Yule's Q| of their 2×2 table over the
 decision type's records for `label` (chosen + not), with 1/2 added to each cell: 1 when one implies the other, 0 when
-independent.  Cached (symmetric).
+independent.  depmeasure :pmi -- log p(E,a) / (p(E) p(a)) (0 when independent, < 0 when they avoid each other);
+:pmipos -- max(pmi, 0).  Cached (symmetric).
 """
 function depq(m::ChainModel, base, E::UInt64, a::UInt64, label::UInt32, prior)
   (E == a || isempty(base)) && return 1.0
-  key = E < a ? (E, a, label) : (a, E, label)
+  key = E < a ? (E, a, label ⊻ (m.opts.depmeasure == :yule ? UInt32(0) : m.opts.depmeasure == :pmi ? 0x40000000 : 0x80000000)) :
+    (a, E, label ⊻ (m.opts.depmeasure == :yule ? UInt32(0) : m.opts.depmeasure == :pmi ? 0x40000000 : 0x80000000))
   r = get(DEPQ, key, nothing)
   r === nothing || return r
   S0 = ChainState(prior, base)
@@ -2383,8 +2387,13 @@ function depq(m::ChainModel, base, E::UInt64, a::UInt64, label::UInt32, prior)
   n11 = n(eaE)
   n10, n01 = n(eE) - n11, n(ea) - n11
   n00 = c + oc - n11 - n10 - n01
-  p, q = (n11 + 0.5) * (max(n00, 0.0) + 0.5), (max(n10, 0.0) + 0.5) * (max(n01, 0.0) + 0.5)
   length(DEPQ) >= MAXMEMO && empty!(DEPQ)
+  if m.opts.depmeasure != :yule                 # pointwise mutual information, 1/2 added to each cell
+    N = max(n11, 0.0) + max(n10, 0.0) + max(n01, 0.0) + max(n00, 0.0) + 2.0
+    pmi = log((max(n11, 0.0) + 0.5) * N / ((max(n11, 0.0) + max(n10, 0.0) + 1.0) * (max(n11, 0.0) + max(n01, 0.0) + 1.0)))
+    return DEPQ[key] = m.opts.depmeasure == :pmipos ? max(pmi, 0.0) : pmi
+  end
+  p, q = (n11 + 0.5) * (max(n00, 0.0) + 0.5), (max(n10, 0.0) + 0.5) * (max(n01, 0.0) + 0.5)
   DEPQ[key] = abs(p - q) / (p + q)
 end
 
