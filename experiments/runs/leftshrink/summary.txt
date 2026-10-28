@@ -1,0 +1,13 @@
+=== shrinkleft20  Tue Oct 27 17:54:43 MDT 2026
+ALL         2899    0.9983  0.8486  0.7882  0.0162  1.0     
+score 189.9 s, run 20261027-175930 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== leftmin2-2  Tue Oct 27 17:59:30 MDT 2026
+ALL         2899    0.996   0.8424  0.7834  0.0162  1.0     
+score 200.0 s, run 20261027-180410 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== shrinkleft50  Tue Oct 27 18:04:10 MDT 2026
+ALL         2899    0.9984  0.8496  0.791   0.0162  1.0     
+score 170.5 s, run 20261027-180821 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== leftmin2-5  Tue Oct 27 18:08:21 MDT 2026
+ALL         2899    0.996   0.8396  0.781   0.0162  1.0     
+score 159.7 s, run 20261027-181217 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Tue Oct 27 18:12:17 MDT 2026
