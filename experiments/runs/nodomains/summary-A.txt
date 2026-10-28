@@ -1,0 +1,10 @@
+=== note=control  Wed Oct 28 18:45:07 UTC 2026
+ALL         2899    0.9977  0.8313  0.783   0.0162  1.0     
+score 148.1 s, run 20261028-185026 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== telescope=true  Wed Oct 28 18:50:27 UTC 2026
+ALL         2899    0.9977  0.8268  0.7734  0.0162  1.0     
+score 187.1 s, run 20261028-185625 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== depweight=true  Wed Oct 28 18:56:26 UTC 2026
+ALL         2899    0.9988  0.8248  0.7699  0.0162  1.0     
+score 172.3 s, run 20261028-190210 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Wed Oct 28 19:02:11 UTC 2026

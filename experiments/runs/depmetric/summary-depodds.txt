@@ -1,0 +1,7 @@
+=== ctxmode=accum greedyby=odds accumby=depodds  Wed Oct 28 12:40:33 MDT 2026
+ALL         2899    0.9973  0.8513  0.8003  0.0162  1.0     
+score 154.5 s, run 20261028-124425 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== ctxmode=accum greedyby=odds accumby=depodds depweight=true  Wed Oct 28 12:44:25 MDT 2026
+ALL         2899    0.9987  0.8427  0.7882  0.0162  1.0     
+score 171.3 s, run 20261028-124833 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Wed Oct 28 12:48:34 MDT 2026

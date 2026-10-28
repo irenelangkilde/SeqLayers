@@ -22,7 +22,7 @@
 #                p₂ = probability of the second-ranked candidate; approximate, so in the model name
 #   leftovers    chain leftovers: none | marginal | backoff | backoff1 | greedy
 #   minctx       greedy leftovers: a leftover needs a context of at least this many features
-#   greedyby     greedy leftovers' context choice: correction | odds (see chain.jl)
+#   greedyby     greedy leftovers' context choice: correction | odds | dep | depcorr (see chain.jl, depweight)
 #   maxctx       greedy leftovers: largest context (default: no limit)
 #   relevance    greedy leftovers: skip a leftover whose relevance (max |λ|) is below this (0 = off)
 #   poolm        chain candidate pool size m (0 = off; see chain.jl)
@@ -95,6 +95,29 @@
 #                with the larger single effect first (maxdev)
 #   cidrop       ctxmode=accum: a context feature B may be dropped only if some feature A kept has
 #                D(A→B) < cidrop (the pairwise table ci_table.jls next to the events: experiments/ci_table.jl)
+#   ciorder      ctxmode=accum: each generalization step moves the context feature B that depends least on
+#                the rest: off (the step keeping the odds closest to the running estimate) | slot (mean of
+#                D[A, B] over all slots A: one fixed order) | value (mean over the context's other features
+#                A = a of D(a→B), from ci_values.jls; D[A, B] for rare a).  Decision types without a table: off
+#   smoothd, smootha, smoothn   odds smoothing: an estimate moves d = smoothd + smootha * n counts toward its
+#                parent's odds (smoothOdds; default 1, 0: one count); n = the set's records (smoothn=set) or
+#                its parent's (parent: chain steps and accum leftovers; elsewhere the set's)
+#   accumby      ctxmode=accum walk step: odds (the move keeping the context's odds closest to the running
+#                estimate; one path for all leftovers) | dep (each leftover its own path: the move giving up
+#                the least of its dependence ρ = |Yule's Q| on the context's features) | depodds (each leftover
+#                its own path: the move with the smallest |marginal correction| * dependence lost + |log odds
+#                change from the running estimate|)
+#   depweight    leftovers: each correction times 1 - max ρ(X, a) over counted features a (chain, taken
+#                leftovers) outside X's context: true | false.  greedyby also takes dep (ρ(X, f)) and
+#                depcorr (ρ(X, f) * the change in X's correction)
+#   gatemincount mincount for building the relevance gates (-1: mincount)
+#   telescope    ctxmode=accum: ladder telescoping -- a leftover on a token's ladder (form, xpos, upos, basepos)
+#                waits for its pending coarser rungs, is left out under a finer chain rung, and is conditioned
+#                on its nearest counted coarser rung: true | false
+#   branches     ctxmode=accum: a leftover the current context doesn't support gets contexts along this many
+#                different first generalization steps (1: the main path only)
+#   combine      with branches > 1: avg (inverse-variance mean) | ie (inclusion-exclusion over the contexts'
+#                meets) | mix (the two weighted by inverse variance)
 #   wclevels     with wclasses: use only these class levels (sizes, e.g. 30,300); the others are kept out
 #                of chains, leftovers and generalization ladders ("" = all)
 #   classchain   with wclasses: may word-class slots be chosen in chains (false: stand-ins for forms
@@ -183,7 +206,7 @@ const RESULTS = joinpath(HERE, "results.csv")
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
   "wmo" => 1e-3, "train_sents" => 500, "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
-  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "fwdcheck" => "false", "softheads" => "false", "dfsepshead" => NaN, "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "driftsigma" => 0.0, "distback" => "false", "shrink" => 0.0, "shrinkleft" => 0.0, "leftmin2" => 0, "headwc" => "", "headwcdir" => "/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5", "drifttau" => 0.0, "driftstep" => 0.0, "relbounded" => "false", "relnone" => "false", "treerank" => "false", "headtrank" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
+  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "fwdcheck" => "false", "softheads" => "false", "dfsepshead" => NaN, "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "ciorder" => "off", "telescope" => "false", "smoothd" => 1.0, "smootha" => 0.0, "smoothn" => "set", "accumby" => "odds", "depweight" => "false", "gatemincount" => -1, "branches" => 1, "combine" => "avg", "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "driftsigma" => 0.0, "distback" => "false", "shrink" => 0.0, "shrinkleft" => 0.0, "leftmin2" => 0, "headwc" => "", "headwcdir" => "/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5", "drifttau" => 0.0, "driftstep" => 0.0, "relbounded" => "false", "relnone" => "false", "treerank" => "false", "headtrank" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
 
 function parse_cfg(args)
@@ -316,12 +339,18 @@ function setup(cfg)
       cfg["ctxsupport"] > 0 && (chainopts = merge(chainopts, (ctxsupport = cfg["ctxsupport"],)))
       cfg["leftsmooth"] != "odds" && (chainopts = merge(chainopts, (leftsmooth = Symbol(cfg["leftsmooth"]),)))
       cfg["shrink"] > 0 && (chainopts = merge(chainopts, (shrink = cfg["shrink"],)))
+      (cfg["smoothd"] != 1 || cfg["smootha"] != 0) && (chainopts = merge(chainopts, (smoothd = cfg["smoothd"], smootha = cfg["smootha"],
+        smoothn = Symbol(cfg["smoothn"]))))
+      cfg["accumby"] != "odds" && (chainopts = merge(chainopts, (accumby = Symbol(cfg["accumby"]),)))
+      cfg["depweight"] == "true" && (chainopts = merge(chainopts, (depweight = true,)))
+      cfg["gatemincount"] >= 0 && (chainopts = merge(chainopts, (gatemincount = cfg["gatemincount"],)))
       cfg["shrinkleft"] > 0 && (chainopts = merge(chainopts, (shrinkleft = cfg["shrinkleft"],)))
       cfg["leftmin2"] > 0 && (chainopts = merge(chainopts, (leftmin2 = cfg["leftmin2"],)))
       (cfg["greedymin"] == "true" || cfg["greedysel"] == "true") &&
         (chainopts = merge(chainopts, (greedymin = cfg["greedymin"] == "true", greedysel = cfg["greedysel"] == "true")))
       cfg["ctxmode"] != "greedy" && (chainopts = merge(chainopts, (ctxmode = Symbol(cfg["ctxmode"]), ctxattach = cfg["ctxattach"] == "true",
-        cidrop = cfg["cidrop"], accumwin = cfg["accumwin"], accumreset = cfg["accumreset"] == "true",
+        cidrop = cfg["cidrop"], ciorder = Symbol(cfg["ciorder"]), telescope = cfg["telescope"] == "true",
+        branches = cfg["branches"], combine = Symbol(cfg["combine"]), accumwin = cfg["accumwin"], accumreset = cfg["accumreset"] == "true",
         driftsigma = cfg["driftsigma"], drifttau = cfg["drifttau"], driftstep = cfg["driftstep"],
         distback = cfg["distback"] == "true")))
       cfg["leftovers"] == "greedy" && cfg["relevance"] > 0 && (chainopts = merge(chainopts, (relevance = cfg["relevance"],)))
@@ -416,7 +445,8 @@ function start_workers(cfg, s)
             haskey(cm.generalize, tk) && (cm.generalize[tk] = Dict(f => [g for g in gs if !(g in sl)] for (f, gs) in cm.generalize[tk]))
           end
         end
-        $(cfg["cidrop"] > 0) && (cm.ci = deserialize(joinpath($(s.recipe[1]), "..", "ci_table.jls")))
+        $(cfg["cidrop"] > 0 || cfg["ciorder"] != "off") && (cm.ci = deserialize(joinpath($(s.recipe[1]), "..", "ci_table.jls")))
+        $(cfg["ciorder"] == "value") && (cm.civ = deserialize(joinpath($(s.recipe[1]), "..", "ci_values.jls")))
         $(cfg["ctxscope"] == "heads") && (cm.ctxtypes = Set(SeqLayers.typekey(:token, k) for (k, d) in enumerate(WSPECS[2].decisions)
           if k == 1 || haskey(SeqLayers.ALLHEADSETS, d.name)))
         $(isempty(cfg["leftalpha"])) || (cm.leftalpha = Dict(parse(UInt64, split(l, '\t')[1]; base = 16) => parse(Float64, split(l, '\t')[3])

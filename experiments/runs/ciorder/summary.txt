@@ -1,0 +1,21 @@
+=== ci tables  Tue Oct 27 18:56:30 MDT 2026
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/events
+attach: 32 slots, 4.1 s; D quantiles 10% 0.011, 25% 0.047, 50% 0.207, 75% 0.567, 90% 1.147
+  pairs with D < 0.05: 253 of 992
+  pairs with D < 0.1: 366 of 992
+  pairs with D < 0.25: 538 of 992
+  value table: 34163 entries, 1103 values (>= 200 records) of 32 slots, 4.1 s
+→ /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/ci_table.jls
+→ /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/ci_values.jls
+=== ciorder slot  Tue Oct 27 18:57:44 MDT 2026
+ALL         2899    0.9977  0.8448  0.7954  0.0162  1.0     
+score 163.3 s, run 20261027-190209 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== ciorder value  Tue Oct 27 19:02:09 MDT 2026
+ALL         2899    0.9977  0.8441  0.7937  0.0162  1.0     
+score 154.7 s, run 20261027-190607 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== ciorder off  Tue Oct 27 19:06:07 MDT 2026
+ALL         2899    0.9977  0.8531  0.802   0.0162  1.0     
+score 183.1 s, run 20261027-191033 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Tue Oct 27 19:10:33 MDT 2026

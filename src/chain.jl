@@ -195,6 +195,15 @@ struct ChainOpts
   shrink::Float64                                 # > 0: estimates shrunk toward the parent's with a Beta prior of this many pseudo-records (else one-count smoothOdds)
   shrinkleft::Float64                             # > 0: the same, for the leftovers' corrections only (chain steps keep their rule)
   leftmin2::Int                                   # > 0: a leftover counts only with this many chosen and this many not-chosen records (with its context)
+  ciorder::Symbol                                 # accum: the walk generalizes the context feature least dependent (ci table) first: :off | :slot | :value
+  telescope::Bool                                 # accum: a leftover is conditioned on its ladder's nearest counted coarser rung; coarser rungs go first
+  branches::Int                                   # accum: a leftover needing generalization gets contexts along this many first steps (1: the best only)
+  combine::Symbol                                 # accum branches: :avg (inverse variance) | :ie (inclusion-exclusion) | :mix
+  smoothd::Float64                                # smoothing: the estimate moves d = smoothd + smootha * n counts toward its parent (1, 0: one count)
+  smootha::Float64
+  accumby::Symbol                                 # accum walk step: :odds (closest to the running estimate, shared) | :dep (per leftover: least dependence lost) | :depodds (both, in log odds)
+  depweight::Bool                                 # leftovers: correction times 1 - max ρ(X, a) over counted features a outside X's context
+  smoothn::Symbol                                 # n in d: the set's own records (:set) or its parent's (:parent: chain steps and accum leftovers)
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -288,6 +297,7 @@ mutable struct ChainModel <: AbstractModel
   nochain::Dict{UInt64,Set{Int}}                 # decision type -> slots never chosen in chains (nor leftovers): stand-ins only
   ctxtypes::Set{UInt64}                          # decision types that use ctxmode (empty: all; the others keep greedy contexts)
   ci::Dict{UInt64,Matrix{Float32}}               # decision type -> D[A, B]: B's effect on o(x) given A (ci_table)
+  civ::Dict{UInt64,Dict{Tuple{Int16,UInt64,Int16},Float32}}   # decision type -> (A, A's value a, B) -> B's effect on o(x) given A = a (ci_values)
 end
 
 const MAXMEMO = 2_000_000
@@ -303,16 +313,21 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
-  greedyby in (:correction, :odds) || error("unknown greedyby $greedyby")
+  greedyby in (:correction, :odds, :dep, :depcorr) || error("unknown greedyby $greedyby")
+  accumby in (:odds, :dep, :depodds) || error("unknown accumby $accumby (use :odds, :dep or :depodds)")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
   stepscore in (:abs, :signed, :maxmin, :maxmin2) || error("unknown stepscore $stepscore (use :abs, :signed, :maxmin or :maxmin2)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
   poolmarginal in (:off, :leftover, :drop) || error("unknown poolmarginal $poolmarginal (use :off, :leftover or :drop)")
   pairorder in (:slot, :maxdev) || error("unknown pairorder $pairorder (use :slot or :maxdev)")
   ctxmode in (:greedy, :backoff, :limited, :cover, :accum) || error("unknown ctxmode $ctxmode (use :greedy, :backoff, :limited, :cover or :accum)")
+  smoothn in (:set, :parent) || error("unknown smoothn $smoothn (use :set or :parent)")
+  combine in (:avg, :ie, :mix) || error("unknown combine $combine (use :avg, :ie or :mix)")
+  branches >= 1 || error("branches must be at least 1")
+  ciorder in (:off, :slot, :value) || error("unknown ciorder $ciorder (use :off, :slot or :value)")
   leftsmooth in (:odds, :evidence) || error("unknown leftsmooth $leftsmooth (use :odds or :evidence)")
   poolscale in (:logodds, :z) || error("unknown poolscale $poolscale (use :logodds or :z)")
   poolmode in (:whole, :local) || error("unknown poolmode $poolmode (use :whole or :local)")
@@ -362,7 +377,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -371,10 +386,11 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     Dict{UInt64,Vector{Tuple{Int16,Int16}}}(), lsid, lsets,
     Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), false, 10_000, Dict{UInt64,Int}(),
     Dict{UInt64,Vector{Int32}}(), zeros(Int32, length(lsets)), Dict{UInt64,Set{Int}}(), Dict{UInt64,Gates}(),
-    Dict{UInt64,Float64}(), Dict{UInt64,Dict{Int,Vector{Int}}}(), Dict{UInt64,Set{Int}}(), Set{UInt64}(), Dict{UInt64,Matrix{Float32}}())
+    Dict{UInt64,Float64}(), Dict{UInt64,Dict{Int,Vector{Int}}}(), Dict{UInt64,Set{Int}}(), Set{UInt64}(), Dict{UInt64,Matrix{Float32}}(),
+    Dict{UInt64,Dict{Tuple{Int16,UInt64,Int16},Float32}}())
   tally_shapes!(m)
   if gate > 0
-    t = @elapsed build_gates!(m)
+    t = @elapsed build_gates!(m; mincount = gatemincount)
     @info "ChainModel: relevance gates for $(length(m.gates)) decision types (gate = $gate, $(round(t; digits = 1)) s): " *
       join(("$(sum(g.always)) of $(length(g.always)) slots always, $(length(g.byvalue)) gate values" for g in values(m.gates)), "; ")
   end
@@ -484,7 +500,7 @@ independent between halves, average out; centring removes a shift shared by all 
 smoothing's low-count bias) -- an irrelevant feature gets about 0 even under one of many gate values.  Returns
 (v, s) -> effect and v -> (chosen, not chosen).
 """
-function slot_effects(m::ChainModel, recs, n, g, p0)
+function slot_effects(m::ChainModel, recs, n, g, p0; mincount = m.opts.mincount)
   Z = (Int32(0), Int32(0), Int32(0), Int32(0))
   bump(t, h, ch) = h == 0 ? (ch ? (t[1] + Int32(1), t[2], t[3], t[4]) : (t[1], t[2] + Int32(1), t[3], t[4])) :
     (ch ? (t[1], t[2], t[3] + Int32(1), t[4]) : (t[1], t[2], t[3], t[4] + Int32(1)))
@@ -504,7 +520,7 @@ function slot_effects(m::ChainModel, recs, n, g, p0)
       pair[k] = bump(get(pair, k, Z), h, ch)
     end
   end
-  hmin = max(1, cld(m.opts.mincount, 2))
+  hmin = max(1, cld(mincount, 2))
   odds(a, b, o) = a + b >= hmin ? smoothOdds(Float64(a), Float64(b), o) : o
   ov = Dict(v => (odds(t[1], t[2], p0), odds(t[3], t[4], p0)) for (v, t) in vc)
   # the changes in each half, then their covariance about each half's mean change for the slot:
@@ -540,7 +556,7 @@ always admitted).  A slot is admitted always if its effect (see slot_effects) re
 otherwise when a value of a gate slot (one with few values) is present under which its effect
 reaches `gate`.
 """
-function build_gates!(m::ChainModel)
+function build_gates!(m::ChainModel; mincount = m.opts.mincount)
   θ = m.opts.gate
   for (tk, recs) in m.typerecs
     isempty(recs) && continue
@@ -554,15 +570,15 @@ function build_gates!(m::ChainModel)
       x == 0 || push!(nv[s], x)
     end
     gslots = [s for s in 1:n if 0 < length(nv[s]) <= MAXGATEVALS]
-    e0, _ = slot_effects(m, recs, n, 0, p0)
+    e0, _ = slot_effects(m, recs, n, 0, p0; mincount)
     effect = Float32[get(e0, (Int32(0), Int16(s)), 0f0) for s in 1:n]
     always = BitVector(effect .>= θ)
     byvalue, effectby, valcount = Dict{Int32,Vector{Int16}}(), Dict{Tuple{Int32,Int16},Float32}(), Dict{Int32,Int}()
     for g in gslots
-      eg, vc = slot_effects(m, recs, n, g, p0)
+      eg, vc = slot_effects(m, recs, n, g, p0; mincount)
       for ((v, s), e) in eg
         valcount[v] = sum(vc[v])
-        sum(vc[v]) >= m.opts.mincount || continue
+        sum(vc[v]) >= mincount || continue
         effectby[(v, s)] = e
         sum(vc[v]) >= GATEMIN || continue                   # small cells: chance effects (see GATEMIN)
         (!always[s] && e >= θ) && push!(get!(() -> Int16[], byvalue, v), s)
@@ -928,10 +944,26 @@ if unsupported).  A set with no records at all is never supported, whatever `min
 carries no information, and treating it as supported would stop leftover backoff at a depth
 with no data instead of moving to a shallower prefix that has some.
 """
-function update_odds(m::ChainModel, e, label::UInt32, x::Float64)
+function update_odds(m::ChainModel, e, label::UInt32, x::Float64; pn = NaN)
   (c1, c2) = get(e[2], label, (0.0, 0.0))
   c1 + c2 < max(m.opts.mincount, 1) && return x, false
-  m.opts.shrink > 0 ? (shrinkOdds(c1, c2, x, m.opts.shrink), true) : (smoothOdds(c1, c2, x), true)
+  m.opts.shrink > 0 && return shrinkOdds(c1, c2, x, m.opts.shrink), true
+  smoothOdds(c1, c2, x, smoothing(m, c1 + c2, pn)), true
+end
+
+"The smoothing amount d for a set of n records whose parent has pn (NaN: unknown, n is used)."
+smoothing(m::ChainModel, n, pn = NaN) =
+  m.opts.smoothd + m.opts.smootha * (m.opts.smoothn == :parent && !isnan(pn) ? pn : n)
+
+"Records (chosen + not) of chain state `st`'s last prefix for `label`: the parent of its next step."
+function parentn(m::ChainModel, st, label::UInt32)
+  if depth(st) == 0
+    isempty(st.views[1].base) && return NaN
+    (c, oc) = get(m.prior, lpriorkey(m.recs[st.views[1].base[1]].typekey, label), (NaN, NaN))
+    return c + oc
+  end
+  (c1, c2) = get(st.cnt[end], label, (0.0, 0.0))
+  c1 + c2
 end
 
 """
@@ -972,9 +1004,10 @@ mutable struct ChainState
   members::Vector{UInt64}
   odds::Vector{Float64}
   alts::Vector{Dict{UInt64,Float64}}   # poolmode :local: per member, the odds every alternative reached at its step
+  cnt::Vector{LabelCounts}             # per prefix, its counts per label (the root's: NOCOUNTS; see parentn)
 end
-ChainState(o::Float64, typerecs::Vector{Int32}) = ChainState(UInt64[0], [RecView(typerecs)], [0], UInt64[], [o], Dict{UInt64,Float64}[])
-ChainState(keys, views, sizes, members, odds) = ChainState(keys, views, sizes, members, odds, Dict{UInt64,Float64}[])
+ChainState(o::Float64, typerecs::Vector{Int32}) = ChainState(UInt64[0], [RecView(typerecs)], [0], UInt64[], [o], Dict{UInt64,Float64}[], [NOCOUNTS])
+ChainState(keys, views, sizes, members, odds) = ChainState(keys, views, sizes, members, odds, Dict{UInt64,Float64}[], fill(NOCOUNTS, length(keys)))
 depth(st::ChainState) = length(st.keys) - 1
 
 "The view for prefix view `v` (with `n` items) plus x, before any list is built for it."
@@ -1102,6 +1135,7 @@ view's base.
 function advance!(m::ChainModel, st::ChainState, x, e, y)
   if x === nothing
     push!(st.keys, st.keys[end]); push!(st.views, st.views[end]); push!(st.sizes, st.sizes[end])
+    push!(st.cnt, st.cnt[end])
   else
     v, c = e
     key = extendkey(st.keys[end], x)
@@ -1112,6 +1146,7 @@ function advance!(m::ChainModel, st::ChainState, x, e, y)
       store!(m, key, (v, labelcounts(m, v.base)); built = length(v.base))   # exact, whatever e was (not kept: it was counted already)
     end
     push!(st.keys, key); push!(st.views, v); push!(st.sizes, st.sizes[end] + 1)
+    push!(st.cnt, e[2])
     push!(st.members, x)
   end
   push!(st.odds, y)
@@ -1221,6 +1256,7 @@ records will do.  Returns whether a feature was added.
 function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; target = nothing, exhaust = false,
   cap = EXACT, nosingle = NOSINGLE)
   x = st.odds[end]
+  pn = m.opts.smoothn == :parent ? parentn(m, st, label) : NaN
   best, bs, by, be = -Inf, 0, x, nothing
   slots = [s for s in remaining if Ic[s] != ABSENT]
   tr = CHAIN_TRACE[] === nothing ? nothing : Tuple{Int,Float64,Float64}[]
@@ -1231,7 +1267,7 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
   alts = rec ? Dict{UInt64,Float64}() : nothing    # every supported alternative's odds at this step
   single = Dict{Int,Tuple{Any,Float64,Float64}}()   # with pairsteps: slot -> (entry, odds, score) of supported singles
   for (s, e) in zip(slots, extend_all(m, st, depth(st), present_items(Ic, slots); cap))
-    y, ok = update_odds(m, e, label, x)
+    y, ok = update_odds(m, e, label, x; pn)
     tr === nothing || push!(tr, (s, ok ? abs(log(y) - log(x)) : NaN, total(e[2])))
     ok || continue
     sc = target !== nothing ? abs(log(x) - log(target)) - abs(log(y) - log(target)) :
@@ -1254,7 +1290,7 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
       ep = extend_pairs(m, st, depth(st), [(Ic[a], Ic[b]) for (a, b) in prs])
       for ((a, b), e) in zip(prs, ep)
         (haskey(single, a) && haskey(single, b)) || continue    # both slots supported alone, so the pair can be split
-        y, ok = update_odds(m, e, label, x)
+        y, ok = update_odds(m, e, label, x; pn)
         ok || continue
         sc = abs(log(y) - log(x))
         # (:min can't beat the pair's better member, which competes as a single: no pair would win)
@@ -1944,7 +1980,7 @@ function leftover_update(m::ChainModel, eS, eSX, label::UInt32, y1::Float64)
   oE = (k1 + k2) / rest
   prob(o) = isinf(o) ? 1.0 : o / (1 + o)
   ks = m.opts.shrinkleft > 0 ? m.opts.shrinkleft : m.opts.shrink
-  sm(a, b) = ks > 0 ? shrinkOdds(a, b, oE, ks) : smoothOdds(a, b, oE)
+  sm(a, b) = ks > 0 ? shrinkOdds(a, b, oE, ks) : smoothOdds(a, b, oE, smoothing(m, a + b, n1 + n2))   # (parent: S's records)
   px, pnx = prob(sm(k1, n1 - k1)), prob(sm(k2, n2 - k2))
   (px > 0 && pnx > 0) || return y1, true
   y1 * px / pnx, true
@@ -2032,6 +2068,15 @@ log o(x | C ∪ X) - log o(x | C) (leftover_update).  The X with the largest |co
 rungs it needed stay, X joins the context with its own ladder, T grows by the correction, and the next
 round begins.  Leftovers already in the context (as a generalization of a feature) are redundant;
 unsupported ones (even with everything dropped) are left out.  Returns the summed correction.
+ciorder (:slot / :value, decision types with a ci table): each walk step instead moves the context feature with
+the smallest dependence (see `dependence` below) whose step keeps the context supported.
+telescope: on each token's ladder (form, then its generalizations, rarer first) a leftover waits while a coarser
+rung is pending, is left out if a finer rung is in the chain, and is conditioned on its nearest coarser rung already
+counted (chain or taken), kept in every context it's scored in (the anchor); so a token's rungs add up to its form's
+effect once.  Leftovers with no supported context are dropped, letting their finer rungs go ahead.
+branches (> 1): a leftover the current context doesn't support also gets the first supported context along the
+paths that start with the 2nd, 3rd, ... best first step (walked as the main path); the corrections are combined by
+`combine` (see combine_contexts), and the context carried forward is their union (each feature's finest rung).
 """
 function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int}, label, prior, base)
   function ladder(x, slot)                          # (items, their slots): x, then its generalizations, rarer first
@@ -2049,29 +2094,114 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
     sb == 0 && return false
     any(j -> j != i && r[j] <= length(ladders[j]) && lslots[j][r[j]] > 0 && D[lslots[j][r[j]], sb] < m.opts.cidrop, eachindex(ladders))
   end
+  # ciorder: feature i's (at rung r[i]) dependence -- :slot, the mean of D[A, B] over all other slots A; :value, the
+  # mean over the context's other features A at their values a of D(a → B) (D[A, B] if a is rare); smallest first
+  C = m.opts.ciorder != :off && !isempty(base) ? get(m.ci, m.recs[base[1]].typekey, nothing) : nothing
+  if C !== nothing
+    V = get(m.civ, m.recs[base[1]].typekey, Dict{Tuple{Int16,UInt64,Int16},Float32}())
+    gavg = [(v = Float64[C[a, b] for a in axes(C, 1) if a != b && !isnan(C[a, b])]; isempty(v) ? Inf : sum(v) / length(v)) for b in axes(C, 2)]
+  end
+  function dependence(r, i)
+    sb = lslots[i][r[i]]
+    sb == 0 && return Inf
+    m.opts.ciorder == :slot && return gavg[sb]
+    tot, k = 0.0, 0
+    for j in eachindex(ladders)
+      (j == i || r[j] > length(ladders[j])) && continue
+      sa = lslots[j][r[j]]
+      (sa == 0 || sa == sb) && continue
+      d = get(V, (Int16(sa), ladders[j][r[j]], Int16(sb)), C[sa, sb])
+      isnan(d) && continue
+      tot += d; k += 1
+    end
+    k == 0 ? gavg[sb] : tot / k
+  end
   rung = ones(Int, length(ladders))
   T = log(st.odds[end])
   total_ = 0.0
   pending = copy(rel)
   items(r) = unique!(UInt64[L[r[i]] for (i, L) in enumerate(ladders) if r[i] <= length(L)])   # (a generalization may equal another feature)
-  cache = Dict{Vector{Int},Any}()
-  function build(r)                                 # (state, final entry) of the context, or nothing if unsupported
-    get!(cache, copy(r)) do
+  cache = Dict{Tuple{Vector{Int},UInt64},Any}()
+  function build(r, A = UInt64(0))                  # (state, final entry) of the context (+ anchor A), or nothing if unsupported
+    get!(cache, (copy(r), A)) do
       S, e = ChainState(prior, base), nothing
-      for x in items(r)
+      xs = items(r)
+      A == 0 || A in xs || push!(xs, A)
+      for x in xs
         e = only(extend_all(m, S, depth(S), [x]))
-        y, ok = update_odds(m, e, label, S.odds[end])
+        y, ok = update_odds(m, e, label, S.odds[end]; pn = m.opts.smoothn == :parent ? parentn(m, S, label) : NaN)
         ok || return nothing
         advance!(m, S, x, e, y)
       end
       (S, e)
     end
   end
+  # X's correction in context r (+ anchor A): (correction, its variance, (state, entry), X's entry), or nothing if
+  # unsupported.  Variance: sum of 1/(count + 1/2) over X's cells (chosen, not) with the context and without it
+  function xcorr(r, X, A = UInt64(0))
+    c = build(r, A)
+    c === nothing && return nothing
+    S, e = c
+    eX = only(extend_all(m, S, depth(S), [X]))
+    corr = nothing
+    if e === nothing
+      yX, okX = update_odds(m, eX, label, prior; pn = m.opts.smoothn == :parent ? parentn(m, S, label) : NaN)
+      okX && m.opts.shrinkleft > 0 && (yX = shrinkOdds(get(eX[2], label, (0.0, 0.0))..., prior, m.opts.shrinkleft))
+      okX && ctxsupported(m, eX, label) && (corr = log(yX) - log(prior))
+    else
+      y2, ok2 = leftover_update(m, e, eX, label, S.odds[end])
+      ok2 && ctxsupported(m, eX, label) && (corr = log(y2) - log(S.odds[end]))
+    end
+    corr === nothing && return nothing
+    (k1, k2) = get(eX[2], label, (0.0, 0.0))
+    v = 1 / (k1 + 0.5) + 1 / (k2 + 0.5)
+    if e !== nothing
+      (n1, n2) = get(e[2], label, (0.0, 0.0))
+      v += 1 / (max(n1 - k1, 0.0) + 0.5) + 1 / (max(n2 - k2, 0.0) + 0.5)
+    end
+    (corr, v, c, eX)
+  end
+  # telescope: each token's ladder (form, then its generalizations, rarer first); a leftover's ancestors are the
+  # coarser rungs of its ladder, its finer rungs the ones before it
+  ancestors, finer = Dict{Int,Vector{Int}}(), Dict{Int,Vector{Int}}()
+  if m.opts.telescope
+    for (f, gs) in G
+      Ic[f] == ABSENT && continue
+      tl = [f; sort!(Int[g for g in gs if Ic[g] != ABSENT && Ic[g] != Ic[f]]; by = g -> get(m.itemcount, Ic[g], typemax(Int)))]
+      for (k, sl) in enumerate(tl)
+        ancestors[sl] = tl[k+1:end]
+        finer[sl] = tl[1:k-1]
+      end
+    end
+    chainset = Set(st.members)                      # a leftover with a finer rung in the chain adds nothing
+    filter!(s -> !any(f -> Ic[f] in chainset, get(finer, s, Int[])), pending)
+  end
+  taken = Set{UInt64}()
+  # the anchor X is conditioned on: its nearest ancestor already counted (in the chain or taken); 0 if none
+  function anchor(sx)
+    for a in get(ancestors, sx, Int[])
+      (Ic[a] in taken || Ic[a] in st.members) && return Ic[a]
+    end
+    UInt64(0)
+  end
+  # X waits while a coarser rung of its ladder is still pending
+  blocked(sx) = any(a -> a in pending, get(ancestors, sx, Int[]))
   while !isempty(pending)
     # the generalization path from the current rungs (the same for every X), built as far as needed
     path = Any[(copy(rung), build(rung))]
     function step!(path)
       r = path[end][1]
+      if C !== nothing                              # ciorder: the least dependent feature that can step up
+        movable = [i for i in eachindex(ladders) if r[i] <= length(ladders[i]) && !(r[i] == length(ladders[i]) && !maydrop(r, i))]
+        for i in sort!(movable; by = i -> dependence(r, i))
+          r2 = copy(r); r2[i] += 1
+          c = build(r2)
+          c === nothing && continue
+          push!(path, (r2, c))
+          return true
+        end
+        return false
+      end
       best, br, bc = Inf, nothing, nothing
       for i in eachindex(ladders)
         r[i] <= length(ladders[i]) || continue      # (already dropped)
@@ -2086,68 +2216,212 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       push!(path, (br, bc))
       true
     end
-    bestX, bestc, bestk, bestctx = 0, 0.0, 0, UInt64[]
+    # accumby :dep: the move (feature i one rung up, or dropped) giving up the least of X's dependence on the context,
+    # ρ(X, item now) - ρ(X, item after); ties by the running-estimate rule.  :depodds: the move with the smallest
+    # imp * (dependence lost) + |log o(context after) - T|, imp = |X's marginal correction| (both in log odds)
+    function depstep!(p, X, imp = 0.0)
+      r = p[end][1]
+      best, br, bc = (Inf, Inf), nothing, nothing
+      for i in eachindex(ladders)
+        r[i] <= length(ladders[i]) || continue
+        r[i] == length(ladders[i]) && !maydrop(r, i) && continue
+        r2 = copy(r); r2[i] += 1
+        c = build(r2)
+        c === nothing && continue
+        L = ladders[i]
+        loss = depq(m, base, X, L[r[i]], label, prior) - (r2[i] <= length(L) ? depq(m, base, X, L[r2[i]], label, prior) : 0.0)
+        d = abs(log(c[1].odds[end]) - T)
+        sc = m.opts.accumby == :depodds ? (imp * loss + d, 0.0) : (loss, d)
+        sc < best && ((best, br, bc) = (sc, r2, c))
+      end
+      br === nothing && return false
+      push!(p, (br, bc))
+      true
+    end
+    # branches (accum branches > 1): the paths starting with the 2nd, 3rd, ... best first step from the current
+    # rungs (the main path starts with the best), each then walked as the main path; built when first needed
+    bpaths = nothing
+    function branchpaths()
+      bpaths === nothing || return bpaths
+      bpaths = Any[]
+      r = path[1][1]
+      moves = Tuple{Float64,Vector{Int},Any}[]
+      for i in eachindex(ladders)
+        r[i] <= length(ladders[i]) || continue
+        r[i] == length(ladders[i]) && !maydrop(r, i) && continue
+        r2 = copy(r); r2[i] += 1
+        c = build(r2)
+        c === nothing && continue
+        push!(moves, (abs(log(c[1].odds[end]) - T), r2, c))
+      end
+      sort!(moves; by = first)
+      for (_, r2, c) in moves[2:min(end, m.opts.branches)]
+        push!(bpaths, Any[path[1], (r2, c)])
+      end
+      bpaths
+    end
+    bestX, bestc, bestk, bestr = 0, 0.0, 0, Int[]
+    # accumby :depodds: X's marginal correction |log o(x | X) - log o(x)| (0 if unsupported)
+    function margimpact(X)
+      eX = only(extend_all(m, ChainState(prior, base), 0, [X]))
+      y, ok = update_odds(m, eX, label, prior)
+      ok ? abs(log(y) - log(prior)) : 0.0
+    end
+    dead = Int[]                                      # (telescope) leftovers with no supported context
     tries = ACCUM_TRACE[] === nothing ? nothing : Dict{Int,Vector{Any}}()   # (trace: each X's walk along the path)
     for (pi_, sx) in enumerate(pending)
       X = Ic[sx]
       X in items(rung) && continue                  # already in the context (as a generalization): redundant
+      m.opts.telescope && blocked(sx) && continue
+      A = m.opts.telescope ? anchor(sx) : UInt64(0)
       tries === nothing || (tries[sx] = Any[])
+      # accumby :dep: X walks its own path, each step the move losing the least of X's dependence on the context
+      xpath = m.opts.accumby == :odds ? path : Any[path[1]]
+      imp = m.opts.accumby == :depodds ? margimpact(X) : 0.0
+      xstep! = m.opts.accumby == :odds ? step! : (p -> depstep!(p, X, imp))
       k = 1
-      k0, xc, xk = 0, 0.0, 0                          # (accumwin: the first supported step, and the smallest |correction| since)
+      k0, xc, xk, xv = 0, 0.0, 0, 0.0                 # (accumwin: the first supported step, and the smallest |correction| since)
       while true
-        c = path[k][2]
-        if c !== nothing
-          S, e = c
-          eX = only(extend_all(m, S, depth(S), [X]))
-          corr = nothing
-          if e === nothing
-            yX, okX = update_odds(m, eX, label, prior)
-            okX && m.opts.shrinkleft > 0 && (yX = shrinkOdds(get(eX[2], label, (0.0, 0.0))..., prior, m.opts.shrinkleft))
-            okX && ctxsupported(m, eX, label) && (corr = log(yX) - log(prior))
+        res = xpath[k][2] === nothing ? nothing : xcorr(xpath[k][1], X, A)
+        if xpath[k][2] !== nothing && tries !== nothing   # context, its odds and records, X's records with it, X's correction (or nothing)
+          S, e = xpath[k][2]
+          eX = res === nothing ? only(extend_all(m, S, depth(S), [X])) : res[4]
+          push!(tries[sx], (ctx = items(xpath[k][1]), odds = e === nothing ? prior : S.odds[end],
+            n = e === nothing ? nothing : get(e[2], label, (0.0, 0.0)), nX = get(eX[2], label, (0.0, 0.0)),
+            corr = res === nothing ? nothing : res[1]))
+        end
+        corr = res === nothing ? nothing : res[1]
+        if corr !== nothing && (m.opts.driftsigma > 0 || m.opts.drifttau > 0 || m.opts.driftstep > 0)
+          # drift: how far this context has moved from the running estimate, and how many ladder steps it took
+          S, e = res[3]
+          d = abs((e === nothing ? log(prior) : log(S.odds[end])) - T)
+          steps = sum(xpath[k][1] .- 1)
+          if m.opts.drifttau > 0 && d > m.opts.drifttau
+            corr = nothing
           else
-            y2, ok2 = leftover_update(m, e, eX, label, S.odds[end])
-            ok2 && ctxsupported(m, eX, label) && (corr = log(y2) - log(S.odds[end]))
-          end
-          if tries !== nothing                      # context, its odds and records, X's records with it, X's correction (or nothing)
-            push!(tries[sx], (ctx = items(path[k][1]), odds = e === nothing ? prior : S.odds[end],
-              n = e === nothing ? nothing : get(e[2], label, (0.0, 0.0)), nX = get(eX[2], label, (0.0, 0.0)), corr = corr))
-          end
-          if corr !== nothing && (m.opts.driftsigma > 0 || m.opts.drifttau > 0 || m.opts.driftstep > 0)
-            # drift: how far this context has moved from the running estimate, and how many ladder steps it took
-            d = abs((e === nothing ? log(prior) : log(S.odds[end])) - T)
-            steps = sum(path[k][1] .- 1)
-            if m.opts.drifttau > 0 && d > m.opts.drifttau
-              corr = nothing
-            else
-              m.opts.driftsigma > 0 && (corr *= exp(-d / m.opts.driftsigma))
-              m.opts.driftstep > 0 && (corr *= m.opts.driftstep ^ steps)
-            end
-          end
-          if corr !== nothing
-            k0 == 0 && (k0 = k)
-            (xk == 0 || abs(corr) < abs(xc)) && ((xc, xk) = (corr, k))
-            k - k0 >= m.opts.accumwin && break         # (accumwin 0: the first supported context, as before)
+            m.opts.driftsigma > 0 && (corr *= exp(-d / m.opts.driftsigma))
+            m.opts.driftstep > 0 && (corr *= m.opts.driftstep ^ steps)
           end
         end
-        k == length(path) && !step!(path) && break   # nothing left to generalize
+        if corr !== nothing
+          k0 == 0 && (k0 = k)
+          (xk == 0 || abs(corr) < abs(xc)) && ((xc, xk, xv) = (corr, k, res[2]))
+          k - k0 >= m.opts.accumwin && break         # (accumwin 0: the first supported context, as before)
+        end
+        k == length(xpath) && !xstep!(xpath) && break   # nothing left to generalize
         k += 1
       end
+      if xk == 0
+        m.opts.telescope && push!(dead, sx)
+        continue
+      end
+      xr = xpath[xk][1]
+      if m.opts.branches > 1 && xk > 1                # X needed generalizing: its contexts along the other branches too
+        ctxs = Any[(xr, xc, xv)]
+        for bp in branchpaths()
+          j = 2
+          while true
+            res = xcorr(bp[j][1], X, A)
+            if res !== nothing
+              any(c -> c[1] == bp[j][1], ctxs) || push!(ctxs, (bp[j][1], res[1], res[2]))
+              break
+            end
+            j == length(bp) && !step!(bp) && break
+            j += 1
+          end
+        end
+        if length(ctxs) > 1
+          xc = combine_contexts(m.opts.combine, ctxs, r -> xcorr(r, X, A))
+          xr = reduce((a, b) -> min.(a, b), first.(ctxs))   # carried forward: the union (finest rung of each feature)
+        end
+      end
+      # depweight: scaled by 1 - X's strongest dependence on a counted feature (chain, taken) outside its context
+      m.opts.depweight && (xc *= depweight(m, base, X, setdiff(union(st.members, taken), items(xr)), label, prior))
       # X's correction in its chosen context; the X with the largest |correction| is taken
-      xk > 0 && (abs(xc) > abs(bestc) || bestX == 0) && ((bestX, bestc, bestk, bestctx) = (pi_, xc, xk, items(path[xk][1])))
+      (abs(xc) > abs(bestc) || bestX == 0) && ((bestX, bestc, bestk, bestr) = (pi_, xc, xk, xr))
     end
-    bestX == 0 && break
+    if bestX == 0
+      isempty(dead) && break
+      filter!(s -> !(s in dead), pending)             # (telescope) their finer rungs may go ahead
+      continue
+    end
     sx = pending[bestX]
     ACCUM_TRACE[] === nothing || ACCUM_TRACE[](sx, T, tries[sx], bestk, bestc)
-    LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](sx, true, [something(findfirst(==(f), Ic), 0) for f in bestctx], bestc)
-    m.opts.accumreset || (rung = copy(path[bestk][1]))   # (accumreset: the context stays at its most specific)
+    LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](sx, true, [something(findfirst(==(f), Ic), 0) for f in items(bestr)], bestc)
+    m.opts.accumreset || (rung = copy(bestr))         # (accumreset: the context stays at its most specific)
     (li, ls) = ladder(Ic[sx], sx)
     push!(ladders, li); push!(lslots, ls); push!(rung, 1)
+    push!(taken, Ic[sx])
     total_ += bestc
     T += bestc
     deleteat!(pending, bestX)
+    filter!(s -> !(s in dead), pending)
     filter!(s -> !(Ic[s] in items(rung)), pending)  # leftovers now in the context are redundant
   end
   total_
+end
+
+const DEPQ = Dict{Tuple{UInt64,UInt64,UInt32},Float64}()
+
+"""
+ρ(E, a): how strongly leftover E and feature a go together, label-blind -- |Yule's Q| of their 2×2 table over the
+decision type's records for `label` (chosen + not), with 1/2 added to each cell: 1 when one implies the other, 0 when
+independent.  Cached (symmetric).
+"""
+function depq(m::ChainModel, base, E::UInt64, a::UInt64, label::UInt32, prior)
+  (E == a || isempty(base)) && return 1.0
+  key = E < a ? (E, a, label) : (a, E, label)
+  r = get(DEPQ, key, nothing)
+  r === nothing || return r
+  S0 = ChainState(prior, base)
+  ea, eE = extend_all(m, S0, 0, [a, E])
+  S1 = ChainState(prior, base)
+  advance!(m, S1, a, ea, prior)
+  eaE = only(extend_all(m, S1, 1, [E]))
+  n(e) = sum(get(e[2], label, (0.0, 0.0)))
+  (c, oc) = get(m.prior, lpriorkey(m.recs[base[1]].typekey, label), (0.0, 0.0))
+  n11 = n(eaE)
+  n10, n01 = n(eE) - n11, n(ea) - n11
+  n00 = c + oc - n11 - n10 - n01
+  p, q = (n11 + 0.5) * (max(n00, 0.0) + 0.5), (max(n10, 0.0) + 0.5) * (max(n01, 0.0) + 0.5)
+  length(DEPQ) >= MAXMEMO && empty!(DEPQ)
+  DEPQ[key] = abs(p - q) / (p + q)
+end
+
+"depweight: 1 - the largest ρ(X, a) over features `counted` (0 if X goes with one completely)."
+depweight(m::ChainModel, base, X, counted, label, prior) =
+  1.0 - maximum((depq(m, base, X, a, label, prior) for a in counted); init = 0.0)
+
+"""
+One correction from a leftover's corrections in several contexts `ctxs` (rung vectors with (correction, variance)):
+:avg -- inverse-variance weighted mean; :ie -- inclusion-exclusion over the contexts' meets (exact if X's
+correction is additive in the context features), Σ over nonempty subsets J of (-1)^(|J|+1) corr(meet of J), the
+meet of contexts being each feature's coarser rung (`xcorr(r)` scores one); :mix -- the two weighted by their
+inverse variances (the inclusion-exclusion one's variance: the sum of its terms').  An unsupported meet (rare: a
+meet is coarser) falls back to :avg.
+"""
+function combine_contexts(mode::Symbol, ctxs, xcorr)
+  w = [1 / c[3] for c in ctxs]
+  avg = sum(w .* [c[2] for c in ctxs]) / sum(w)
+  mode == :avg && return avg
+  B = length(ctxs)
+  ie, vie = 0.0, 0.0
+  for J in 1:(2^B - 1)
+    sel = [b for b in 1:B if (J >> (b - 1)) & 1 == 1]
+    if length(sel) == 1
+      c, v = ctxs[sel[1]][2], ctxs[sel[1]][3]
+    else
+      res = xcorr(reduce((a, b) -> max.(a, b), [ctxs[b][1] for b in sel]))
+      res === nothing && return avg
+      c, v = res[1], res[2]
+    end
+    ie += (-1)^(length(sel) + 1) * c
+    vie += v
+  end
+  mode == :ie && return ie
+  vavg = 1 / sum(w)
+  λ = vavg / (vavg + vie)                            # the inclusion-exclusion estimate's share
+  λ * ie + (1 - λ) * avg
 end
 
 """
@@ -2179,6 +2453,31 @@ function ci_table(m::ChainModel, tk::UInt64; sample = 200_000)
     end
   end
   D
+end
+
+"""
+The value-level version of ci_table: (A, a, B) -> how much feature slot B still changes o(x) once A = a
+(slot_effects' split-half measure with A as the gate, unaveraged), for values a with at least `vmin`
+records in the sample (rarer values: ciorder :value falls back to D[A, B]).  `nothing` as ci_table.
+"""
+function ci_values(m::ChainModel, tk::UInt64; sample = 200_000, vmin = 200)
+  recs = get(m.typerecs, tk, Int32[])
+  isempty(recs) && return nothing
+  n = Int(m.recs[recs[1]].n)
+  all(j -> m.recs[j].label == 0 && m.lsid[j] == 0 && m.recs[j].n == n, recs) || return nothing
+  rs = recs[1:max(1, length(recs) ÷ sample):end]
+  p0 = priorodds(m, lpriorkey(tk, UInt32(0)))
+  itemof = Dict{Int32,UInt64}()
+  V = Dict{Tuple{Int16,UInt64,Int16},Float32}()
+  for a in 1:n
+    e, vc = slot_effects(m, rs, n, a, p0)
+    for ((v, s), x) in e
+      (s == a || sum(vc[v]) < vmin) && continue
+      isempty(itemof) && for (it, id) in m.idof; itemof[id] = it; end
+      V[(Int16(a), itemof[v], Int16(s))] = x
+    end
+  end
+  V
 end
 
 "Trace hook (accum): for each leftover taken, (slot, running estimate before, its walk along the path, step taken, correction)."
@@ -2239,6 +2538,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     return accum_leftovers(m, st, Ic, G, rel, label, prior, base)
   end
   pending = Int[]
+  incl = Set{UInt64}()                               # included leftovers (depweight: counted evidence)
   # X's greedy context (from `avail`): (correction, context) or nothing if it never reaches needmin features;
   # greedymin: the context, among the growth's prefixes with at least needmin features, with the smallest |correction|
   function greedy_context(X)
@@ -2274,7 +2574,8 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
         y2, ok2 = leftover_update(m, eS[i], eSX[i], label, y1)   # o(S∪f∪X), from o(S∪f)
         (ok1 && ok2 && ctxsupported(m, eSX[i], label)) || continue   # S∪f∪X must be supported
         c = log(y2) - log(y1)
-        sc = m.opts.greedyby == :correction ? abs(c - corr) : abs(log(y1) - log(oS))
+        sc = m.opts.greedyby == :correction ? abs(c - corr) : m.opts.greedyby == :odds ? abs(log(y1) - log(oS)) :
+          m.opts.greedyby == :dep ? depq(m, base, X, f, label, prior) : depq(m, base, X, f, label, prior) * abs(c - corr)
         sc > bs && ((bs, bi, by1, by2, bcorr) = (sc, i, y1, y2, c))
       end
       bi == 0 && break
@@ -2293,6 +2594,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     elseif W < 1.0                                   # blend toward conditioning without the pool features
       corr = W * corr + (1 - W) * context_correction(m, X, [f for f in chosen if !haskey(poolw, f)], label, prior, base)
     end
+    m.opts.depweight && (corr *= depweight(m, base, X, setdiff(union(st.members, incl), chosen), label, prior))
     (corr, chosen)
   end
   for s in remaining
@@ -2315,6 +2617,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](s, true, [something(findfirst(==(f), Ic), 0) for f in c[2]], c[1])
     total_ += c[1]
     X in avail || push!(avail, X)
+    push!(incl, X)
   end
   # greedysel: in rounds, every remaining leftover's context against the current pool, the one with the
   # largest |correction| taken (it joins the pool), until none has a supported context
@@ -2330,6 +2633,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](s, true, [something(findfirst(==(f), Ic), 0) for f in bc[2]], bc[1])
     total_ += bc[1]
     Ic[s] in avail || push!(avail, Ic[s])
+    push!(incl, Ic[s])
     deleteat!(pending, bi)
   end
   total_

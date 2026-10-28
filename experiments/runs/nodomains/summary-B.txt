@@ -1,0 +1,10 @@
+=== accumby=dep  Wed Oct 28 18:45:11 UTC 2026
+ALL         2899    0.9977  0.8165  0.7665  0.0162  1.0     
+score 292.8 s, run 20261028-185254 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== accumby=dep depweight=true  Wed Oct 28 18:52:55 UTC 2026
+ALL         2899    0.9984  0.8241  0.7734  0.0162  1.0     
+score 247.3 s, run 20261028-185955 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== ciorder=value  Wed Oct 28 18:59:56 UTC 2026
+ALL         2899    0.9977  0.8127  0.7637  0.0162  1.0     
+score 116.4 s, run 20261028-190448 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Wed Oct 28 19:04:49 UTC 2026

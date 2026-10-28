@@ -34,10 +34,15 @@ function propagate_domains(st, t, cands, pa, props; eps = 1e-3)
   end
 end
 
+"Product scoring: each head property's term raised to this power (1: the plain product)."
+const PROD_BETA = Ref(1.0)
+"Product scoring: the head properties whose terms enter the product (nothing: all); the others still narrow domains."
+const PROD_PROPS = Ref{Union{Nothing,Set{Symbol}}}(nothing)
+
 """
 The attachment of t chosen over its domain: `mode` :prune (its own probabilities) or :product
-(times each head property's renormalized probability of the candidate's value).  Returns
-(choice, number of surviving candidates).
+(times each head property's renormalized probability of the candidate's value, raised to PROD_BETA,
+over the properties in PROD_PROPS).  Returns (choice, number of surviving candidates).
 """
 function domain_choice(st, t, cands, pa, props; eps = 1e-3, mode = :product)
   alive, D = propagate_domains(st, t, cands, pa, props; eps)
@@ -46,11 +51,12 @@ function domain_choice(st, t, cands, pa, props; eps = 1e-3, mode = :product)
   for j in alive
     s = log(pa[j])
     for (name, (vals, ps)) in props
+      PROD_PROPS[] === nothing || name in PROD_PROPS[] || continue
       v = head_value(st, t, cands[j], name)
       v == PENDING && continue
       z = sum(p for (u, p) in zip(vals, ps) if u in D[name]; init = 0.0)
       k = findfirst(==(v), vals)
-      s += k === nothing || z <= 0 ? log(1e-12) : log(max(ps[k], 1e-12) / z)
+      s += PROD_BETA[] * (k === nothing || z <= 0 ? log(1e-12) : log(max(ps[k], 1e-12) / z))
     end
     push!(score, s)
   end

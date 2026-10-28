@@ -1,0 +1,16 @@
+=== telescope=true  Tue Oct 27 19:57:51 MDT 2026
+ALL         2899    0.9977  0.8451  0.7885  0.0162  1.0     
+score 216.2 s, run 20261027-200308 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== branches=3 combine=avg  Tue Oct 27 20:03:08 MDT 2026
+ALL         2899    0.9977  0.8489  0.7954  0.0162  1.0     
+score 283.2 s, run 20261027-200912 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== branches=3 combine=ie  Tue Oct 27 20:09:13 MDT 2026
+ALL         2899    0.9975  0.8441  0.7823  0.0162  1.0     
+score 300.8 s, run 20261027-201534 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== branches=3 combine=mix  Tue Oct 27 20:15:35 MDT 2026
+ALL         2899    0.9977  0.8468  0.7927  0.0162  1.0     
+score 269.5 s, run 20261027-202125 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== telescope=true branches=3 combine=mix  Tue Oct 27 20:21:26 MDT 2026
+ALL         2899    0.9977  0.8451  0.7937  0.0162  1.0     
+score 305.2 s, run 20261027-202751 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Tue Oct 27 20:27:52 MDT 2026

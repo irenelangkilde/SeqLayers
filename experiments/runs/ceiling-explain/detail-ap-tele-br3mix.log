@@ -1,0 +1,15 @@
+ERROR: LoadError: unknown option tags; options: accumreset, accumwin, branches, chainonly, cidrop, ciorder, classchain, classleft, climb, climbleft, combine, contest, countcache, countmin, ctxattach, ctxfromchain, ctxmode, ctxscope, ctxsize, ctxsupport, detail, dev_sents, dfs, dfsbudget, dfseps, dfsepshead, dfsjump, dfsorder, diff, distback, docs, domains, domeps, driftsigma, driftstep, drifttau, events, explaintop, fwdcheck, gate, greedyby, greedymin, greedysel, group, headconf, headsdist, headtrank, headwc, headwcdir, jointmin, keepfrac, ldsall, ldsscore, leftalpha, leftmin2, leftovers, leftsmooth, lockstep, maxcached, maxctx, maxerr, maxlen, maxrestarts, mincount, minctx, minsupport, model, noise, note, nsent, order, pairfilter, pairorder, pairscore, pairsfirst, pairsteps, pickfewest, poolgain, poolkeepgen, poollam, poolm, poolmarginal, poolmode, poolscale, poolsigma, pprel, pptable, projective, redundant, relations, relbounded, relevance, relnone, restart, rings, rootabsent, sample, screen, screenby, search, select, sent, shrink, shrinkleft, softheads, stepscore, suffixes, target, tau, telescope, train_sents, treerank, tune_sents, wclasses, wclevels, wmo, workers
+Stacktrace:
+ [1] error(s::String)
+   @ Base ./error.jl:44
+ [2] parse_cfg(args::Vector{String})
+   @ Main ~/Projects/crystallization/juliaNLP/SeqLayers/experiments/dev_eval.jl:204
+ [3] top-level scope
+   @ ~/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_explain.jl:36
+ [4] include(mod::Module, _path::String)
+   @ Base ./Base.jl:309
+ [5] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:344
+ [6] _start()
+   @ Base ./client.jl:577
+in expression starting at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_explain.jl:36

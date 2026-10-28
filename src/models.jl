@@ -66,6 +66,25 @@ function smoothOdds(c1, c2, e)
   end
 end
 
+"The same, moving the raw odds by `d` counts instead of one (smoothOdds(c1, c2, e, 1) == smoothOdds(c1, c2, e))."
+function smoothOdds(c1, c2, e, d)
+  d == 1 && return smoothOdds(c1, c2, e)
+  r = c1 / c2
+  if r == e
+    e
+  elseif r < e && c1 > c2 && c2 > d
+    min(e, c1 / (c2 - d))
+  elseif r < e && c1 <= c2
+    min(e, (c1 + d) / c2)
+  elseif r > e && c1 <= c2
+    max(e, (c1 - d) / c2)
+  elseif r > e && c1 > c2
+    max(e, c1 / (c2 + d))
+  else
+    e
+  end
+end
+
 """
 Naive Bayes in odds form.  Each feature key counts how often it described the chosen
 candidate (`chosen`) vs. a candidate that wasn't chosen (`unchosen`).  Priors count the same

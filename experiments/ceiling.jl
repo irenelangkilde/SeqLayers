@@ -18,6 +18,9 @@
 #              (all, or a list like head_dir,head_dist): a ceiling for the attachment mechanism
 #   domains    pipeline with domain variables instead of commits: off | prune | product (src/domains.jl);
 #              domeps: the probability below which a value leaves its domain (default 1e-3)
+#   prodbeta   domains=product: each head-property term raised to this power (default 1)
+#   prodprops  domains=product: only these head properties' terms enter the product (e.g. head_xpos,head_dist;
+#              "" = all); the others still narrow the domains
 #   on         dev (default) | tune: score the held-out tuning docs instead (dev_eval.jl tune_sents)
 #   calibrate  true: also fit the weight of the greedy leftovers' corrections per decision type
 #              (score = chain + alpha * corrections, maximizing the likelihood of the gold choices
@@ -77,6 +80,9 @@ function ceiling_main(cfg)
     freq[f] = get(freq, f, 0) + 1
   end
   Distributed.remotecall_eval(Main, workers(), :(FORMFREQ[] = $freq))
+  pp = isempty(cfg["prodprops"]) ? nothing : Set(Symbol.(split(cfg["prodprops"], ',')))
+  pp === nothing || all(n -> haskey(SeqLayers.ALLHEADSETS, n), pp) || error("prodprops: names are $(join(keys(SeqLayers.ALLHEADSETS), ", "))")
+  Distributed.remotecall_eval(Main, workers(), :(SeqLayers.PROD_BETA[] = $(cfg["prodbeta"]); SeqLayers.PROD_PROPS[] = $pp))
   t1 = time()
   order = sortperm(devdocs; by = p -> length(p[2].text), rev = true)
   scoretags = cfg["tags"] == "true"
@@ -128,6 +134,8 @@ DEFAULTS["headconf"] = 0.9
 DEFAULTS["headgold"] = ""
 DEFAULTS["domains"] = "off"
 DEFAULTS["domeps"] = 1e-3
+DEFAULTS["prodbeta"] = 1.0
+DEFAULTS["prodprops"] = ""
 DEFAULTS["on"] = "dev"
 DEFAULTS["calibrate"] = "false"
 

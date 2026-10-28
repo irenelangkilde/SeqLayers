@@ -14,6 +14,8 @@
 #   each; per leftover (in the order taken, accum) the running estimate and the generalization walk: each context
 #   tried, its odds and records, the leftover's correction there; and positive vs negative evidence summed apart.
 # sent=text: only sentences containing this text.
+# headblame=true (domains=product): only errors the attachment alone gets right (argmax P(attach) is the gold head) --
+#   the head-property terms flip them; per property, the log margin log P(pred's value) - log P(gold's value).
 # chainonly=true: only errors the chains alone already make (scoring every candidate by its chain log odds,
 # without leftovers -- and with domains=product, times the head-property terms -- gives the same wrong head).
 
@@ -28,6 +30,7 @@ DEFAULTS["maxerr"] = 2
 DEFAULTS["maxlen"] = 16
 DEFAULTS["explaintop"] = 2
 DEFAULTS["chainonly"] = "false"
+DEFAULTS["headblame"] = "false"
 DEFAULTS["detail"] = "false"
 DEFAULTS["sent"] = ""
 DEFAULTS["headconf"] = 1.0
@@ -130,6 +133,13 @@ function explain_attach(st, t, gold, pred)
       end
       prod_[c] = sc
     end
+  end
+  if !isempty(prod_)                                 # which head-property terms decide gold vs predicted
+    pv(name, c) = ((vals, ps) = props[name]; j = findfirst(==(S.head_value(st, t, c, name)), vals); j === nothing ? 1e-12 : max(ps[j], 1e-12))
+    margins = sort([(name, log(pv(name, pred)) - log(pv(name, gold))) for name in keys(props)]; by = x -> -x[2])
+    println("    log margins predicted - gold:  attach ", fmtd(log(max(get(pa, pred, 0.0), 1e-12)) - log(max(get(pa, gold, 0.0), 1e-12))),
+      ";  ", join(["$name $(fmtd(d))" for (name, d) in margins], ", "),
+      ";  total ", fmtd(prod_[pred] - prod_[gold]))
   end
   score(c) = isempty(prod_) ? get(pa, c, 0.0) : get(prod_, c, -Inf)
   others = [c for c in sort(cands; by = c -> -score(c)) if c != gold && c != pred]
@@ -281,6 +291,23 @@ function segment_done!(r::ExplainRec, st)
     isempty(cfg["sent"]) || occursin(cfg["sent"], join([S.tokstr(st, t) for t in ts], " ")) || continue
     # only errors the head-property ceiling (gold head properties) gets right
     all(((t, g, p),) -> first(pipeline_attach!(r.rgold, st, t, g)) == g, wrong) || continue
+    if cfg["headblame"] == "true"                     # only errors the attachment alone gets right
+      blamed = all(wrong) do (t, g, p)
+        names = [:attach; S.headnames(toks)]
+        old = [toks[n, t] for n in names]
+        foreach(n -> (toks[n, t] = PENDING), names)
+        S.refresh!(st)
+        try
+          empty!(m.memo)
+          dist = S.commit_dist(m, st, (:token, 1, t))
+          dist !== nothing && dist[1][argmax(dist[2])] == g
+        finally
+          foreach(((n, v),) -> (toks[n, t] = v), zip(names, old))
+          S.refresh!(st)
+        end
+      end
+      blamed || continue
+    end
     if cfg["chainonly"] == "true"                     # only errors the chains alone already make
       chainsame = all(wrong) do (t, g, p)
         names = [:attach; S.headnames(toks)]

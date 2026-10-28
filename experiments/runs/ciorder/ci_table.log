@@ -1,0 +1,13 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 24.2 s): 14 of 32 slots always, 280 gate values
+[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (20.1 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/events
+attach: 32 slots, 4.1 s; D quantiles 10% 0.011, 25% 0.047, 50% 0.207, 75% 0.567, 90% 1.147
+  pairs with D < 0.05: 253 of 992
+  pairs with D < 0.1: 366 of 992
+  pairs with D < 0.25: 538 of 992
+  value table: 34163 entries, 1103 values (>= 200 records) of 32 slots, 4.1 s
+→ /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/ci_table.jls
+→ /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/ci_values.jls

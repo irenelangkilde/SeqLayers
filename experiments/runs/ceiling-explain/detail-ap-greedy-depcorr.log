@@ -1,0 +1,49 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 22.9 s): 14 of 32 slots always, 280 gate values
+[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (19.9 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/events
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=depcorr;leftsmooth=evidence;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective;headtrank]  [domains=product domeps=0.0]
+
+================ "From the AP comes this story :"
+  From          gold -> AP          ok
+  the           gold -> AP          ok
+  AP            gold -> comes       ok
+  comes         gold -> ROOT        ok
+  this          gold -> story       ok
+  story         gold -> comes       ok
+  :             gold -> comes       WRONG: predicted -> story
+
+  ---- ':': gold head 'comes', predicted 'story'
+    head properties predicted (with the attachment and all of them hidden):
+      head_upos PROPN 0.426, VERB 0.269, NOUN 0.248   (gold head: VERB, predicted head: NOUN)
+      head_xpos NN 0.423, NNP 0.323, VBP 0.076   (gold head: VBZ, predicted head: NN)
+      head_dir  left 0.671, right 0.329, root 0.0   (gold head: left, predicted head: left)
+      head_dist 1 0.603, 6-10 0.231, 3-5 0.125   (gold head: 3-5, predicted head: 1)
+      head_trank3 0.531, 1 0.278, 2 0.138   (gold head: 2, predicted head: 1)
+    candidates: 2   (product score = log P(attach) + Σ log P(head property value))
+
+    -- GOLD -> comes:  P(attach) 0.3694, product score -11.42
+       head-property terms: head_xpos=VBZ 0.01, head_dist=3-5 0.125, head_dir=left 0.671, head_upos=VERB 0.269, head_trank=2 0.138
+       prior log odds -4.23   (n = chosen/not-chosen records)
+       CHAIN                                         alone (prior effect)     in the chain
+       1. cand.form=comes                           +1.68  n 11/128          +1.68  n 11/128
+       2. distance=3 words (bucket 3-5)              +1.4  n 5741/97633      +2.14  n 3/3
+       chain log odds -0.41
+       (no accum leftovers traced)
+
+       evidence: positive +3.82, negative +0.0;  final log odds +0.25
+
+    -- PREDICTED -> story:  P(attach) 0.6264, product score -4.91
+       head-property terms: head_xpos=NN 0.423, head_dist=1 0.603, head_dir=left 0.671, head_upos=NOUN 0.248, head_trank=1 0.278
+       prior log odds -4.23   (n = chosen/not-chosen records)
+       CHAIN                                         alone (prior effect)     in the chain
+       1. distance=1 word (bucket 1)                +1.81  n 3413/38494      +1.81  n 3413/38494
+       2. dep.upos=PUNCT                            -0.02  n 5768/405857     +0.74  n 909/4891   <- sign flips
+       3. cand.left_neighbor.form=this              +0.12  n 264/16035       +0.78  n 14/32
+       4. cand.len=5                                +0.46  n 5768/250048     +0.61  n 4/4
+       chain log odds -0.29
+       (no accum leftovers traced)
+
+       evidence: positive +3.94, negative +0.0;  final log odds +0.78

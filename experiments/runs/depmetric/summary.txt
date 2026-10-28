@@ -1,0 +1,19 @@
+=== ctxmode=accum greedyby=odds accumby=dep  Wed Oct 28 11:57:57 MDT 2026
+ALL         2899    0.9977  0.8458  0.7948  0.0162  1.0     
+score 234.0 s, run 20261028-120326 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== ctxmode=accum greedyby=odds depweight=true  Wed Oct 28 12:03:26 MDT 2026
+ALL         2899    0.9988  0.8403  0.7858  0.0162  1.0     
+score 140.6 s, run 20261028-120701 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== ctxmode=accum greedyby=odds accumby=dep depweight=true  Wed Oct 28 12:07:01 MDT 2026
+ALL         2899    0.9984  0.8413  0.7872  0.0162  1.0     
+score 209.9 s, run 20261028-121148 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== greedyby=odds  Wed Oct 28 12:11:48 MDT 2026
+ALL         2899    0.9983  0.8399  0.7879  0.0162  1.0     
+score 351.9 s, run 20261028-121855 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== greedyby=dep  Wed Oct 28 12:18:55 MDT 2026
+ALL         2899    0.998   0.8365  0.7823  0.0162  1.0     
+score 639.1 s, run 20261028-123056 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== greedyby=depcorr  Wed Oct 28 12:30:57 MDT 2026
+ALL         2899    0.9979  0.8386  0.783   0.0162  1.0     
+score 410.7 s, run 20261028-123903 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Wed Oct 28 12:39:03 MDT 2026

@@ -1,0 +1,19 @@
+=== mincount=0 smoothd=1 smootha=0.01  Wed Oct 28 17:40:24 UTC 2026
+ALL         2899    0.9974  0.8434  0.7754  0.0162  1.0     
+score 105.3 s, run 20261028-174506 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== mincount=0 smoothd=1 smootha=0.05  Wed Oct 28 17:45:08 UTC 2026
+ALL         2899    0.9979  0.8141  0.7403  0.0162  1.0     
+score 77.5 s, run 20261028-174918 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== mincount=0 smoothd=1 smootha=0.1  Wed Oct 28 17:49:20 UTC 2026
+ALL         2899    0.9975  0.8096  0.7278  0.0162  1.0     
+score 63.6 s, run 20261028-175317 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== mincount=0 smoothd=1 smootha=0.0001 smoothn=parent  Wed Oct 28 17:53:18 UTC 2026
+ALL         2899    0.9983  0.8482  0.7954  0.0162  1.0     
+score 150.6 s, run 20261028-175841 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== mincount=0 smoothd=1 smootha=0.001 smoothn=parent  Wed Oct 28 17:58:42 UTC 2026
+ALL         2899    0.9986  0.8499  0.7917  0.0162  1.0     
+score 181.0 s, run 20261028-180437 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== mincount=0 smoothd=0 smootha=0.001 smoothn=parent  Wed Oct 28 18:04:38 UTC 2026
+ALL         2899    0.9982  0.8227  0.7551  0.0162  1.0     
+score 345.8 s, run 20261028-181316 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Wed Oct 28 18:13:17 UTC 2026
