@@ -2514,6 +2514,8 @@ end
 
 "Trace hook (accum): for each leftover taken, (slot, running estimate before, its walk along the path, step taken, correction)."
 const ACCUM_TRACE = Ref{Any}(nothing)
+"greedyby=mindev trace hook: (X, path [(a, signed diff)], status :explained | :kept | :short, correction) per evaluation."
+const MINDEV_TRACE = Ref{Any}(nothing)
 
 "Does a leftover context entry (context + leftover) have the records `ctxsupport` asks for?"
 function ctxsupported(m::ChainModel, e, label)
@@ -2580,6 +2582,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     advance!(m, SX, X, eX, yX)
     corr = okX ? log(yX) - log(prior) : 0.0
     chosen = UInt64[]
+    mpath = Tuple{UInt64,Float64}[]                  # (mindev trace) the path
     best = nothing                                   # (greedymin) the smallest |correction| so far
     note!() = length(chosen) >= needmin && (best === nothing || abs(corr) < abs(best[1])) && (best = (corr, copy(chosen)))
     if m.opts.ctxfromchain                            # the chain first, in its order, as far as S∪X stays supported
@@ -2618,7 +2621,11 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
       # as :exhaust, e keeps the smallest diff on the path (from minctx features on)
       if m.opts.greedyby == :mindev
         m.opts.mindevstop == :localmin && length(chosen) >= needmin && abs(bcorr) > abs(corr) && break
-        abs(bcorr) < m.opts.mindevtau && return nothing
+        MINDEV_TRACE[] === nothing || push!(mpath, (fs[bi], bcorr))
+        if abs(bcorr) < m.opts.mindevtau
+          MINDEV_TRACE[] === nothing || MINDEV_TRACE[](X, mpath, :explained, bcorr)
+          return nothing
+        end
       end
       advance!(m, S, fs[bi], eS[bi], by1)
       advance!(m, SX, fs[bi], eSX[bi], by2)
@@ -2627,6 +2634,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
       note!()
     end
     (m.opts.greedymin || (m.opts.greedyby == :mindev && m.opts.mindevstop == :pathmin)) && best !== nothing && ((corr, chosen) = best)
+    MINDEV_TRACE[] === nothing || m.opts.greedyby != :mindev || MINDEV_TRACE[](X, mpath, length(chosen) >= needmin ? :kept : :short, corr)
     length(chosen) >= needmin || return nothing
     mode == :cover && !covers(st, Ic, G, chosen) && return nothing
     W = isempty(poolw) ? 1.0 : prod(get(poolw, f, 1.0) for f in chosen; init = 1.0)

@@ -129,11 +129,13 @@ function explain_attach(st, t, gold, pred)
   S.LEFTOVER_TRACE[] = (sl, inc, ctxs, corr) -> push!(events[S.CHAIN_TRACE_CAND[]].left, (sl, inc, ctxs, corr))
   accum = Dict{Any,Vector{Any}}(c => Any[] for c in cands)
   S.ACCUM_TRACE[] = (sx, T, tries, k, corr) -> push!(accum[S.CHAIN_TRACE_CAND[]], (sx = sx, T = T, tries = tries, corr = corr))
+  mdev = Dict{Any,Dict{UInt64,Any}}(c => Dict{UInt64,Any}() for c in cands)      # greedyby=mindev: each leftover's last path
+  S.MINDEV_TRACE[] = (X, path, status, corr) -> (mdev[S.CHAIN_TRACE_CAND[]][X] = (path = copy(path), status = status, corr = corr))
   empty!(m.memo)
   try
     decide(m, st, key)
   finally
-    S.CHAIN_TRACE[] = nothing; S.LEFTOVER_TRACE[] = nothing; S.ACCUM_TRACE[] = nothing
+    S.CHAIN_TRACE[] = nothing; S.LEFTOVER_TRACE[] = nothing; S.ACCUM_TRACE[] = nothing; S.MINDEV_TRACE[] = nothing
   end
   dist = S.commit_dist(m, st, key)
   pa = dist === nothing ? Dict{UInt32,Float64}() : Dict(zip(dist[1], exp.(dist[2])))
@@ -197,6 +199,15 @@ function explain_attach(st, t, gold, pred)
     end
     nz = count(l -> abs(l[4]) < 0.005, inc)
     nz > 0 && println("         ($nz more leftovers with corrections under 0.005)")
+    if !isempty(mdev[c])                             # greedyby=mindev: every leftover's path B (a, diff after adding a)
+      Ic = items[findfirst(==(c), cands)]
+      nm(x) = (sl = findfirst(==(x), Ic); sl === nothing ? "?" : slotdesc(st, t, c, sl))
+      println("       mindev paths (diff = log o(x|e,B) - log o(x|B) after each a joins B):")
+      for (X, r) in sort(collect(mdev[c]); by = p -> (p[2].status != :kept, -abs(p[2].corr)))
+        println("         ", rpad(string(r.status), 10), rpad(nm(X), 36), lpad(fmtd(r.corr), 7), "   ",
+          isempty(r.path) ? "(no supported context)" : join(["$(nm(a)) $(fmtd(d))" for (a, d) in r.path], "  ->  "))
+      end
+    end
   end
 end
 
