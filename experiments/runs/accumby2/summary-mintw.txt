@@ -1,0 +1,4 @@
+ALL         2899    0.9978  0.8482  0.7954  0.0162  1.0     
+double counting: 116700 leftovers taken, 0.698 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.69; mean |corr| 0.855
+mintw: 846847 backoff steps, ΔW taken 0.369, ΔT taken 0.631 (of which ΔW available but larger: 208414)
+score 272.3 s, run 20261029-104438 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv

@@ -322,8 +322,8 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
   mindevstop in (:localmin, :exhaust, :pathmin) || error("unknown mindevstop $mindevstop")
   depmeasure in (:yule, :pmi, :pmipos) || error("unknown depmeasure $depmeasure (use :yule, :pmi or :pmipos)")
-  accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup) ||
-    error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev or :mindevsup)")
+  accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw) ||
+    error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup or :mintw)")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
   stepscore in (:abs, :signed, :maxmin, :maxmin2) || error("unknown stepscore $stepscore (use :abs, :signed, :maxmin or :maxmin2)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
@@ -2311,6 +2311,44 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       push!(p, (br, bc))
       true
     end
+    # accumby :mintw (user's design): each leftover W its own path; two independent proposals per step -- the move
+    # with the smallest ΔT = |log o(x|C') - T| (the running-estimate rule) and, among moves where W has records
+    # (>= 1) in both the current context C and C', the one with the smallest ΔW = |log o(x|W,C) - log o(x|W,C')|
+    # (W's records smoothed toward the context's odds); the one proposing the smaller change is taken.
+    function wlogodds(c, X)
+      S = c[1]
+      k = get(only(extend_all(m, S, depth(S), [X]))[2], label, (0.0, 0.0))
+      k[1] + k[2] > 0 || return nothing
+      log(smoothOdds(k[1], k[2], S.odds[end]))
+    end
+    function twstep!(p, X)
+      r = p[end][1]
+      w0 = p[end][2] === nothing ? nothing : wlogodds(p[end][2], X)
+      bt, brt, bct = Inf, nothing, nothing
+      bw, brw, bcw = Inf, nothing, nothing
+      for i in eachindex(ladders)
+        r[i] <= length(ladders[i]) || continue
+        r[i] == length(ladders[i]) && !maydrop(r, i) && continue
+        r2 = copy(r); r2[i] += 1
+        c = build(r2)
+        c === nothing && continue
+        dt = abs(log(c[1].odds[end]) - T)
+        dt < bt && ((bt, brt, bct) = (dt, r2, c))
+        if w0 !== nothing
+          w1 = wlogodds(c, X)
+          w1 === nothing || (dw = abs(w1 - w0); dw < bw && ((bw, brw, bcw) = (dw, r2, c)))
+        end
+      end
+      brt === nothing && return false
+      useW = brw !== nothing && bw < bt
+      if (d = DC_STATS[]) !== nothing
+        k = useW ? :tw_w : :tw_t
+        d[k] = get(d, k, 0.0) + 1
+        brw !== nothing && !useW && (d[:tw_wlost] = get(d, :tw_wlost, 0.0) + 1)
+      end
+      push!(p, useW ? (brw, bcw) : (brt, bct))
+      true
+    end
     bestX, bestc, bestk, bestr = 0, 0.0, 0, Int[]
     # accumby :depodds: X's marginal correction |log o(x | X) - log o(x)| (0 if unsupported)
     function margsigned(X)                          # log o(x | X) - log o(x) (0 if unsupported)
@@ -2335,7 +2373,8 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       xpath = m.opts.accumby == :odds ? path : Any[path[1]]
       imp = m.opts.accumby == :depodds ? margimpact(X) : 0.0
       xstep! = m.opts.accumby == :odds ? step! : m.opts.accumby in (:dep, :depodds) ? (p -> depstep!(p, X, imp)) :
-        m.opts.accumby == :marg ? (p -> margstep!(p, log(prior) + margsigned(X))) : (p -> mdstep!(p, X, A))
+        m.opts.accumby == :marg ? (p -> margstep!(p, log(prior) + margsigned(X))) :
+        m.opts.accumby == :mintw ? (p -> twstep!(p, X)) : (p -> mdstep!(p, X, A))
       k = 1
       k0, xc, xk, xv = 0, 0.0, 0, 0.0                 # (accumwin: the first supported step, and the smallest |correction| since)
       while true

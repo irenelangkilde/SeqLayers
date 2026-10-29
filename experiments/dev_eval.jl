@@ -116,7 +116,9 @@
 #                change from the running estimate|) | marg (each leftover its own path: the move keeping log o(x|C')
 #                closest to log o(x|X)) | mindev / mindevsup (each leftover its own path: among moves whose context
 #                supports X the smallest |log o(x|X,C') - log o(x|C')|, X explained away below mindevtau; until one
-#                supports X, mindev the odds rule, mindevsup the move keeping the most records with X)
+#                supports X, mindev the odds rule, mindevsup the move keeping the most records with X) | mintw
+#                (each leftover W its own path; per step the smaller of two proposals: the odds rule's ΔT and, where W
+#                has records in both contexts, the move with the smallest |log o(x|W,C) - log o(x|W,C')|)
 #   depweight    leftovers: each correction times 1 - max ρ(X, a) over counted features a (chain, taken
 #                leftovers) outside X's context: true | false.  greedyby also takes dep (ρ(X, f)) and
 #                depcorr (ρ(X, f) * the change in X's correction)

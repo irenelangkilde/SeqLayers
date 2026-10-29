@@ -296,7 +296,7 @@ end
     o = mo.opts
     @test (o.greedymin, o.greedysel, o.driftsigma, o.drifttau, o.driftstep, o.distback, o.shrink, o.accumwin, o.accumreset, o.cidrop,
       o.shrinkleft, o.leftmin2, o.depmeasure, o.mindevtau, o.mindevstop) == (true, false, 0.25, 0.5, 0.75, true, 7.0, 3, true, 0.125, 9.0, 4, :pmi, 0.3, :pathmin)
-    for ab in (:marg, :mindev, :mindevsup)
+    for ab in (:marg, :mindev, :mindevsup, :mintw)
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true,
         ctxmode = :accum, accumby = ab)
       mp.generalize = SeqLayers.generalization_slots(specs)

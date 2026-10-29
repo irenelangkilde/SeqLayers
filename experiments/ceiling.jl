@@ -133,6 +133,11 @@ function ceiling_main(cfg)
     println("double counting: $(round(Int, n)) leftovers taken, $(round(hi / n; digits = 3)) with |Q| >= $(SeqLayers.DC_HI) to a counted ",
       "feature outside the context; |corr|-weighted max |Q| $(round(ms / cr; digits = 3)); mean |corr| $(round(cr / n; digits = 3))")
   end
+  if get(a, :tw_w, 0) + get(a, :tw_t, 0) > 0          # accumby=mintw: which proposal each backoff step took
+    w, t, wl = a[:tw_w] / 1000, a[:tw_t] / 1000, get(a, :tw_wlost, 0) / 1000
+    println("mintw: $(round(Int, w + t)) backoff steps, ΔW taken $(round(w / (w + t); digits = 3)), ΔT taken $(round(t / (w + t); digits = 3)) ",
+      "(of which ΔW available but larger: $(round(Int, wl)))")
+  end
   write_breakdown(runid, modelname, cfg, bytb["ALL"])
   cal && calibrate_report(cfg, s, parts)
   println("score $(round(score_s; digits = 1)) s, run $runid → $CEILING_RESULTS, $BREAKDOWN_RESULTS")
