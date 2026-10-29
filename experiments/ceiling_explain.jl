@@ -16,6 +16,8 @@
 # sent=text: only sentences containing this text.
 # contrast=accumby:odds,ctxmode:accum: only errors a second model (these chain options overriding this run's) gets
 #   right; each wrong head is then explained under both models.
+# deprel=conj: only errors whose token has this gold deprel (the sentence's other errors are still listed).
+# goldfix=false: don't require that gold head properties fix the errors.
 # prodprops=head_xpos,head_dir,head_dist: only these head properties' terms in the product (as ceiling.jl).
 # nopunct=true: skip errors where the token, its gold head or its predicted head is punctuation (upos PUNCT).
 # headblame=true (domains=product): only errors the attachment alone gets right (argmax P(attach) is the gold head) --
@@ -40,6 +42,8 @@ DEFAULTS["sent"] = ""
 DEFAULTS["contrast"] = ""
 DEFAULTS["nopunct"] = "false"
 DEFAULTS["prodprops"] = ""
+DEFAULTS["deprel"] = ""
+DEFAULTS["goldfix"] = "true"
 DEFAULTS["headconf"] = 1.0
 DEFAULTS["domains"] = "off"
 DEFAULTS["domeps"] = 1e-3
@@ -327,10 +331,11 @@ function segment_done!(r::ExplainRec, st)
     res = [(t, toks[:attach, t], first(pipeline_attach!(r.r0, st, t, toks[:attach, t]))) for t in ts]
     wrong = [(t, g, p) for (t, g, p) in res if g != p]
     cfg["nopunct"] == "true" && (wrong = [(t, g, p) for (t, g, p) in wrong if !(ispunct_tok(st, t) || ispunct_tok(st, g) || ispunct_tok(st, p))])
+    isempty(cfg["deprel"]) || (wrong = [(t, g, p) for (t, g, p) in wrong if S.DEPRELS[toks[:deprel, t]] == cfg["deprel"]])
     1 <= length(wrong) <= cfg["maxerr"] || continue
     isempty(cfg["sent"]) || occursin(cfg["sent"], join([S.tokstr(st, t) for t in ts], " ")) || continue
     # only errors the head-property ceiling (gold head properties) gets right
-    all(((t, g, p),) -> first(pipeline_attach!(r.rgold, st, t, g)) == g, wrong) || continue
+    cfg["goldfix"] == "true" && !all(((t, g, p),) -> first(pipeline_attach!(r.rgold, st, t, g)) == g, wrong) && continue
     r.r2 === nothing || all(((t, g, p),) -> first(pipeline_attach!(r.r2, st, t, g)) == g, wrong) || continue
     if cfg["headblame"] == "true"                     # only errors the attachment alone gets right
       blamed = all(wrong) do (t, g, p)

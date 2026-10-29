@@ -1,0 +1,25 @@
+=== B z0 2  Thu Oct 29 14:39:19 MDT 2026
+ALL         2899    0.9962  0.8424  0.7772  0.0162  1.0     
+chainsel: 552030 chain steps -- collapsed to reference 0.499, pulled partway 0.298, kept (w >= 0.9) 0.203
+score 171.5 s, run 20261029-144340 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== B z0 2.6  Thu Oct 29 14:43:41 MDT 2026
+ALL         2899    0.9961  0.8396  0.771   0.0162  1.0     
+chainsel: 552030 chain steps -- collapsed to reference 0.567, pulled partway 0.273, kept (w >= 0.9) 0.161
+score 164.2 s, run 20261029-144742 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== B z0 3.5  Thu Oct 29 14:47:43 MDT 2026
+ALL         2899    0.9959  0.8341  0.7585  0.0162  1.0     
+chainsel: 552030 chain steps -- collapsed to reference 0.653, pulled partway 0.232, kept (w >= 0.9) 0.116
+score 160.4 s, run 20261029-145139 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== DC z0 2  Thu Oct 29 14:51:39 MDT 2026
+ALL         2899    0.9974  0.8168  0.7578  0.0162  1.0     
+chainsel: 552030 chain steps -- collapsed to reference 0.499, pulled partway 0.298, kept (w >= 0.9) 0.203
+score 147.9 s, run 20261029-145523 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== DC z0 2.6  Thu Oct 29 14:55:23 MDT 2026
+ALL         2899    0.9954  0.8155  0.7534  0.0162  1.0     
+chainsel: 552030 chain steps -- collapsed to reference 0.567, pulled partway 0.273, kept (w >= 0.9) 0.161
+score 148.4 s, run 20261029-145909 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== DC z0 3.5  Thu Oct 29 14:59:09 MDT 2026
+ALL         2899    0.9942  0.8075  0.7372  0.0162  1.0     
+chainsel: 552030 chain steps -- collapsed to reference 0.653, pulled partway 0.232, kept (w >= 0.9) 0.116
+score 165.6 s, run 20261029-150313 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Thu Oct 29 15:03:14 MDT 2026
