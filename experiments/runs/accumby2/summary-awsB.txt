@@ -1,0 +1,5 @@
+=== accumby=mindev leftmin2=5  Thu Oct 29 15:36:15 UTC 2026
+ALL         2899    0.9961  0.8424  0.7792  0.0162  1.0     
+double counting: 109969 leftovers taken, 0.656 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.66; mean |corr| 0.805
+score 282.7 s, run 20261029-154449 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== awsB done Thu Oct 29 15:44:50 UTC 2026

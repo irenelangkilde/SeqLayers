@@ -1,0 +1,9 @@
+=== accumby=marg  (started 09:28:59)
+ALL         2899    0.9981  0.8437  0.7903  0.0162  1.0     
+double counting: 116788 leftovers taken, 0.658 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.663; mean |corr| 0.84
+score 243.0 s, run 20261029-093423 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== accumby=mindev  Thu Oct 29 09:34:24 MDT 2026
+ALL         2899    0.9979  0.8424  0.7944  0.0162  1.0     
+double counting: 73628 leftovers taken, 0.594 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.612; mean |corr| 0.891
+score 165.4 s, run 20261029-093825 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== mac done Thu Oct 29 09:38:25 MDT 2026
