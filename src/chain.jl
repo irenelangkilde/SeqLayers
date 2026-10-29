@@ -2349,6 +2349,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
     end
     sx = pending[bestX]
     ACCUM_TRACE[] === nothing || ACCUM_TRACE[](sx, T, tries[sx], bestk, bestc)
+    DC_STATS[] === nothing || dc_record!(m, base, Ic[sx], setdiff(union(st.members, taken), items(bestr)), label, prior, bestc)
     LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](sx, true, [something(findfirst(==(f), Ic), 0) for f in items(bestr)], bestc)
     m.opts.accumreset || (rung = copy(bestr))         # (accumreset: the context stays at its most specific)
     (li, ls) = ladder(Ic[sx], sx)
@@ -2371,10 +2372,10 @@ decision type's records for `label` (chosen + not), with 1/2 added to each cell:
 independent.  depmeasure :pmi -- log p(E,a) / (p(E) p(a)) (0 when independent, < 0 when they avoid each other);
 :pmipos -- max(pmi, 0).  Cached (symmetric).
 """
-function depq(m::ChainModel, base, E::UInt64, a::UInt64, label::UInt32, prior)
+function depq(m::ChainModel, base, E::UInt64, a::UInt64, label::UInt32, prior; measure = m.opts.depmeasure)
   (E == a || isempty(base)) && return 1.0
-  key = E < a ? (E, a, label ⊻ (m.opts.depmeasure == :yule ? UInt32(0) : m.opts.depmeasure == :pmi ? 0x40000000 : 0x80000000)) :
-    (a, E, label ⊻ (m.opts.depmeasure == :yule ? UInt32(0) : m.opts.depmeasure == :pmi ? 0x40000000 : 0x80000000))
+  tag = measure == :yule ? UInt32(0) : measure == :pmi ? 0x40000000 : 0x80000000
+  key = E < a ? (E, a, label ⊻ tag) : (a, E, label ⊻ tag)
   r = get(DEPQ, key, nothing)
   r === nothing || return r
   S0 = ChainState(prior, base)
@@ -2388,13 +2389,32 @@ function depq(m::ChainModel, base, E::UInt64, a::UInt64, label::UInt32, prior)
   n10, n01 = n(eE) - n11, n(ea) - n11
   n00 = c + oc - n11 - n10 - n01
   length(DEPQ) >= MAXMEMO && empty!(DEPQ)
-  if m.opts.depmeasure != :yule                 # pointwise mutual information, 1/2 added to each cell
+  if measure != :yule                           # pointwise mutual information, 1/2 added to each cell
     N = max(n11, 0.0) + max(n10, 0.0) + max(n01, 0.0) + max(n00, 0.0) + 2.0
     pmi = log((max(n11, 0.0) + 0.5) * N / ((max(n11, 0.0) + max(n10, 0.0) + 1.0) * (max(n11, 0.0) + max(n01, 0.0) + 1.0)))
-    return DEPQ[key] = m.opts.depmeasure == :pmipos ? max(pmi, 0.0) : pmi
+    return DEPQ[key] = measure == :pmipos ? max(pmi, 0.0) : pmi
   end
   p, q = (n11 + 0.5) * (max(n00, 0.0) + 0.5), (max(n10, 0.0) + 0.5) * (max(n01, 0.0) + 0.5)
   DEPQ[key] = abs(p - q) / (p + q)
+end
+
+"""
+Double-counting counter (accum leftovers; on when DC_STATS[] is a Dict): for each leftover X taken with a
+nonzero correction, q = the largest |Yule's Q|(X, a) over counted features a (chain, earlier leftovers) outside
+X's context -- the evidence X may repeat.  Keys: :dc_n leftovers, :dc_hi those with q >= DC_HI, :dc_corr
+Σ|corr|, :dc_mass Σ|corr|·q.
+"""
+const DC_STATS = Ref{Union{Nothing,Dict{Symbol,Float64}}}(nothing)
+const DC_HI = 0.5
+function dc_record!(m::ChainModel, base, X, counted, label, prior, corr)
+  (d = DC_STATS[]) === nothing && return
+  corr == 0 && return
+  q = maximum((depq(m, base, X, a, label, prior; measure = :yule) for a in counted); init = 0.0)
+  d[:dc_n] = get(d, :dc_n, 0.0) + 1
+  d[:dc_hi] = get(d, :dc_hi, 0.0) + (q >= DC_HI)
+  d[:dc_corr] = get(d, :dc_corr, 0.0) + abs(corr)
+  d[:dc_mass] = get(d, :dc_mass, 0.0) + abs(corr) * q
+  nothing
 end
 
 "depweight: 1 - the largest ρ(X, a) over features `counted` (0 if X goes with one completely)."

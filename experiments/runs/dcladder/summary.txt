@@ -1,0 +1,21 @@
+=== accumreset=true  Wed Oct 28 19:17:53 MDT 2026
+ALL         2899    0.997   0.8462  0.7934  0.0162  1.0     
+double counting: 86288 leftovers taken, 0.647 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.646; mean |corr| 0.845
+score 163.8 s, run 20261028-192202 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== telescope=true  Wed Oct 28 19:22:02 MDT 2026
+ALL         2899    0.9977  0.8451  0.7885  0.0162  1.0     
+double counting: 113737 leftovers taken, 0.647 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.629; mean |corr| 0.685
+score 199.1 s, run 20261028-192642 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== telescope=true accumreset=true  Wed Oct 28 19:26:43 MDT 2026
+ALL         2899    0.997   0.8482  0.7948  0.0162  1.0     
+double counting: 85594 leftovers taken, 0.604 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.598; mean |corr| 0.722
+score 154.2 s, run 20261028-193037 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== telescope=true accumreset=true depweight=true  Wed Oct 28 19:30:38 MDT 2026
+ALL         2899    0.9987  0.8413  0.7879  0.0162  1.0     
+double counting: 86809 leftovers taken, 0.561 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.322; mean |corr| 0.3
+score 149.0 s, run 20261028-193423 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== telescope=true accumreset=true depweight=true prodprops=head_xpos,head_dir,head_dist  Wed Oct 28 19:34:23 MDT 2026
+ALL         2899    0.9987  0.833   0.7813  0.0162  1.0     
+double counting: 86809 leftovers taken, 0.561 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.322; mean |corr| 0.3
+score 136.4 s, run 20261028-193756 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Wed Oct 28 19:37:57 MDT 2026

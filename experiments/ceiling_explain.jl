@@ -16,6 +16,7 @@
 # sent=text: only sentences containing this text.
 # contrast=accumby:odds,ctxmode:accum: only errors a second model (these chain options overriding this run's) gets
 #   right; each wrong head is then explained under both models.
+# prodprops=head_xpos,head_dir,head_dist: only these head properties' terms in the product (as ceiling.jl).
 # nopunct=true: skip errors where the token, its gold head or its predicted head is punctuation (upos PUNCT).
 # headblame=true (domains=product): only errors the attachment alone gets right (argmax P(attach) is the gold head) --
 #   the head-property terms flip them; per property, the log margin log P(pred's value) - log P(gold's value).
@@ -38,6 +39,7 @@ DEFAULTS["detail"] = "false"
 DEFAULTS["sent"] = ""
 DEFAULTS["contrast"] = ""
 DEFAULTS["nopunct"] = "false"
+DEFAULTS["prodprops"] = ""
 DEFAULTS["headconf"] = 1.0
 DEFAULTS["domains"] = "off"
 DEFAULTS["domeps"] = 1e-3
@@ -64,6 +66,7 @@ contrast_opts = isempty(cfg["contrast"]) ? nothing :
 m2 = contrast_opts === nothing ? nothing : build_model(contrast_opts)
 mainmodel = m
 domains, domeps = Symbol(cfg["domains"]), cfg["domeps"]
+isempty(cfg["prodprops"]) || (S.PROD_PROPS[] = Set(Symbol.(split(cfg["prodprops"], ','))))   # (as ceiling.jl)
 
 # names (as trace_decode.jl)
 tokname(st, t) = t == NONE ? "ROOT" : S.tokstr(st, Int(t))
@@ -140,6 +143,7 @@ function explain_attach(st, t, gold, pred)
     for c in cands
       sc = log(max(get(pa, c, 0.0), 1e-12))
       for (name, (vals, ps)) in props
+        S.PROD_PROPS[] === nothing || name in S.PROD_PROPS[] || continue
         v = S.head_value(st, t, c, name)
         v == PENDING && continue
         k = findfirst(==(v), vals)
@@ -152,7 +156,7 @@ function explain_attach(st, t, gold, pred)
     pv(name, c) = ((vals, ps) = props[name]; j = findfirst(==(S.head_value(st, t, c, name)), vals); j === nothing ? 1e-12 : max(ps[j], 1e-12))
     margins = sort([(name, log(pv(name, pred)) - log(pv(name, gold))) for name in keys(props)]; by = x -> -x[2])
     println("    log margins predicted - gold:  attach ", fmtd(log(max(get(pa, pred, 0.0), 1e-12)) - log(max(get(pa, gold, 0.0), 1e-12))),
-      ";  ", join(["$name $(fmtd(d))" for (name, d) in margins], ", "),
+      ";  ", join(["$name $(fmtd(d))" for (name, d) in margins if S.PROD_PROPS[] === nothing || name in S.PROD_PROPS[]], ", "),
       ";  total ", fmtd(prod_[pred] - prod_[gold]))
   end
   score(c) = isempty(prod_) ? get(pa, c, 0.0) : get(prod_, c, -Inf)

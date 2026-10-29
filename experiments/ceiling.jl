@@ -21,6 +21,9 @@
 #   prodbeta   domains=product: each head-property term raised to this power (default 1)
 #   prodprops  domains=product: only these head properties' terms enter the product (e.g. head_xpos,head_dist;
 #              "" = all); the others still narrow the domains
+#   dcstats    true: count possible double counting in accum leftovers -- per leftover taken, the largest |Yule's Q|
+#              to a counted feature (chain, earlier leftovers) outside its context; prints the share with |Q| >= 0.5
+#              and the |corr|-weighted mean
 #   on         dev (default) | tune: score the held-out tuning docs instead (dev_eval.jl tune_sents)
 #   calibrate  true: also fit the weight of the greedy leftovers' corrections per decision type
 #              (score = chain + alpha * corrections, maximizing the likelihood of the gold choices
@@ -83,6 +86,7 @@ function ceiling_main(cfg)
   pp = isempty(cfg["prodprops"]) ? nothing : Set(Symbol.(split(cfg["prodprops"], ',')))
   pp === nothing || all(n -> haskey(SeqLayers.ALLHEADSETS, n), pp) || error("prodprops: names are $(join(keys(SeqLayers.ALLHEADSETS), ", "))")
   Distributed.remotecall_eval(Main, workers(), :(SeqLayers.PROD_BETA[] = $(cfg["prodbeta"]); SeqLayers.PROD_PROPS[] = $pp))
+  cfg["dcstats"] == "true" && Distributed.remotecall_eval(Main, workers(), :(SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()))
   t1 = time()
   order = sortperm(devdocs; by = p -> length(p[2].text), rev = true)
   scoretags = cfg["tags"] == "true"
@@ -124,6 +128,11 @@ function ceiling_main(cfg)
     "$(round(a[:inferred_ok] / max(a[:inferred], 1); digits = 3)) of them right; $(a[:nocands]) left with no candidate")
   get(a, :dom_cands, 0) > 0 && println("domains: attachment candidates $(a[:dom_cands]) -> $(a[:dom_alive]) after propagation ",
     "($(round(a[:dom_alive] / a[:dom_cands]; digits = 3)))")
+  if get(a, :dc_n, 0) > 0                              # dcstats=true (accum leftovers; see SeqLayers.dc_record!)
+    n, hi, cr, ms = a[:dc_n] / 1000, a[:dc_hi] / 1000, a[:dc_corr] / 1000, a[:dc_mass] / 1000
+    println("double counting: $(round(Int, n)) leftovers taken, $(round(hi / n; digits = 3)) with |Q| >= $(SeqLayers.DC_HI) to a counted ",
+      "feature outside the context; |corr|-weighted max |Q| $(round(ms / cr; digits = 3)); mean |corr| $(round(cr / n; digits = 3))")
+  end
   write_breakdown(runid, modelname, cfg, bytb["ALL"])
   cal && calibrate_report(cfg, s, parts)
   println("score $(round(score_s; digits = 1)) s, run $runid → $CEILING_RESULTS, $BREAKDOWN_RESULTS")
@@ -135,6 +144,7 @@ DEFAULTS["headgold"] = ""
 DEFAULTS["domains"] = "off"
 DEFAULTS["domeps"] = 1e-3
 DEFAULTS["prodbeta"] = 1.0
+DEFAULTS["dcstats"] = "false"
 DEFAULTS["prodprops"] = ""
 DEFAULTS["on"] = "dev"
 DEFAULTS["calibrate"] = "false"

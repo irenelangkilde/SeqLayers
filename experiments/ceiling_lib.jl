@@ -259,7 +259,12 @@ end
 function ceiling_counts(doc::Doc, specs, model, lex; scoretags = true, headconf = 0.0, headgold = Symbol[], collect = false,
   domains = :off, domeps = 1e-3, kw...)
   r = CeilingRecorder(model, doc, scoretags, headconf, headgold; collect, domains, domeps)
+  dc = SeqLayers.DC_STATS[]
+  dc === nothing || empty!(dc)
   process(doc, specs, OracleModel(), lex; observer = r, kw...)
   r.c[:tok_gold] = length(doc.gold.head)
+  dc === nothing || for (k, v) in dc                 # double-counting counter (dcstats=true), in thousandths
+    r.c[k] = round(Int, 1000v)
+  end
   collect ? (r.c, r.parts) : r.c
 end
