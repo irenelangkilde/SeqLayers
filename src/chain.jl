@@ -322,7 +322,8 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
   mindevstop in (:localmin, :exhaust, :pathmin) || error("unknown mindevstop $mindevstop")
   depmeasure in (:yule, :pmi, :pmipos) || error("unknown depmeasure $depmeasure (use :yule, :pmi or :pmipos)")
-  accumby in (:odds, :dep, :depodds) || error("unknown accumby $accumby (use :odds, :dep or :depodds)")
+  accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup) ||
+    error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev or :mindevsup)")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
   stepscore in (:abs, :signed, :maxmin, :maxmin2) || error("unknown stepscore $stepscore (use :abs, :signed, :maxmin or :maxmin2)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
@@ -2265,8 +2266,58 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       end
       bpaths
     end
+    # accumby :marg: each leftover its own path, the move keeping log o(x | context) closest to log o(x | X)
+    function margstep!(p, LX)
+      r = p[end][1]
+      best, br, bc = Inf, nothing, nothing
+      for i in eachindex(ladders)
+        r[i] <= length(ladders[i]) || continue
+        r[i] == length(ladders[i]) && !maydrop(r, i) && continue
+        r2 = copy(r); r2[i] += 1
+        c = build(r2)
+        c === nothing && continue
+        d = abs(log(c[1].odds[end]) - LX)
+        d < best && ((best, br, bc) = (d, r2, c))
+      end
+      br === nothing && return false
+      push!(p, (br, bc))
+      true
+    end
+    # accumby :mindev / :mindevsup (user's design): each leftover its own path; among the moves whose context
+    # supports X, the one with the smallest diff = |log o(x | X, C') - log o(x | C')| (X is then explained away
+    # if diff < mindevtau); while no move supports X: :mindev the running-estimate rule, :mindevsup the move
+    # keeping the most records with X.  (leftmin2 = k: supported means >= k chosen and not-chosen records.)
+    function mdstep!(p, X, A)
+      r = p[end][1]
+      best, br, bc = Inf, nothing, nothing
+      fb, fr, fc = Inf, nothing, nothing
+      for i in eachindex(ladders)
+        r[i] <= length(ladders[i]) || continue
+        r[i] == length(ladders[i]) && !maydrop(r, i) && continue
+        r2 = copy(r); r2[i] += 1
+        c = build(r2)
+        c === nothing && continue
+        res = xcorr(r2, X, A)
+        if res !== nothing
+          abs(res[1]) < best && ((best, br, bc) = (abs(res[1]), r2, c))
+        else
+          f = m.opts.accumby == :mindev ? abs(log(c[1].odds[end]) - T) :
+            -sum(get(only(extend_all(m, c[1], depth(c[1]), [X]))[2], label, (0.0, 0.0)))
+          f < fb && ((fb, fr, fc) = (f, r2, c))
+        end
+      end
+      br === nothing && ((br, bc) = (fr, fc))
+      br === nothing && return false
+      push!(p, (br, bc))
+      true
+    end
     bestX, bestc, bestk, bestr = 0, 0.0, 0, Int[]
     # accumby :depodds: X's marginal correction |log o(x | X) - log o(x)| (0 if unsupported)
+    function margsigned(X)                          # log o(x | X) - log o(x) (0 if unsupported)
+      eX = only(extend_all(m, ChainState(prior, base), 0, [X]))
+      y, ok = update_odds(m, eX, label, prior)
+      ok ? log(y) - log(prior) : 0.0
+    end
     function margimpact(X)
       eX = only(extend_all(m, ChainState(prior, base), 0, [X]))
       y, ok = update_odds(m, eX, label, prior)
@@ -2283,7 +2334,8 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       # accumby :dep: X walks its own path, each step the move losing the least of X's dependence on the context
       xpath = m.opts.accumby == :odds ? path : Any[path[1]]
       imp = m.opts.accumby == :depodds ? margimpact(X) : 0.0
-      xstep! = m.opts.accumby == :odds ? step! : (p -> depstep!(p, X, imp))
+      xstep! = m.opts.accumby == :odds ? step! : m.opts.accumby in (:dep, :depodds) ? (p -> depstep!(p, X, imp)) :
+        m.opts.accumby == :marg ? (p -> margstep!(p, log(prior) + margsigned(X))) : (p -> mdstep!(p, X, A))
       k = 1
       k0, xc, xk, xv = 0, 0.0, 0, 0.0                 # (accumwin: the first supported step, and the smallest |correction| since)
       while true
@@ -2296,6 +2348,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
             corr = res === nothing ? nothing : res[1]))
         end
         corr = res === nothing ? nothing : res[1]
+        corr !== nothing && m.opts.accumby in (:mindev, :mindevsup) && abs(corr) < m.opts.mindevtau && break   # explained away
         if corr !== nothing && (m.opts.driftsigma > 0 || m.opts.drifttau > 0 || m.opts.driftstep > 0)
           # drift: how far this context has moved from the running estimate, and how many ladder steps it took
           S, e = res[3]
@@ -2514,7 +2567,7 @@ end
 
 "Trace hook (accum): for each leftover taken, (slot, running estimate before, its walk along the path, step taken, correction)."
 const ACCUM_TRACE = Ref{Any}(nothing)
-"greedyby=mindev trace hook: (X, path [(a, signed diff)], status :explained | :kept | :short, correction) per evaluation."
+"greedyby=mindev trace hook: (X, path [(a, signed diff, n(B∪a), n(B∪a∪X))], status :explained | :kept | :short, correction) per evaluation."
 const MINDEV_TRACE = Ref{Any}(nothing)
 
 "Does a leftover context entry (context + leftover) have the records `ctxsupport` asks for?"
@@ -2582,7 +2635,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     advance!(m, SX, X, eX, yX)
     corr = okX ? log(yX) - log(prior) : 0.0
     chosen = UInt64[]
-    mpath = Tuple{UInt64,Float64}[]                  # (mindev trace) the path
+    mpath = Any[]                                    # (mindev trace) the path: (a, diff, n(B∪a), n(B∪a∪X)) per step
     best = nothing                                   # (greedymin) the smallest |correction| so far
     note!() = length(chosen) >= needmin && (best === nothing || abs(corr) < abs(best[1])) && (best = (corr, copy(chosen)))
     if m.opts.ctxfromchain                            # the chain first, in its order, as far as S∪X stays supported
@@ -2621,7 +2674,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
       # as :exhaust, e keeps the smallest diff on the path (from minctx features on)
       if m.opts.greedyby == :mindev
         m.opts.mindevstop == :localmin && length(chosen) >= needmin && abs(bcorr) > abs(corr) && break
-        MINDEV_TRACE[] === nothing || push!(mpath, (fs[bi], bcorr))
+        MINDEV_TRACE[] === nothing || push!(mpath, (fs[bi], bcorr, get(eS[bi][2], label, (0.0, 0.0)), get(eSX[bi][2], label, (0.0, 0.0))))
         if abs(bcorr) < m.opts.mindevtau
           MINDEV_TRACE[] === nothing || MINDEV_TRACE[](X, mpath, :explained, bcorr)
           return nothing

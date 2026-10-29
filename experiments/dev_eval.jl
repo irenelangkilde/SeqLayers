@@ -113,7 +113,10 @@
 #                estimate; one path for all leftovers) | dep (each leftover its own path: the move giving up
 #                the least of its dependence ρ = |Yule's Q| on the context's features) | depodds (each leftover
 #                its own path: the move with the smallest |marginal correction| * dependence lost + |log odds
-#                change from the running estimate|)
+#                change from the running estimate|) | marg (each leftover its own path: the move keeping log o(x|C')
+#                closest to log o(x|X)) | mindev / mindevsup (each leftover its own path: among moves whose context
+#                supports X the smallest |log o(x|X,C') - log o(x|C')|, X explained away below mindevtau; until one
+#                supports X, mindev the odds rule, mindevsup the move keeping the most records with X)
 #   depweight    leftovers: each correction times 1 - max ρ(X, a) over counted features a (chain, taken
 #                leftovers) outside X's context: true | false.  greedyby also takes dep (ρ(X, f)) and
 #                depcorr (ρ(X, f) * the change in X's correction)

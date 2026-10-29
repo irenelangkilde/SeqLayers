@@ -202,10 +202,10 @@ function explain_attach(st, t, gold, pred)
     if !isempty(mdev[c])                             # greedyby=mindev: every leftover's path B (a, diff after adding a)
       Ic = items[findfirst(==(c), cands)]
       nm(x) = (sl = findfirst(==(x), Ic); sl === nothing ? "?" : slotdesc(st, t, c, sl))
-      println("       mindev paths (diff = log o(x|e,B) - log o(x|B) after each a joins B):")
+      println("       mindev paths (diff = log o(x|e,B) - log o(x|B) after each a joins B; [n B / n B∪e], n = chosen/not-chosen):")
       for (X, r) in sort(collect(mdev[c]); by = p -> (p[2].status != :kept, -abs(p[2].corr)))
         println("         ", rpad(string(r.status), 10), rpad(nm(X), 36), lpad(fmtd(r.corr), 7), "   ",
-          isempty(r.path) ? "(no supported context)" : join(["$(nm(a)) $(fmtd(d))" for (a, d) in r.path], "  ->  "))
+          isempty(r.path) ? "(no supported context)" : join(["$(nm(a)) $(fmtd(d)) [$(fmtn(nb)) / $(fmtn(ne))]" for (a, d, nb, ne) in r.path], "  ->  "))
       end
     end
   end

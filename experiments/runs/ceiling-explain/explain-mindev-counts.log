@@ -1,0 +1,135 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 22.5 s): 14 of 32 slots always, 280 gate values
+[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (20.2 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 292.1 s
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=mindev;leftsmooth=evidence;mindevstop=exhaust;depweight=true;greedymin=false;greedysel=true;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective;headtrank]  [domains=product domeps=0.0]
+
+================ "How about right here ?"
+  How           gold -> ROOT        ok
+  about         gold -> here        WRONG: predicted -> right
+  right         gold -> here        ok
+  here          gold -> How         ok
+  ?             gold -> How         ok
+
+  ---- 'about': gold head 'here', predicted 'right'
+    head properties predicted (with the attachment and all of them hidden):
+      head_upos NOUN 0.45, PRON 0.268, ADV 0.098   (gold head: ADV, predicted head: ADV)
+      head_xpos NNS 0.215, PRP 0.182, NN 0.159   (gold head: RB, predicted head: RB)
+      head_dir  right 1.0, left 0.0, root 0.0   (gold head: right, predicted head: right)
+      head_dist 3-5 0.478, 1 0.387, 2 0.124   (gold head: 2, predicted head: 1)
+      head_trank1 0.578, 2 0.264, 3 0.113   (gold head: 2, predicted head: 1)
+    log margins predicted - gold:  attach +0.71;  head_dist +1.14, head_xpos +0.0, head_dir +0.0;  total +1.85
+    candidates: 3   (product score = log P(attach) + Σ log P(head property value))
+
+    -- GOLD -> here:  P(attach) 0.3078, product score -7.02
+       head-property terms: head_xpos=RB 0.023, head_dist=2 0.124, head_dir=right 1.0, head_upos=ADV 0.098, head_trank=2 0.264
+       prior odds 0.0146
+       chain steps (each conditioned on all the steps before it; Δ = change in log odds):
+       1. distance=2 words (bucket 2)                  Δ  +1.78   odds 0.0146 -> 0.0863
+       2. cand.xpos=RB                                 Δ  -2.25   odds 0.0863 -> 0.00906
+       3. cand.left_neighbor.form=right                Δ   +2.4   odds 0.00906 -> 0.1
+       4. cand.form=here                               Δ  +1.05   odds 0.1 -> 0.286
+       5. dep.right_neighbor.upos=ADV                  Δ  +0.15   odds 0.286 -> 0.333
+       chain log odds -1.1; leftovers tried 0, included 0, total correction 0.0; final log odds -1.1
+       mindev paths (diff = log o(x|e,B) - log o(x|B) after each a joins B; [n B / n B∪e], n = chosen/not-chosen):
+         explained cand.right_neighbor.xpos=?            -0.02   dep.right_neighbor.upos=ADV -0.02 [2189/153788 / 4/360]
+         explained dep.left_neighbor.upos=ADV            -0.02   cand.len=4 -0.02 [8440/444977 / 459/24669]
+         explained cand.right_neighbor.upos=PUNCT        +0.01   cand.form=here +0.11 [42/3091 / 21/1344]  ->  cand.left_neighbor.xpos=RB +0.01 [10/506 / 9/408]
+         explained dep.basepos=0                          +0.0   dep.right_neighbor.upos=ADV +0.0 [2189/153788 / 1065/74712]
+         explained dep.right_neighbor.form=right          +0.0   cand.tense=0 +0.0 [32216/2717339 / 20/1688]
+         explained dep.len=5                              +0.0   cand.xpos=RB +0.0 [577/162282 / 50/13941]
+         explained dep.xpos=IN                            +0.0   cand.form=here +0.0 [42/3091 / 4/234]
+         explained dep.left_neighbor.xpos=WRB             +0.0   cand.xpos=RB +0.0 [577/162282 / 4/882]
+         explained dep.upos=ADP                           +0.0   cand.left_neighbor.form=right +0.0 [25/1812 / 2/109]
+         explained dep.form=about                         +0.0   cand.form=here +0.0 [42/3091 / 0/5]
+         explained cand.right_neighbor.form=?             +0.0   dep.right_neighbor.upos=ADV +0.17 [2189/153788 / 21/1190]  ->  distance=2 words (bucket 2) +0.0 [681/4612 / 4/31]
+
+    -- PREDICTED -> right:  P(attach) 0.6259, product score -5.17
+       head-property terms: head_xpos=RB 0.023, head_dist=1 0.387, head_dir=right 1.0, head_upos=ADV 0.098, head_trank=1 0.578
+       prior odds 0.0146
+       chain steps (each conditioned on all the steps before it; Δ = change in log odds):
+       1. distance=1 word (bucket 1)                   Δ  +3.06   odds 0.0146 -> 0.31
+       2. cand.xpos=RB                                 Δ  -1.66   odds 0.31 -> 0.0592
+       3. dep.form=about                               Δ  +2.83   odds 0.0592 -> 1.0
+       chain log odds 0.0; leftovers tried 1, included 1, total correction -0.39; final log odds -0.39
+         + cand.left_neighbor.upos=ADP           -0.389   context: cand.left_neighbor.form=about, distance=1 word (bucket 1), direction=right, cand.tense=0, dep.form=about, cand.number=0, cand.person=0
+       mindev paths (diff = log o(x|e,B) - log o(x|B) after each a joins B; [n B / n B∪e], n = chosen/not-chosen):
+         kept      cand.left_neighbor.upos=ADP           -0.92   cand.left_neighbor.form=about -0.29 [63/6719 / 34/4920]  ->  distance=1 word (bucket 1) -0.13 [31/70 / 19/51]  ->  direction=right -0.13 [31/70 / 19/51]  ->  cand.tense=0 -0.13 [31/70 / 19/51]  ->  dep.form=about -0.21 [31/63 / 19/50]  ->  cand.number=0 -0.39 [14/51 / 7/41]  ->  cand.person=0 -0.92 [9/43 / 2/33]
+         explained cand.left_neighbor.xpos=IN            +0.03   cand.left_neighbor.upos=ADP +0.03 [2268/263622 / 2244/253852]
+         explained cand.right_neighbor.upos=ADV           +0.0   dep.form=about +0.0 [94/6809 / 5/387]
+         explained cand.right_neighbor.form=here          +0.0   cand.xpos=RB +0.0 [577/162282 / 2/515]
+         explained dep.left_neighbor.upos=ADV             +0.0   dep.form=about +0.0 [94/6809 / 5/419]
+         explained dep.right_neighbor.form=right          +0.0   cand.tense=0 +0.0 [32216/2717339 / 20/1688]
+         explained dep.xpos=IN                            +0.0   dep.form=about +0.0 [94/6809 / 80/5779]
+         explained cand.upos=ADV                          +0.0   dep.form=about +0.0 [94/6809 / 5/384]
+         explained dep.left_neighbor.xpos=WRB             +0.0   cand.xpos=RB +0.0 [577/162282 / 4/882]
+         explained dep.upos=ADP                           +0.0   dep.form=about +0.0 [94/6809 / 69/4956]
+         explained cand.right_neighbor.xpos=RB            +0.0   cand.left_neighbor.form=about +0.0 [63/6719 / 1/134]
+         explained cand.form=right                        +0.0   cand.left_neighbor.upos=ADP +0.0 [2268/263622 / 0/100]
+         explained cand.len=5                             +0.0   dep.form=about +0.18 [94/6809 / 11/608]  ->  distance=1 word (bucket 1) +0.0 [38/71 / 3/7]
+         explained dep.right_neighbor.upos=ADV            +0.0   dep.form=about +0.0 [94/6809 / 7/494]
+
+================ "No no don 't play with that ."
+  No            gold -> no          WRONG: predicted -> play
+  no            gold -> play        ok
+  don           gold -> play        ok
+  't            gold -> play        ok
+  play          gold -> ROOT        ok
+  with          gold -> that        ok
+  that          gold -> play        ok
+  .             gold -> play        ok
+
+  ---- 'No': gold head 'no', predicted 'play'
+    head properties predicted (with the attachment and all of them hidden):
+      head_upos VERB 0.547, INTJ 0.199, NOUN 0.108   (gold head: INTJ, predicted head: VERB)
+      head_xpos UH 0.326, VBD 0.163, VB 0.109   (gold head: UH, predicted head: VB)
+      head_dir  right 0.977, root 0.023, left 0.0   (gold head: right, predicted head: right)
+      head_dist 3-5 0.711, 6-10 0.158, root 0.071   (gold head: 1, predicted head: 3-5)
+      head_trank2 0.332, 4+ 0.266, 3 0.253   (gold head: 1, predicted head: 4+)
+    log margins predicted - gold:  attach +4.91;  head_dist +3.52, head_dir +0.0, head_xpos -1.1;  total +7.33
+    candidates: 2   (product score = log P(attach) + Σ log P(head property value))
+
+    -- GOLD -> no:  P(attach) 0.0071, product score -9.95
+       head-property terms: head_xpos=UH 0.326, head_dist=1 0.021, head_dir=right 0.977, head_upos=INTJ 0.199, head_trank=1 0.061
+       prior odds 0.0146
+       chain steps (each conditioned on all the steps before it; Δ = change in log odds):
+       1. distance=1 word (bucket 1)                   Δ  +3.28   odds 0.0146 -> 0.386
+       2. cand.basepos=0                               Δ  -2.36   odds 0.386 -> 0.0365
+       3. cand.right_neighbor.xpos=VB                  Δ   -1.6   odds 0.0365 -> 0.00735
+       4. cand.person=0                                Δ  -0.58   odds 0.00735 -> 0.0041
+       chain log odds -5.5; leftovers tried 0, included 0, total correction 0.0; final log odds -5.5
+       mindev paths (diff = log o(x|e,B) - log o(x|B) after each a joins B; [n B / n B∪e], n = chosen/not-chosen):
+         explained cand.left_neighbor.xpos=UH             +0.0   cand.basepos=0 +0.0 [1027/1441107 / 7/10157]
+         explained dep.upos=INTJ                          +0.0   cand.right_neighbor.xpos=VB +0.0 [91/118200 / 0/759]
+         explained cand.right_neighbor.form=don           +0.0   cand.basepos=0 +0.0 [1027/1441107 / 0/1006]
+         explained cand.left_neighbor.upos=INTJ           +0.0   cand.basepos=0 +0.0 [1027/1441107 / 7/10358]
+         explained cand.left_neighbor.form=no             +0.0   direction=right +0.0 [25682/1539980 / 48/2896]
+         explained cand.form=no                           +0.0   cand.right_neighbor.xpos=VB +0.0 [91/118200 / 0/193]
+         explained dep.form=no                            +0.0   cand.right_neighbor.xpos=VB +0.0 [91/118200 / 0/274]
+         explained dep.xpos=UH                            +0.0   cand.right_neighbor.xpos=VB +0.0 [91/118200 / 0/734]
+         explained dep.right_neighbor.form=no             +0.0   cand.right_neighbor.xpos=VB +0.0 [91/118200 / 0/281]
+
+    -- PREDICTED -> play:  P(attach) 0.9675, product score -2.62
+       head-property terms: head_xpos=VB 0.109, head_dist=3-5 0.711, head_dir=right 0.977, head_upos=VERB 0.547, head_trank=4+ 0.266
+       prior odds 0.0146
+       chain steps (each conditioned on all the steps before it; Δ = change in log odds):
+       1. distance=4 words (bucket 3-5)                Δ  +1.78   odds 0.0146 -> 0.0863
+       2. cand.left_neighbor.xpos=RB                   Δ  +1.21   odds 0.0863 -> 0.29
+       3. cand.upos=VERB                               Δ  +1.47   odds 0.29 -> 1.26
+       4. cand.left_neighbor.form='t                   Δ  -1.62   odds 1.26 -> 0.25
+       5. dep.basepos=0                                Δ  +0.33   odds 0.25 -> 0.346
+       6. cand.len=4                                   Δ  +0.47   odds 0.346 -> 0.556
+       chain log odds -0.59; leftovers tried 0, included 0, total correction 0.0; final log odds -0.59
+       mindev paths (diff = log o(x|e,B) - log o(x|B) after each a joins B; [n B / n B∪e], n = chosen/not-chosen):
+         explained cand.right_neighbor.upos=ADP           +0.1   cand.upos=VERB +0.1 [16680/307908 / 3240/54290]
+         explained cand.right_neighbor.xpos=IN           +0.06   cand.upos=VERB +0.06 [16680/307908 / 3473/60253]
+         explained cand.right_neighbor.form=with         +0.04   cand.upos=VERB +0.04 [16680/307908 / 196/3471]
+         explained dep.right_neighbor.xpos=UH             +0.0   cand.basepos=V +0.0 [16775/448947 / 84/2240]
+         explained dep.upos=INTJ                          +0.0   cand.left_neighbor.form='t +0.0 [81/1734 / 3/50]
+         explained cand.form=play                         +0.0   cand.left_neighbor.upos=PART +0.0 [3148/88086 / 10/258]
+         explained dep.right_neighbor.upos=INTJ           +0.0   cand.basepos=V +0.0 [16775/448947 / 87/2303]
+         explained dep.form=no                            +0.0   cand.left_neighbor.form='t +0.0 [81/1734 / 1/16]
+         explained dep.xpos=UH                            +0.0   cand.left_neighbor.form='t +0.0 [81/1734 / 2/48]
+         explained dep.right_neighbor.form=no             +0.0   cand.upos=VERB +0.0 [16680/307908 / 34/624]
