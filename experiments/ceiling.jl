@@ -133,6 +133,7 @@ function ceiling_main(cfg)
     println("double counting: $(round(Int, n)) leftovers taken, $(round(hi / n; digits = 3)) with |Q| >= $(SeqLayers.DC_HI) to a counted ",
       "feature outside the context; |corr|-weighted max |Q| $(round(ms / cr; digits = 3)); mean |corr| $(round(cr / n; digits = 3))")
   end
+  get(a, :pooled, 0) > 0 && println("explainpool: $(round(Int, a[:pooled] / 1000)) explained-away leftovers joined the context pool")
   if get(a, :tw_w, 0) + get(a, :tw_t, 0) > 0          # accumby=mintw: which proposal each backoff step took
     w, t, wl = a[:tw_w] / 1000, a[:tw_t] / 1000, get(a, :tw_wlost, 0) / 1000
     println("mintw: $(round(Int, w + t)) backoff steps, ΔW taken $(round(w / (w + t); digits = 3)), ΔT taken $(round(t / (w + t); digits = 3)) ",

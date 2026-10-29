@@ -207,6 +207,7 @@ struct ChainOpts
   depmeasure::Symbol                              # ρ for greedyby=dep / accumby=dep: :yule (|Yule's Q|) | :pmi (log p(e,a) / p(e)p(a)) | :pmipos (max(pmi, 0))
   mindevtau::Float64                              # greedyby=mindev: a leftover whose diff falls below this is explained away (dropped)
   mindevstop::Symbol                              # greedyby=mindev: :localmin | :exhaust | :pathmin (see greedy_context)
+  explainpool::Bool                               # mindev (greedy / accum): an explained-away leftover joins the context pool (correction 0) instead of being discarded
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -316,7 +317,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
@@ -383,7 +384,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -2365,6 +2366,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
     end
     dead = Int[]                                      # (telescope) leftovers with no supported context
     tries = ACCUM_TRACE[] === nothing ? nothing : Dict{Int,Vector{Any}}()   # (trace: each X's walk along the path)
+    explained = Int[]                                # (mindev + explainpool) explained-away leftovers this round
     for (pi_, sx) in enumerate(pending)
       X = Ic[sx]
       X in items(rung) && continue                  # already in the context (as a generalization): redundant
@@ -2389,7 +2391,10 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
             corr = res === nothing ? nothing : res[1], how = k == 1 ? nothing : twnote[]))
         end
         corr = res === nothing ? nothing : res[1]
-        corr !== nothing && m.opts.accumby in (:mindev, :mindevsup) && abs(corr) < m.opts.mindevtau && break   # explained away
+        if corr !== nothing && m.opts.accumby in (:mindev, :mindevsup) && abs(corr) < m.opts.mindevtau   # explained away
+          m.opts.explainpool && push!(explained, sx)
+          break
+        end
         if corr !== nothing && (m.opts.driftsigma > 0 || m.opts.drifttau > 0 || m.opts.driftstep > 0)
           # drift: how far this context has moved from the running estimate, and how many ladder steps it took
           S, e = res[3]
@@ -2470,7 +2475,18 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       # X's correction in its chosen context; the X with the largest |correction| is taken
       (abs(xc) > abs(bestc) || bestX == 0) && ((bestX, bestc, bestk, bestr) = (pi_, xc, xk, xr))
     end
+    # explainpool: the explained-away leftovers join the context (correction 0) and leave the pending list
+    function poolexplained!()
+      for sx in explained
+        sx in pending || continue
+        (li, ls) = ladder(Ic[sx], sx)
+        push!(ladders, li); push!(lslots, ls); push!(rung, 1)
+        (d = DC_STATS[]) === nothing || (d[:pooled] = get(d, :pooled, 0.0) + 1)
+      end
+      filter!(s -> !(s in explained), pending)
+    end
     if bestX == 0
+      isempty(explained) || (poolexplained!(); continue)
       isempty(dead) && break
       filter!(s -> !(s in dead), pending)             # (telescope) their finer rungs may go ahead
       continue
@@ -2486,6 +2502,8 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
     total_ += bestc
     T += bestc
     deleteat!(pending, bestX)
+    filter!(s -> s != sx, explained)
+    poolexplained!()
     filter!(s -> !(s in dead), pending)
     filter!(s -> !(Ic[s] in items(rung)), pending)  # leftovers now in the context are redundant
   end
@@ -2749,7 +2767,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
         MINDEV_TRACE[] === nothing || push!(mpath, (fs[bi], bcorr, get(eS[bi][2], label, (0.0, 0.0)), get(eSX[bi][2], label, (0.0, 0.0))))
         if abs(bcorr) < m.opts.mindevtau
           MINDEV_TRACE[] === nothing || MINDEV_TRACE[](X, mpath, :explained, bcorr)
-          return nothing
+          return m.opts.explainpool ? :explained : nothing
         end
       end
       advance!(m, S, fs[bi], eS[bi], by1)
@@ -2788,6 +2806,11 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     end
     c = greedy_context(X)
     c === nothing && continue
+    if c === :explained                              # explainpool: X joins the context pool, no correction
+      X in avail || push!(avail, X)
+      (d = DC_STATS[]) === nothing || (d[:pooled] = get(d, :pooled, 0.0) + 1)
+      continue
+    end
     LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](s, true, [something(findfirst(==(f), Ic), 0) for f in c[2]], c[1])
     DC_STATS[] === nothing || dc_record!(m, base, X, setdiff(union(st.members, incl), c[2]), label, prior, c[1])
     total_ += c[1]
@@ -2798,10 +2821,19 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
   # largest |correction| taken (it joins the pool), until none has a supported context
   while !isempty(pending)
     bi, bc = 0, nothing
+    expl = Int[]                                     # (explainpool) explained away this round
     for (i, s) in enumerate(pending)
       c = greedy_context(Ic[s])
       c === nothing && continue
+      c === :explained && (push!(expl, s); continue)
       (bc === nothing || abs(c[1]) > abs(bc[1])) && ((bi, bc) = (i, c))
+    end
+    if !isempty(expl)                                # explainpool: they join the context pool, no correction
+      for s in expl
+        Ic[s] in avail || push!(avail, Ic[s])
+        (d = DC_STATS[]) === nothing || (d[:pooled] = get(d, :pooled, 0.0) + 1)
+      end
+      bi == 0 && (filter!(s -> !(s in expl), pending); continue)
     end
     bi == 0 && break
     s = pending[bi]
@@ -2811,6 +2843,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     Ic[s] in avail || push!(avail, Ic[s])
     push!(incl, Ic[s])
     deleteat!(pending, bi)
+    filter!(x -> !(x in expl), pending)
   end
   total_
 end
