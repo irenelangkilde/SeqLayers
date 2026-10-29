@@ -205,6 +205,8 @@ struct ChainOpts
   depweight::Bool                                 # leftovers: correction times 1 - max ρ(X, a) over counted features a outside X's context
   smoothn::Symbol                                 # n in d: the set's own records (:set) or its parent's (:parent: chain steps and accum leftovers)
   depmeasure::Symbol                              # ρ for greedyby=dep / accumby=dep: :yule (|Yule's Q|) | :pmi (log p(e,a) / p(e)p(a)) | :pmipos (max(pmi, 0))
+  mindevtau::Float64                              # greedyby=mindev: a leftover whose diff falls below this is explained away (dropped)
+  mindevstop::Symbol                              # greedyby=mindev: :localmin | :exhaust | :pathmin (see greedy_context)
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -314,10 +316,11 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
-  greedyby in (:correction, :odds, :dep, :depcorr) || error("unknown greedyby $greedyby")
+  greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
+  mindevstop in (:localmin, :exhaust, :pathmin) || error("unknown mindevstop $mindevstop")
   depmeasure in (:yule, :pmi, :pmipos) || error("unknown depmeasure $depmeasure (use :yule, :pmi or :pmipos)")
   accumby in (:odds, :dep, :depodds) || error("unknown accumby $accumby (use :odds, :dep or :depodds)")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
@@ -379,7 +382,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -2399,7 +2402,7 @@ function depq(m::ChainModel, base, E::UInt64, a::UInt64, label::UInt32, prior; m
 end
 
 """
-Double-counting counter (accum leftovers; on when DC_STATS[] is a Dict): for each leftover X taken with a
+Double-counting counter (accum and greedy leftovers; on when DC_STATS[] is a Dict): for each leftover X taken with a
 nonzero correction, q = the largest |Yule's Q|(X, a) over counted features a (chain, earlier leftovers) outside
 X's context -- the evidence X may repeat.  Keys: :dc_n leftovers, :dc_hi those with q >= DC_HI, :dc_corr
 Σ|corr|, :dc_mass Σ|corr|·q.
@@ -2603,18 +2606,27 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
         y2, ok2 = leftover_update(m, eS[i], eSX[i], label, y1)   # o(S∪f∪X), from o(S∪f)
         (ok1 && ok2 && ctxsupported(m, eSX[i], label)) || continue   # S∪f∪X must be supported
         c = log(y2) - log(y1)
+        m.opts.greedyby == :mindev && (sc = -abs(c); sc > bs && ((bs, bi, by1, by2, bcorr) = (sc, i, y1, y2, c)); continue)
         sc = m.opts.greedyby == :correction ? abs(c - corr) : m.opts.greedyby == :odds ? abs(log(y1) - log(oS)) :
           m.opts.greedyby == :dep ? depq(m, base, X, f, label, prior) : depq(m, base, X, f, label, prior) * abs(c - corr)
         sc > bs && ((bs, bi, by1, by2, bcorr) = (sc, i, y1, y2, c))
       end
       bi == 0 && break
+      # mindev (user's design): B grows by the a with the smallest diff = |log o(x|e,B∪a) - log o(x|B∪a)|; e is
+      # explained away (dropped) once diff < mindevtau.  mindevstop :localmin -- stop (after minctx features) when
+      # every a would raise diff; :exhaust -- grow until no a is supported, e keeps the last diff; :pathmin -- grow
+      # as :exhaust, e keeps the smallest diff on the path (from minctx features on)
+      if m.opts.greedyby == :mindev
+        m.opts.mindevstop == :localmin && length(chosen) >= needmin && abs(bcorr) > abs(corr) && break
+        abs(bcorr) < m.opts.mindevtau && return nothing
+      end
       advance!(m, S, fs[bi], eS[bi], by1)
       advance!(m, SX, fs[bi], eSX[bi], by2)
       push!(chosen, fs[bi])
       corr = bcorr
       note!()
     end
-    m.opts.greedymin && best !== nothing && ((corr, chosen) = best)
+    (m.opts.greedymin || (m.opts.greedyby == :mindev && m.opts.mindevstop == :pathmin)) && best !== nothing && ((corr, chosen) = best)
     length(chosen) >= needmin || return nothing
     mode == :cover && !covers(st, Ic, G, chosen) && return nothing
     W = isempty(poolw) ? 1.0 : prod(get(poolw, f, 1.0) for f in chosen; init = 1.0)
@@ -2644,6 +2656,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     c = greedy_context(X)
     c === nothing && continue
     LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](s, true, [something(findfirst(==(f), Ic), 0) for f in c[2]], c[1])
+    DC_STATS[] === nothing || dc_record!(m, base, X, setdiff(union(st.members, incl), c[2]), label, prior, c[1])
     total_ += c[1]
     X in avail || push!(avail, X)
     push!(incl, X)
@@ -2660,6 +2673,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     bi == 0 && break
     s = pending[bi]
     LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](s, true, [something(findfirst(==(f), Ic), 0) for f in bc[2]], bc[1])
+    DC_STATS[] === nothing || dc_record!(m, base, Ic[s], setdiff(union(st.members, incl), bc[2]), label, prior, bc[1])
     total_ += bc[1]
     Ic[s] in avail || push!(avail, Ic[s])
     push!(incl, Ic[s])

@@ -1,0 +1,37 @@
+=== greedyby=odds  Wed Oct 28 20:41:25 MDT 2026
+ALL         2899    0.9983  0.8399  0.7879  0.0162  1.0     
+double counting: 65542 leftovers taken, 0.612 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.62; mean |corr| 0.553
+score 345.3 s, run 20261028-204836 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== greedyby=odds greedysel=true  Wed Oct 28 20:48:37 MDT 2026
+ALL         2899    0.9974  0.8413  0.7844  0.0162  1.0     
+double counting: 72566 leftovers taken, 0.507 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.511; mean |corr| 0.608
+score 498.7 s, run 20261028-205814 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== greedyby=mindev greedysel=true mindevstop=localmin  Wed Oct 28 20:58:15 MDT 2026
+ALL         2899    0.9982  0.8348  0.7765  0.0162  1.0     
+double counting: 14202 leftovers taken, 0.613 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.607; mean |corr| 0.638
+score 145.1 s, run 20261028-210159 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== greedyby=mindev greedysel=true mindevstop=exhaust  Wed Oct 28 21:02:00 MDT 2026
+ALL         2899    0.9982  0.8368  0.782   0.0162  1.0     
+double counting: 13095 leftovers taken, 0.526 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.533; mean |corr| 0.929
+score 176.8 s, run 20261028-210616 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== greedyby=mindev greedysel=true mindevstop=pathmin  Wed Oct 28 21:06:17 MDT 2026
+ALL         2899    0.9982  0.8355  0.7785  0.0162  1.0     
+double counting: 13115 leftovers taken, 0.616 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.609; mean |corr| 0.67
+score 157.4 s, run 20261028-211013 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== greedyby=odds greedysel=true depweight=true prodprops=head_xpos,head_dir,head_dist  Wed Oct 28 21:10:13 MDT 2026
+ALL         2899    0.9984  0.831   0.7775  0.0162  1.0     
+double counting: 73700 leftovers taken, 0.457 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.285; mean |corr| 0.315
+score 520.2 s, run 20261028-212014 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== greedyby=mindev greedysel=true mindevstop=localmin depweight=true prodprops=head_xpos,head_dir,head_dist  Wed Oct 28 21:20:14 MDT 2026
+ALL         2899    0.9987  0.8237  0.7675  0.0162  1.0     
+double counting: 14427 leftovers taken, 0.562 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.346; mean |corr| 0.268
+score 162.5 s, run 20261028-212417 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== greedyby=mindev greedysel=true mindevstop=exhaust depweight=true prodprops=head_xpos,head_dir,head_dist  Wed Oct 28 21:24:18 MDT 2026
+ALL         2899    0.9985  0.8255  0.7713  0.0162  1.0     
+double counting: 13305 leftovers taken, 0.477 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.311; mean |corr| 0.456
+score 173.3 s, run 20261028-212835 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== greedyby=mindev greedysel=true mindevstop=pathmin depweight=true prodprops=head_xpos,head_dir,head_dist  Wed Oct 28 21:28:36 MDT 2026
+ALL         2899    0.9987  0.8237  0.7679  0.0162  1.0     
+double counting: 13313 leftovers taken, 0.564 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.343; mean |corr| 0.281
+score 165.9 s, run 20261028-213240 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Wed Oct 28 21:32:41 MDT 2026

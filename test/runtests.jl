@@ -292,10 +292,16 @@ end
     # every option lands in its own ChainOpts field (positional constructor)
     mo = ChainModel(dir; select = :maxdev, leftovers = :greedy, mincount = 1, ctxmode = :accum, greedymin = true, greedysel = false,
       driftsigma = 0.25, drifttau = 0.5, driftstep = 0.75, distback = true, shrink = 7.0, accumwin = 3, accumreset = true, cidrop = 0.125,
-      shrinkleft = 9.0, leftmin2 = 4, depmeasure = :pmi)
+      shrinkleft = 9.0, leftmin2 = 4, depmeasure = :pmi, mindevtau = 0.3, mindevstop = :pathmin)
     o = mo.opts
     @test (o.greedymin, o.greedysel, o.driftsigma, o.drifttau, o.driftstep, o.distback, o.shrink, o.accumwin, o.accumreset, o.cidrop,
-      o.shrinkleft, o.leftmin2, o.depmeasure) == (true, false, 0.25, 0.5, 0.75, true, 7.0, 3, true, 0.125, 9.0, 4, :pmi)
+      o.shrinkleft, o.leftmin2, o.depmeasure, o.mindevtau, o.mindevstop) == (true, false, 0.25, 0.5, 0.75, true, 7.0, 3, true, 0.125, 9.0, 4, :pmi, 0.3, :pathmin)
+    for (gs, ms) in ((false, :localmin), (true, :localmin), (true, :exhaust), (true, :pathmin))
+      mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true,
+        greedyby = :mindev, greedysel = gs, mindevstop = ms)
+      mp.generalize = SeqLayers.generalization_slots(specs)
+      @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
+    end
     for dm in (:pmi, :pmipos), (cm, gb, ab) in ((:greedy, :dep, :odds), (:accum, :odds, :dep))
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = cm,
         greedyby = gb, accumby = ab, depmeasure = dm)
