@@ -322,8 +322,8 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
   mindevstop in (:localmin, :exhaust, :pathmin) || error("unknown mindevstop $mindevstop")
   depmeasure in (:yule, :pmi, :pmipos) || error("unknown depmeasure $depmeasure (use :yule, :pmi or :pmipos)")
-  accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw) ||
-    error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup or :mintw)")
+  accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc) ||
+    error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw or :mintwc)")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
   stepscore in (:abs, :signed, :maxmin, :maxmin2) || error("unknown stepscore $stepscore (use :abs, :signed, :maxmin or :maxmin2)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
@@ -2315,6 +2315,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
     # with the smallest ΔT = |log o(x|C') - T| (the running-estimate rule) and, among moves where W has records
     # (>= 1) in both the current context C and C', the one with the smallest ΔW = |log o(x|W,C) - log o(x|W,C')|
     # (W's records smoothed toward the context's odds); the one proposing the smaller change is taken.
+    twnote = Ref{Any}(nothing)                       # (trace) the last step's proposals
     function wlogodds(c, X)
       S = c[1]
       k = get(only(extend_all(m, S, depth(S), [X]))[2], label, (0.0, 0.0))
@@ -2341,6 +2342,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       end
       brt === nothing && return false
       useW = brw !== nothing && bw < bt
+      twnote[] = (by = useW ? :W : :T, dT = bt, dW = brw === nothing ? nothing : bw)
       if (d = DC_STATS[]) !== nothing
         k = useW ? :tw_w : :tw_t
         d[k] = get(d, k, 0.0) + 1
@@ -2374,7 +2376,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       imp = m.opts.accumby == :depodds ? margimpact(X) : 0.0
       xstep! = m.opts.accumby == :odds ? step! : m.opts.accumby in (:dep, :depodds) ? (p -> depstep!(p, X, imp)) :
         m.opts.accumby == :marg ? (p -> margstep!(p, log(prior) + margsigned(X))) :
-        m.opts.accumby == :mintw ? (p -> twstep!(p, X)) : (p -> mdstep!(p, X, A))
+        m.opts.accumby in (:mintw, :mintwc) ? (p -> twstep!(p, X)) : (p -> mdstep!(p, X, A))
       k = 1
       k0, xc, xk, xv = 0, 0.0, 0, 0.0                 # (accumwin: the first supported step, and the smallest |correction| since)
       while true
@@ -2384,7 +2386,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
           eX = res === nothing ? only(extend_all(m, S, depth(S), [X])) : res[4]
           push!(tries[sx], (ctx = items(xpath[k][1]), odds = e === nothing ? prior : S.odds[end],
             n = e === nothing ? nothing : get(e[2], label, (0.0, 0.0)), nX = get(eX[2], label, (0.0, 0.0)),
-            corr = res === nothing ? nothing : res[1]))
+            corr = res === nothing ? nothing : res[1], how = k == 1 ? nothing : twnote[]))
         end
         corr = res === nothing ? nothing : res[1]
         corr !== nothing && m.opts.accumby in (:mindev, :mindevsup) && abs(corr) < m.opts.mindevtau && break   # explained away
@@ -2399,6 +2401,37 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
             m.opts.driftsigma > 0 && (corr *= exp(-d / m.opts.driftsigma))
             m.opts.driftstep > 0 && (corr *= m.opts.driftstep ^ steps)
           end
+        end
+        if corr !== nothing && m.opts.accumby == :mintwc
+          # mintwc: from the first supported context, keep backing off by the ΔW move (W supported in C') while
+          # W's estimate stays within mindevtau of its value there; W's correction comes from the last such context
+          wref = log(xpath[k][2][1].odds[end]) + corr
+          xc, xk, xv = corr, k, res[2]
+          while true
+            r = xpath[end][1]
+            best, br, bc, bres = Inf, nothing, nothing, nothing
+            for i in eachindex(ladders)
+              r[i] <= length(ladders[i]) || continue
+              r[i] == length(ladders[i]) && !maydrop(r, i) && continue
+              r2 = copy(r); r2[i] += 1
+              c = build(r2)
+              c === nothing && continue
+              res2 = xcorr(r2, X, A)
+              res2 === nothing && continue
+              d = abs(log(c[1].odds[end]) + res2[1] - wref)
+              d < best && ((best, br, bc, bres) = (d, r2, c, res2))
+            end
+            (br === nothing || best >= m.opts.mindevtau) && break
+            push!(xpath, (br, bc))
+            xc, xk, xv = bres[1], length(xpath), bres[2]
+            (d = DC_STATS[]) === nothing || (d[:tw_cont] = get(d, :tw_cont, 0.0) + 1)
+            if tries !== nothing
+              S, e = bc
+              push!(tries[sx], (ctx = items(br), odds = e === nothing ? prior : S.odds[end], n = e === nothing ? nothing : get(e[2], label, (0.0, 0.0)),
+                nX = get(bres[4][2], label, (0.0, 0.0)), corr = bres[1], how = (by = :cont, dT = nothing, dW = best)))
+            end
+          end
+          break
         end
         if corr !== nothing
           k0 == 0 && (k0 = k)

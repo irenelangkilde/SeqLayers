@@ -290,7 +290,14 @@ function detail(st, t, c, f, Ic, acc)
     for (i, tr) in enumerate(a.tries)
       ctxn = [name(x) for x in tr.ctx]
       moves = prev === nothing ? "" : "   [" * join([["-" * x for x in setdiff(prev, ctxn)]; ["+" * x for x in setdiff(ctxn, prev)]], ", ") * "]"
-      mark = !taken && tr.corr !== nothing ? (taken = true; "  <= TAKEN") : ""
+      mark = ""
+      if haskey(tr, :how) && tr.how !== nothing               # accumby=mintw(c): which proposal took this step
+        h = tr.how
+        mark = h.by == :cont ? "  {past support: ΔW $(fmtd(h.dW)) vs first supported}" :
+          "  {$(h.by == :W ? "ΔW" : "ΔT") step: ΔT $(round(h.dT; digits = 2)), ΔW $(h.dW === nothing ? "n/a" : round(h.dW; digits = 2))}"
+      end
+      final = cfg["accumby"] == "mintwc" ? i == length(a.tries) : (!taken && tr.corr !== nothing)
+      final && (taken = true; mark *= "  <= TAKEN")
       println("         ctx $i: log odds ", lpad(fmtd(log(tr.odds)), 6), "  n ", rpad(fmtn(tr.n), 12), " with X: n ", rpad(fmtn(tr.nX), 10),
         "  corr ", tr.corr === nothing ? "unsupported" : fmtd(tr.corr), mark, moves)
       i == 1 && println("                 context: ", join(ctxn, ", "))

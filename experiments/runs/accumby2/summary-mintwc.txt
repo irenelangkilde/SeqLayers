@@ -1,0 +1,11 @@
+=== mintwc tau 0.1  Thu Oct 29 10:52:05 MDT 2026
+ALL         2899    0.9976  0.8506  0.7882  0.0162  1.0     
+double counting: 139845 leftovers taken, 0.767 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.756; mean |corr| 0.891
+mintw: 792160 backoff steps, ΔW taken 0.357, ΔT taken 0.643 (of which ΔW available but larger: 203343); mintwc: 269299 backoff steps past first support
+score 265.9 s, run 20261029-105758 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== mintwc tau 0.25  Thu Oct 29 10:57:58 MDT 2026
+ALL         2899    0.9978  0.8448  0.7806  0.0162  1.0     
+double counting: 155520 leftovers taken, 0.794 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.779; mean |corr| 0.898
+mintw: 762141 backoff steps, ΔW taken 0.352, ΔT taken 0.648 (of which ΔW available but larger: 199558); mintwc: 404583 backoff steps past first support
+score 241.2 s, run 20261029-110316 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Thu Oct 29 11:03:17 MDT 2026

@@ -136,7 +136,8 @@ function ceiling_main(cfg)
   if get(a, :tw_w, 0) + get(a, :tw_t, 0) > 0          # accumby=mintw: which proposal each backoff step took
     w, t, wl = a[:tw_w] / 1000, a[:tw_t] / 1000, get(a, :tw_wlost, 0) / 1000
     println("mintw: $(round(Int, w + t)) backoff steps, ΔW taken $(round(w / (w + t); digits = 3)), ΔT taken $(round(t / (w + t); digits = 3)) ",
-      "(of which ΔW available but larger: $(round(Int, wl)))")
+      "(of which ΔW available but larger: $(round(Int, wl)))",
+      haskey(a, :tw_cont) ? "; mintwc: $(round(Int, a[:tw_cont] / 1000)) backoff steps past first support" : "")
   end
   write_breakdown(runid, modelname, cfg, bytb["ALL"])
   cal && calibrate_report(cfg, s, parts)
