@@ -1,0 +1,25 @@
+=== B prior k20  Thu Oct 29 19:57:14 UTC 2026
+ALL         2899    0.9956  0.8413  0.7779  0.0162  1.0     
+double counting: 116140 leftovers taken, 0.697 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.687; mean |corr| 0.818
+score 145.0 s, run 20261029-200250 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== B prior k50  Thu Oct 29 20:02:51 UTC 2026
+ALL         2899    0.9936  0.8327  0.7627  0.0162  1.0     
+double counting: 116140 leftovers taken, 0.697 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.687; mean |corr| 0.818
+score 143.4 s, run 20261029-200804 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== B prior k200  Thu Oct 29 20:08:05 UTC 2026
+ALL         2899    0.983   0.8175  0.7192  0.0162  1.0     
+double counting: 116140 leftovers taken, 0.697 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.687; mean |corr| 0.818
+score 143.1 s, run 20261029-201318 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== DC prev k20  Thu Oct 29 20:13:19 UTC 2026
+ALL         2899    0.9974  0.8182  0.7651  0.0162  1.0     
+double counting: 52649 leftovers taken, 0.464 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.303; mean |corr| 0.43
+score 132.0 s, run 20261029-201818 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== DC prev k50  Thu Oct 29 20:18:19 UTC 2026
+ALL         2899    0.9967  0.8155  0.7478  0.0162  1.0     
+double counting: 52649 leftovers taken, 0.464 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.303; mean |corr| 0.43
+score 125.8 s, run 20261029-202315 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== DC prev k200  Thu Oct 29 20:23:16 UTC 2026
+ALL         2899    0.9901  0.7899  0.7002  0.0162  1.0     
+double counting: 52649 leftovers taken, 0.464 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.303; mean |corr| 0.43
+score 127.1 s, run 20261029-202811 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== awsA done Thu Oct 29 20:28:12 UTC 2026

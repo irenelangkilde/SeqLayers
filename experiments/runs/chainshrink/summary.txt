@@ -1,0 +1,5 @@
+=== B prev k20  Thu Oct 29 13:49:40 MDT 2026
+ALL         2899    0.9964  0.842   0.7741  0.0162  1.0     
+double counting: 116140 leftovers taken, 0.697 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.687; mean |corr| 0.818
+score 179.6 s, run 20261029-135404 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== B prev k50  Thu Oct 29 13:54:04 MDT 2026

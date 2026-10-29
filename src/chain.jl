@@ -208,6 +208,8 @@ struct ChainOpts
   mindevtau::Float64                              # greedyby=mindev: a leftover whose diff falls below this is explained away (dropped)
   mindevstop::Symbol                              # greedyby=mindev: :localmin | :exhaust | :pathmin (see greedy_context)
   explainpool::Bool                               # mindev (greedy / accum): an explained-away leftover joins the context pool (correction 0) instead of being discarded
+  chainshrink::Float64                            # > 0: the chain's log odds from Beta-shrunk step sizes (k pseudo-records); selection unchanged
+  chainshrinkto::Symbol                           # chainshrink target: :prev (previous step's odds) | :gen (the step with the feature's generalization) | :prior (the final prefix toward the prior)
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -317,11 +319,12 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
   mindevstop in (:localmin, :exhaust, :pathmin) || error("unknown mindevstop $mindevstop")
+  chainshrinkto in (:prev, :gen, :prior) || error("unknown chainshrinkto $chainshrinkto (use :prev, :gen or :prior)")
   depmeasure in (:yule, :pmi, :pmipos) || error("unknown depmeasure $depmeasure (use :yule, :pmi or :pmipos)")
   accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc) ||
     error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw or :mintwc)")
@@ -384,7 +387,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -1743,12 +1746,47 @@ function run_maxdev_target(m::ChainModel, I, labels, priors, typerecs; tk = noth
 end
 
 """
+chainshrink = k > 0: the chain's log odds with each step's size discounted by its support, the chain itself (which
+features, in which order) unchanged.  Step j (records c1/c2 of its prefix, from odds o_{j-1}) contributes
+log shrinkOdds(c1, c2, t_j, k) - log o_{j-1}, with t_j: :prev o_{j-1}; :gen o(x | prefix_{j-1} + the feature's nearest
+generalization) (o_{j-1} if it has none or it's unsupported).  :prior: the final prefix's records shrunk toward the
+prior, log shrinkOdds(c1, c2, prior, k).
+"""
+function chain_shrunk_logodds(m::ChainModel, st::ChainState, Ic, label, prior)
+  k = m.opts.chainshrink
+  depth(st) == 0 && return log(st.odds[end])
+  if m.opts.chainshrinkto == :prior
+    c = get(st.cnt[end], label, (0.0, 0.0))
+    return log(shrinkOdds(c[1], c[2], prior, k))
+  end
+  G = m.opts.chainshrinkto == :gen && !isempty(st.views[1].base) && length(st.members) == depth(st) ?
+    get(m.generalize, m.recs[st.views[1].base[1]].typekey, nothing) : nothing
+  lo = log(st.odds[1])
+  for j in 1:depth(st)
+    oprev = st.odds[j]
+    c = get(st.cnt[j+1], label, (0.0, 0.0))
+    t = oprev
+    if G !== nothing && (s = findfirst(==(st.members[j]), Ic)) !== nothing
+      gens = UInt64[Ic[g] for g in get(G, s, Int[]) if Ic[g] != ABSENT && Ic[g] != st.members[j]]
+      if !isempty(gens)
+        g = gens[argmin([get(m.itemcount, x, typemax(Int)) for x in gens])]   # the nearest (rarest) generalization
+        e = only(extend_all(m, st, j - 1, [g]))
+        y, ok = update_odds(m, e, label, oprev)
+        ok && (t = y)
+      end
+    end
+    lo += log(shrinkOdds(c[1], c[2], t, k)) - log(oprev)
+  end
+  lo
+end
+
+"""
 Log-odds of a finished chain plus the corrections from its leftover slots.  Each leftover's
 correction comes from the deepest prefix that supports it; the leftovers still open at a depth
 are counted together, and the corrections are added in slot order.
 """
 function chain_logodds(m::ChainModel, st::ChainState, Ic, label, prior, remaining; cap = EXACT)
-  lo = log(st.odds[end])
+  lo = m.opts.chainshrink > 0 ? chain_shrunk_logodds(m, st, Ic, label, prior) : log(st.odds[end])
   if !isempty(m.noleft) && !isempty(st.views[1].base)        # slots kept out of the leftovers
     skip = get(m.noleft, m.recs[st.views[1].base[1]].typekey, nothing)
     skip === nothing || (remaining = [s for s in remaining if !(s in skip)])
