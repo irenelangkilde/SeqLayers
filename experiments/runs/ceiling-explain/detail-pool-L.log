@@ -1,0 +1,113 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 27.2 s): 14 of 32 slots always, 280 gate values
+[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (28.0 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/events
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=correction;leftsmooth=evidence;accumby=mindevsup;explainpool=true;depweight=true;ctxmode=accum;ctxattach=false;cidrop=0.0;ciorder=off;telescope=false;branches=1;combine=avg;accumwin=0;accumreset=false;driftsigma=0.0;drifttau=0.0;driftstep=0.0;distback=false;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective;headtrank]  [domains=product domeps=0.0]
+
+================ "How about right here ?"
+  How           gold -> ROOT        ok
+  about         gold -> here        WRONG: predicted -> right
+  right         gold -> here        ok
+  here          gold -> How         ok
+  ?             gold -> How         ok
+
+  ---- 'about': gold head 'here', predicted 'right'
+    head properties predicted (with the attachment and all of them hidden):
+      head_upos NOUN 0.542, PRON 0.217, ADV 0.084   (gold head: ADV, predicted head: ADV)
+      head_xpos NNS 0.369, NN 0.138, PRP 0.134   (gold head: RB, predicted head: RB)
+      head_dir  right 1.0, left 0.0, root 0.0   (gold head: right, predicted head: right)
+      head_dist 1 0.624, 3-5 0.295, 2 0.076   (gold head: 2, predicted head: 1)
+      head_trank1 0.623, 2 0.208, 3 0.124   (gold head: 2, predicted head: 1)
+    log margins predicted - gold:  attach +0.33;  head_dist +2.1, head_xpos +0.0, head_dir +0.0;  total +2.43
+    candidates: 3   (product score = log P(attach) + Σ log P(head property value))
+
+    -- GOLD -> here:  P(attach) 0.3801, product score -6.27
+       head-property terms: head_xpos=RB 0.065, head_dist=2 0.076, head_dir=right 1.0, head_upos=ADV 0.084, head_trank=2 0.208
+       prior log odds -4.23   (n = chosen/not-chosen records)
+       CHAIN                                         alone (prior effect)     in the chain
+       1. distance=2 words (bucket 2)               +1.78  n 8391/97268      +1.78  n 8391/97268
+       2. cand.xpos=RB                              -1.41  n 577/162282      -2.25  n 49/5519
+       3. cand.left_neighbor.form=right             -0.01  n 25/1812          +2.4  n 3/20   <- sign flips
+       4. cand.form=here                            -0.05  n 42/3091         +1.05  n 3/7   <- sign flips
+       5. dep.right_neighbor.upos=ADV               -0.02  n 2189/153788     +0.15  n 2/3
+       chain log odds -1.1
+
+       LEFTOVER 1: dep.left_neighbor.upos=ADV   alone -0.02 (n 2196/154215);  running estimate before: -1.1
+         ctx 1: log odds   -1.1  n 2/3          with X: n 0/0         corr unsupported
+                 context: distance=2 words (bucket 2), cand.xpos=RB, cand.left_neighbor.form=right, cand.form=here, dep.right_neighbor.upos=ADV
+         ctx 2: log odds  -1.34  n 6/19         with X: n 1/0         corr unsupported   [-distance=2 words (bucket 2)]
+         ctx 3: log odds  -3.64  n 9/306        with X: n 3/19        corr +1.34  <= TAKEN   [-dep.right_neighbor.upos=ADV]
+
+       evidence: positive +6.65, negative -2.25;  final log odds +0.17
+
+    -- PREDICTED -> right:  P(attach) 0.5264, product score -3.84
+       head-property terms: head_xpos=RB 0.065, head_dist=1 0.624, head_dir=right 1.0, head_upos=ADV 0.084, head_trank=1 0.623
+       prior log odds -4.23   (n = chosen/not-chosen records)
+       CHAIN                                         alone (prior effect)     in the chain
+       1. distance=1 word (bucket 1)                +3.06  n 10046/32367     +3.06  n 10046/32367
+       2. cand.xpos=RB                              -1.41  n 577/162282      -1.66  n 139/2365
+       3. dep.form=about                            -0.04  n 94/6809         +2.83  n 3/2   <- sign flips
+       chain log odds +0.0
+
+       LEFTOVER 1: dep.right_neighbor.upos=ADV   alone -0.02 (n 2189/153788);  running estimate before: +0.0
+         ctx 1: log odds   +0.0  n 3/2          with X: n 3/1         corr unsupported
+                 context: distance=1 word (bucket 1), cand.xpos=RB, dep.form=about
+         ctx 2: log odds  -2.56  n 5/52         with X: n 5/23        corr +0.61  <= TAKEN   [-dep.form=about, +dep.upos=ADP]
+
+       evidence: positive +6.38, negative -1.66;  final log odds +0.5
+
+================ "No no don 't play with that ."
+  No            gold -> no          WRONG: predicted -> play
+  no            gold -> play        ok
+  don           gold -> play        ok
+  't            gold -> play        ok
+  play          gold -> ROOT        ok
+  with          gold -> that        ok
+  that          gold -> play        ok
+  .             gold -> play        ok
+
+  ---- 'No': gold head 'no', predicted 'play'
+    head properties predicted (with the attachment and all of them hidden):
+      head_upos VERB 0.521, INTJ 0.155, ROOT 0.113   (gold head: INTJ, predicted head: VERB)
+      head_xpos UH 0.213, VBD 0.202, NN 0.161   (gold head: UH, predicted head: VB)
+      head_dir  right 0.87, root 0.129, left 0.001   (gold head: right, predicted head: right)
+      head_dist 3-5 0.519, 6-10 0.314, root 0.13   (gold head: 1, predicted head: 3-5)
+      head_trank4+ 0.286, 2 0.246, root 0.226   (gold head: 1, predicted head: 4+)
+    log margins predicted - gold:  attach +4.88;  head_dist +3.63, head_dir +0.0, head_xpos -0.85;  total +7.66
+    candidates: 2   (product score = log P(attach) + Σ log P(head property value))
+
+    -- GOLD -> no:  P(attach) 0.0074, product score -10.88
+       head-property terms: head_xpos=UH 0.213, head_dist=1 0.014, head_dir=right 0.87, head_upos=INTJ 0.155, head_trank=1 0.025
+       prior log odds -4.23   (n = chosen/not-chosen records)
+       CHAIN                                         alone (prior effect)     in the chain
+       1. distance=1 word (bucket 1)                +3.28  n 4412/11424      +3.28  n 4412/11424
+       2. cand.basepos=0                            -3.02  n 1027/1441107    -2.36  n 251/6906
+       3. cand.right_neighbor.xpos=VB               -2.93  n 91/118200        -1.6  n 1/272
+       4. cand.person=0                             -0.35  n 21586/2106086   -0.58  n 0/244
+       chain log odds -5.5
+       (no accum leftovers traced)
+
+       evidence: positive +3.28, negative -4.55;  final log odds -5.5
+
+    -- PREDICTED -> play:  P(attach) 0.9665, product score -3.23
+       head-property terms: head_xpos=VB 0.091, head_dist=3-5 0.519, head_dir=right 0.87, head_upos=VERB 0.521, head_trank=4+ 0.286
+       prior log odds -4.23   (n = chosen/not-chosen records)
+       CHAIN                                         alone (prior effect)     in the chain
+       1. distance=4 words (bucket 3-5)             +1.78  n 8391/97268      +1.78  n 8391/97268
+       2. cand.left_neighbor.xpos=RB                +0.68  n 4543/157461     +1.21  n 1326/4569
+       3. cand.upos=VERB                            +1.31  n 16680/307908    +1.47  n 960/758
+       4. cand.left_neighbor.form='t                +1.15  n 81/1734         -1.62  n 10/44   <- sign flips
+       5. dep.basepos=0                             -0.01  n 20882/1446259   +0.33  n 10/26   <- sign flips
+       6. cand.len=4                                +0.26  n 8440/444977     +0.47  n 6/9
+       chain log odds -0.59
+
+       LEFTOVER 1: cand.right_neighbor.form=with   alone +0.82 (n 449/13512);  running estimate before: -0.59
+         ctx 1: log odds  -0.59  n 6/9          with X: n 0/0         corr unsupported
+                 context: distance=4 words (bucket 3-5), cand.left_neighbor.xpos=RB, cand.upos=VERB, cand.left_neighbor.form='t, dep.basepos=0, cand.len=4
+         ctx 2: log odds  -2.72  n 19/273       with X: n 0/0         corr unsupported   [-distance=4 words (bucket 3-5)]
+         ctx 3: log odds  -2.72  n 19/273       with X: n 0/0         corr unsupported   [-cand.left_neighbor.xpos=RB]
+         ctx 4: log odds  -3.01  n 477/9653     with X: n 3/107       corr -0.27  <= TAKEN   [-cand.left_neighbor.form='t, +cand.left_neighbor.upos=PART]
+
+       evidence: positive +5.26, negative -1.65;  final log odds -0.62
