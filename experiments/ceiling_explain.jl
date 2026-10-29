@@ -157,11 +157,12 @@ function explain_attach(st, t, gold, pred)
     margins = sort([(name, log(pv(name, pred)) - log(pv(name, gold))) for name in keys(props)]; by = x -> -x[2])
     println("    log margins predicted - gold:  attach ", fmtd(log(max(get(pa, pred, 0.0), 1e-12)) - log(max(get(pa, gold, 0.0), 1e-12))),
       ";  ", join(["$name $(fmtd(d))" for (name, d) in margins if S.PROD_PROPS[] === nothing || name in S.PROD_PROPS[]], ", "),
-      ";  total ", fmtd(prod_[pred] - prod_[gold]))
+      ";  total ", haskey(prod_, pred) && haskey(prod_, gold) ? fmtd(prod_[pred] - prod_[gold]) :
+        "n/a (predicted head $(tokname(st, pred)) is not among the $(length(cands)) candidates here)")
   end
   score(c) = isempty(prod_) ? get(pa, c, 0.0) : get(prod_, c, -Inf)
   others = [c for c in sort(cands; by = c -> -score(c)) if c != gold && c != pred]
-  show = unique([gold; pred; others])[1:min(end, max(2, cfg["explaintop"]))]
+  show = filter(in(cands), unique([gold; pred; others]))[1:min(end, max(2, cfg["explaintop"]))]
   println("    candidates: $(length(cands))", isempty(prod_) ? "" : "   (product score = log P(attach) + Σ log P(head property value))")
   for c in show
     f = events[c].final
