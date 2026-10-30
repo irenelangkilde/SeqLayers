@@ -1,0 +1,4 @@
+ALL         2899    0.9979  0.8499  0.7972  0.0162  1.0     
+double counting: 104925 leftovers taken, 0.591 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.607; mean |corr| 0.81
+bfs: 397350 searches -- fail 0.051, l1 0.729, l2 0.151, l3 0.07
+score 309.8 s, run 20261029-211052 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv

@@ -138,6 +138,11 @@ function ceiling_main(cfg)
     n = z + p + kp
     println("chainsel: $(round(Int, n)) chain steps -- collapsed to reference $(round(z / n; digits = 3)), pulled partway $(round(p / n; digits = 3)), kept (w >= 0.9) $(round(kp / n; digits = 3))")
   end
+  if any(k -> startswith(String(k), "bfs_"), keys(a))  # accumby=bfs: at which backoff level W was first supported
+    ks = sort([k for k in keys(a) if startswith(String(k), "bfs_")])
+    n = sum(a[k] for k in ks) / 1000
+    println("bfs: $(round(Int, n)) searches -- ", join(["$(String(k)[5:end]) $(round(a[k] / 1000 / n; digits = 3))" for k in ks], ", "))
+  end
   get(a, :pooled, 0) > 0 && println("explainpool: $(round(Int, a[:pooled] / 1000)) explained-away leftovers joined the context pool")
   if get(a, :tw_w, 0) + get(a, :tw_t, 0) > 0          # accumby=mintw: which proposal each backoff step took
     w, t, wl = a[:tw_w] / 1000, a[:tw_t] / 1000, get(a, :tw_wlost, 0) / 1000

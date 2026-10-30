@@ -327,8 +327,8 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   mindevstop in (:localmin, :exhaust, :pathmin) || error("unknown mindevstop $mindevstop")
   chainshrinkto in (:prev, :gen, :prior) || error("unknown chainshrinkto $chainshrinkto (use :prev, :gen or :prior)")
   depmeasure in (:yule, :pmi, :pmipos) || error("unknown depmeasure $depmeasure (use :yule, :pmi or :pmipos)")
-  accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc) ||
-    error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw or :mintwc)")
+  accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs) ||
+    error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc or :bfs)")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
   stepscore in (:abs, :signed, :maxmin, :maxmin2) || error("unknown stepscore $stepscore (use :abs, :signed, :maxmin or :maxmin2)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
@@ -2404,6 +2404,51 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       push!(p, useW ? (brw, bcw) : (brt, bct))
       true
     end
+    # accumby :bfs (user's design): all ways of backing off once from the current context, then twice, ... (up to
+    # BFS_LEVELS), until some context supports W; among those, the smallest last-step ΔW = |log o(x|W,C) -
+    # log o(x|W,C')| over the moves into C' from a level-(k-1) context where W has records; contexts with no such
+    # parent after them, by ΔT = |log o(x|C') - T|.  Returns the chosen rungs, or nothing (then the odds walk).
+    function bfsctx(X, A)
+      r0 = path[1][1]
+      prev = Set{Vector{Int}}([r0])
+      for lev in 1:BFS_LEVELS
+        cur = Set{Vector{Int}}()
+        for r in prev, i in eachindex(ladders)
+          r[i] <= length(ladders[i]) || continue
+          r[i] == length(ladders[i]) && !maydrop(r, i) && continue
+          r2 = copy(r); r2[i] += 1
+          push!(cur, r2)
+        end
+        isempty(cur) && return nothing
+        bsc, bctx = (Inf, Inf), nothing
+        for r in cur
+          c = build(r)
+          c === nothing && continue
+          xcorr(r, X, A) === nothing && continue
+          w1 = wlogodds(c, X)
+          dw = Inf
+          for i in eachindex(r)
+            r[i] > r0[i] || continue
+            rp = copy(r); rp[i] -= 1
+            rp in prev || continue
+            cp = build(rp)
+            cp === nothing && continue
+            w0 = wlogodds(cp, X)
+            (w0 === nothing || w1 === nothing) && continue
+            dw = min(dw, abs(w1 - w0))
+          end
+          sc = (dw, abs(log(c[1].odds[end]) - T))
+          sc < bsc && ((bsc, bctx) = (sc, r))
+        end
+        if bctx !== nothing
+          (d = DC_STATS[]) === nothing || (k = Symbol("bfs_l", lev); d[k] = get(d, k, 0.0) + 1)
+          return bctx
+        end
+        prev = cur
+      end
+      (d = DC_STATS[]) === nothing || (d[:bfs_fail] = get(d, :bfs_fail, 0.0) + 1)
+      nothing
+    end
     bestX, bestc, bestk, bestr = 0, 0.0, 0, Int[]
     # accumby :depodds: X's marginal correction |log o(x | X) - log o(x)| (0 if unsupported)
     function margsigned(X)                          # log o(x | X) - log o(x) (0 if unsupported)
@@ -2428,7 +2473,9 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       # accumby :dep: X walks its own path, each step the move losing the least of X's dependence on the context
       xpath = m.opts.accumby == :odds ? path : Any[path[1]]
       imp = m.opts.accumby == :depodds ? margimpact(X) : 0.0
-      xstep! = m.opts.accumby == :odds ? step! : m.opts.accumby in (:dep, :depodds) ? (p -> depstep!(p, X, imp)) :
+      bfsr = m.opts.accumby == :bfs && xcorr(path[1][1], X, A) === nothing ? bfsctx(X, A) : nothing
+      bfsr === nothing || (xpath = Any[(bfsr, build(bfsr))])     # (bfs: the chosen context, taken as is)
+      xstep! = m.opts.accumby in (:odds, :bfs) ? (m.opts.accumby == :bfs && bfsr !== nothing ? (p -> false) : step!) : m.opts.accumby in (:dep, :depodds) ? (p -> depstep!(p, X, imp)) :
         m.opts.accumby == :marg ? (p -> margstep!(p, log(prior) + margsigned(X))) :
         m.opts.accumby in (:mintw, :mintwc) ? (p -> twstep!(p, X)) : (p -> mdstep!(p, X, A))
       k = 1
@@ -2711,6 +2758,8 @@ end
 const ACCUM_TRACE = Ref{Any}(nothing)
 "greedyby=mindev trace hook: (X, path [(a, signed diff, n(B∪a), n(B∪a∪X))], status :explained | :kept | :short, correction) per evaluation."
 const MINDEV_TRACE = Ref{Any}(nothing)
+"accumby=bfs: the deepest backoff level searched (beyond it, the odds walk)."
+const BFS_LEVELS = 3
 
 "Does a leftover context entry (context + leftover) have the records `ctxsupport` asks for?"
 function ctxsupported(m::ChainModel, e, label)

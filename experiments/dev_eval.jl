@@ -128,7 +128,9 @@
 #                (each leftover W its own path; per step the smaller of two proposals: the odds rule's ΔT and, where W
 #                has records in both contexts, the move with the smallest |log o(x|W,C) - log o(x|W,C')|) | mintwc
 #                (mintw, then past the first supported context keep backing off by the ΔW move while W's estimate
-#                stays within mindevtau of its value there)
+#                stays within mindevtau of its value there) | bfs (each leftover W: all contexts one backoff move away,
+#                then two, ... up to 3, the first level where some context supports W; the smallest last-step ΔW
+#                wins, ties after by ΔT; past 3 levels the odds walk)
 #   depweight    leftovers: each correction times 1 - max ρ(X, a) over counted features a (chain, taken
 #                leftovers) outside X's context: true | false.  greedyby also takes dep (ρ(X, f)) and
 #                depcorr (ρ(X, f) * the change in X's correction)
