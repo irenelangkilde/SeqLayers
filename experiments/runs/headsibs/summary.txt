@@ -1,0 +1,14 @@
+=== prodprops=head_upos,head_xpos,head_dir,head_dist,head_trank  Fri Oct 30 12:49:38 MDT 2026
+recorded events in 346.6 s
+ALL         2899    0.9977  0.8527  0.7965  0.0162  1.0     
+score 298.3 s, run 20261030-130215 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== prodprops=head_upos,head_xpos,head_dir,head_dist,head_trank,head_sibin,head_sibout  Fri Oct 30 13:02:16 MDT 2026
+ALL         2899    0.9977  0.8524  0.7992  0.0162  1.0     
+score 273.8 s, run 20261030-130815 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== prodprops=head_upos,head_xpos,head_dir,head_dist,head_trank,head_sibleft,head_sibright  Fri Oct 30 13:08:15 MDT 2026
+ALL         2899    0.9977  0.8524  0.7972  0.0162  1.0     
+score 251.3 s, run 20261030-131351 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all four  Fri Oct 30 13:13:52 MDT 2026
+ALL         2899    0.9977  0.8534  0.8006  0.0162  1.0     
+score 271.4 s, run 20261030-131949 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Fri Oct 30 13:19:49 MDT 2026

@@ -79,7 +79,13 @@ const ALLHEADSETS = merge(HEADSETS, (
   # head_wc300 / head_wc30 (default_specs(headwc = [300, 30])): the head word's class at that level (clusters/classes5;
   # codes as wclass_gold: 1..N, N+1 unknown), or root
   head_wc300 = [string.(1:300); "unk"; "root"],
-  head_wc30 = [string.(1:30); "unk"; "root"]))
+  head_wc30 = [string.(1:30); "unk"; "root"],
+  # head_sibin / head_sibout / head_sibleft / head_sibright (default_specs(headsibs = [...])): under its head, the
+  # token's nearest sibling of that kind (inner: between it and the head; outer: beyond it, away from the head; left /
+  # right: on that side) -- none, its distance from the token in words, or root
+  head_sibin = ["none", "1", "2", "3-5", "6-10", "11+", "root"], head_sibout = ["none", "1", "2", "3-5", "6-10", "11+", "root"], head_sibleft = ["none", "1", "2", "3-5", "6-10", "11+", "root"], head_sibright = ["none", "1", "2", "3-5", "6-10", "11+", "root"]))
+"Sibling head properties -> sibling kind."
+const HEADSIB_KIND = (head_sibin = :inner_sibling, head_sibout = :outer_sibling, head_sibleft = :left_sibling, head_sibright = :right_sibling)
 
 "Word classes for the head_wc properties (set by default_specs(headwc = ...))."
 const HEADWC = Ref{Any}(nothing)
@@ -98,12 +104,19 @@ headnames(toks) = [d.name for d in toks.spec.decisions if haskey(ALLHEADSETS, d.
 function gold_head(i::Int, h::Int, words)
   h == 0 && return (head_upos = headcode(:head_upos, "ROOT"), head_xpos = headcode(:head_xpos, "ROOT"),
     head_dir = headcode(:head_dir, "root"), head_dist = headcode(:head_dist, "root"), head_sdist = headcode(:head_sdist, "root"),
-    head_trank = headcode(:head_trank, "root"))
+    head_trank = headcode(:head_trank, "root"), head_sibin = headcode(:head_sibin, "root"), head_sibout = headcode(:head_sibout, "root"),
+    head_sibleft = headcode(:head_sibleft, "root"), head_sibright = headcode(:head_sibright, "root"))
   lo, hi = minmax(i, h)
   rank = 1 + count(j -> j != i && words[j].head == h, lo+1:hi-1)   # h's other dependents between h and i
+  sibs = [j for j in eachindex(words) if j != i && words[j].head == h]
+  near(c) = isempty(c) ? "none" : distlabel(minimum(abs(j - i) for j in c))
+  inner = [j for j in sibs if lo < j < hi]
+  outer = [j for j in sibs if h > i ? j < i : j > i]
   (head_upos = headcode(:head_upos, words[h].upos), head_xpos = headcode(:head_xpos, words[h].xpos),
     head_dir = headcode(:head_dir, h < i ? "left" : "right"), head_dist = headcode(:head_dist, distlabel(abs(h - i))),
-    head_sdist = headcode(:head_sdist, (h < i ? "L" : "R") * distlabel(abs(h - i))), head_trank = headcode(:head_trank, tranklabel(rank)))
+    head_sdist = headcode(:head_sdist, (h < i ? "L" : "R") * distlabel(abs(h - i))), head_trank = headcode(:head_trank, tranklabel(rank)),
+    head_sibin = headcode(:head_sibin, near(inner)), head_sibout = headcode(:head_sibout, near(outer)),
+    head_sibleft = headcode(:head_sibleft, near([j for j in sibs if j < i])), head_sibright = headcode(:head_sibright, near([j for j in sibs if j > i])))
 end
 
 const MAX_LINK_CHARS = 200     # head candidates must start within this many chars
@@ -327,8 +340,8 @@ function head_consistent_one(st, t, h, name)
   elseif name == :head_upos || name == :head_xpos
     tag = toks[name == :head_upos ? :upos : :xpos, h]
     tag == PENDING || HEADSETS[name][v] == TAGSETS[name == :head_upos ? :upos : :xpos][tag]
-  elseif name == :head_wc300 || name == :head_wc30
-    head_value(st, t, h, name) == v
+  elseif name == :head_wc300 || name == :head_wc30 || haskey(HEADSIB_KIND, name)
+    (hv = head_value(st, t, h, name)) == PENDING || hv == v
   elseif name == :head_trank                         # the rank only grows as dependents attach between h and t
     want = v == headcode(:head_trank, "4+") ? 4 : parse(Int, ALLHEADSETS.head_trank[v])
     r = tree_rank(st, t, h)
@@ -428,6 +441,12 @@ function head_value(st, t, h, name)
     d === nothing ? PENDING : headcode(name, (toks[:first_char, h] < toks[:first_char, t] ? "L" : "R") * distlabel(d))
   elseif name == :head_trank
     headcode(name, tranklabel(tree_rank(st, t, h)))
+  elseif haskey(HEADSIB_KIND, name)                  # the nearest sibling of that kind under h: none (certainly), its distance, or pending
+    u = sibling_value(st, t, h, HEADSIB_KIND[name], RelFlags(false, true))
+    u == PENDING && return PENDING
+    u == NONE && return headcode(name, "none")
+    d = word_distance(st, t, Int(u))
+    d === nothing ? PENDING : headcode(name, distlabel(d))
   elseif name == :head_wc300 || name == :head_wc30
     wclass_gold(HEADWC[], headwc_level(name), lowercase(tokstr(st, Int(h))))
   elseif name == :head_dir
@@ -1056,7 +1075,8 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
   suffixes::Vector{Int} = Int[], noise::Int = 0, rootabsent::Bool = false, projective::Bool = false,
   relations::Bool = false, headsdist::Bool = false, pptable = nothing, pprel::Bool = false,
   relbounded::Bool = false, relnone::Bool = false, treerank::Bool = false, headtrank::Bool = false,
-  headwc::Vector{Int} = Int[], headwcclasses = nothing)
+  headwc::Vector{Int} = Int[], headwcclasses = nothing, headsibs::Vector{Symbol} = Symbol[])
+  all(n -> haskey(HEADSIB_KIND, n), headsibs) || error("headsibs: names are $(join(keys(HEADSIB_KIND), ", "))")
   safeats = charindex === nothing ? FeatDef[] : [sa_feats(charindex, :left); sa_feats(charindex, :right)]
   sapaths = charindex === nothing ? FeatPath[] : [FeatPath(:sa_left), FeatPath(:sa_right)]
   chars = LayerSpec{CharLayer}(:char,
@@ -1146,7 +1166,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
           mask = head_mask,
           # once the attachment is committed, the backward step derives it (the oracle decides it itself)
           ready = (st, t) -> !st.infer || (!SOFTHEADS[] && st.layers[:token][:attach, t] == PENDING))
-        for name in [collect(keys(HEADSETS)); headsdist ? [:head_sdist] : Symbol[]; headtrank ? [:head_trank] : Symbol[]; hwnames]],
+        for name in [collect(keys(HEADSETS)); headsdist ? [:head_sdist] : Symbol[]; headtrank ? [:head_trank] : Symbol[]; hwnames; headsibs]],
       [DecisionDef(wnames[l];
           candidates = (st, t) -> wclass_candidates(wc, l, lowercase(tokstr(st, t))),
           features = (st, t, c) -> label_features(st, :token, witemtags[l], t, c),
@@ -1167,10 +1187,11 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
       relpaths,                                              # then the relations
       headsdist ? [FeatPath(:head_sdist)] : FeatPath[],      # then optional head properties (not in LINK_PATHS)
       headtrank ? [FeatPath(:head_trank)] : FeatPath[],
-      [FeatPath(n) for n in hwnames]),
+      [FeatPath(n) for n in hwnames],
+      [FeatPath(n) for n in headsibs]),
     (st, t) -> Int(st.layers[:token][:last_char, t]))
 
-  length(tokens.context) == 22 + extra + length(relpaths) + headsdist + headtrank + length(hwnames) || error("token context paths moved: update linkpaths")
+  length(tokens.context) == 22 + extra + length(relpaths) + headsdist + headtrank + length(hwnames) + length(headsibs) || error("token context paths moved: update linkpaths")
   LINKPATHS[tokens] = linkpaths
   sentences = LayerSpec{SentenceLayer}(:sentence,
     FeatDef[],
