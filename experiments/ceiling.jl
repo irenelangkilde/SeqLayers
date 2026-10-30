@@ -143,6 +143,10 @@ function ceiling_main(cfg)
     n = sum(a[k] for k in ks) / 1000
     println("bfs: $(round(Int, n)) searches -- ", join(["$(String(k)[5:end]) $(round(a[k] / 1000 / n; digits = 3))" for k in ks], ", "))
   end
+  if get(a, :look_supp, 0) + get(a, :look_dep, 0) > 0   # accumby=look1*: which rule took each backoff step
+    sp, dp = get(a, :look_supp, 0) / 1000, get(a, :look_dep, 0) / 1000
+    println("look1: $(round(Int, sp + dp)) backoff steps -- to a supported context $(round(sp / (sp + dp); digits = 3)), by dependence $(round(dp / (sp + dp); digits = 3))")
+  end
   get(a, :pooled, 0) > 0 && println("explainpool: $(round(Int, a[:pooled] / 1000)) explained-away leftovers joined the context pool")
   if get(a, :tw_w, 0) + get(a, :tw_t, 0) > 0          # accumby=mintw: which proposal each backoff step took
     w, t, wl = a[:tw_w] / 1000, a[:tw_t] / 1000, get(a, :tw_wlost, 0) / 1000

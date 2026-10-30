@@ -1,0 +1,10 @@
+=== accumby=look1red  Thu Oct 29 21:25:16 MDT 2026
+ALL         2899    0.9983  0.8506  0.7937  0.0162  1.0     
+double counting: 106572 leftovers taken, 0.603 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.619; mean |corr| 0.827
+look1: 650207 backoff steps -- to a supported context 0.602, by dependence 0.398
+score 261.6 s, run 20261029-213121 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== accumby=look1ind  Thu Oct 29 21:31:22 MDT 2026
+ALL         2899    0.998   0.8479  0.7927  0.0162  1.0     
+double counting: 106920 leftovers taken, 0.591 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.608; mean |corr| 0.814
+look1: 633715 backoff steps -- to a supported context 0.62, by dependence 0.38
+score 259.4 s, run 20261029-213657 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv

@@ -327,8 +327,8 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   mindevstop in (:localmin, :exhaust, :pathmin) || error("unknown mindevstop $mindevstop")
   chainshrinkto in (:prev, :gen, :prior) || error("unknown chainshrinkto $chainshrinkto (use :prev, :gen or :prior)")
   depmeasure in (:yule, :pmi, :pmipos) || error("unknown depmeasure $depmeasure (use :yule, :pmi or :pmipos)")
-  accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs) ||
-    error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc or :bfs)")
+  accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs, :look1red, :look1ind) ||
+    error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc or :bfs, :look1red, :look1ind)")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
   stepscore in (:abs, :signed, :maxmin, :maxmin2) || error("unknown stepscore $stepscore (use :abs, :signed, :maxmin or :maxmin2)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
@@ -2449,6 +2449,56 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       (d = DC_STATS[]) === nothing || (d[:bfs_fail] = get(d, :bfs_fail, 0.0) + 1)
       nothing
     end
+    # accumby :look1red / :look1ind (user's design): greedy, one level at a time -- if some one-step backoff gives a
+    # context that supports W, take the one with the smallest ΔW (ties by ΔT); otherwise back off the feature y that
+    # :look1red is the most redundant, the smallest D(a → y) over the other kept features a (CI table, value-level
+    # where known); :look1ind is the most independent of W, the smallest |Yule's Q|(W, y) (odds ratio nearest 1)
+    CL = m.opts.accumby == :look1red && !isempty(base) ? get(m.ci, m.recs[base[1]].typekey, nothing) : nothing
+    VL = CL === nothing ? nothing : get(m.civ, m.recs[base[1]].typekey, Dict{Tuple{Int16,UInt64,Int16},Float32}())
+    function redundancy(r, i)                         # min over kept a of D(a → feature i)
+      CL === nothing && return 0.0
+      sb = lslots[i][r[i]]
+      sb == 0 && return Inf
+      d = Inf
+      for j in eachindex(ladders)
+        (j == i || r[j] > length(ladders[j])) && continue
+        sa = lslots[j][r[j]]
+        (sa == 0 || sa == sb) && continue
+        v = get(VL, (Int16(sa), ladders[j][r[j]], Int16(sb)), CL[sa, sb])
+        isnan(v) || (d = min(d, v))
+      end
+      d
+    end
+    function lookstep!(p, X, A)
+      r = p[end][1]
+      w0 = p[end][2] === nothing ? nothing : wlogodds(p[end][2], X)
+      bsc, brr, bcc = (Inf, Inf), nothing, nothing      # supported one-step moves
+      fsc, frr, fcc = Inf, nothing, nothing             # otherwise
+      for i in eachindex(ladders)
+        r[i] <= length(ladders[i]) || continue
+        r[i] == length(ladders[i]) && !maydrop(r, i) && continue
+        r2 = copy(r); r2[i] += 1
+        c = build(r2)
+        c === nothing && continue
+        if xcorr(r2, X, A) !== nothing
+          w1 = wlogodds(c, X)
+          dw = (w0 === nothing || w1 === nothing) ? Inf : abs(w1 - w0)
+          sc = (dw, abs(log(c[1].odds[end]) - T))
+          sc < bsc && ((bsc, brr, bcc) = (sc, r2, c))
+        elseif brr === nothing
+          f = m.opts.accumby == :look1red ? redundancy(r, i) : depq(m, base, X, ladders[i][r[i]], label, prior; measure = :yule)
+          f < fsc && ((fsc, frr, fcc) = (f, r2, c))
+        end
+      end
+      if (d = DC_STATS[]) !== nothing
+        k = brr !== nothing ? :look_supp : frr !== nothing ? :look_dep : :look_none
+        d[k] = get(d, k, 0.0) + 1
+      end
+      brr === nothing && ((brr, bcc) = (frr, fcc))
+      brr === nothing && return false
+      push!(p, (brr, bcc))
+      true
+    end
     bestX, bestc, bestk, bestr = 0, 0.0, 0, Int[]
     # accumby :depodds: X's marginal correction |log o(x | X) - log o(x)| (0 if unsupported)
     function margsigned(X)                          # log o(x | X) - log o(x) (0 if unsupported)
@@ -2477,7 +2527,8 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       bfsr === nothing || (xpath = Any[(bfsr, build(bfsr))])     # (bfs: the chosen context, taken as is)
       xstep! = m.opts.accumby in (:odds, :bfs) ? (m.opts.accumby == :bfs && bfsr !== nothing ? (p -> false) : step!) : m.opts.accumby in (:dep, :depodds) ? (p -> depstep!(p, X, imp)) :
         m.opts.accumby == :marg ? (p -> margstep!(p, log(prior) + margsigned(X))) :
-        m.opts.accumby in (:mintw, :mintwc) ? (p -> twstep!(p, X)) : (p -> mdstep!(p, X, A))
+        m.opts.accumby in (:mintw, :mintwc) ? (p -> twstep!(p, X)) : m.opts.accumby in (:look1red, :look1ind) ? (p -> lookstep!(p, X, A)) :
+        (p -> mdstep!(p, X, A))
       k = 1
       k0, xc, xk, xv = 0, 0.0, 0, 0.0                 # (accumwin: the first supported step, and the smallest |correction| since)
       while true
