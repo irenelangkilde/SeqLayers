@@ -132,7 +132,8 @@
 #                then two, ... up to 3, the first level where some context supports W; the smallest last-step ΔW
 #                wins, ties after by ΔT; past 3 levels the odds walk) | look1red / look1ind (greedy: a one-step backoff
 #                supporting W if any, by the smallest ΔW; else back off the most redundant feature, min D(a→y) from the
-#                CI table (look1red), or the one most independent of W, min |Yule's Q| (look1ind))
+#                CI table (look1red), or the one most independent of W, min |Yule's Q| (look1ind), or the least
+#                redundant, max min D(a→y) (look1nonred))
 #   depweight    leftovers: each correction times 1 - max ρ(X, a) over counted features a (chain, taken
 #                leftovers) outside X's context: true | false.  greedyby also takes dep (ρ(X, f)) and
 #                depcorr (ρ(X, f) * the change in X's correction)
@@ -477,8 +478,8 @@ function start_workers(cfg, s)
             haskey(cm.generalize, tk) && (cm.generalize[tk] = Dict(f => [g for g in gs if !(g in sl)] for (f, gs) in cm.generalize[tk]))
           end
         end
-        $(cfg["cidrop"] > 0 || cfg["ciorder"] != "off" || cfg["accumby"] == "look1red") && (cm.ci = deserialize(joinpath($(s.recipe[1]), "..", "ci_table.jls")))
-        $(cfg["ciorder"] == "value" || cfg["accumby"] == "look1red") && (cm.civ = deserialize(joinpath($(s.recipe[1]), "..", "ci_values.jls")))
+        $(cfg["cidrop"] > 0 || cfg["ciorder"] != "off" || cfg["accumby"] in ("look1red", "look1nonred")) && (cm.ci = deserialize(joinpath($(s.recipe[1]), "..", "ci_table.jls")))
+        $(cfg["ciorder"] == "value" || cfg["accumby"] in ("look1red", "look1nonred")) && (cm.civ = deserialize(joinpath($(s.recipe[1]), "..", "ci_values.jls")))
         $(cfg["ctxscope"] == "heads") && (cm.ctxtypes = Set(SeqLayers.typekey(:token, k) for (k, d) in enumerate(WSPECS[2].decisions)
           if k == 1 || haskey(SeqLayers.ALLHEADSETS, d.name)))
         $(isempty(cfg["leftalpha"])) || (cm.leftalpha = Dict(parse(UInt64, split(l, '\t')[1]; base = 16) => parse(Float64, split(l, '\t')[3])

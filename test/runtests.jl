@@ -308,7 +308,7 @@ end
       mp.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
-    for ab in (:marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs, :look1ind, :look1red)
+    for ab in (:marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs, :look1ind, :look1red, :look1nonred)
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true,
         ctxmode = :accum, accumby = ab)
       mp.generalize = SeqLayers.generalization_slots(specs)
