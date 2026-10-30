@@ -1,0 +1,5 @@
+=== accumby=look1int  Fri Oct 30 10:23:51 MDT 2026
+ALL         2899    0.9982  0.8468  0.7889  0.0162  1.0     
+double counting: 101733 leftovers taken, 0.607 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.628; mean |corr| 0.809
+look1: 644828 backoff steps -- to a supported context 0.603, by dependence 0.397
+score 237.4 s, run 20261030-102916 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv

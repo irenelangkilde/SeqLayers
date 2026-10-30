@@ -327,8 +327,8 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   mindevstop in (:localmin, :exhaust, :pathmin) || error("unknown mindevstop $mindevstop")
   chainshrinkto in (:prev, :gen, :prior) || error("unknown chainshrinkto $chainshrinkto (use :prev, :gen or :prior)")
   depmeasure in (:yule, :pmi, :pmipos) || error("unknown depmeasure $depmeasure (use :yule, :pmi or :pmipos)")
-  accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs, :look1red, :look1ind, :look1nonred) ||
-    error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc or :bfs, :look1red, :look1ind, :look1nonred)")
+  accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs, :look1red, :look1ind, :look1nonred, :look1int) ||
+    error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc or :bfs, :look1red, :look1ind, :look1nonred, :look1int)")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
   stepscore in (:abs, :signed, :maxmin, :maxmin2) || error("unknown stepscore $stepscore (use :abs, :signed, :maxmin or :maxmin2)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
@@ -2454,7 +2454,10 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
     # :look1red is the most redundant, the smallest D(a → y) over the other kept features a (CI table, value-level
     # where known); :look1ind is the most independent of W, the smallest |Yule's Q|(W, y) (odds ratio nearest 1)
     # (:look1nonred: the opposite -- back off the least redundant feature first, the largest min D(a → y))
-    CL = m.opts.accumby in (:look1red, :look1nonred) && !isempty(base) ? get(m.ci, m.recs[base[1]].typekey, nothing) : nothing
+    # (:look1int: as :look1red, but among supported moves the smallest interaction I = |corr(W | C) - corr(W | C')|,
+    #  corr = W's records' log odds smoothed toward the context's minus the context's -- how much the move changes
+    #  what W contributes, not W's estimate; a feature W implies keeps |its own effect| and so stays)
+    CL = m.opts.accumby in (:look1red, :look1nonred, :look1int) && !isempty(base) ? get(m.ci, m.recs[base[1]].typekey, nothing) : nothing
     VL = CL === nothing ? nothing : get(m.civ, m.recs[base[1]].typekey, Dict{Tuple{Int16,UInt64,Int16},Float32}())
     function redundancy(r, i)                         # min over kept a of D(a → feature i)
       CL === nothing && return 0.0
@@ -2483,11 +2486,12 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
         c === nothing && continue
         if xcorr(r2, X, A) !== nothing
           w1 = wlogodds(c, X)
-          dw = (w0 === nothing || w1 === nothing) ? Inf : abs(w1 - w0)
+          dw = (w0 === nothing || w1 === nothing) ? Inf :
+            m.opts.accumby == :look1int ? abs((w0 - log(p[end][2][1].odds[end])) - (w1 - log(c[1].odds[end]))) : abs(w1 - w0)
           sc = (dw, abs(log(c[1].odds[end]) - T))
           sc < bsc && ((bsc, brr, bcc) = (sc, r2, c))
         elseif brr === nothing
-          f = m.opts.accumby == :look1red ? redundancy(r, i) :
+          f = m.opts.accumby in (:look1red, :look1int) ? redundancy(r, i) :
             m.opts.accumby == :look1nonred ? (d = redundancy(r, i); isinf(d) ? Inf : -d) :
             depq(m, base, X, ladders[i][r[i]], label, prior; measure = :yule)
           f < fsc && ((fsc, frr, fcc) = (f, r2, c))
@@ -2530,7 +2534,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       bfsr === nothing || (xpath = Any[(bfsr, build(bfsr))])     # (bfs: the chosen context, taken as is)
       xstep! = m.opts.accumby in (:odds, :bfs) ? (m.opts.accumby == :bfs && bfsr !== nothing ? (p -> false) : step!) : m.opts.accumby in (:dep, :depodds) ? (p -> depstep!(p, X, imp)) :
         m.opts.accumby == :marg ? (p -> margstep!(p, log(prior) + margsigned(X))) :
-        m.opts.accumby in (:mintw, :mintwc) ? (p -> twstep!(p, X)) : m.opts.accumby in (:look1red, :look1ind, :look1nonred) ? (p -> lookstep!(p, X, A)) :
+        m.opts.accumby in (:mintw, :mintwc) ? (p -> twstep!(p, X)) : m.opts.accumby in (:look1red, :look1ind, :look1nonred, :look1int) ? (p -> lookstep!(p, X, A)) :
         (p -> mdstep!(p, X, A))
       k = 1
       k0, xc, xk, xv = 0, 0.0, 0, 0.0                 # (accumwin: the first supported step, and the smallest |correction| since)
