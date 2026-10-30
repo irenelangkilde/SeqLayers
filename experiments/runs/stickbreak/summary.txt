@@ -1,0 +1,6 @@
+=== stickbreak=renorm  Fri Oct 30 16:34:40 MDT 2026
+ALL         2899    0.9977  0.8513  0.8003  0.0162  1.0     
+score 171.3 s, run 20261030-163901 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== stickbreak=cond  Fri Oct 30 16:39:02 MDT 2026
+ALL         2899    0.9977  0.8475  0.7944  0.0162  1.0     
+score 158.7 s, run 20261030-164259 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
