@@ -210,6 +210,8 @@ struct ChainOpts
   explainpool::Bool                               # mindev (greedy / accum): an explained-away leftover joins the context pool (correction 0) instead of being discarded
   chainshrink::Float64                            # > 0: the chain's log odds from Beta-shrunk step sizes (k pseudo-records); selection unchanged
   chainshrinkto::Symbol                           # chainshrink target: :prev (previous step's odds) | :gen (the step with the feature's generalization) | :prior (the final prefix toward the prior)
+  lookw::Symbol                                   # accumby=look1*: supported moves by :dw (ΔW) | :int (interaction) | :min | :max of the two
+  lookwsmooth::Float64                            # > 0: W's estimates for ΔW / interaction from its likelihood ratio, each rate smoothed by this many records toward W's pooled rate
   chainsel::Float64                               # > 0: selective shrinkage of chain steps toward their generalization, by z = deviation / SE (z0 = this)
 end
 
@@ -320,11 +322,12 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
   mindevstop in (:localmin, :exhaust, :pathmin) || error("unknown mindevstop $mindevstop")
+  lookw in (:dw, :int, :min, :max) || error("unknown lookw $lookw (use :dw, :int, :min or :max)")
   chainshrinkto in (:prev, :gen, :prior) || error("unknown chainshrinkto $chainshrinkto (use :prev, :gen or :prior)")
   depmeasure in (:yule, :pmi, :pmipos) || error("unknown depmeasure $depmeasure (use :yule, :pmi or :pmipos)")
   accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs, :look1red, :look1ind, :look1nonred, :look1int) ||
@@ -388,7 +391,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, chainsel),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, lookwsmooth, chainsel),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -2473,9 +2476,26 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       end
       d
     end
+    # W's (log odds, correction) in context c: its records smoothed toward the context's odds (one count), or with
+    # lookwsmooth = k its likelihood ratio, P(W|x) / P(W|¬x), each rate smoothed by k records toward W's pooled rate
+    function wlog2(c, X)
+      S, e = c
+      kx = get(only(extend_all(m, S, depth(S), [X]))[2], label, (0.0, 0.0))
+      kx[1] + kx[2] > 0 || return nothing
+      ks = m.opts.lookwsmooth
+      if ks > 0 && e !== nothing
+        n = get(e[2], label, (0.0, 0.0))
+        pE = (kx[1] + kx[2]) / max(n[1] + n[2], 1.0)
+        lr = log(max((kx[1] + ks * pE) / (n[1] + ks), 1e-12)) - log(max((kx[2] + ks * pE) / (n[2] + ks), 1e-12))
+        return (log(S.odds[end]) + lr, lr)
+      end
+      w = log(smoothOdds(kx[1], kx[2], S.odds[end]))
+      (w, w - log(S.odds[end]))
+    end
+    lookmetric = m.opts.accumby == :look1int ? :int : m.opts.lookw
     function lookstep!(p, X, A)
       r = p[end][1]
-      w0 = p[end][2] === nothing ? nothing : wlogodds(p[end][2], X)
+      w0 = p[end][2] === nothing ? nothing : wlog2(p[end][2], X)
       bsc, brr, bcc = (Inf, Inf), nothing, nothing      # supported one-step moves
       fsc, frr, fcc = Inf, nothing, nothing             # otherwise
       for i in eachindex(ladders)
@@ -2485,9 +2505,13 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
         c = build(r2)
         c === nothing && continue
         if xcorr(r2, X, A) !== nothing
-          w1 = wlogodds(c, X)
-          dw = (w0 === nothing || w1 === nothing) ? Inf :
-            m.opts.accumby == :look1int ? abs((w0 - log(p[end][2][1].odds[end])) - (w1 - log(c[1].odds[end]))) : abs(w1 - w0)
+          w1 = wlog2(c, X)
+          dw = if w0 === nothing || w1 === nothing
+            Inf
+          else
+            dW, dI = abs(w1[1] - w0[1]), abs(w1[2] - w0[2])   # ΔW (W's estimate) and the interaction (W's correction)
+            lookmetric == :dw ? dW : lookmetric == :int ? dI : lookmetric == :min ? min(dW, dI) : max(dW, dI)
+          end
           sc = (dw, abs(log(c[1].odds[end]) - T))
           sc < bsc && ((bsc, brr, bcc) = (sc, r2, c))
         elseif brr === nothing

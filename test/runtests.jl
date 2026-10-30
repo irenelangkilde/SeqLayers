@@ -292,10 +292,10 @@ end
     # every option lands in its own ChainOpts field (positional constructor)
     mo = ChainModel(dir; select = :maxdev, leftovers = :greedy, mincount = 1, ctxmode = :accum, greedymin = true, greedysel = false,
       driftsigma = 0.25, drifttau = 0.5, driftstep = 0.75, distback = true, shrink = 7.0, accumwin = 3, accumreset = true, cidrop = 0.125,
-      shrinkleft = 9.0, leftmin2 = 4, depmeasure = :pmi, mindevtau = 0.3, mindevstop = :pathmin, explainpool = true, chainshrink = 20.0, chainshrinkto = :gen, chainsel = 2.5)
+      shrinkleft = 9.0, leftmin2 = 4, depmeasure = :pmi, mindevtau = 0.3, mindevstop = :pathmin, explainpool = true, chainshrink = 20.0, chainshrinkto = :gen, chainsel = 2.5, lookw = :max, lookwsmooth = 5.0)
     o = mo.opts
     @test (o.greedymin, o.greedysel, o.driftsigma, o.drifttau, o.driftstep, o.distback, o.shrink, o.accumwin, o.accumreset, o.cidrop,
-      o.shrinkleft, o.leftmin2, o.depmeasure, o.mindevtau, o.mindevstop, o.explainpool, o.chainshrink, o.chainshrinkto, o.chainsel) == (true, false, 0.25, 0.5, 0.75, true, 7.0, 3, true, 0.125, 9.0, 4, :pmi, 0.3, :pathmin, true, 20.0, :gen, 2.5)
+      o.shrinkleft, o.leftmin2, o.depmeasure, o.mindevtau, o.mindevstop, o.explainpool, o.chainshrink, o.chainshrinkto, o.chainsel, o.lookw, o.lookwsmooth) == (true, false, 0.25, 0.5, 0.75, true, 7.0, 3, true, 0.125, 9.0, 4, :pmi, 0.3, :pathmin, true, 20.0, :gen, 2.5, :max, 5.0)
     for (cs, to, zs) in ((20.0, :prev, 0.0), (20.0, :gen, 0.0), (20.0, :prior, 0.0), (0.0, :prev, 2.6))
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum,
         chainshrink = cs, chainshrinkto = to, chainsel = zs)
@@ -305,6 +305,12 @@ end
     for (cm, kw) in ((:accum, (accumby = :mindev,)), (:greedy, (greedyby = :mindev, greedysel = true)), (:greedy, (greedyby = :mindev,)))
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = cm,
         explainpool = true, kw...)
+      mp.generalize = SeqLayers.generalization_slots(specs)
+      @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
+    end
+    for (lw, ls) in ((:min, 0.0), (:max, 5.0), (:int, 5.0))
+      mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true,
+        ctxmode = :accum, accumby = :look1red, lookw = lw, lookwsmooth = ls)
       mp.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
