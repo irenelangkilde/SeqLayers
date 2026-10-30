@@ -1,0 +1,15 @@
+=== accumby=look1int lookwback=5  Fri Oct 30 15:49:37 MDT 2026
+ALL         2899    0.9983  0.8482  0.7889  0.0162  1.0     
+double counting: 107854 leftovers taken, 0.596 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.614; mean |corr| 0.844
+lookwback: 424874 interactions -- pairwise 1.0, context (or blended) 0.0
+score 270.5 s, run 20261030-155549 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== accumby=look1int lookwback=5 lookwsoft=true  Fri Oct 30 15:55:50 MDT 2026
+ALL         2899    0.9982  0.8486  0.7917  0.0162  1.0     
+double counting: 105263 leftovers taken, 0.6 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.62; mean |corr| 0.826
+lookwback: 423518 interactions -- pairwise 0.204, context (or blended) 0.796
+score 271.0 s, run 20261030-160139 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== accumby=look1int lookwback=20 lookwsoft=true  Fri Oct 30 16:01:39 MDT 2026
+ALL         2899    0.9983  0.8479  0.7913  0.0162  1.0     
+double counting: 106759 leftovers taken, 0.598 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.616; mean |corr| 0.836
+lookwback: 423987 interactions -- pairwise 0.204, context (or blended) 0.796
+score 261.0 s, run 20261030-160720 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
