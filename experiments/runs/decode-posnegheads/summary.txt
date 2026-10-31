@@ -1,0 +1,7 @@
+CHILDES     324     1.0     0.7809  0.6821  0.9804  
+ESLSpok     502     0.997   0.7285  0.6866  0.9796  
+EWT         86      0.9655  0.7262  0.631   0.8889  
+GUM         963     0.9845  0.7014  0.6509  0.9388  
+GUMReddit   1024    0.9917  0.6389  0.5604  0.8868  
+ALL         2899    0.9904  0.6936  0.628   0.9451  
+build 16.6 s, decode 11384.2 s, run 20261031-211602 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
