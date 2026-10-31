@@ -52,7 +52,7 @@ s = setup(cfg)
 idx = s.idx
 widx = CharIndex(idx.fwd, idx.rev, idx.gap, idx.saL, idx.saR, idx.cumL, idx.cumR, idx.prior, IdDict{Doc,Int}(), idx.maxlen, idx.mincount, idx.beta)
 specs = default_specs(charindex = widx, wordclasses = s.wc, suffixes = s.sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true",
-  projective = cfg["projective"] == "true", relations = cfg["relations"] == "true", headsdist = cfg["headsdist"] == "true", relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true", treerank = cfg["treerank"] == "true", headtrank = cfg["headtrank"] == "true", headwc = isempty(cfg["headwc"]) ? Int[] : parse.(Int, split(cfg["headwc"], ',')), headwcclasses = S.HEADWC[], headsibs = headsib_names(cfg))
+  projective = cfg["projective"] == "true", relations = cfg["relations"] == "true", headsdist = cfg["headsdist"] == "true", relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true", treerank = cfg["treerank"] == "true", headtrank = cfg["headtrank"] == "true", headwc = isempty(cfg["headwc"]) ? Int[] : parse.(Int, split(cfg["headwc"], ',')), headwcclasses = S.HEADWC[], headsibs = headsib_names(cfg), idxeq = cfg["idxeq"] == "true")
 eventsdir, opts = s.recipe
 pc = S.load_counts(eventsdir, eventsig(eventsdir))
 function build_model(opts)
@@ -114,7 +114,7 @@ function explain_attach(st, t, gold, pred)
   key = (:token, 1, t)
   hk = [k for (k, d) in enumerate(decs) if haskey(S.ALLHEADSETS, d.name)]
   props = Dict{Symbol,Tuple{Vector{UInt32},Vector{Float64}}}()
-  println("    head properties predicted (with the attachment and all of them hidden):")
+  println("    head properties predicted (with the attachment and all of them hidden; values are probabilities):")
   for k in hk
     name = decs[k].name
     dist = S.commit_dist(m, st, (:token, k, t))
@@ -129,7 +129,8 @@ function explain_attach(st, t, gold, pred)
   items = [decs[1].items(st, t, c) for c in cands]
   slotof(c, x) = findfirst(==(x), items[findfirst(==(c), cands)])
   events = Dict{Any,Any}(c => (left = Any[], final = nothing) for c in cands)
-  S.CHAIN_TRACE[] = (ev, data) -> ev == :final && (events[data.cand] = (left = events[data.cand].left, final = data))
+  S.CHAIN_TRACE[] = (ev, data) -> ev == :final ? (events[data.cand] = (left = events[data.cand].left, final = data)) :
+    ev == :reset ? (empty!(events[data.cand].left); empty!(accum[data.cand]); nothing) : nothing
   S.LEFTOVER_TRACE[] = (sl, inc, ctxs, corr) -> push!(events[S.CHAIN_TRACE_CAND[]].left, (sl, inc, ctxs, corr))
   accum = Dict{Any,Vector{Any}}(c => Any[] for c in cands)
   S.ACCUM_TRACE[] = (sx, T, tries, k, corr) -> push!(accum[S.CHAIN_TRACE_CAND[]], (sx = sx, T = T, tries = tries, corr = corr))
@@ -161,7 +162,7 @@ function explain_attach(st, t, gold, pred)
   if !isempty(prod_)                                 # which head-property terms decide gold vs predicted
     pv(name, c) = ((vals, ps) = props[name]; j = findfirst(==(S.head_value(st, t, c, name)), vals); j === nothing ? 1e-12 : max(ps[j], 1e-12))
     margins = sort([(name, log(pv(name, pred)) - log(pv(name, gold))) for name in keys(props)]; by = x -> -x[2])
-    println("    log margins predicted - gold:  attach ", fmtd(log(max(get(pa, pred, 0.0), 1e-12)) - log(max(get(pa, gold, 0.0), 1e-12))),
+    println("    log margins predicted - gold (log of probability ratios; > 0 favours the predicted head):  attach ", fmtd(log(max(get(pa, pred, 0.0), 1e-12)) - log(max(get(pa, gold, 0.0), 1e-12))),
       ";  ", join(["$name $(fmtd(d))" for (name, d) in margins if S.PROD_PROPS[] === nothing || name in S.PROD_PROPS[]], ", "),
       ";  total ", haskey(prod_, pred) && haskey(prod_, gold) ? fmtd(prod_[pred] - prod_[gold]) :
         "n/a (predicted head $(tokname(st, pred)) is not among the $(length(cands)) candidates here)")
@@ -169,14 +170,14 @@ function explain_attach(st, t, gold, pred)
   score(c) = isempty(prod_) ? get(pa, c, 0.0) : get(prod_, c, -Inf)
   others = [c for c in sort(cands; by = c -> -score(c)) if c != gold && c != pred]
   show = filter(in(cands), unique([gold; pred; others]))[1:min(end, max(2, cfg["explaintop"]))]
-  println("    candidates: $(length(cands))", isempty(prod_) ? "" : "   (product score = log P(attach) + Σ log P(head property value))")
+  println("    candidates: $(length(cands))", isempty(prod_) ? "" : "   (product score = log P(attach) + Σ log P(head property value): a log probability)")
   for c in show
     f = events[c].final
     tag = c == gold ? "GOLD" : c == pred ? "PREDICTED" : "other"
-    println("\n    -- $tag -> $(tokname(st, c)):  P(attach) $(round(get(pa, c, 0.0); digits = 4))",
+    println("\n    -- $tag -> $(tokname(st, c)):  P(attach) $(round(get(pa, c, 0.0); digits = 4)) (probability)",
       isempty(prod_) ? "" : ", product score $(round(prod_[c]; digits = 2))")
     if !isempty(prod_)
-      println("       head-property terms: ", join(["$name=$(headval(name, S.head_value(st, t, c, name))) " *
+      println("       head-property terms (probabilities): ", join(["$name=$(headval(name, S.head_value(st, t, c, name))) " *
         "$(round(something(findfirst(==(S.head_value(st, t, c, name)), vals) |> j -> j === nothing ? 0.0 : ps[j], 0.0); digits = 3))"
         for (name, (vals, ps)) in props], ", "))
     end
@@ -269,8 +270,11 @@ function detail(st, t, c, f, Ic, acc)
     (ok ? log(y) - log(p0) : NaN, get(e[2], UInt32(0), (0.0, 0.0)))
   end
   pos, neg = 0.0, 0.0
-  println("       prior log odds $(fmtd(log(p0)))   (n = chosen/not-chosen records)")
-  println("       CHAIN", " "^41, "alone (prior effect)     in the chain")
+  println("       prior: log odds $(fmtd(log(p0))) = odds $(round(p0; sigdigits = 3)) = probability $(round(p0 / (1 + p0); sigdigits = 3))")
+  println("       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.")
+  println("        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the")
+  println("        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.)")
+  println("       CHAIN", " "^41, "Δ alone (vs prior)       Δ in the chain (vs prefix)")
   Sc = S.ChainState(p0, base)
   for (j, x) in enumerate(f.members)
     e = only(S.extend_all(m, Sc, S.depth(Sc), [x]))
@@ -281,14 +285,14 @@ function detail(st, t, c, f, Ic, acc)
     dl >= 0 ? (pos += dl) : (neg += dl)
     S.advance!(m, Sc, x, e, f.odds[j+1])
   end
-  println("       chain log odds $(fmtd(log(f.odds[end])))")
+  println("       chain: log odds $(fmtd(log(f.odds[end]))) = odds $(round(f.odds[end]; sigdigits = 3))")
   if isempty(acc)
     println("       (no accum leftovers traced)")
   end
   for (r, a) in enumerate(acc)
     X = Ic[a.sx]
     mΔ, mn = marginal(X)
-    println("\n       LEFTOVER $r: ", name(X), "   alone ", fmtd(mΔ), " (n ", fmtn(mn), ");  running estimate before: ", fmtd(a.T))
+    println("\n       LEFTOVER $r: ", name(X), "   Δ alone ", fmtd(mΔ), " (n ", fmtn(mn), ");  running estimate before: log odds ", fmtd(a.T))
     prev = nothing
     taken = false
     for (i, tr) in enumerate(a.tries)
@@ -302,14 +306,15 @@ function detail(st, t, c, f, Ic, acc)
       end
       final = cfg["accumby"] == "mintwc" ? i == length(a.tries) : (!taken && tr.corr !== nothing)
       final && (taken = true; mark *= "  <= TAKEN")
-      println("         ctx $i: log odds ", lpad(fmtd(log(tr.odds)), 6), "  n ", rpad(fmtn(tr.n), 12), " with X: n ", rpad(fmtn(tr.nX), 10),
+      println("         ctx $i: context log odds ", lpad(fmtd(log(tr.odds)), 6), "  n ", rpad(fmtn(tr.n), 12), " with X: n ", rpad(fmtn(tr.nX), 10),
         "  corr ", tr.corr === nothing ? "unsupported" : fmtd(tr.corr), mark, moves)
       i == 1 && println("                 context: ", join(ctxn, ", "))
       prev = ctxn
     end
     a.corr >= 0 ? (pos += a.corr) : (neg += a.corr)
   end
-  println("\n       evidence: positive ", fmtd(pos), ", negative ", fmtd(neg), ";  final log odds ", fmtd(f.logodds))
+  println("\n       evidence (sums of Δ log odds): positive ", fmtd(pos), ", negative ", fmtd(neg), ";  final log odds ", fmtd(f.logodds),
+    " = odds ", round(exp(f.logodds); sigdigits = 3))
 end
 
 mutable struct ExplainRec

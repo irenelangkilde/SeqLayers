@@ -3296,6 +3296,10 @@ function chain_scores_inner(m::ChainModel, st::State, key::AgendaKey, d, i, cand
       leftneg = [UInt64[] for _ in cands]
       leftall = [Tuple{UInt64,Float64}[] for _ in cands]   # (reorder) each taken leftover and its correction
       function full!(c)
+        if CHAIN_TRACE[] !== nothing                  # (tracing: this candidate's leftovers start afresh)
+          CHAIN_TRACE_CAND[] = cands[c]
+          CHAIN_TRACE[](:reset, (cand = cands[c],))
+        end
         old = LEFTOVER_TRACE[]
         empty!(leftneg[c]); empty!(leftall[c])
         LEFTOVER_TRACE[] = (s, inc, ctxs, corr) -> (inc && corr < 0 && push!(leftneg[c], I[c][s]); inc && push!(leftall[c], (I[c][s], corr));
@@ -3329,6 +3333,12 @@ function chain_scores_inner(m::ChainModel, st::State, key::AgendaKey, d, i, cand
         argmax(fs) == top && break
       end
       scores = fs
+      if CHAIN_TRACE[] !== nothing
+        for c in eachindex(cands)
+          cs = chains[c][1]
+          CHAIN_TRACE[](:final, (cand = cands[c], logodds = fs[c], members = copy(cs.members), odds = copy(cs.odds)))
+        end
+      end
       m.opts.stickbreak != :off && (scores = stickbreak_scores(m, scores, labels, [c[1] for c in chains], tk, d.labeled))
       length(m.memo) >= MAXMEMO && empty!(m.memo)
       m.memo[memokey] = copy(scores)

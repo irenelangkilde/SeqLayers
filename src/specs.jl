@@ -567,6 +567,34 @@ const CHILD_KINDS = (:dep_left1, :dep_right1, :dep_right2)
 const REL_KINDS = (SIB_KINDS..., CHILD_KINDS...)
 const DIR_KINDS = (:inner_sibling, :outer_sibling)          # the others have a fixed direction
 const SIB_TAG = hash("token.attach.sibling")
+const IDXEQ_TAG = hash("token.attach.idxeq")
+
+"""
+Index-equivalence items for t under candidate head c (default_specs(idxeq = true); user's idea 2026-10-31): whether two
+relations point at the same token -- 1 same, 2 different, pending if a side isn't known yet:
+  1 t's right neighbour is c's nearest left dependent     2 t's left neighbour is c's nearest right dependent
+  3 t's left neighbour is attached to c                   4 t's right neighbour is attached to c
+  5 c's head is t's left neighbour                        6 c's head is t's right neighbour
+"""
+function idxeq_items(st, t, c)
+  toks = st.layers[:token]
+  ln, rn = adjacent_token(st, t, -1), adjacent_token(st, t, 1)
+  ok(u) = u != PENDING && u != NONE
+  real = c != NONE && c != PENDING
+  cl = real ? child_of(st, Int(c), :dep_left1) : PENDING      # (PENDING: no such dependent yet)
+  cr = real ? child_of(st, Int(c), :dep_right1) : PENDING
+  ch = real ? toks[:attach, Int(c)] : NONE
+  same(b) = b ? UInt32(1) : UInt32(2)
+  neighbourhead(u) = ok(u) ? toks[:attach, Int(u)] : NONE
+  vals = UInt32[
+    rn == PENDING ? PENDING : same(ok(rn) && cl != PENDING && rn == cl),
+    ln == PENDING ? PENDING : same(ok(ln) && cr != PENDING && ln == cr),
+    ln == PENDING || neighbourhead(ln) == PENDING ? PENDING : same(ok(ln) && neighbourhead(ln) == c),
+    rn == PENDING || neighbourhead(rn) == PENDING ? PENDING : same(ok(rn) && neighbourhead(rn) == c),
+    ln == PENDING || ch == PENDING ? PENDING : same(ok(ln) && ch == ln),
+    rn == PENDING || ch == PENDING ? PENDING : same(ok(rn) && ch == rn)]
+  UInt64[item(v, (IDXEQ_TAG, j, v)) for (j, v) in enumerate(vals)]
+end
 const TRANK_TAG = hash("token.attach.treerank")
 
 """
@@ -1075,7 +1103,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
   suffixes::Vector{Int} = Int[], noise::Int = 0, rootabsent::Bool = false, projective::Bool = false,
   relations::Bool = false, headsdist::Bool = false, pptable = nothing, pprel::Bool = false,
   relbounded::Bool = false, relnone::Bool = false, treerank::Bool = false, headtrank::Bool = false,
-  headwc::Vector{Int} = Int[], headwcclasses = nothing, headsibs::Vector{Symbol} = Symbol[])
+  headwc::Vector{Int} = Int[], headwcclasses = nothing, headsibs::Vector{Symbol} = Symbol[], idxeq::Bool = false)
   all(n -> haskey(HEADSIB_KIND, n), headsibs) || error("headsibs: names are $(join(keys(HEADSIB_KIND), ", "))")
   safeats = charindex === nothing ? FeatDef[] : [sa_feats(charindex, :left); sa_feats(charindex, :right)]
   sapaths = charindex === nothing ? FeatPath[] : [FeatPath(:sa_left), FeatPath(:sa_right)]
@@ -1143,6 +1171,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
         items = (st, t, c) -> vcat(attach_items(st, t, c, linkpaths; rootabsent),
           relations ? hypothetical_sibling_items(st, t, c, relf) : UInt64[],
           treerank ? (v = trank_code(tree_rank(st, t, c)); UInt64[item(v, (TRANK_TAG, v))]) : UInt64[],
+          idxeq ? idxeq_items(st, t, c) : UInt64[],
           pptable === nothing ? UInt64[] :
             pp_items(pptable, st, t, c; cands = pprel ? attach_candidates(st, t; projective) : nothing)),
         allcandidates = attach_allcandidates,

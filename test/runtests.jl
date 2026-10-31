@@ -429,6 +429,27 @@ end
       r = SeqLayers.tree_rank(so, t, h)
       @test SeqLayers.head_value(so, t, h, :head_trank) == SeqLayers.headcode(:head_trank, SeqLayers.tranklabel(r))
     end
+    # index-equivalence items: under the gold tree, "the token's right neighbour is the candidate's nearest left
+    # dependent" etc. agree with the attachments
+    let n1 = 0
+      for t in 1:length(to)
+        h = to[:attach, t]
+        (h == PENDING || h == NONE) && continue
+        it = SeqLayers.idxeq_items(so, t, h)
+        @test length(it) == 6
+        rn = SeqLayers.adjacent_token(so, t, 1)
+        if rn != PENDING && rn != NONE && to[:attach, Int(rn)] == h
+          @test it[4] == SeqLayers.item(UInt32(1), (SeqLayers.IDXEQ_TAG, 4, UInt32(1)))
+          n1 += 1
+        end
+      end
+      @test n1 > 0
+    end
+    ispecs = default_specs(idxeq = true)
+    @test evaluate(docs, ispecs, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
+    idir = record_events(docs, ispecs, Lexicon(), mktempdir())
+    mi = ChainModel(idir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1)
+    @test 0 <= eval_scores(evaluate_counts(docs, ispecs, mi, Lexicon())).uas <= 1
     # sibling head properties: the oracle commits the gold labels; each equals the value its gold head implies
     sspecs = default_specs(headsibs = [:head_sibin, :head_sibout, :head_sibleft, :head_sibright])
     ss = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, sspecs, Lexicon())
