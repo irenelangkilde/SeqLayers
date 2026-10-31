@@ -1,0 +1,7 @@
+CHILDES     324     1.0     0.9074  0.8333  0.0093  1.0     
+ESLSpok     502     0.9983  0.8884  0.8406  0.004   1.0     
+EWT         86      0.9924  0.8721  0.814   0.0     1.0     
+GUM         963     0.9973  0.8546  0.8048  0.0322  1.0     
+GUMReddit   1024    0.9977  0.8721  0.8037  0.0107  1.0     
+ALL         2899    0.9977  0.8731  0.8141  0.0162  1.0     
+score 520.4 s, run 20261031-181359 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
