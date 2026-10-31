@@ -1,0 +1,4 @@
+=== stepscore=posneg posnegrestart=true posnegafter=true posnegonly=heads  Sat Oct 31 11:48:34 MDT 2026
+ALL         2899    0.9977  0.8579  0.8075  0.0162  1.0     
+posnegrestart: 4110 chain restarts
+score 256.8 s, run 20261031-115423 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv

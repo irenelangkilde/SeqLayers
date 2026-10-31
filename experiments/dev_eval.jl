@@ -151,7 +151,8 @@
 #                (chain + leftovers), recomputing its leftovers after each restart; posnegleftneg=true: also seed with
 #                its negative leftovers.  posnegseed=reorder / reorderabs: the restart appends every feature the
 #                candidate used (chain steps, taken leftovers) in the order of what it added before (signed / by size).
-#                posnegonly=attach: posneg (and the restart) for the attachment only; labeled decisions use abs chains
+#                posnegonly=attach: posneg (and the restart) for the attachment only; labeled decisions use abs chains;
+#                posnegonly=heads: for the attachment and the head properties
 #   stickbreak   candidates' probabilities: off (softmax of the log odds) | renorm (stick-breaking in rank order: each
 #                later value fits in the mass the earlier leave) | cond (labeled decisions: each later value's odds
 #                first conditioned on not the earlier values; attachment as renorm)

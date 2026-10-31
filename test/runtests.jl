@@ -327,6 +327,9 @@ end
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, stepscore = ss, posnegrestart = pr, posnegseed = ps,
         posnegafter = pa, posnegleftneg = pl, posnegonly = :attach)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
+      mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, stepscore = ss, posnegrestart = pr, posnegseed = ps,
+        posnegafter = pa, posnegleftneg = pl, posnegonly = :heads)
+      @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
     for sb in (:renorm, :cond)
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, stickbreak = sb)

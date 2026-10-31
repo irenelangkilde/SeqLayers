@@ -216,7 +216,7 @@ struct ChainOpts
   dualw::Float64                                  # dualcombine=:weighted: the negative chain's weight
   dualturn::Symbol                                # dualchain, a feature whose sign turns: :both (it joins both chains) | :refine (turned in the picking chain only: it goes to the other chain only; turned in both: both)
   dualleft::Bool                                  # dualchain: leftovers (context: both chains' features) on top of the combined score
-  posnegonly::Symbol                              # posneg / posnegrestart for :all decisions or :attach (unlabeled decisions) only -- labeled ones then use :abs chains
+  posnegonly::Symbol                              # posneg / posnegrestart for :all decisions, :attach (unlabeled decisions) only, or :heads (attachment and head properties) -- the others then use :abs chains
   posnegafter::Bool                               # posnegrestart: pick the candidate to restart by its full score (chain + leftovers), recomputing its leftovers after each restart
   posnegleftneg::Bool                             # posnegafter: also seed with the leftovers whose correction was negative for it (after the chain negatives)
   posnegseed::Symbol                              # posnegrestart's seed: :own (the top candidate's own negative steps) | :oldtop (the negatives of the candidate ranked first after the positive stage, then of the previous top)
@@ -344,7 +344,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   dualturn in (:both, :refine) || error("unknown dualturn $dualturn (use :both or :refine)")
   dualcombine in (:sum, :maxabs, :weighted, :sumdedup) || error("unknown dualcombine $dualcombine (use :sum, :maxabs, :weighted or :sumdedup)")
   posnegseed in (:own, :oldtop, :reorder, :reorderabs) || error("unknown posnegseed $posnegseed (use :own, :oldtop, :reorder or :reorderabs)")
-  posnegonly in (:all, :attach) || error("unknown posnegonly $posnegonly (use :all or :attach)")
+  posnegonly in (:all, :attach, :heads) || error("unknown posnegonly $posnegonly (use :all, :attach or :heads)")
   stickbreak in (:off, :renorm, :cond) || error("unknown stickbreak $stickbreak (use :off, :renorm or :cond)")
   lookw in (:dw, :int, :min, :max) || error("unknown lookw $lookw (use :dw, :int, :min or :max)")
   chainshrinkto in (:prev, :gen, :prior) || error("unknown chainshrinkto $chainshrinkto (use :prev, :gen or :prior)")
@@ -3241,7 +3241,8 @@ function chain_scores(m::ChainModel, st::State, key::AgendaKey)
   memokey = hash((tk, labels, I))
   scores = get(m.memo, memokey, nothing)
   scores === nothing || return (cands, copy(scores))
-  if m.opts.posnegonly == :attach && d.labeled && m.opts.stepscore != :abs   # labeled decisions: plain :abs chains, no restart
+  if m.opts.posnegonly != :all && d.labeled && m.opts.stepscore != :abs &&    # labeled decisions (but head properties with :heads):
+     !(m.opts.posnegonly == :heads && haskey(ALLHEADSETS, d.name))            # plain :abs chains, no restart
     STEPSCORE_OVERRIDE[] = :abs
     try
       return chain_scores_inner(m, st, key, d, i, cands, tk, labels, I, memokey, false)
