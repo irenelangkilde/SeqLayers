@@ -1,0 +1,8 @@
+=== posneg restart seed=own  Fri Oct 30 19:28:15 MDT 2026
+ALL         2899    0.9984  0.8565  0.7958  0.0162  1.0     
+posnegrestart: 4189 chain restarts
+score 332.6 s, run 20261030-193507 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== posneg restart seed=oldtop  Fri Oct 30 19:35:08 MDT 2026
+ALL         2899    0.9985  0.8562  0.7954  0.0162  1.0     
+posnegrestart: 6736 chain restarts
+score 367.5 s, run 20261030-194232 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv

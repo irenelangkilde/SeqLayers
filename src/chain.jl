@@ -211,6 +211,8 @@ struct ChainOpts
   chainshrink::Float64                            # > 0: the chain's log odds from Beta-shrunk step sizes (k pseudo-records); selection unchanged
   chainshrinkto::Symbol                           # chainshrink target: :prev (previous step's odds) | :gen (the step with the feature's generalization) | :prior (the final prefix toward the prior)
   lookw::Symbol                                   # accumby=look1*: supported moves by :dw (ΔW) | :int (interaction) | :min | :max of the two
+  posnegseed::Symbol                              # posnegrestart's seed: :own (the top candidate's own negative steps) | :oldtop (the negatives of the candidate ranked first after the positive stage, then of the previous top)
+  posnegrestart::Bool                             # stepscore=posneg: restart the top candidate's chain seeded with its negative steps, until rank 1 is stable (up to 3)
   stickbreak::Symbol                              # candidates' probabilities: :off (softmax of the log odds) | :renorm (stick-breaking in rank order) | :cond (labeled decisions: each value's odds conditioned on not the higher-ranked values, then stick-breaking)
   lookwback::Float64                              # > 0: the interaction backs off to the pairwise one, |corr(W | a) - corr(W | a')| over all records, where W has fewer than this many records in the thinner context
   lookwsoft::Bool                                 # lookwback: blend by support (w = n / (n + lookwback)) instead of switching
@@ -325,11 +327,12 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
   mindevstop in (:localmin, :exhaust, :pathmin) || error("unknown mindevstop $mindevstop")
+  posnegseed in (:own, :oldtop) || error("unknown posnegseed $posnegseed (use :own or :oldtop)")
   stickbreak in (:off, :renorm, :cond) || error("unknown stickbreak $stickbreak (use :off, :renorm or :cond)")
   lookw in (:dw, :int, :min, :max) || error("unknown lookw $lookw (use :dw, :int, :min or :max)")
   chainshrinkto in (:prev, :gen, :prior) || error("unknown chainshrinkto $chainshrinkto (use :prev, :gen or :prior)")
@@ -396,7 +399,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -1615,12 +1618,21 @@ function pair_covered(m::ChainModel, Ic, slots)
 end
 
 "Per-candidate chain (:maxdev): each candidate picks its own features."
-function run_single(m::ChainModel, Ic, label, prior, typerecs; tk = nothing)
+function run_single(m::ChainModel, Ic, label, prior, typerecs; tk = nothing, seed = UInt64[])
   st = ChainState(prior, typerecs)
   remaining = tk === nothing ? collect(eachindex(Ic)) : admitted(m, tk, Ic)
   if tk !== nothing && haskey(m.nochain, tk)        # stand-in slots (e.g. word classes): only for leftover contexts
     nc = m.nochain[tk]
     remaining = [s for s in remaining if !(s in nc)]
+  end
+  for x in seed                                      # (posnegrestart) seed features first, in order, where supported
+    sx = findfirst(==(x), Ic)
+    (sx === nothing || !(sx in remaining)) && continue
+    e = only(extend_all(m, st, depth(st), [x]))
+    y, ok = update_odds(m, e, label, st.odds[end])
+    ok || continue
+    advance!(m, st, x, e, y)
+    deleteat!(remaining, findfirst(==(sx), remaining))
   end
   order = m.opts.poolm > 0 && tk !== nothing ? get(m.pool, tk, nothing) : nothing
   if order === nothing
@@ -3149,9 +3161,31 @@ function chain_scores(m::ChainModel, st::State, key::AgendaKey)
     logodds(run_maxdev_rounds(m, I, labels, priors, tr; tk)...)
   elseif m.opts.select == :maxdev
     fstates = Vector{Any}(nothing, length(cands))     # (stickbreak = :cond) each candidate's final chain state
+    chains = [run_single(m, I[c], labels[c], priors[c], tr; tk) for c in eachindex(cands)]
+    if m.opts.posnegrestart && length(cands) > 1
+      # restart the top candidate's chain seeded with its own negative steps (then posneg again), until the top
+      # candidate is stable or every new top has been restarted (up to 3 restarts)
+      negsof(cs) = UInt64[cs.members[j] for j in eachindex(cs.members) if cs.odds[j+1] < cs.odds[j]]
+      # :oldtop -- the seed comes from the candidate ranked first after its positive stage (before any negative step)
+      posscore(cs) = (j = findfirst(j -> cs.odds[j+1] < cs.odds[j], eachindex(cs.members)); log(cs.odds[j === nothing ? end : j]))
+      prev = argmax([posscore(cs) for (cs, _) in chains])
+      done_ = Set{Int}()
+      for _ in 1:3
+        top = argmax([log(cs.odds[end]) for (cs, _) in chains])
+        top in done_ && break
+        cs = chains[top][1]
+        negs = m.opts.posnegseed == :own ? negsof(cs) : negsof(chains[prev][1])
+        prev = top
+        push!(done_, top)
+        isempty(negs) && break
+        chains[top] = run_single(m, I[top], labels[top], priors[top], tr; tk, seed = negs)
+        (d = DC_STATS[]) === nothing || (d[:pn_restart] = get(d, :pn_restart, 0.0) + 1)
+        argmax([log(c[1].odds[end]) for c in chains]) == top && break
+      end
+    end
     [begin
       CHAIN_TRACE[] === nothing || (CHAIN_TRACE_CAND[] = cands[c])
-      cs, rem = run_single(m, I[c], labels[c], priors[c], tr; tk)
+      cs, rem = chains[c]
       fstates[c] = cs
       lo = chain_logodds(m, cs, I[c], labels[c], priors[c], rem)
       CHAIN_TRACE[] === nothing || CHAIN_TRACE[](:final, (cand = cands[c], logodds = lo, members = copy(cs.members), odds = copy(cs.odds)))
