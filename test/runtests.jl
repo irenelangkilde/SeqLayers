@@ -335,6 +335,8 @@ end
     @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     @test SeqLayers.criterion(:maxpos, [1.0, 2.0], [3.0, 1.0]) ≈ log(3.0)
     @test SeqLayers.criterion(:maxabsscore, [0.5, 2.0], [0.1, 2.0]) ≈ log(10.0) - log(2.0)   # a negative score made more negative counts
+    mp = ChainModel(dir; select = :maxposneg, leftovers = :greedy, minctx = 2, mincount = 1)
+    @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     mp = ChainModel(dir; select = :maxabsscore, leftovers = :greedy, minctx = 2, mincount = 1)
     @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     for sb in (:renorm, :cond)

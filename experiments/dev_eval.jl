@@ -7,7 +7,7 @@
 #   order        lattice max order
 #   minsupport   lattice minimum support (Phase N: TUPLE_COUNT_THRESHOLD)
 #   diff, wmo    lattice significance thresholds (Phase N: DIFF_THRESHOLD, WMO_THRESHOLD)
-#   select       chain criterion: maxdev | avglogodds | clr_mean_abs | clr_rms | maxpos (one chain per decision: the step with the largest positive change over the values) | maxabsscore (one chain: the step growing some value's |log odds| most; stops when none grows by tau)
+#   select       chain criterion: maxdev | avglogodds | clr_mean_abs | clr_rms | maxpos (one chain per decision: the step with the largest positive change over the values) | maxabsscore (one chain: the step growing some value's |log odds| most; stops when none grows by tau) | maxposneg (one chain: maxpos, then when no value rises by tau the step lowering some value most, then raising again)
 #   tau          chain stopping threshold
 #   mincount     chain minimum joint records
 #   jointmin     chain joint tables for items with at least this many records (0 = off); exact,
