@@ -1,0 +1,18 @@
+=== stepscore=abs  Sat Oct 31 10:51:21 MDT 2026
+ALL         2899    0.9977  0.8531  0.802   0.0162  1.0     
+score 168.3 s, run 20261031-105532 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== stepscore=posneg posnegrestart=true posnegafter=true posnegonly=attach  Sat Oct 31 10:55:33 MDT 2026
+ALL         2899    0.9977  0.8544  0.8034  0.0162  1.0     
+posnegrestart: 509 chain restarts
+score 222.7 s, run 20261031-110035 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== stepscore=negpos  Sat Oct 31 11:00:36 MDT 2026
+ALL         2899    0.9987  0.8403  0.7892  0.0162  1.0     
+score 255.5 s, run 20261031-110611 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== stepscore=posneg posnegrestart=true posnegafter=true posnegseed=reorder  Sat Oct 31 11:06:12 MDT 2026
+ALL         2899    0.9987  0.8548  0.7972  0.0162  1.0     
+posnegrestart: 24158 chain restarts
+score 369.7 s, run 20261031-111341 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== stepscore=posneg posnegrestart=true posnegafter=true posnegseed=reorderabs  Sat Oct 31 11:13:41 MDT 2026
+ALL         2899    0.9989  0.8537  0.7954  0.0162  1.0     
+posnegrestart: 24295 chain restarts
+score 398.8 s, run 20261031-112140 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv

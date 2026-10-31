@@ -216,6 +216,7 @@ struct ChainOpts
   dualw::Float64                                  # dualcombine=:weighted: the negative chain's weight
   dualturn::Symbol                                # dualchain, a feature whose sign turns: :both (it joins both chains) | :refine (turned in the picking chain only: it goes to the other chain only; turned in both: both)
   dualleft::Bool                                  # dualchain: leftovers (context: both chains' features) on top of the combined score
+  posnegonly::Symbol                              # posneg / posnegrestart for :all decisions or :attach (unlabeled decisions) only -- labeled ones then use :abs chains
   posnegafter::Bool                               # posnegrestart: pick the candidate to restart by its full score (chain + leftovers), recomputing its leftovers after each restart
   posnegleftneg::Bool                             # posnegafter: also seed with the leftovers whose correction was negative for it (after the chain negatives)
   posnegseed::Symbol                              # posnegrestart's seed: :own (the top candidate's own negative steps) | :oldtop (the negatives of the candidate ranked first after the positive stage, then of the previous top)
@@ -334,7 +335,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
@@ -342,7 +343,8 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   dualchain in (:off, :marginal, :inchain) || error("unknown dualchain $dualchain (use :off, :marginal or :inchain)")
   dualturn in (:both, :refine) || error("unknown dualturn $dualturn (use :both or :refine)")
   dualcombine in (:sum, :maxabs, :weighted, :sumdedup) || error("unknown dualcombine $dualcombine (use :sum, :maxabs, :weighted or :sumdedup)")
-  posnegseed in (:own, :oldtop) || error("unknown posnegseed $posnegseed (use :own or :oldtop)")
+  posnegseed in (:own, :oldtop, :reorder, :reorderabs) || error("unknown posnegseed $posnegseed (use :own, :oldtop, :reorder or :reorderabs)")
+  posnegonly in (:all, :attach) || error("unknown posnegonly $posnegonly (use :all or :attach)")
   stickbreak in (:off, :renorm, :cond) || error("unknown stickbreak $stickbreak (use :off, :renorm or :cond)")
   lookw in (:dw, :int, :min, :max) || error("unknown lookw $lookw (use :dw, :int, :min or :max)")
   chainshrinkto in (:prev, :gen, :prior) || error("unknown chainshrinkto $chainshrinkto (use :prev, :gen or :prior)")
@@ -350,8 +352,8 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs, :look1red, :look1ind, :look1nonred, :look1int) ||
     error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc or :bfs, :look1red, :look1ind, :look1nonred, :look1int)")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
-  stepscore in (:abs, :signed, :maxmin, :maxmin2, :posneg, :posnegprior) ||
-    error("unknown stepscore $stepscore (use :abs, :signed, :maxmin, :maxmin2, :posneg or :posnegprior)")
+  stepscore in (:abs, :signed, :maxmin, :maxmin2, :posneg, :posnegprior, :negpos) ||
+    error("unknown stepscore $stepscore (use :abs, :signed, :maxmin, :maxmin2, :posneg, :posnegprior or :negpos)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
   poolmarginal in (:off, :leftover, :drop) || error("unknown poolmarginal $poolmarginal (use :off, :leftover or :drop)")
   pairorder in (:slot, :maxdev) || error("unknown pairorder $pairorder (use :slot or :maxdev)")
@@ -409,7 +411,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -1288,6 +1290,7 @@ records will do.  Returns whether a feature was added.
 function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; target = nothing, exhaust = false,
   cap = EXACT, nosingle = NOSINGLE)
   x = st.odds[end]
+  ss = STEPSCORE_OVERRIDE[] === nothing ? m.opts.stepscore : STEPSCORE_OVERRIDE[]   # (posnegonly = :attach: labeled decisions :abs)
   pn = m.opts.smoothn == :parent ? parentn(m, st, label) : NaN
   best, bs, by, be = -Inf, 0, x, nothing
   slots = [s for s in remaining if Ic[s] != ABSENT]
@@ -1298,22 +1301,23 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
   rec = m.opts.poolsigma > 0 && m.opts.poolmode == :local && target === nothing
   alts = rec ? Dict{UInt64,Float64}() : nothing    # every supported alternative's odds at this step
   single = Dict{Int,Tuple{Any,Float64,Float64}}()   # with pairsteps: slot -> (entry, odds, score) of supported singles
-  negfall = m.opts.stepscore in (:posneg, :posnegprior)
+  negfall = ss in (:posneg, :posnegprior, :negpos)
   nbest, nbs, nby, nbe = -Inf, 0, x, nothing
   for (s, e) in zip(slots, extend_all(m, st, depth(st), present_items(Ic, slots); cap))
     y, ok = update_odds(m, e, label, x; pn)
     tr === nothing || push!(tr, (s, ok ? abs(log(y) - log(x)) : NaN, total(e[2])))
     ok || continue
     sc = target !== nothing ? abs(log(x) - log(target)) - abs(log(y) - log(target)) :
-      m.opts.stepscore in (:signed, :posneg, :posnegprior) ? log(y) - log(x) :   # the feature that raises the odds most
-      m.opts.stepscore == :maxmin ? minimum(o -> abs(log(y) - log(o)), st.odds) :   # away from every earlier stage
-      m.opts.stepscore == :maxmin2 ? maxmin2(e, label, st.odds) :                    # ...each smoothed toward that stage
+      ss in (:signed, :posneg, :posnegprior) ? log(y) - log(x) :   # the feature that raises the odds most
+      ss == :negpos ? log(x) - log(y) :                                    # (negpos: lowers them most)
+      ss == :maxmin ? minimum(o -> abs(log(y) - log(o)), st.odds) :   # away from every earlier stage
+      ss == :maxmin2 ? maxmin2(e, label, st.odds) :                    # ...each smoothed toward that stage
       abs(log(y) - log(x))
     usepairs && (single[s] = (e, y, sc))
     rec && (alts[Ic[s]] = y)
     s in nosingle && continue                       # (pairsfirst: joins only as a pair member)
     if negfall && target === nothing                 # posneg(prior): the fallback, the step lowering the odds most
-      nsc = m.opts.stepscore == :posneg ? log(x) - log(y) : log(st.odds[1]) - log(y)   # below the chain / the prior
+      nsc = ss == :posneg ? log(x) - log(y) : ss == :negpos ? log(y) - log(x) : log(st.odds[1]) - log(y)   # below the chain / above it (negpos) / below the prior
       nsc > nbest && ((nbest, nbs, nby, nbe) = (nsc, s, y, e))
     end
     sc > best && ((best, bs, by, be) = (sc, s, y, e))
@@ -2993,6 +2997,8 @@ end
 const ACCUM_TRACE = Ref{Any}(nothing)
 "greedyby=mindev trace hook: (X, path [(a, signed diff, n(B∪a), n(B∪a∪X))], status :explained | :kept | :short, correction) per evaluation."
 const MINDEV_TRACE = Ref{Any}(nothing)
+"Step score in force for the decision being scored (posnegonly = :attach sets :abs for labeled decisions), or nothing."
+const STEPSCORE_OVERRIDE = Ref{Union{Nothing,Symbol}}(nothing)
 "accumby=bfs: the deepest backoff level searched (beyond it, the odds walk)."
 const BFS_LEVELS = 3
 
@@ -3235,6 +3241,18 @@ function chain_scores(m::ChainModel, st::State, key::AgendaKey)
   memokey = hash((tk, labels, I))
   scores = get(m.memo, memokey, nothing)
   scores === nothing || return (cands, copy(scores))
+  if m.opts.posnegonly == :attach && d.labeled && m.opts.stepscore != :abs   # labeled decisions: plain :abs chains, no restart
+    STEPSCORE_OVERRIDE[] = :abs
+    try
+      return chain_scores_inner(m, st, key, d, i, cands, tk, labels, I, memokey, false)
+    finally
+      STEPSCORE_OVERRIDE[] = nothing
+    end
+  end
+  chain_scores_inner(m, st, key, d, i, cands, tk, labels, I, memokey, m.opts.posnegrestart)
+end
+
+function chain_scores_inner(m::ChainModel, st::State, key::AgendaKey, d, i, cands, tk, labels, I, memokey, restart::Bool)
   priors = [priorodds(m, lpriorkey(tk, l)) for l in labels]
   tr = get(m.typerecs, tk, NOLIST)
   # leftovers are sampled by the ranking the chains end with
@@ -3270,15 +3288,17 @@ function chain_scores(m::ChainModel, st::State, key::AgendaKey)
       return (cands, dscores)
     end
     chains = [run_single(m, I[c], labels[c], priors[c], tr; tk) for c in eachindex(cands)]
-    if m.opts.posnegrestart && m.opts.posnegafter && length(cands) > 1
+    if restart && m.opts.posnegafter && length(cands) > 1
       # restart decided after the leftovers: rank by the full score, restart the top candidate's chain seeded with its
       # negative steps (posnegleftneg: then its negative leftovers), recompute its leftovers, re-rank -- until the top
       # is stable (up to 3 restarts)
       leftneg = [UInt64[] for _ in cands]
+      leftall = [Tuple{UInt64,Float64}[] for _ in cands]   # (reorder) each taken leftover and its correction
       function full!(c)
         old = LEFTOVER_TRACE[]
-        empty!(leftneg[c])
-        LEFTOVER_TRACE[] = (s, inc, ctxs, corr) -> (inc && corr < 0 && push!(leftneg[c], I[c][s]); old === nothing || old(s, inc, ctxs, corr))
+        empty!(leftneg[c]); empty!(leftall[c])
+        LEFTOVER_TRACE[] = (s, inc, ctxs, corr) -> (inc && corr < 0 && push!(leftneg[c], I[c][s]); inc && push!(leftall[c], (I[c][s], corr));
+          old === nothing || old(s, inc, ctxs, corr))
         try
           chain_logodds(m, chains[c][1], I[c], labels[c], priors[c], chains[c][2])
         finally
@@ -3294,6 +3314,13 @@ function chain_scores(m::ChainModel, st::State, key::AgendaKey)
         cs = chains[top][1]
         negs = UInt64[cs.members[j] for j in eachindex(cs.members) if cs.odds[j+1] < cs.odds[j]]
         m.opts.posnegleftneg && append!(negs, leftneg[top])
+        if m.opts.posnegseed in (:reorder, :reorderabs)
+          # reorder: every feature the candidate used, chain steps and taken leftovers, by what it added in its previous
+          # position (signed, or by size), appended in that order and re-scored
+          used = [[(cs.members[j], log(cs.odds[j+1]) - log(cs.odds[j])) for j in eachindex(cs.members)]; leftall[top]]
+          sort!(used; by = u -> m.opts.posnegseed == :reorder ? -u[2] : -abs(u[2]))
+          negs = UInt64[u[1] for u in used]
+        end
         isempty(negs) && break
         chains[top] = run_single(m, I[top], labels[top], priors[top], tr; tk, seed = negs)
         fs[top] = full!(top)
@@ -3306,7 +3333,7 @@ function chain_scores(m::ChainModel, st::State, key::AgendaKey)
       m.memo[memokey] = copy(scores)
       return (cands, scores)
     end
-    if m.opts.posnegrestart && length(cands) > 1
+    if restart && length(cands) > 1
       # restart the top candidate's chain seeded with its own negative steps (then posneg again), until the top
       # candidate is stable or every new top has been restarted (up to 3 restarts)
       negsof(cs) = UInt64[cs.members[j] for j in eachindex(cs.members) if cs.odds[j+1] < cs.odds[j]]
