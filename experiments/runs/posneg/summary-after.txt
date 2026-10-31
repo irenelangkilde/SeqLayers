@@ -1,0 +1,8 @@
+=== posneg restart after leftovers, leftover negatives in the seed: false  Sat Oct 31 10:23:14 MDT 2026
+ALL         2899    0.9987  0.8579  0.7986  0.0162  1.0     
+posnegrestart: 4610 chain restarts
+score 330.7 s, run 20261031-103021 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== posneg restart after leftovers, leftover negatives in the seed: true  Sat Oct 31 10:30:22 MDT 2026
+ALL         2899    0.999   0.851   0.791   0.0162  1.0     
+posnegrestart: 12980 chain restarts
+score 387.7 s, run 20261031-103808 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv

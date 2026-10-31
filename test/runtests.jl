@@ -292,10 +292,10 @@ end
     # every option lands in its own ChainOpts field (positional constructor)
     mo = ChainModel(dir; select = :maxdev, leftovers = :greedy, mincount = 1, ctxmode = :accum, greedymin = true, greedysel = false,
       driftsigma = 0.25, drifttau = 0.5, driftstep = 0.75, distback = true, shrink = 7.0, accumwin = 3, accumreset = true, cidrop = 0.125,
-      shrinkleft = 9.0, leftmin2 = 4, depmeasure = :pmi, mindevtau = 0.3, mindevstop = :pathmin, explainpool = true, chainshrink = 20.0, chainshrinkto = :gen, chainsel = 2.5, lookw = :max, lookwsmooth = 5.0, lookwback = 5.0, lookwsoft = true, stickbreak = :cond, posnegrestart = true, posnegseed = :oldtop, dualchain = :inchain, dualcombine = :sumdedup, dualw = 0.25, dualleft = false, dualturn = :refine)
+      shrinkleft = 9.0, leftmin2 = 4, depmeasure = :pmi, mindevtau = 0.3, mindevstop = :pathmin, explainpool = true, chainshrink = 20.0, chainshrinkto = :gen, chainsel = 2.5, lookw = :max, lookwsmooth = 5.0, lookwback = 5.0, lookwsoft = true, stickbreak = :cond, posnegrestart = true, posnegseed = :oldtop, dualchain = :inchain, dualcombine = :sumdedup, dualw = 0.25, dualleft = false, dualturn = :refine, posnegafter = true, posnegleftneg = true)
     o = mo.opts
     @test (o.greedymin, o.greedysel, o.driftsigma, o.drifttau, o.driftstep, o.distback, o.shrink, o.accumwin, o.accumreset, o.cidrop,
-      o.shrinkleft, o.leftmin2, o.depmeasure, o.mindevtau, o.mindevstop, o.explainpool, o.chainshrink, o.chainshrinkto, o.chainsel, o.lookw, o.lookwsmooth, o.lookwback, o.lookwsoft, o.stickbreak, o.posnegrestart, o.posnegseed, o.dualchain, o.dualcombine, o.dualw, o.dualleft, o.dualturn) == (true, false, 0.25, 0.5, 0.75, true, 7.0, 3, true, 0.125, 9.0, 4, :pmi, 0.3, :pathmin, true, 20.0, :gen, 2.5, :max, 5.0, 5.0, true, :cond, true, :oldtop, :inchain, :sumdedup, 0.25, false, :refine)
+      o.shrinkleft, o.leftmin2, o.depmeasure, o.mindevtau, o.mindevstop, o.explainpool, o.chainshrink, o.chainshrinkto, o.chainsel, o.lookw, o.lookwsmooth, o.lookwback, o.lookwsoft, o.stickbreak, o.posnegrestart, o.posnegseed, o.dualchain, o.dualcombine, o.dualw, o.dualleft, o.dualturn, o.posnegafter, o.posnegleftneg) == (true, false, 0.25, 0.5, 0.75, true, 7.0, 3, true, 0.125, 9.0, 4, :pmi, 0.3, :pathmin, true, 20.0, :gen, 2.5, :max, 5.0, 5.0, true, :cond, true, :oldtop, :inchain, :sumdedup, 0.25, false, :refine, true, true)
     for (cs, to, zs) in ((20.0, :prev, 0.0), (20.0, :gen, 0.0), (20.0, :prior, 0.0), (0.0, :prev, 2.6))
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum,
         chainshrink = cs, chainshrinkto = to, chainsel = zs)
@@ -318,8 +318,10 @@ end
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, dualchain = el, dualcombine = cb, dualleft = dl, dualturn = dt)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
-    for (ss, pr, ps) in ((:posneg, false, :own), (:posnegprior, false, :own), (:posneg, true, :own), (:posneg, true, :oldtop))
-      mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, stepscore = ss, posnegrestart = pr, posnegseed = ps)
+    for (ss, pr, ps, pa, pl) in ((:posneg, false, :own, false, false), (:posnegprior, false, :own, false, false), (:posneg, true, :own, false, false),
+        (:posneg, true, :oldtop, false, false), (:posneg, true, :own, true, false), (:posneg, true, :own, true, true))
+      mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, stepscore = ss, posnegrestart = pr, posnegseed = ps,
+        posnegafter = pa, posnegleftneg = pl)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
     for sb in (:renorm, :cond)
