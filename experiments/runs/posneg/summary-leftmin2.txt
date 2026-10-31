@@ -1,0 +1,4 @@
+ALL         2899    0.996   0.8506  0.7923  0.0162  1.0     
+double counting: 192038 leftovers taken, 0.75 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.728; mean |corr| 0.898
+posnegrestart: 4148 chain restarts
+score 348.9 s, run 20261031-170405 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
