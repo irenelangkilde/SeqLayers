@@ -1,0 +1,2 @@
+ALL         2899    0.9986  0.8503  0.7992  0.0162  1.0     
+score 406.8 s, run 20261031-143427 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv

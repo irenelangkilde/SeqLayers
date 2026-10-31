@@ -336,7 +336,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
   poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all)
-  select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
+  select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms, :maxpos, :maxabsscore) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
   mindevstop in (:localmin, :exhaust, :pathmin) || error("unknown mindevstop $mindevstop")
@@ -1018,6 +1018,8 @@ clr(lx) = lx .- (sum(lx) / length(lx))
 
 function criterion(sel::Symbol, x::Vector{Float64}, y::Vector{Float64})
   lx, ly = log.(x), log.(y)
+  sel == :maxpos && return maximum(ly .- lx)      # (one shared chain: the largest positive change over the values)
+  sel == :maxabsscore && return maximum(abs.(ly) .- abs.(lx))   # (the largest growth of a value's |log odds|, either sign)
   (sel == :avglogodds || sel == :maxdev || length(x) == 1) && return sum(abs.(ly .- lx)) / length(x)
   Δ = clr(ly) .- clr(lx)
   sel == :clr_mean_abs ? sum(abs.(Δ)) / length(Δ) : sqrt(sum(Δ .^ 2) / length(Δ))
