@@ -1,0 +1,7 @@
+=== idxeq stepscore=abs  Sat Oct 31 12:34:32 MDT 2026
+recorded events in 339.6 s
+ALL         2899    0.9977  0.8562  0.8051  0.0162  1.0     
+score 289.1 s, run 20261031-124711 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== idxeq stepscore=posneg posnegrestart=true posnegafter=true posnegonly=heads  Sat Oct 31 12:47:11 MDT 2026
+ALL         2899    0.9977  0.8565  0.8068  0.0162  1.0     
+score 390.4 s, run 20261031-125530 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
