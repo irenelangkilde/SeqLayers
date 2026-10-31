@@ -1,0 +1,9 @@
+=== leftmin2=2  Sat Oct 31 23:28:03 UTC 2026
+ALL         2899    0.996   0.8672  0.7872  0.0162  1.0     
+double counting: 232223 leftovers taken, 0.77 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.764; mean |corr| 0.87
+score 374.7 s, run 20261031-233848 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== leftmin2=5  Sat Oct 31 23:38:49 UTC 2026
+ALL         2899    0.996   0.8637  0.7837  0.0162  1.0     
+double counting: 225786 leftovers taken, 0.776 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.778; mean |corr| 0.798
+score 376.6 s, run 20261031-234938 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Sat Oct 31 23:49:39 UTC 2026
