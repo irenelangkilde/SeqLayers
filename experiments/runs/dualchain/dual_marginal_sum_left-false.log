@@ -1,0 +1,104 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/events
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 26.0 s): 14 of 32 slots always, 280 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 26.0 s): 14 of 32 slots always, 280 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 6:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 26.1 s): 14 of 32 slots always, 280 gate values
+      From worker 6:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 7:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 26.1 s): 14 of 32 slots always, 280 gate values
+      From worker 5:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 26.1 s): 14 of 32 slots always, 280 gate values
+      From worker 7:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 5:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 26.1 s): 14 of 32 slots always, 280 gate values
+      From worker 4:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 5:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (23.3 s)
+      From worker 2:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (23.4 s)
+      From worker 6:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (23.4 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (23.6 s)
+      From worker 7:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (23.6 s)
+      From worker 4:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (23.8 s)
+count cache: 35 new feature sets, 1360756 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/events
+treebank    words   gap_acc uas     las     head_lost coverage
+CHILDES     324     1.0     0.858   0.7747  0.0093  1.0     
+ESLSpok     502     0.9983  0.8386  0.753   0.004   1.0     
+EWT         86      0.9899  0.7907  0.7442  0.0     1.0     
+GUM         963     0.9978  0.8069  0.7414  0.0322  1.0     
+GUMReddit   1024    0.9985  0.8096  0.7188  0.0107  1.0     
+ALL         2899    0.9981  0.8186  0.7392  0.0162  1.0     
+domains: attachment candidates 8191 -> 8191 after propagation (1.0)
+
+dist          n       share   uas     las
+R1            842     0.29    0.989   0.95
+R2            417     0.144   0.856   0.818
+L3-5          310     0.107   0.703   0.516
+R3-5          309     0.107   0.738   0.689
+L1            265     0.091   0.887   0.781
+L6+           261     0.09    0.368   0.272
+L2            236     0.081   0.771   0.593
+root          179     0.062   1.0     1.0
+R6+           80      0.028   0.562   0.4
+
+deprel        n       share   uas     las
+punct         478     0.165   0.692   0.692
+case          258     0.089   0.907   0.88
+nsubj         252     0.087   0.944   0.857
+det           181     0.062   0.928   0.928
+root          179     0.062   1.0     1.0
+advmod        178     0.061   0.86    0.843
+obl           145     0.05    0.697   0.49
+nmod          136     0.047   0.801   0.684
+obj           132     0.046   0.909   0.742
+amod          121     0.042   0.95    0.917
+conj          115     0.04    0.452   0.287
+cc            103     0.036   0.699   0.67
+aux           97      0.033   1.0     1.0
+mark          91      0.031   0.802   0.791
+compound      80      0.028   0.938   0.738
+cop           49      0.017   0.918   0.735
+parataxis     44      0.015   0.455   0.295
+advcl         41      0.014   0.463   0.195
+acl           41      0.014   0.683   0.561
+xcomp         35      0.012   0.886   0.571
+nummod        33      0.011   0.788   0.727
+ccomp         26      0.009   0.808   0.308
+discourse     18      0.006   0.833   0.556
+flat          14      0.005   0.429   0.429
+expl          11      0.004   1.0     0.909
+iobj          11      0.004   0.818   0.0
+fixed         8       0.003   0.875   0.875
+appos         6       0.002   0.667   0.5
+vocative      4       0.001   0.75    0.0
+reparandum    3       0.001   1.0     0.0
+csubj         3       0.001   1.0     0.333
+dep           2       0.001   1.0     0.0
+orphan        2       0.001   1.0     0.0
+goeswith      1       0.0     0.0     0.0
+dislocated    1       0.0     1.0     0.0
+
+depfreq       n       share   uas     las
+50+           1616    0.557   0.835   0.807
+5-49          711     0.245   0.813   0.682
+1-4           354     0.122   0.771   0.624
+0             218     0.075   0.789   0.61
+
+headfreq      n       share   uas     las
+5-49          1170    0.404   0.818   0.748
+1-4           841     0.29    0.797   0.709
+0             435     0.15    0.802   0.713
+50+           274     0.095   0.796   0.668
+root          179     0.062   1.0     1.0
+
+err           n       share   
+too_near      340     0.646   
+wrong_side    112     0.213   
+too_far       74      0.141   
+
+tag           n       share   acc
+head_xpos     2899    0.2     0.5529
+head_upos     2899    0.2     0.7202
+head_trank    2899    0.2     0.6795
+head_dir      2899    0.2     0.8758
+head_dist     2899    0.2     0.6502
+score 143.8 s, run 20261030-211944 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv

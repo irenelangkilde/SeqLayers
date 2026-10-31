@@ -1,0 +1,49 @@
+=== marginal sum leftovers=true  Fri Oct 30 21:08:22 MDT 2026
+ALL         2899    0.9979  0.8444  0.7772  0.0162  1.0     
+score 361.9 s, run 20261030-211602 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== marginal sum leftovers=false  Fri Oct 30 21:16:02 MDT 2026
+ALL         2899    0.9981  0.8186  0.7392  0.0162  1.0     
+score 143.8 s, run 20261030-211944 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== marginal maxabs leftovers=true  Fri Oct 30 21:19:45 MDT 2026
+ALL         2899    0.9972  0.842   0.7785  0.0162  1.0     
+score 339.1 s, run 20261030-212652 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== marginal maxabs leftovers=false  Fri Oct 30 21:26:53 MDT 2026
+ALL         2899    0.9981  0.8134  0.7182  0.0162  1.0     
+score 117.5 s, run 20261030-213011 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== marginal weighted leftovers=true  Fri Oct 30 21:30:12 MDT 2026
+ALL         2899    0.9969  0.8427  0.7779  0.0162  1.0     
+score 350.6 s, run 20261030-213723 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== marginal weighted leftovers=false  Fri Oct 30 21:37:24 MDT 2026
+ALL         2899    0.9966  0.8092  0.7351  0.0162  1.0     
+score 102.4 s, run 20261030-214027 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== marginal sumdedup leftovers=true  Fri Oct 30 21:40:27 MDT 2026
+ALL         2899    0.9975  0.8462  0.783   0.0162  1.0     
+score 359.5 s, run 20261030-214747 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== marginal sumdedup leftovers=false  Fri Oct 30 21:47:48 MDT 2026
+ALL         2899    0.9979  0.8175  0.7485  0.0162  1.0     
+score 116.4 s, run 20261030-215103 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== inchain sum leftovers=true  Fri Oct 30 21:51:03 MDT 2026
+ALL         2899    0.9977  0.841   0.7741  0.0162  1.0     
+score 464.1 s, run 20261030-220009 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== inchain sum leftovers=false  Fri Oct 30 22:00:09 MDT 2026
+ALL         2899    0.9969  0.8117  0.7409  0.0162  1.0     
+score 188.5 s, run 20261030-220440 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== inchain maxabs leftovers=true  Fri Oct 30 22:04:41 MDT 2026
+ALL         2899    0.9964  0.8365  0.7623  0.0162  1.0     
+score 431.5 s, run 20261030-221311 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== inchain maxabs leftovers=false  Fri Oct 30 22:13:12 MDT 2026
+ALL         2899    0.9939  0.7944  0.6899  0.0162  1.0     
+score 174.0 s, run 20261030-221734 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== inchain weighted leftovers=true  Fri Oct 30 22:17:34 MDT 2026
+ALL         2899    0.9971  0.8365  0.7661  0.0162  1.0     
+score 393.6 s, run 20261030-222525 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== inchain weighted leftovers=false  Fri Oct 30 22:25:26 MDT 2026
+ALL         2899    0.9957  0.8003  0.7244  0.0162  1.0     
+score 147.1 s, run 20261030-222910 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== inchain sumdedup leftovers=true  Fri Oct 30 22:29:11 MDT 2026
+ALL         2899    0.9978  0.841   0.7737  0.0162  1.0     
+score 374.9 s, run 20261030-223643 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== inchain sumdedup leftovers=false  Fri Oct 30 22:36:44 MDT 2026
+ALL         2899    0.9972  0.8075  0.7385  0.0162  1.0     
+score 136.8 s, run 20261030-224018 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Fri Oct 30 22:40:19 MDT 2026

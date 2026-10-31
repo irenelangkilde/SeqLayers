@@ -211,6 +211,11 @@ struct ChainOpts
   chainshrink::Float64                            # > 0: the chain's log odds from Beta-shrunk step sizes (k pseudo-records); selection unchanged
   chainshrinkto::Symbol                           # chainshrink target: :prev (previous step's odds) | :gen (the step with the feature's generalization) | :prior (the final prefix toward the prior)
   lookw::Symbol                                   # accumby=look1*: supported moves by :dw (ΔW) | :int (interaction) | :min | :max of the two
+  dualchain::Symbol                               # two chains per candidate, one for positive evidence, one for negative: :off | :marginal (eligibility by a feature's marginal sign) | :inchain (by its sign in the chain)
+  dualcombine::Symbol                             # dualchain score: :sum | :maxabs | :weighted (negative chain times dualw) | :sumdedup (sum without the duplicate copies)
+  dualw::Float64                                  # dualcombine=:weighted: the negative chain's weight
+  dualturn::Symbol                                # dualchain, a feature whose sign turns: :both (it joins both chains) | :refine (turned in the picking chain only: it goes to the other chain only; turned in both: both)
+  dualleft::Bool                                  # dualchain: leftovers (context: both chains' features) on top of the combined score
   posnegseed::Symbol                              # posnegrestart's seed: :own (the top candidate's own negative steps) | :oldtop (the negatives of the candidate ranked first after the positive stage, then of the previous top)
   posnegrestart::Bool                             # stepscore=posneg: restart the top candidate's chain seeded with its negative steps, until rank 1 is stable (up to 3)
   stickbreak::Symbol                              # candidates' probabilities: :off (softmax of the log odds) | :renorm (stick-breaking in rank order) | :cond (labeled decisions: each value's odds conditioned on not the higher-ranked values, then stick-breaking)
@@ -327,11 +332,14 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
   mindevstop in (:localmin, :exhaust, :pathmin) || error("unknown mindevstop $mindevstop")
+  dualchain in (:off, :marginal, :inchain) || error("unknown dualchain $dualchain (use :off, :marginal or :inchain)")
+  dualturn in (:both, :refine) || error("unknown dualturn $dualturn (use :both or :refine)")
+  dualcombine in (:sum, :maxabs, :weighted, :sumdedup) || error("unknown dualcombine $dualcombine (use :sum, :maxabs, :weighted or :sumdedup)")
   posnegseed in (:own, :oldtop) || error("unknown posnegseed $posnegseed (use :own or :oldtop)")
   stickbreak in (:off, :renorm, :cond) || error("unknown stickbreak $stickbreak (use :off, :renorm or :cond)")
   lookw in (:dw, :int, :min, :max) || error("unknown lookw $lookw (use :dw, :int, :min or :max)")
@@ -399,7 +407,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -1823,6 +1831,84 @@ function chain_shrunk_logodds(m::ChainModel, st::ChainState, Ic, label, prior)
 end
 
 """
+Two chains for one candidate (dualchain; user's design 2026-10-30): P for positive evidence, N for negative.
+:marginal -- P's candidates are the features raising o(x) alone (vs the prior), N's those lowering it; each grows by
+maxdev within its own context (|Δ| >= tau).  :inchain -- P takes the largest positive in-chain Δ (>= tau), N the
+largest negative.  A feature whose Δ, when added, has the opposite sign of its marginal effect is added to the other
+chain too (a duplicate).  Returns (P, N, Δ of P's duplicates, Δ of N's duplicates, the slots used).
+"""
+function run_dual(m::ChainModel, Ic, label, prior, typerecs; tk = nothing)
+  rem0 = tk === nothing ? collect(eachindex(Ic)) : admitted(m, tk, Ic)
+  if tk !== nothing && haskey(m.nochain, tk)
+    nc = m.nochain[tk]
+    rem0 = [s for s in rem0 if !(s in nc)]
+  end
+  rem0 = [s for s in rem0 if Ic[s] != ABSENT]
+  root = ChainState(prior, typerecs)
+  d0 = Dict{Int,Float64}()                          # each slot's marginal effect
+  for (s, e) in zip(rem0, extend_all(m, root, 0, present_items(Ic, rem0)))
+    y, ok = update_odds(m, e, label, prior)
+    d0[s] = ok ? log(y) - log(prior) : 0.0
+  end
+  P, N = ChainState(prior, typerecs), ChainState(prior, typerecs)
+  inP, inN = Set{Int}(), Set{Int}()
+  dup = [0.0, 0.0]                                  # Δ of the duplicate copies in P, N
+  function addto!(C, inC, s, k)                     # add slot s to chain C (k: 1 = P, 2 = N) as a duplicate, if supported
+    s in inC && return
+    e = only(extend_all(m, C, depth(C), [Ic[s]]))
+    y, ok = update_odds(m, e, label, C.odds[end])
+    ok || return
+    dup[k] += log(y) - log(C.odds[end])
+    advance!(m, C, Ic[s], e, y)
+    push!(inC, s)
+  end
+  function grow!(C, sg, inC, inO, O, k)
+    while true
+      cs = [s for s in rem0 if !(s in inC) && !(s in inO) &&
+        (m.opts.dualchain == :inchain || (sg > 0 ? d0[s] > 0 : d0[s] < 0))]
+      isempty(cs) && return
+      x = C.odds[end]
+      best, bs, by, be = -Inf, 0, x, nothing
+      for (s, e) in zip(cs, extend_all(m, C, depth(C), present_items(Ic, cs)))
+        y, ok = update_odds(m, e, label, x)
+        ok || continue
+        d = log(y) - log(x)
+        sc = m.opts.dualchain == :inchain ? sg * d : abs(d)
+        sc > best && ((best, bs, by, be) = (sc, s, y, e))
+      end
+      (bs == 0 || best < m.opts.tau) && return
+      d = log(by) - log(x)
+      turned = sign(d) != sign(d0[bs]) && d0[bs] != 0
+      if turned && m.opts.dualturn == :refine
+        # refine: does it turn in the other chain too?  If not, it goes there only; if so, to both
+        eo = only(extend_all(m, O, depth(O), [Ic[bs]]))
+        yo, oko = update_odds(m, eo, label, O.odds[end])
+        if oko && sign(log(yo) - log(O.odds[end])) == sign(d0[bs])
+          advance!(m, O, Ic[bs], eo, yo)
+          push!(inO, bs)
+          continue
+        end
+      end
+      advance!(m, C, Ic[bs], be, by)
+      push!(inC, bs)
+      turned && addto!(O, inO, bs, 3 - k)              # it turned: the other chain too
+    end
+  end
+  grow!(P, 1, inP, inN, N, 1)
+  grow!(N, -1, inN, inP, P, 2)
+  P, N, dup[1], dup[2], union(inP, inN)
+end
+
+"The dualchain score of a candidate: P's and N's changes from the prior combined by dualcombine (log odds)."
+function dual_score(m::ChainModel, P, N, dupP, dupN, prior)
+  lp = log(prior)
+  dP, dN = log(P.odds[end]) - lp, log(N.odds[end]) - lp
+  c = m.opts.dualcombine
+  lp + (c == :sum ? dP + dN : c == :maxabs ? (abs(dP) >= abs(dN) ? dP : dN) :
+    c == :weighted ? dP + m.opts.dualw * dN : dP + dN - dupP - dupN)
+end
+
+"""
 Log-odds of a finished chain plus the corrections from its leftover slots.  Each leftover's
 correction comes from the deepest prefix that supports it; the leftovers still open at a depth
 are counted together, and the corrections are added in slot order.
@@ -3161,6 +3247,26 @@ function chain_scores(m::ChainModel, st::State, key::AgendaKey)
     logodds(run_maxdev_rounds(m, I, labels, priors, tr; tk)...)
   elseif m.opts.select == :maxdev
     fstates = Vector{Any}(nothing, length(cands))     # (stickbreak = :cond) each candidate's final chain state
+    if m.opts.dualchain != :off
+      # two chains per candidate; leftovers (dualleft) in the context of both chains' features, on the combined score
+      dscores = map(eachindex(cands)) do c
+        P, N, dP, dN, used = run_dual(m, I[c], labels[c], priors[c], tr; tk)
+        sc = dual_score(m, P, N, dP, dN, priors[c])
+        m.opts.dualleft || return sc
+        U = ChainState(priors[c], tr)
+        for x in unique([P.members; N.members])
+          e = only(extend_all(m, U, depth(U), [x]))
+          y, ok = update_odds(m, e, labels[c], U.odds[end])
+          ok && advance!(m, U, x, e, y)
+        end
+        rem = [s for s in (tk === nothing ? collect(eachindex(I[c])) : admitted(m, tk, I[c])) if !(s in used) && !(I[c][s] in U.members)]
+        sc + chain_logodds(m, U, I[c], labels[c], priors[c], rem) - log(U.odds[end])
+      end
+      m.opts.stickbreak != :off && (dscores = stickbreak_scores(m, dscores, labels, nothing, tk, d.labeled))
+      length(m.memo) >= MAXMEMO && empty!(m.memo)
+      m.memo[memokey] = copy(dscores)
+      return (cands, dscores)
+    end
     chains = [run_single(m, I[c], labels[c], priors[c], tr; tk) for c in eachindex(cands)]
     if m.opts.posnegrestart && length(cands) > 1
       # restart the top candidate's chain seeded with its own negative steps (then posneg again), until the top
