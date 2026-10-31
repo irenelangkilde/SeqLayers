@@ -576,7 +576,10 @@ relations point at the same token -- 1 same, 2 different, pending if a side isn'
   3 t's left neighbour is attached to c                   4 t's right neighbour is attached to c
   5 c's head is t's left neighbour                        6 c's head is t's right neighbour
 """
-function idxeq_items(st, t, c)
+idxeq_items(st, t, c) = UInt64[item(v, (IDXEQ_TAG, j, v)) for (j, v) in enumerate(idxeq_values(st, t, c))]
+
+"The values behind idxeq_items (1 same, 2 different, PENDING), in item order."
+function idxeq_values(st, t, c)
   toks = st.layers[:token]
   ln, rn = adjacent_token(st, t, -1), adjacent_token(st, t, 1)
   ok(u) = u != PENDING && u != NONE
@@ -593,7 +596,6 @@ function idxeq_items(st, t, c)
     rn == PENDING || neighbourhead(rn) == PENDING ? PENDING : same(ok(rn) && neighbourhead(rn) == c),
     ln == PENDING || ch == PENDING ? PENDING : same(ok(ln) && ch == ln),
     rn == PENDING || ch == PENDING ? PENDING : same(ok(rn) && ch == rn)]
-  UInt64[item(v, (IDXEQ_TAG, j, v)) for (j, v) in enumerate(vals)]
 end
 const TRANK_TAG = hash("token.attach.treerank")
 
@@ -873,22 +875,30 @@ relation_dir(st, t, u) = u == PENDING || u == NONE ? u :
   UInt32(st.layers[:token][:first_char, Int(u)] < st.layers[:token][:first_char, t] ? 1 : 2)
 
 """
+The values behind hypothetical_sibling_items, in item order: (kind, field, value) with field :upos, :deprel, :dist
+or :dir.
+"""
+function hypothetical_sibling_values(st, t, c, f::RelFlags = RELPLAIN)
+  toks = st.layers[:token]
+  out = Tuple{Symbol,Symbol,UInt32}[]
+  for kind in SIB_KINDS
+    u = f == RELPLAIN ? (c == NONE ? PENDING : sibling_of(st, t, c, kind)) : sibling_value(st, t, c, kind, f)
+    nv = u == PENDING || u == NONE                     # (no sibling token: its upos and deprel are the same value)
+    push!(out, (kind, :upos, nv ? u : toks[:upos, Int(u)]), (kind, :deprel, nv ? u : toks[:deprel, Int(u)]),
+      (kind, :dist, relation_dist(st, t, u)))
+    kind in DIR_KINDS && push!(out, (kind, :dir, relation_dir(st, t, u)))
+  end
+  out
+end
+
+"""
 Items for the siblings t would have under candidate head c: for each kind, its upos, deprel and
 distance from t (and the direction for inner and outer siblings).
 """
 function hypothetical_sibling_items(st, t, c, f::RelFlags = RELPLAIN)
-  toks = st.layers[:token]
   items = UInt64[]
-  j = 0
-  for kind in SIB_KINDS
-    u = f == RELPLAIN ? (c == NONE ? PENDING : sibling_of(st, t, c, kind)) : sibling_value(st, t, c, kind, f)
-    nv = u == PENDING || u == NONE                     # (no sibling token: its upos and deprel are the same value)
-    vals = UInt32[nv ? u : toks[:upos, Int(u)], nv ? u : toks[:deprel, Int(u)], relation_dist(st, t, u)]
-    kind in DIR_KINDS && push!(vals, relation_dir(st, t, u))
-    for v in vals
-      j += 1
-      push!(items, item(v, (SIB_TAG, j, v)))
-    end
+  for (j, (_, _, v)) in enumerate(hypothetical_sibling_values(st, t, c, f))
+    push!(items, item(v, (SIB_TAG, j, v)))
   end
   items
 end

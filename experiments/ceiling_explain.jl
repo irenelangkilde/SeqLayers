@@ -97,9 +97,32 @@ function slotdesc(st, t, c, sl)
   end
   lp = S.LINKPATHS[st.layers[:token].spec]
   a = (sl - 3) ÷ 2 + 1
-  if a > length(lp)
-    k = sl - 2 - 2 * length(lp) - (cfg["relations"] == "true" ? 14 : 0)
-    cfg["treerank"] == "true" && k == 1 && return "cand.treerank=" * (c == NONE ? "root" : string(S.tree_rank(st, t, c)))
+  if a > length(lp)                                # the items appended after the link paths, in specs order
+    k = sl - 2 - 2 * length(lp)
+    if cfg["relations"] == "true"                  # hypothetical siblings under c (14 items)
+      if k <= 14
+        f = S.RelFlags(cfg["relbounded"] == "true", cfg["relnone"] == "true")
+        kind, field, v = S.hypothetical_sibling_values(st, t, c, f)[k]
+        kn = replace(String(kind), "_sibling" => "")
+        val = v == PENDING ? "?" : v == NONE ? "none" : field == :upos ? S.TAGSETS[:upos][v] : field == :deprel ? S.DEPRELS[v] :
+          field == :dir ? (v == 1 ? "left" : "right") : ("1", "2", "3-5", "6-10", "11+")[v]
+        return "hypsib.$kn.$field=$val"
+      end
+      k -= 14
+    end
+    if cfg["treerank"] == "true"
+      k == 1 && return "cand.treerank=" * (c == NONE ? "root" : string(S.tree_rank(st, t, c)))
+      k -= 1
+    end
+    if cfg["idxeq"] == "true"
+      if k <= 6
+        names = ("tok.right_neighbor=cand.depleft1", "tok.left_neighbor=cand.depright1", "tok.left_neighbor.head=cand",
+          "tok.right_neighbor.head=cand", "cand.head=tok.left_neighbor", "cand.head=tok.right_neighbor")
+        v = S.idxeq_values(st, t, c)[k]
+        return "idxeq:" * names[k] * "?" * (v == PENDING ? "unknown" : v == 1 ? "yes" : "no")
+      end
+      k -= 6
+    end
     return "slot $sl"
   end
   side, u = isodd(sl - 3) ? ("cand", c) : ("dep", UInt32(t))
