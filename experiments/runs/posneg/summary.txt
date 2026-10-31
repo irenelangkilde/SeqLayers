@@ -1,0 +1,9 @@
+=== stepscore=posneg  Fri Oct 30 18:36:44 MDT 2026
+ALL         2899    0.9987  0.8558  0.7951  0.0162  1.0     
+score 358.4 s, run 20261030-184418 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== stepscore=posnegprior  Fri Oct 30 18:44:18 MDT 2026
+ALL         2899    0.9988  0.8486  0.7858  0.0162  1.0     
+score 1067.4 s, run 20261030-190325 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== stepscore=signed  Fri Oct 30 19:03:26 MDT 2026
+ALL         2899    0.9987  0.8537  0.7899  0.0162  1.0     
+score 678.4 s, run 20261030-191605 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv

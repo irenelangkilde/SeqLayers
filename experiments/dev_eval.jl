@@ -201,7 +201,9 @@
 #                adaptive (at least max(1, min(minctx, chain length + redundant pool)))
 #   stepscore    maxdev chain step score: abs (|log y - log x|) | signed (log y - log x: the feature
 #                that raises the odds most) | maxmin (smallest |log y - log o| over the chain's odds so far) |
-#                maxmin2 (the same with the counts smoothed toward each o in turn)
+#                maxmin2 (the same with the counts smoothed toward each o in turn) | posneg / posnegprior (the step
+#                raising the odds most, by tau; when none, the one lowering them most below the chain's odds / below
+#                the prior, by tau, then raising again)
 #   lockstep     maxdev chains: none (each candidate's chain runs to the end) | top2 (only the two
 #                leading candidates advance; see run_top2 in chain.jl)
 #   pairsteps    maxdev chain steps may add a precomputed pair (joint tables, jointmin) in one step,

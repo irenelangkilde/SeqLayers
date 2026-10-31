@@ -165,7 +165,7 @@ struct ChainOpts
   gate::Float64
   redundant::Bool                                 # greedy: redundant features join the leftovers' conditioning pool
   ctxchain::Bool                                  # greedy: a leftover's context has exactly as many features as the chain
-  stepscore::Symbol                               # :maxdev step score: :abs |Δ|, :signed Δ (raise the odds most), :maxmin, :maxmin2
+  stepscore::Symbol                               # :maxdev step score: :abs |Δ|, :signed Δ (raise the odds most), :maxmin, :maxmin2, :posneg / :posnegprior (raise the odds most; when no step raises them by tau, the one lowering them most below the chain / the prior)
   top2::Bool                                      # :maxdev: only the two leading candidates' chains advance (run_top2)
   contest::Bool                                   # re-decide the top two by a contest chain on their odds ratio (contest!)
   pickfewest::Int                                 # >0: of the k best-scoring features passing tau, take the one with fewest records
@@ -337,7 +337,8 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs, :look1red, :look1ind, :look1nonred, :look1int) ||
     error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc or :bfs, :look1red, :look1ind, :look1nonred, :look1int)")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
-  stepscore in (:abs, :signed, :maxmin, :maxmin2) || error("unknown stepscore $stepscore (use :abs, :signed, :maxmin or :maxmin2)")
+  stepscore in (:abs, :signed, :maxmin, :maxmin2, :posneg, :posnegprior) ||
+    error("unknown stepscore $stepscore (use :abs, :signed, :maxmin, :maxmin2, :posneg or :posnegprior)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
   poolmarginal in (:off, :leftover, :drop) || error("unknown poolmarginal $poolmarginal (use :off, :leftover or :drop)")
   pairorder in (:slot, :maxdev) || error("unknown pairorder $pairorder (use :slot or :maxdev)")
@@ -1284,18 +1285,24 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
   rec = m.opts.poolsigma > 0 && m.opts.poolmode == :local && target === nothing
   alts = rec ? Dict{UInt64,Float64}() : nothing    # every supported alternative's odds at this step
   single = Dict{Int,Tuple{Any,Float64,Float64}}()   # with pairsteps: slot -> (entry, odds, score) of supported singles
+  negfall = m.opts.stepscore in (:posneg, :posnegprior)
+  nbest, nbs, nby, nbe = -Inf, 0, x, nothing
   for (s, e) in zip(slots, extend_all(m, st, depth(st), present_items(Ic, slots); cap))
     y, ok = update_odds(m, e, label, x; pn)
     tr === nothing || push!(tr, (s, ok ? abs(log(y) - log(x)) : NaN, total(e[2])))
     ok || continue
     sc = target !== nothing ? abs(log(x) - log(target)) - abs(log(y) - log(target)) :
-      m.opts.stepscore == :signed ? log(y) - log(x) :                      # the feature that raises the odds most
+      m.opts.stepscore in (:signed, :posneg, :posnegprior) ? log(y) - log(x) :   # the feature that raises the odds most
       m.opts.stepscore == :maxmin ? minimum(o -> abs(log(y) - log(o)), st.odds) :   # away from every earlier stage
       m.opts.stepscore == :maxmin2 ? maxmin2(e, label, st.odds) :                    # ...each smoothed toward that stage
       abs(log(y) - log(x))
     usepairs && (single[s] = (e, y, sc))
     rec && (alts[Ic[s]] = y)
     s in nosingle && continue                       # (pairsfirst: joins only as a pair member)
+    if negfall && target === nothing                 # posneg(prior): the fallback, the step lowering the odds most
+      nsc = m.opts.stepscore == :posneg ? log(x) - log(y) : log(st.odds[1]) - log(y)   # below the chain / the prior
+      nsc > nbest && ((nbest, nbs, nby, nbe) = (nsc, s, y, e))
+    end
     sc > best && ((best, bs, by, be) = (sc, s, y, e))
     k > 0 && sc >= m.opts.tau && push!(passing, (sc, s, y, e))
   end
@@ -1324,6 +1331,8 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
     top = sort!(passing; by = p -> -p[1])[1:min(k, end)]
     (_, bs, by, be) = top[argmin([(total(p[4][2]), -p[1]) for p in top])]
   end
+  # posneg(prior): no step raises the odds by tau -- take the one lowering them most, if by tau (then raising again)
+  negfall && !exhaust && best < m.opts.tau && nbest >= m.opts.tau && pair === nothing && ((best, bs, by, be) = (nbest, nbs, nby, nbe))
   stop = (bs == 0 && pair === nothing) || (!exhaust && best < m.opts.tau)
   tr === nothing || CHAIN_TRACE[](:step, (cand = CHAIN_TRACE_CAND[], before = x, tried = tr,
     chosen = stop ? 0 : bs, after = stop ? x : by))

@@ -314,6 +314,10 @@ end
       mp.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
+    for ss in (:posneg, :posnegprior)
+      mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, stepscore = ss)
+      @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
+    end
     for sb in (:renorm, :cond)
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, stickbreak = sb)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
