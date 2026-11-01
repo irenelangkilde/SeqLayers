@@ -216,6 +216,10 @@ struct ChainOpts
   dualw::Float64                                  # dualcombine=:weighted: the negative chain's weight
   dualturn::Symbol                                # dualchain, a feature whose sign turns: :both (it joins both chains) | :refine (turned in the picking chain only: it goes to the other chain only; turned in both: both)
   dualleft::Bool                                  # dualchain: leftovers (context: both chains' features) on top of the combined score
+  leftwback::Float64                              # > 0: accum leftover corrections times exp(-(l_i - l_0)^2 / leftwback), l_i the chosen context's log odds, l_0 the starting context's
+  leftwovl::Bool                                  # accum leftover corrections times 1 - their largest overlap with a counted feature outside the context, (Δe + Δa - Δea) / min(|Δe|, |Δa|) over all records
+  leftwcomb::Symbol                               # both weights on: :prod | :min | :max
+  wselcomb::Symbol                                # accumby=:wsel: each leftover's backoff move by the largest :min or :sum of w_back (N = leftwback, 1 if 0) and w_ovl
   posnegonly::Symbol                              # posneg / posnegrestart for :all decisions, :attach (unlabeled decisions) only, or :heads (attachment and head properties) -- the others then use :abs chains
   posnegafter::Bool                               # posnegrestart: pick the candidate to restart by its full score (chain + leftovers), recomputing its leftovers after each restart
   posnegleftneg::Bool                             # posnegafter: also seed with the leftovers whose correction was negative for it (after the chain negatives)
@@ -335,7 +339,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms, :maxpos, :maxabsscore, :maxposneg) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
@@ -344,13 +348,15 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   dualturn in (:both, :refine) || error("unknown dualturn $dualturn (use :both or :refine)")
   dualcombine in (:sum, :maxabs, :weighted, :sumdedup) || error("unknown dualcombine $dualcombine (use :sum, :maxabs, :weighted or :sumdedup)")
   posnegseed in (:own, :oldtop, :reorder, :reorderabs) || error("unknown posnegseed $posnegseed (use :own, :oldtop, :reorder or :reorderabs)")
+  wselcomb in (:min, :sum) || error("unknown wselcomb $wselcomb (use :min or :sum)")
+  leftwcomb in (:prod, :min, :max) || error("unknown leftwcomb $leftwcomb (use :prod, :min or :max)")
   posnegonly in (:all, :attach, :heads) || error("unknown posnegonly $posnegonly (use :all, :attach or :heads)")
   stickbreak in (:off, :renorm, :cond) || error("unknown stickbreak $stickbreak (use :off, :renorm or :cond)")
   lookw in (:dw, :int, :min, :max) || error("unknown lookw $lookw (use :dw, :int, :min or :max)")
   chainshrinkto in (:prev, :gen, :prior) || error("unknown chainshrinkto $chainshrinkto (use :prev, :gen or :prior)")
   depmeasure in (:yule, :pmi, :pmipos) || error("unknown depmeasure $depmeasure (use :yule, :pmi or :pmipos)")
-  accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs, :look1red, :look1ind, :look1nonred, :look1int) ||
-    error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc or :bfs, :look1red, :look1ind, :look1nonred, :look1int)")
+  accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs, :look1red, :look1ind, :look1nonred, :look1int, :wsel) ||
+    error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc or :bfs, :look1red, :look1ind, :look1nonred, :look1int, :wsel)")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
   stepscore in (:abs, :signed, :maxmin, :maxmin2, :posneg, :posnegprior, :negpos) ||
     error("unknown stepscore $stepscore (use :abs, :signed, :maxmin, :maxmin2, :posneg, :posnegprior or :negpos)")
@@ -411,7 +417,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -2671,6 +2677,37 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       push!(p, (brr, bcc))
       true
     end
+    # (leftwback) the starting context's log odds: the chain and the taken leftovers at their most specific (T if unsupported)
+    l0 = if m.opts.leftwback > 0 || m.opts.accumby == :wsel
+      c1 = build(ones(Int, length(ladders)))
+      c1 === nothing || c1[2] === nothing ? T : log(c1[1].odds[end])
+    else
+      T
+    end
+    # accumby :wsel (user's design 2026-10-31): each leftover its own path; each move by the largest combination (min or
+    # sum) of w_back = exp(-(l(C') - l_0)^2 / N) and w_ovl (1 - the leftover's largest overlap with a counted feature C'
+    # leaves out)
+    function wstep!(p, X)
+      r = p[end][1]
+      N = m.opts.leftwback > 0 ? m.opts.leftwback : 1.0
+      counted = union(st.members, taken)
+      bsc, brr, bcc = -Inf, nothing, nothing
+      for i in eachindex(ladders)
+        r[i] <= length(ladders[i]) || continue
+        r[i] == length(ladders[i]) && !maydrop(r, i) && continue
+        r2 = copy(r); r2[i] += 1
+        c = build(r2)
+        c === nothing && continue
+        li = c[2] === nothing ? log(prior) : log(c[1].odds[end])
+        wb = exp(-(li - l0)^2 / N)
+        wo = overlap_weight(m, base, X, setdiff(counted, items(r2)), label, prior)
+        sc = m.opts.wselcomb == :min ? min(wb, wo) : wb + wo
+        sc > bsc && ((bsc, brr, bcc) = (sc, r2, c))
+      end
+      brr === nothing && return false
+      push!(p, (brr, bcc))
+      true
+    end
     bestX, bestc, bestk, bestr = 0, 0.0, 0, Int[]
     # accumby :depodds: X's marginal correction |log o(x | X) - log o(x)| (0 if unsupported)
     function margsigned(X)                          # log o(x | X) - log o(x) (0 if unsupported)
@@ -2700,6 +2737,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       xstep! = m.opts.accumby in (:odds, :bfs) ? (m.opts.accumby == :bfs && bfsr !== nothing ? (p -> false) : step!) : m.opts.accumby in (:dep, :depodds) ? (p -> depstep!(p, X, imp)) :
         m.opts.accumby == :marg ? (p -> margstep!(p, log(prior) + margsigned(X))) :
         m.opts.accumby in (:mintw, :mintwc) ? (p -> twstep!(p, X)) : m.opts.accumby in (:look1red, :look1ind, :look1nonred, :look1int) ? (p -> lookstep!(p, X, A)) :
+        m.opts.accumby == :wsel ? (p -> wstep!(p, X)) :
         (p -> mdstep!(p, X, A))
       k = 1
       k0, xc, xk, xv = 0, 0.0, 0, 0.0                 # (accumwin: the first supported step, and the smallest |correction| since)
@@ -2794,6 +2832,19 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       end
       # depweight: scaled by 1 - X's strongest dependence on a counted feature (chain, taken) outside its context
       m.opts.depweight && (xc *= depweight(m, base, X, setdiff(union(st.members, taken), items(xr)), label, prior))
+      # leftover weights (user's design 2026-10-31): backoff -- how far the chosen context's log odds drifted from the
+      # starting context's; overlap -- the largest share of X's effect it shares with a counted feature outside its context
+      if m.opts.leftwback > 0 || m.opts.leftwovl
+        wb, wo = 1.0, 1.0
+        if m.opts.leftwback > 0
+          cx = build(xr)
+          li = cx === nothing || cx[2] === nothing ? log(prior) : log(cx[1].odds[end])
+          wb = exp(-(li - l0)^2 / m.opts.leftwback)
+        end
+        m.opts.leftwovl && (wo = overlap_weight(m, base, X, setdiff(union(st.members, taken), items(xr)), label, prior))
+        xc *= m.opts.leftwback > 0 && m.opts.leftwovl ?
+          (m.opts.leftwcomb == :prod ? wb * wo : m.opts.leftwcomb == :min ? min(wb, wo) : max(wb, wo)) : wb * wo
+      end
       # X's correction in its chosen context; the X with the largest |correction| is taken
       (abs(xc) > abs(bestc) || bestX == 0) && ((bestX, bestc, bestk, bestr) = (pi_, xc, xk, xr))
     end
@@ -2908,6 +2959,24 @@ function pair_corr(m::ChainModel, base, W::UInt64, a::UInt64, label::UInt32, pri
   eW = only(extend_all(m, S, depth(S), [W]))
   y, ok = update_odds(m, eW, label, x)
   PAIRCORR[key] = ok ? log(y) - log(x) : NaN
+end
+
+"""
+leftwovl: 1 - X's largest overlap with a feature in `counted`, overlap(X, a) = (ΔX + Δa - ΔXa) / min(|ΔX|, |Δa|) with Δ
+changes in log odds from the prior over all records (ΔXa = Δa + corr(X | a)), clamped to [0, 1]; 1 if none is known.
+"""
+function overlap_weight(m::ChainModel, base, X, counted, label, prior)
+  dx = pair_corr(m, base, X, UInt64(0), label, prior)
+  (isnan(dx) || dx == 0) && return 1.0
+  w = 1.0
+  for a in counted
+    da = pair_corr(m, base, a, UInt64(0), label, prior)
+    cxa = pair_corr(m, base, X, a, label, prior)
+    (isnan(da) || isnan(cxa) || da == 0) && continue
+    ov = (dx - cxa) / min(abs(dx), abs(da))          # (ΔX + Δa - ΔXa, with ΔXa = Δa + corr(X | a))
+    w = min(w, clamp(1 - ov, 0.0, 1.0))
+  end
+  w
 end
 
 "depweight: 1 - the largest ρ(X, a) over features `counted` (0 if X goes with one completely)."
