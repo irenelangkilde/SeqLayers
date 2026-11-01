@@ -1,0 +1,14 @@
+=== posneg prodprops=head_xpos,head_dir  Sun Nov  1 00:03:49 UTC 2026
+ALL         2899    0.9977  0.8506  0.8034  0.0162  1.0     
+score 224.3 s, run 20261101-001045 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== posneg prodprops=head_xpos,head_dir,head_trank  Sun Nov  1 00:10:46 UTC 2026
+ALL         2899    0.9977  0.8465  0.7972  0.0162  1.0     
+score 195.3 s, run 20261101-001653 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== idxeq prodprops=head_xpos,head_dir  Sun Nov  1 00:16:54 UTC 2026
+recorded events in 570.8 s
+ALL         2899    0.9977  0.8524  0.802   0.0162  1.0     
+score 229.8 s, run 20261101-003348 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== idxeq prodprops=head_xpos,head_dir,head_trank  Sun Nov  1 00:33:49 UTC 2026
+ALL         2899    0.9977  0.8544  0.8027  0.0162  1.0     
+score 150.0 s, run 20261101-003956 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Sun Nov  1 00:39:57 UTC 2026
