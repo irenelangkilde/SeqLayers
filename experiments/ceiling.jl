@@ -151,6 +151,10 @@ function ceiling_main(cfg)
     pp, cc = get(a, :lw_pair, 0) / 1000, get(a, :lw_ctx, 0) / 1000
     println("lookwback: $(round(Int, pp + cc)) interactions -- pairwise $(round(pp / (pp + cc); digits = 3)), context (or blended) $(round(cc / (pp + cc); digits = 3))")
   end
+  if get(a, :il_chain, 0) + get(a, :il_left, 0) > 0   # interleave: who won the steps while the chain ran
+    ic, il = a[:il_chain] / 1000, get(a, :il_left, 0) / 1000
+    println("interleave: $(round(Int, ic + il)) steps while the chain ran -- chain $(round(ic / (ic + il); digits = 3)), leftover $(round(il / (ic + il); digits = 3))")
+  end
   if (nt = sum(get(a, Symbol(:tuple, k), 0.0) for k in 1:3)) > 0   # tuplek / tuplemin: the first step's tuple sizes
     println("tuple first steps: ", join(["$k $(round(get(a, Symbol(:tuple, k), 0.0) / nt; digits = 3))" for k in 3:-1:1], ", "))
   end
