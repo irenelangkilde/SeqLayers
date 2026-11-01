@@ -1,0 +1,25 @@
+=== wselcomb=sum wselmove=weights wselweight=true  Sat Oct 31 20:20:50 MDT 2026
+ALL         2899    0.999   0.8482  0.7951  0.0162  1.0     
+double counting: 117932 leftovers taken, 0.655 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.61; mean |corr| 0.305
+score 226.9 s, run 20261031-202559 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== wselcomb=sum wselmove=wcorr wselweight=false  Sat Oct 31 20:26:00 MDT 2026
+ALL         2899    0.9988  0.8482  0.7906  0.0162  1.0     
+double counting: 118818 leftovers taken, 0.58 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.565; mean |corr| 0.387
+score 355.6 s, run 20261031-203319 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== wselcomb=sum wselmove=wcorr wselweight=true  Sat Oct 31 20:33:19 MDT 2026
+ALL         2899    0.9987  0.8462  0.7917  0.0162  1.0     
+double counting: 118557 leftovers taken, 0.579 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.547; mean |corr| 0.277
+score 352.0 s, run 20261031-204551 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== wselcomb=min wselmove=weights wselweight=true  Sat Oct 31 20:45:51 MDT 2026
+ALL         2899    0.9987  0.8451  0.7899  0.0162  1.0     
+double counting: 87068 leftovers taken, 0.595 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.569; mean |corr| 0.298
+score 445.9 s, run 20261031-205446 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== wselcomb=min wselmove=wcorr wselweight=false  Sat Oct 31 20:54:47 MDT 2026
+ALL         2899    0.9988  0.8465  0.793   0.0162  1.0     
+double counting: 113523 leftovers taken, 0.575 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.56; mean |corr| 0.37
+score 358.7 s, run 20261031-210721 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== wselcomb=min wselmove=wcorr wselweight=true  Sat Oct 31 21:07:21 MDT 2026
+ALL         2899    0.9987  0.8441  0.7903  0.0162  1.0     
+double counting: 86476 leftovers taken, 0.526 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.512; mean |corr| 0.27
+score 309.3 s, run 20261031-211356 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Sat Oct 31 21:13:57 MDT 2026

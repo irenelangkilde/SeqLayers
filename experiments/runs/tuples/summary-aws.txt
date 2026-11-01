@@ -1,0 +1,14 @@
+=== start Sun Nov  1 02:57:56 UTC 2026
+=== tuplek=4
+ALL         2899    0.9987  0.8468  0.7937  0.0162  1.0     
+tuple first steps: 3 0.954, 2 0.019, 1 0.027
+score 286.5 s, run 20261101-030621 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== tuplek=6
+ALL         2899    0.998   0.8458  0.7917  0.0162  1.0     
+tuple first steps: 3 0.96, 2 0.013, 1 0.027
+score 349.6 s, run 20261101-030639 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== tuplemin=1.0
+ALL         2899    0.9986  0.851   0.7986  0.0162  1.0     
+tuple first steps: 3 0.722, 2 0.139, 1 0.139
+score 362.8 s, run 20261101-030715 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Sun Nov  1 03:07:17 UTC 2026

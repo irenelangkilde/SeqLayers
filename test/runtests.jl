@@ -292,10 +292,10 @@ end
     # every option lands in its own ChainOpts field (positional constructor)
     mo = ChainModel(dir; select = :maxdev, leftovers = :greedy, mincount = 1, ctxmode = :accum, greedymin = true, greedysel = false,
       driftsigma = 0.25, drifttau = 0.5, driftstep = 0.75, distback = true, shrink = 7.0, accumwin = 3, accumreset = true, cidrop = 0.125,
-      shrinkleft = 9.0, leftmin2 = 4, depmeasure = :pmi, mindevtau = 0.3, mindevstop = :pathmin, explainpool = true, chainshrink = 20.0, chainshrinkto = :gen, chainsel = 2.5, lookw = :max, lookwsmooth = 5.0, lookwback = 5.0, lookwsoft = true, stickbreak = :cond, posnegrestart = true, posnegseed = :oldtop, dualchain = :inchain, dualcombine = :sumdedup, dualw = 0.25, dualleft = false, dualturn = :refine, posnegafter = true, posnegleftneg = true, posnegonly = :attach, leftwback = 2.0, leftwovl = true, leftwcomb = :min, wselcomb = :min)
+      shrinkleft = 9.0, leftmin2 = 4, depmeasure = :pmi, mindevtau = 0.3, mindevstop = :pathmin, explainpool = true, chainshrink = 20.0, chainshrinkto = :gen, chainsel = 2.5, lookw = :max, lookwsmooth = 5.0, lookwback = 5.0, lookwsoft = true, stickbreak = :cond, posnegrestart = true, posnegseed = :oldtop, dualchain = :inchain, dualcombine = :sumdedup, dualw = 0.25, dualleft = false, dualturn = :refine, posnegafter = true, posnegleftneg = true, posnegonly = :attach, leftwback = 2.0, leftwovl = true, leftwcomb = :min, wselcomb = :min, wselmove = :wcorr, wselweight = true, tuplek = 6, tuplemin = 1.5)
     o = mo.opts
     @test (o.greedymin, o.greedysel, o.driftsigma, o.drifttau, o.driftstep, o.distback, o.shrink, o.accumwin, o.accumreset, o.cidrop,
-      o.shrinkleft, o.leftmin2, o.depmeasure, o.mindevtau, o.mindevstop, o.explainpool, o.chainshrink, o.chainshrinkto, o.chainsel, o.lookw, o.lookwsmooth, o.lookwback, o.lookwsoft, o.stickbreak, o.posnegrestart, o.posnegseed, o.dualchain, o.dualcombine, o.dualw, o.dualleft, o.dualturn, o.posnegafter, o.posnegleftneg, o.posnegonly, o.leftwback, o.leftwovl, o.leftwcomb, o.wselcomb) == (true, false, 0.25, 0.5, 0.75, true, 7.0, 3, true, 0.125, 9.0, 4, :pmi, 0.3, :pathmin, true, 20.0, :gen, 2.5, :max, 5.0, 5.0, true, :cond, true, :oldtop, :inchain, :sumdedup, 0.25, false, :refine, true, true, :attach, 2.0, true, :min, :min)
+      o.shrinkleft, o.leftmin2, o.depmeasure, o.mindevtau, o.mindevstop, o.explainpool, o.chainshrink, o.chainshrinkto, o.chainsel, o.lookw, o.lookwsmooth, o.lookwback, o.lookwsoft, o.stickbreak, o.posnegrestart, o.posnegseed, o.dualchain, o.dualcombine, o.dualw, o.dualleft, o.dualturn, o.posnegafter, o.posnegleftneg, o.posnegonly, o.leftwback, o.leftwovl, o.leftwcomb, o.wselcomb, o.wselmove, o.wselweight, o.tuplek, o.tuplemin) == (true, false, 0.25, 0.5, 0.75, true, 7.0, 3, true, 0.125, 9.0, 4, :pmi, 0.3, :pathmin, true, 20.0, :gen, 2.5, :max, 5.0, 5.0, true, :cond, true, :oldtop, :inchain, :sumdedup, 0.25, false, :refine, true, true, :attach, 2.0, true, :min, :min, :wcorr, true, 6, 1.5)
     for (cs, to, zs) in ((20.0, :prev, 0.0), (20.0, :gen, 0.0), (20.0, :prior, 0.0), (0.0, :prev, 2.6))
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum,
         chainshrink = cs, chainshrinkto = to, chainsel = zs)
@@ -350,9 +350,35 @@ end
       @test sum(exp.(lp)) ≈ 1
       @test argmax(lp) == 1
     end
-    for wcomb in (:min, :sum)
+    for (tk_, tm) in ((6, 0.0), (0, 1.0), (4, 0.5), (1, 0.0))
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum,
-        accumby = :wsel, wselcomb = wcomb)
+        tuplek = tk_, tuplemin = tm)
+      mp.generalize = SeqLayers.generalization_slots(specs)
+      SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()
+      try
+        @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
+        dc = SeqLayers.DC_STATS[]
+        @test !haskey(dc, :tuple0)                     # a tuple step that runs adds 1-3 members
+        @test tk_ == 1 ? isempty(keys(dc) ∩ (:tuple2, :tuple3)) && get(dc, :tuple1, 0) > 0 : get(dc, :tuple3, 0) > 0
+      finally
+        SeqLayers.DC_STATS[] = nothing
+      end
+    end
+    # the tuple step adds 1-3 members at depth 0 only, all from the candidate's slots
+    let mp = ChainModel(dir; select = :maxdev, mincount = 1, tuplek = 6)
+      tk = first(k for (k, v) in mp.typerecs if length(v) > 20)
+      r = mp.recs[mp.typerecs[tk][1]]
+      st = SeqLayers.ChainState(SeqLayers.priorodds(mp, SeqLayers.lpriorkey(tk, r.label)), mp.typerecs[tk])
+      Ic = mp.items[r.start:r.start+r.n-1]
+      rem = collect(eachindex(Ic))
+      added = SeqLayers.tuple_step!(mp, st, Ic, r.label, rem, tk)
+      @test added == (SeqLayers.depth(st) > 0)
+      @test SeqLayers.depth(st) <= 3 && all(x -> x in Ic, st.members) && length(rem) == length(Ic) - SeqLayers.depth(st)
+      @test !SeqLayers.tuple_step!(mp, st, Ic, r.label, rem, tk) || SeqLayers.depth(st) == 0
+    end
+    for wcomb in (:min, :sum), wm in (:weights, :wcorr), ww in (false, true)
+      mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum,
+        accumby = :wsel, wselcomb = wcomb, wselmove = wm, wselweight = ww)
       mp.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end

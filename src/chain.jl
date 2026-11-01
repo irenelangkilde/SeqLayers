@@ -220,6 +220,10 @@ struct ChainOpts
   leftwovl::Bool                                  # accum leftover corrections times 1 - their largest overlap with a counted feature outside the context, (Δe + Δa - Δea) / min(|Δe|, |Δa|) over all records
   leftwcomb::Symbol                               # both weights on: :prod | :min | :max
   wselcomb::Symbol                                # accumby=:wsel: each leftover's backoff move by the largest :min or :sum of w_back (N = leftwback, 1 if 0) and w_ovl
+  wselmove::Symbol                                # accumby=:wsel: moves by :weights alone, or :wcorr (among moves supporting the leftover the largest |w * corr|; else the weights)
+  wselweight::Bool                                # accumby=:wsel: the leftover's correction times w of its chosen context (min, or sum / 2)
+  tuplek::Int                                     # > 0: a :maxdev chain's first step adds the best tuple (triple, else pair, else single) of its tuplek largest single steps (see tuple_step!)
+  tuplemin::Float64                               # > 0: the tuple pool is the features whose single step reaches tuplemin (and tau; with tuplek too: the tuplek largest of them)
   posnegonly::Symbol                              # posneg / posnegrestart for :all decisions, :attach (unlabeled decisions) only, or :heads (attachment and head properties) -- the others then use :abs chains
   posnegafter::Bool                               # posnegrestart: pick the candidate to restart by its full score (chain + leftovers), recomputing its leftovers after each restart
   posnegleftneg::Bool                             # posnegafter: also seed with the leftovers whose correction was negative for it (after the chain negatives)
@@ -339,7 +343,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms, :maxpos, :maxabsscore, :maxposneg) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
@@ -349,6 +353,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   dualcombine in (:sum, :maxabs, :weighted, :sumdedup) || error("unknown dualcombine $dualcombine (use :sum, :maxabs, :weighted or :sumdedup)")
   posnegseed in (:own, :oldtop, :reorder, :reorderabs) || error("unknown posnegseed $posnegseed (use :own, :oldtop, :reorder or :reorderabs)")
   wselcomb in (:min, :sum) || error("unknown wselcomb $wselcomb (use :min or :sum)")
+  wselmove in (:weights, :wcorr) || error("unknown wselmove $wselmove (use :weights or :wcorr)")
   leftwcomb in (:prod, :min, :max) || error("unknown leftwcomb $leftwcomb (use :prod, :min or :max)")
   posnegonly in (:all, :attach, :heads) || error("unknown posnegonly $posnegonly (use :all, :attach or :heads)")
   stickbreak in (:off, :renorm, :cond) || error("unknown stickbreak $stickbreak (use :off, :renorm or :cond)")
@@ -417,7 +422,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -1664,6 +1669,7 @@ function run_single(m::ChainModel, Ic, label, prior, typerecs; tk = nothing, see
     deleteat!(remaining, findfirst(==(sx), remaining))
   end
   order = m.opts.poolm > 0 && tk !== nothing ? get(m.pool, tk, nothing) : nothing
+  (m.opts.tuplek > 0 || m.opts.tuplemin > 0) && isempty(seed) && tuple_step!(m, st, Ic, label, remaining, tk)
   if order === nothing
     nosingle = m.opts.pairsteps && m.opts.pairsfirst ? pair_covered(m, Ic, remaining) : NOSINGLE
     while step_single!(m, st, Ic, label, remaining; nosingle) end
@@ -1672,6 +1678,95 @@ function run_single(m::ChainModel, Ic, label, prior, typerecs; tk = nothing, see
     while step_pool!(m, st, Ic, label, remaining, order, dead) end
   end
   st, remaining
+end
+
+"""
+Tuple first step (tuplek / tuplemin; user's design 2026-10-31): the pool is the features whose single step
+|Δ log odds| reaches tau (and tuplemin), largest first, cut to the tuplek largest; of its supported triples (else
+pairs, else singles) the one with the largest max_x l(X = x | tuple) -- each value's log odds after inserting the
+members in pool order, as the chain would (unlabeled decisions: |l|, the larger of attached / not) -- joins the chain,
+member by member.  Returns whether a tuple was added.
+"""
+function tuple_step!(m::ChainModel, st::ChainState, Ic, label, remaining, tk)
+  depth(st) == 0 || return false
+  x = st.odds[end]
+  slots = [s for s in remaining if Ic[s] != ABSENT]
+  E1 = extend_all(m, st, 0, present_items(Ic, slots))
+  pool = Tuple{Float64,Int,Any,Float64}[]           # (single step, slot, entry, own odds)
+  for (s, e) in zip(slots, E1)
+    y, ok = update_odds(m, e, label, x)
+    ok || continue
+    d = abs(log(y) - log(x))
+    d >= max(m.opts.tau, m.opts.tuplemin) && push!(pool, (d, s, e, y))
+  end
+  sort!(pool; by = p -> -p[1])
+  m.opts.tuplek > 0 && length(pool) > m.opts.tuplek && resize!(pool, m.opts.tuplek)
+  isempty(pool) && return false
+  # each value's prior: the chain's own odds for the candidate's label, the type's prior for the others
+  prior(l) = l == label || tk === nothing ? x : priorodds(m, lpriorkey(tk, l))
+  # max_x l(X = x | members), inserting the members' entries in order, each smoothed toward the last
+  function tscore(es)
+    ls = label == 0 ? (UInt32(0),) : keys(es[end][2])
+    top = -Inf                                      # (names apart from the enclosing function's: closures share them)
+    for l in ls
+      ol = prior(l)
+      for e in es
+        ol = first(update_odds(m, e, l, ol))
+      end
+      top = max(top, label == 0 ? abs(log(ol)) : log(ol))
+    end
+    top
+  end
+  branch(s) = ChainState(copy(s.keys), copy(s.views), copy(s.sizes), copy(s.members), copy(s.odds),
+    Dict{UInt64,Float64}[], copy(s.cnt))
+  n = length(pool)
+  best, bi = -Inf, Int[]                            # bi: pool indices of the winner, its entries in pairs / triples
+  bes = Any[]
+  ytrip = Dict{Tuple{Int,Int},Tuple{Any,Float64,ChainState}}()   # supported pairs: (entry, own odds, state)
+  for i in 1:n-1
+    sa = branch(st)
+    advance!(m, sa, Ic[pool[i][2]], pool[i][3], pool[i][4])
+    js = collect(i+1:n)
+    for (j, e) in zip(js, extend_all(m, sa, 1, UInt64[Ic[pool[j][2]] for j in js]))
+      y, ok = update_odds(m, e, label, pool[i][4])
+      ok || continue
+      sab = branch(sa)
+      advance!(m, sab, Ic[pool[j][2]], e, y)
+      ytrip[(i, j)] = (e, y, sab)
+    end
+  end
+  for ((i, j), (eab, yab, sab)) in sort!(collect(ytrip); by = first)
+    ls = collect(j+1:n)
+    isempty(ls) && continue
+    for (l, e) in zip(ls, extend_all(m, sab, 2, UInt64[Ic[pool[l][2]] for l in ls]))
+      _, ok = update_odds(m, e, label, yab)
+      ok || continue
+      sc = tscore(Any[pool[i][3], eab, e])
+      sc > best && ((best, bi, bes) = (sc, [i, j, l], Any[pool[i][3], eab, e]))
+    end
+  end
+  if isempty(bi)                                    # no supported triple: the best pair
+    for ((i, j), (eab, _, _)) in sort!(collect(ytrip); by = first)
+      sc = tscore(Any[pool[i][3], eab])
+      sc > best && ((best, bi, bes) = (sc, [i, j], Any[pool[i][3], eab]))
+    end
+  end
+  if isempty(bi)                                    # no supported pair: the best single
+    for i in 1:n
+      sc = tscore(Any[pool[i][3]])
+      sc > best && ((best, bi, bes) = (sc, [i], Any[pool[i][3]]))
+    end
+  end
+  rec = m.opts.poolsigma > 0 && m.opts.poolmode == :local
+  o = x
+  for (i, e) in zip(bi, bes)
+    o = first(update_odds(m, e, label, o))
+    advance!(m, st, Ic[pool[i][2]], e, o)
+    rec && push!(st.alts, Dict{UInt64,Float64}())
+    deleteat!(remaining, findfirst(==(pool[i][2]), remaining))
+  end
+  (d = DC_STATS[]) === nothing || (d[Symbol(:tuple, length(bi))] = get(d, Symbol(:tuple, length(bi)), 0.0) + 1)
+  true
 end
 
 """
@@ -2687,23 +2782,32 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
     # accumby :wsel (user's design 2026-10-31): each leftover its own path; each move by the largest combination (min or
     # sum) of w_back = exp(-(l(C') - l_0)^2 / N) and w_ovl (1 - the leftover's largest overlap with a counted feature C'
     # leaves out)
-    function wstep!(p, X)
-      r = p[end][1]
+    # w of context rungs r (combined as wselcomb; sum normalized to [0, 1])
+    function wctx(r, c, X)
       N = m.opts.leftwback > 0 ? m.opts.leftwback : 1.0
-      counted = union(st.members, taken)
-      bsc, brr, bcc = -Inf, nothing, nothing
+      li = c[2] === nothing ? log(prior) : log(c[1].odds[end])
+      wb = exp(-(li - l0)^2 / N)
+      wo = overlap_weight(m, base, X, setdiff(union(st.members, taken), items(r)), label, prior)
+      m.opts.wselcomb == :min ? min(wb, wo) : (wb + wo) / 2
+    end
+    function wstep!(p, X, A)
+      r = p[end][1]
+      bsc, brr, bcc = -Inf, nothing, nothing            # by the weights alone
+      csc, crr, ccc = -Inf, nothing, nothing            # (wcorr) by |w * corr| among moves supporting X
       for i in eachindex(ladders)
         r[i] <= length(ladders[i]) || continue
         r[i] == length(ladders[i]) && !maydrop(r, i) && continue
         r2 = copy(r); r2[i] += 1
         c = build(r2)
         c === nothing && continue
-        li = c[2] === nothing ? log(prior) : log(c[1].odds[end])
-        wb = exp(-(li - l0)^2 / N)
-        wo = overlap_weight(m, base, X, setdiff(counted, items(r2)), label, prior)
-        sc = m.opts.wselcomb == :min ? min(wb, wo) : wb + wo
-        sc > bsc && ((bsc, brr, bcc) = (sc, r2, c))
+        w = wctx(r2, c, X)
+        w > bsc && ((bsc, brr, bcc) = (w, r2, c))
+        if m.opts.wselmove == :wcorr
+          res = xcorr(r2, X, A)
+          res === nothing || (s = abs(w * res[1]); s > csc && ((csc, crr, ccc) = (s, r2, c)))
+        end
       end
+      crr === nothing || ((brr, bcc) = (crr, ccc))
       brr === nothing && return false
       push!(p, (brr, bcc))
       true
@@ -2737,7 +2841,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       xstep! = m.opts.accumby in (:odds, :bfs) ? (m.opts.accumby == :bfs && bfsr !== nothing ? (p -> false) : step!) : m.opts.accumby in (:dep, :depodds) ? (p -> depstep!(p, X, imp)) :
         m.opts.accumby == :marg ? (p -> margstep!(p, log(prior) + margsigned(X))) :
         m.opts.accumby in (:mintw, :mintwc) ? (p -> twstep!(p, X)) : m.opts.accumby in (:look1red, :look1ind, :look1nonred, :look1int) ? (p -> lookstep!(p, X, A)) :
-        m.opts.accumby == :wsel ? (p -> wstep!(p, X)) :
+        m.opts.accumby == :wsel ? (p -> wstep!(p, X, A)) :
         (p -> mdstep!(p, X, A))
       k = 1
       k0, xc, xk, xv = 0, 0.0, 0, 0.0                 # (accumwin: the first supported step, and the smallest |correction| since)
@@ -2832,6 +2936,11 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       end
       # depweight: scaled by 1 - X's strongest dependence on a counted feature (chain, taken) outside its context
       m.opts.depweight && (xc *= depweight(m, base, X, setdiff(union(st.members, taken), items(xr)), label, prior))
+      # (wsel + wselweight) the correction times w of its chosen context
+      if m.opts.accumby == :wsel && m.opts.wselweight
+        cw = build(xr)
+        cw === nothing || (xc *= wctx(xr, cw, X))
+      end
       # leftover weights (user's design 2026-10-31): backoff -- how far the chosen context's log odds drifted from the
       # starting context's; overlap -- the largest share of X's effect it shares with a counted feature outside its context
       if m.opts.leftwback > 0 || m.opts.leftwovl
