@@ -83,9 +83,81 @@ const ALLHEADSETS = merge(HEADSETS, (
   # head_sibin / head_sibout / head_sibleft / head_sibright (default_specs(headsibs = [...])): under its head, the
   # token's nearest sibling of that kind (inner: between it and the head; outer: beyond it, away from the head; left /
   # right: on that side) -- none, its distance from the token in words, or root
-  head_sibin = ["none", "1", "2", "3-5", "6-10", "11+", "root"], head_sibout = ["none", "1", "2", "3-5", "6-10", "11+", "root"], head_sibleft = ["none", "1", "2", "3-5", "6-10", "11+", "root"], head_sibright = ["none", "1", "2", "3-5", "6-10", "11+", "root"]))
+  head_sibin = ["none", "1", "2", "3-5", "6-10", "11+", "root"], head_sibout = ["none", "1", "2", "3-5", "6-10", "11+", "root"], head_sibleft = ["none", "1", "2", "3-5", "6-10", "11+", "root"], head_sibright = ["none", "1", "2", "3-5", "6-10", "11+", "root"],
+  # head_kinleft / head_kinright (default_specs(headkin = [...])): the token's kinship to its left / right neighbour
+  # token in the tree its head gives (see KIN_LABELS), or root
+  head_kinleft = ["parent", "dep", "sibling", "aunt/uncle", "niece/nephew", "1stcousin", "2ndcousin", "grandparent",
+    "other_ancestor", "other_descendant", "other_relative", "none", "root"],
+  head_kinright = ["parent", "dep", "sibling", "aunt/uncle", "niece/nephew", "1stcousin", "2ndcousin", "grandparent",
+    "other_ancestor", "other_descendant", "other_relative", "none", "root"]))
 "Sibling head properties -> sibling kind."
 const HEADSIB_KIND = (head_sibin = :inner_sibling, head_sibout = :outer_sibling, head_sibleft = :left_sibling, head_sibright = :right_sibling)
+
+"Kinship head properties -> the neighbour's direction."
+const HEADKIN_DIR = (head_kinleft = -1, head_kinright = 1)
+
+"""
+Kinship of a token t to a neighbour n (user's design 2026-11-01), from t's side: n is t's parent (head), dep
+(dependent), sibling, aunt/uncle (a sibling of t's parent), niece/nephew (a child of t's sibling), 1st / 2nd cousin,
+grandparent, other ancestor, other descendant (a grandchild or below), other relative (any other link through a
+common ancestor, or none in the tree); none: no neighbour in the sentence.  Codes are positions in this list.
+"""
+const KIN_LABELS = ["parent", "dep", "sibling", "aunt/uncle", "niece/nephew", "1stcousin", "2ndcousin", "grandparent",
+  "other_ancestor", "other_descendant", "other_relative", "none"]
+const KIN_NONE, KIN_OTHER = UInt32(12), UInt32(11)
+
+"The kinship code for i steps up from t and j steps up from n to their lowest common ancestor."
+function kincode(i::Int, j::Int)
+  lab = (i, j) == (1, 0) ? "parent" : (i, j) == (0, 1) ? "dep" : i == 0 ? "other_descendant" :
+    (i, j) == (2, 0) ? "grandparent" : j == 0 ? "other_ancestor" : (i, j) == (1, 1) ? "sibling" :
+    (i, j) == (2, 1) ? "aunt/uncle" : (i, j) == (1, 2) ? "niece/nephew" : (i, j) == (2, 2) ? "1stcousin" :
+    (i, j) == (3, 3) ? "2ndcousin" : "other_relative"
+  UInt32(findfirst(==(lab), KIN_LABELS))
+end
+
+"""
+Kinship code of t to n with t's head taken to be c (NONE: root) and every other token's head from `headof` (a token
+index, NONE or PENDING): PENDING while an attachment the answer needs is unknown; other_relative when the two chains
+end at different roots; PENDING too on a cycle (c under t).
+"""
+function kin_between(headof, t::Int, n::Int, c, maxn::Int)
+  up = Dict{Int,Int}(t => 0)                         # t's ancestors (c first) and their steps from t
+  h, d, complete = c, 0, true
+  while true
+    h == PENDING && (complete = false; break)
+    h == NONE && break
+    u = Int(h)
+    haskey(up, u) && return PENDING
+    d += 1; up[u] = d
+    d > maxn && return PENDING
+    h = headof(u)
+  end
+  v, j = n, 0
+  while true
+    haskey(up, v) && return kincode(up[v], j)
+    hv = headof(v)
+    hv == PENDING && return PENDING
+    hv == NONE && return complete ? KIN_OTHER : PENDING
+    v = Int(hv); j += 1
+    j > maxn && return PENDING
+  end
+end
+
+"t's kinship code to its neighbour on side `dir` (-1 left, +1 right) if attached to c: PENDING while unknown."
+function kin_value(st, t, c, dir)
+  c == PENDING && return PENDING
+  toks = st.layers[:token]
+  n = adjacent_token(st, t, dir)
+  n == PENDING && return PENDING
+  n == NONE && return KIN_NONE
+  st_, sn = toks[:sentence, t], toks[:sentence, Int(n)]
+  (st_ == PENDING || sn == PENDING) && return PENDING
+  st_ == sn || return KIN_NONE
+  kin_between(u -> toks[:attach, u], t, Int(n), c, length(toks))
+end
+const KIN_TAG = hash("token.attach.kin")
+"Kinship items for t under candidate head c (default_specs(kinitems = true)): to its left neighbour, then its right."
+kin_items(st, t, c) = UInt64[item(v, (KIN_TAG, j, v)) for (j, v) in enumerate((kin_value(st, t, c, -1), kin_value(st, t, c, 1)))]
 
 "Word classes for the head_wc properties (set by default_specs(headwc = ...))."
 const HEADWC = Ref{Any}(nothing)
@@ -100,12 +172,17 @@ isrootlabel(name::Symbol, v::UInt32) = lowercase(ALLHEADSETS[name][v]) == "root"
 "The head-property decisions a token layer has (the standard four, plus any optional ones)."
 headnames(toks) = [d.name for d in toks.spec.decisions if haskey(ALLHEADSETS, d.name)]
 
+"Gold kinship code of word i (not the root) to its neighbour on side dir in the sentence `words`."
+goldkin(i, dir, words) = 1 <= i + dir <= length(words) ?
+  kin_between(u -> words[u].head == 0 ? NONE : UInt32(words[u].head), i, i + dir, UInt32(words[i].head), length(words)) : KIN_NONE
+
 "Gold head-property label codes of word i, whose head is word h (0: root)."
 function gold_head(i::Int, h::Int, words)
   h == 0 && return (head_upos = headcode(:head_upos, "ROOT"), head_xpos = headcode(:head_xpos, "ROOT"),
     head_dir = headcode(:head_dir, "root"), head_dist = headcode(:head_dist, "root"), head_sdist = headcode(:head_sdist, "root"),
     head_trank = headcode(:head_trank, "root"), head_sibin = headcode(:head_sibin, "root"), head_sibout = headcode(:head_sibout, "root"),
-    head_sibleft = headcode(:head_sibleft, "root"), head_sibright = headcode(:head_sibright, "root"))
+    head_sibleft = headcode(:head_sibleft, "root"), head_sibright = headcode(:head_sibright, "root"),
+    head_kinleft = headcode(:head_kinleft, "root"), head_kinright = headcode(:head_kinright, "root"))
   lo, hi = minmax(i, h)
   rank = 1 + count(j -> j != i && words[j].head == h, lo+1:hi-1)   # h's other dependents between h and i
   sibs = [j for j in eachindex(words) if j != i && words[j].head == h]
@@ -116,7 +193,8 @@ function gold_head(i::Int, h::Int, words)
     head_dir = headcode(:head_dir, h < i ? "left" : "right"), head_dist = headcode(:head_dist, distlabel(abs(h - i))),
     head_sdist = headcode(:head_sdist, (h < i ? "L" : "R") * distlabel(abs(h - i))), head_trank = headcode(:head_trank, tranklabel(rank)),
     head_sibin = headcode(:head_sibin, near(inner)), head_sibout = headcode(:head_sibout, near(outer)),
-    head_sibleft = headcode(:head_sibleft, near([j for j in sibs if j < i])), head_sibright = headcode(:head_sibright, near([j for j in sibs if j > i])))
+    head_sibleft = headcode(:head_sibleft, near([j for j in sibs if j < i])), head_sibright = headcode(:head_sibright, near([j for j in sibs if j > i])),
+    head_kinleft = goldkin(i, -1, words), head_kinright = goldkin(i, 1, words))
 end
 
 const MAX_LINK_CHARS = 200     # head candidates must start within this many chars
@@ -340,7 +418,7 @@ function head_consistent_one(st, t, h, name)
   elseif name == :head_upos || name == :head_xpos
     tag = toks[name == :head_upos ? :upos : :xpos, h]
     tag == PENDING || HEADSETS[name][v] == TAGSETS[name == :head_upos ? :upos : :xpos][tag]
-  elseif name == :head_wc300 || name == :head_wc30 || haskey(HEADSIB_KIND, name)
+  elseif name == :head_wc300 || name == :head_wc30 || haskey(HEADSIB_KIND, name) || haskey(HEADKIN_DIR, name)
     (hv = head_value(st, t, h, name)) == PENDING || hv == v
   elseif name == :head_trank                         # the rank only grows as dependents attach between h and t
     want = v == headcode(:head_trank, "4+") ? 4 : parse(Int, ALLHEADSETS.head_trank[v])
@@ -447,6 +525,8 @@ function head_value(st, t, h, name)
     u == NONE && return headcode(name, "none")
     d = word_distance(st, t, Int(u))
     d === nothing ? PENDING : headcode(name, distlabel(d))
+  elseif haskey(HEADKIN_DIR, name)                   # t's kinship to that neighbour under h, or pending
+    kin_value(st, t, h, HEADKIN_DIR[name])
   elseif name == :head_wc300 || name == :head_wc30
     wclass_gold(HEADWC[], headwc_level(name), lowercase(tokstr(st, Int(h))))
   elseif name == :head_dir
@@ -1113,7 +1193,9 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
   suffixes::Vector{Int} = Int[], noise::Int = 0, rootabsent::Bool = false, projective::Bool = false,
   relations::Bool = false, headsdist::Bool = false, pptable = nothing, pprel::Bool = false,
   relbounded::Bool = false, relnone::Bool = false, treerank::Bool = false, headtrank::Bool = false,
-  headwc::Vector{Int} = Int[], headwcclasses = nothing, headsibs::Vector{Symbol} = Symbol[], idxeq::Bool = false)
+  headwc::Vector{Int} = Int[], headwcclasses = nothing, headsibs::Vector{Symbol} = Symbol[], idxeq::Bool = false,
+  kinitems::Bool = false, headkin::Vector{Symbol} = Symbol[], neighbor2::Bool = false)
+  all(n -> haskey(HEADKIN_DIR, n), headkin) || error("headkin: names are $(join(keys(HEADKIN_DIR), ", "))")
   all(n -> haskey(HEADSIB_KIND, n), headsibs) || error("headsibs: names are $(join(keys(HEADSIB_KIND), ", "))")
   safeats = charindex === nothing ? FeatDef[] : [sa_feats(charindex, :left); sa_feats(charindex, :right)]
   sapaths = charindex === nothing ? FeatPath[] : [FeatPath(:sa_left), FeatPath(:sa_right)]
@@ -1158,6 +1240,11 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
   end
   relrels, relpaths, rellink = relations ? relation_rows(relf) : (RelDef[], FeatPath[], Int[])
   linkpaths = [LINK_PATHS; 22 .+ (1:extra); 22 + extra .+ rellink]   # classes, suffixes, noise, then relations: after the 22 below
+  # neighbor2 (user's idea 2026-11-01): the tokens two to the left and right -- form, upos and head direction -- last in
+  # the context, and in the attachment features (both sides) like the neighbours' paths
+  nn2paths = neighbor2 ? [FeatPath([r, r], f) for r in (:left_neighbor, :right_neighbor) for f in (:form, :upos, :head_dir)] : FeatPath[]
+  nn2at = 22 + extra + length(relpaths) + headsdist + headtrank + length(hwnames) + length(headsibs) + length(headkin)
+  append!(linkpaths, nn2at .+ eachindex(nn2paths))
   tokens = LayerSpec{TokenLayer}(:token,
     vcat([FeatDef(:form, (st, t) -> intern!(st.lex, :form, lowercase(tokstr(st, t)))),
         FeatDef(:caps, (st, t) -> UInt32(capsclass(tokstr(st, t)))),
@@ -1182,6 +1269,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
           relations ? hypothetical_sibling_items(st, t, c, relf) : UInt64[],
           treerank ? (v = trank_code(tree_rank(st, t, c)); UInt64[item(v, (TRANK_TAG, v))]) : UInt64[],
           idxeq ? idxeq_items(st, t, c) : UInt64[],
+          kinitems ? kin_items(st, t, c) : UInt64[],
           pptable === nothing ? UInt64[] :
             pp_items(pptable, st, t, c; cands = pprel ? attach_candidates(st, t; projective) : nothing)),
         allcandidates = attach_allcandidates,
@@ -1205,7 +1293,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
           mask = head_mask,
           # once the attachment is committed, the backward step derives it (the oracle decides it itself)
           ready = (st, t) -> !st.infer || (!SOFTHEADS[] && st.layers[:token][:attach, t] == PENDING))
-        for name in [collect(keys(HEADSETS)); headsdist ? [:head_sdist] : Symbol[]; headtrank ? [:head_trank] : Symbol[]; hwnames; headsibs]],
+        for name in [collect(keys(HEADSETS)); headsdist ? [:head_sdist] : Symbol[]; headtrank ? [:head_trank] : Symbol[]; hwnames; headsibs; headkin]],
       [DecisionDef(wnames[l];
           candidates = (st, t) -> wclass_candidates(wc, l, lowercase(tokstr(st, t))),
           features = (st, t, c) -> label_features(st, :token, witemtags[l], t, c),
@@ -1227,10 +1315,12 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
       headsdist ? [FeatPath(:head_sdist)] : FeatPath[],      # then optional head properties (not in LINK_PATHS)
       headtrank ? [FeatPath(:head_trank)] : FeatPath[],
       [FeatPath(n) for n in hwnames],
-      [FeatPath(n) for n in headsibs]),
+      [FeatPath(n) for n in headsibs],
+      [FeatPath(n) for n in headkin],
+      nn2paths),
     (st, t) -> Int(st.layers[:token][:last_char, t]))
 
-  length(tokens.context) == 22 + extra + length(relpaths) + headsdist + headtrank + length(hwnames) + length(headsibs) || error("token context paths moved: update linkpaths")
+  length(tokens.context) == 22 + extra + length(relpaths) + headsdist + headtrank + length(hwnames) + length(headsibs) + length(headkin) + length(nn2paths) || error("token context paths moved: update linkpaths")
   LINKPATHS[tokens] = linkpaths
   sentences = LayerSpec{SentenceLayer}(:sentence,
     FeatDef[],

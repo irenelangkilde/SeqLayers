@@ -1,0 +1,28 @@
+=== start Sun Nov  1 13:32:43 UTC 2026
+=== kinitems=true
+ALL         2899    0.9977  0.8655  0.8137  0.0162  1.0     
+score 260.7 s, run 20261101-134900 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== headkin=left,right
+ALL         2899    0.9977  0.8613  0.8048  0.0162  1.0     
+score 245.9 s, run 20261101-134937 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+head_kinleft  2899    0.143   0.7561
+head_kinright 2899    0.143   0.7541
+=== kinitems=true headkin=left,right
+ALL         2899    0.9977  0.8727  0.8161  0.0162  1.0     
+score 261.1 s, run 20261101-135052 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+head_kinleft  2899    0.143   0.7561
+head_kinright 2899    0.143   0.7541
+=== idxeq=true kinitems=true
+ALL         2899    0.9977  0.8662  0.8137  0.0162  1.0     
+score 271.1 s, run 20261101-140907 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== idxeq=true headkin=left,right
+ALL         2899    0.9977  0.8631  0.8051  0.0162  1.0     
+score 255.4 s, run 20261101-140949 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+head_kinleft  2899    0.143   0.7561
+head_kinright 2899    0.143   0.7541
+=== idxeq=true kinitems=true headkin=left,right
+ALL         2899    0.9977  0.8741  0.8165  0.0162  1.0     
+score 269.0 s, run 20261101-141103 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+head_kinleft  2899    0.143   0.7561
+head_kinright 2899    0.143   0.7541
+=== all done Sun Nov  1 14:11:04 UTC 2026

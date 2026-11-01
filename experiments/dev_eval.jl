@@ -100,6 +100,12 @@
 #   driftstep    ctxmode=accum: each correction weighted driftstep^(generalization and drop steps of its context)
 #   treerank     attachment item per candidate: t's tree rank under it (1 + the candidate's dependents between
 #                it and t: 1, 2, 3, 4+; root); events apart
+#   kinitems     true: two attachment items, the token's kinship to its left / right neighbour if attached to the
+#                candidate (parent, dep, sibling, aunt/uncle, niece/nephew, 1st / 2nd cousin, grandparent, other
+#                ancestor / descendant / relative; none at a sentence edge)
+#   headkin      comma list (left, right): the same kinships as head-property decisions (head_kinleft, head_kinright)
+#   neighbor2    true: the tokens two to the left / right (left_neighbor^left_neighbor, right_neighbor^right_neighbor):
+#                their form, upos and head direction, in the context and the attachment features (both sides)
 #   idxeq        true: six attachment items saying whether two relations are the same token (the token's left / right
 #                neighbour vs the candidate's nearest right / left dependent, the neighbours' heads vs the candidate,
 #                the candidate's head vs the neighbours)
@@ -275,11 +281,13 @@ const RESULTS = joinpath(HERE, "results.csv")
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
   "wmo" => 1e-3, "train_sents" => 500, "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
-  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "fwdcheck" => "false", "softheads" => "false", "dfsepshead" => NaN, "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "ciorder" => "off", "telescope" => "false", "smoothd" => 1.0, "smootha" => 0.0, "smoothn" => "set", "accumby" => "odds", "depmeasure" => "yule", "mindevtau" => 0.1, "mindevstop" => "localmin", "explainpool" => "false", "chainshrink" => 0.0, "chainshrinkto" => "prev", "chainsel" => 0.0, "lookw" => "dw", "headsibs" => "", "idxeq" => "false", "lookwsmooth" => 0.0, "lookwback" => 0.0, "stickbreak" => "off", "posnegrestart" => "false", "posnegseed" => "own", "dualchain" => "off", "dualcombine" => "sum", "dualw" => 0.5, "dualleft" => "true", "dualturn" => "both", "posnegafter" => "false", "posnegleftneg" => "false", "posnegonly" => "all", "leftwback" => 0.0, "leftwovl" => "false", "leftwcomb" => "prod", "wselcomb" => "sum", "wselmove" => "weights", "wselweight" => "false", "tuplek" => 0, "tuplemin" => 0.0, "lookwsoft" => "false", "depweight" => "false", "gatemincount" => -1, "branches" => 1, "combine" => "avg", "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "driftsigma" => 0.0, "distback" => "false", "shrink" => 0.0, "shrinkleft" => 0.0, "leftmin2" => 0, "headwc" => "", "headwcdir" => "/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5", "drifttau" => 0.0, "driftstep" => 0.0, "relbounded" => "false", "relnone" => "false", "treerank" => "false", "headtrank" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
+  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "fwdcheck" => "false", "softheads" => "false", "dfsepshead" => NaN, "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "ciorder" => "off", "telescope" => "false", "smoothd" => 1.0, "smootha" => 0.0, "smoothn" => "set", "accumby" => "odds", "depmeasure" => "yule", "mindevtau" => 0.1, "mindevstop" => "localmin", "explainpool" => "false", "chainshrink" => 0.0, "chainshrinkto" => "prev", "chainsel" => 0.0, "lookw" => "dw", "headsibs" => "", "idxeq" => "false", "kinitems" => "false", "neighbor2" => "false", "headkin" => "", "lookwsmooth" => 0.0, "lookwback" => 0.0, "stickbreak" => "off", "posnegrestart" => "false", "posnegseed" => "own", "dualchain" => "off", "dualcombine" => "sum", "dualw" => 0.5, "dualleft" => "true", "dualturn" => "both", "posnegafter" => "false", "posnegleftneg" => "false", "posnegonly" => "all", "leftwback" => 0.0, "leftwovl" => "false", "leftwcomb" => "prod", "wselcomb" => "sum", "wselmove" => "weights", "wselweight" => "false", "tuplek" => 0, "tuplemin" => 0.0, "lookwsoft" => "false", "depweight" => "false", "gatemincount" => -1, "branches" => 1, "combine" => "avg", "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "driftsigma" => 0.0, "distback" => "false", "shrink" => 0.0, "shrinkleft" => 0.0, "leftmin2" => 0, "headwc" => "", "headwcdir" => "/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5", "drifttau" => 0.0, "driftstep" => 0.0, "relbounded" => "false", "relnone" => "false", "treerank" => "false", "headtrank" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
 
 "The sibling head-property names of the headsibs option (in, out, left, right)."
 headsib_names(cfg) = isempty(cfg["headsibs"]) ? Symbol[] : [Symbol(:head_sib, x) for x in split(cfg["headsibs"], ',')]
+"The kinship head-property names of the headkin option (left, right)."
+headkin_names(cfg) = isempty(cfg["headkin"]) ? Symbol[] : [Symbol(:head_kin, x) for x in split(cfg["headkin"], ',')]
 
 function parse_cfg(args)
   cfg = copy(DEFAULTS)
@@ -361,7 +369,8 @@ function setup(cfg)
     projective = cfg["projective"] == "true", relations = cfg["relations"] == "true",
     headsdist = cfg["headsdist"] == "true", pptable = pp, pprel = cfg["pprel"] == "true",
     relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true", treerank = cfg["treerank"] == "true", headtrank = cfg["headtrank"] == "true",
-    headwc = hwl, headwcclasses = hwc, headsibs = headsib_names(cfg), idxeq = cfg["idxeq"] == "true")
+    headwc = hwl, headwcclasses = hwc, headsibs = headsib_names(cfg), idxeq = cfg["idxeq"] == "true",
+    kinitems = cfg["kinitems"] == "true", headkin = headkin_names(cfg), neighbor2 = cfg["neighbor2"] == "true")
   # same Doc objects as in the index, so their suffix-array features are leave-one-out
   trainsample = reduce(vcat, [firstsents(ds, cfg["train_sents"]) for ds in alltrain])
   # held-out tuning docs: the training docs right after the sample's
@@ -378,7 +387,8 @@ function setup(cfg)
     (cfg["noise"] > 0 ? "-noise$(cfg["noise"])" : "") * (cfg["rootabsent"] == "true" ? "-rootabs" : "") *
     (cfg["relations"] == "true" ? "-rel" * (cfg["relbounded"] == "true" ? "b" : "") * (cfg["relnone"] == "true" ? "n" : "") : "") * (cfg["headsdist"] == "true" ? "-sdist" : "") *
     (isempty(cfg["pptable"]) ? "" : cfg["pprel"] == "true" ? "-pprel" : "-pp") * (cfg["treerank"] == "true" ? "-trank" : "") * (cfg["headtrank"] == "true" ? "-htrank" : "") * (isempty(cfg["headwc"]) ? "" : "-hwc" * replace(cfg["headwc"], ',' => "")) *
-    (isempty(cfg["headsibs"]) ? "" : "-hsib" * replace(cfg["headsibs"], ',' => "")) * (cfg["idxeq"] == "true" ? "-idxeq" : ""))
+    (isempty(cfg["headsibs"]) ? "" : "-hsib" * replace(cfg["headsibs"], ',' => "")) * (cfg["idxeq"] == "true" ? "-idxeq" : "") * (cfg["kinitems"] == "true" ? "-kin" : "") *
+    (isempty(cfg["headkin"]) ? "" : "-hkin" * replace(cfg["headkin"], ',' => "")) * (cfg["neighbor2"] == "true" ? "-nn2" : ""))
   mkpath(workdir)
   local model, lex
   modelname = cfg["model"]
@@ -473,7 +483,8 @@ function setup(cfg)
       (cfg["rootabsent"] == "true" ? ";rootabsent" : "") * (cfg["projective"] == "true" ? ";projective" : "") *
       (cfg["relations"] == "true" ? ";relations" * (cfg["relbounded"] == "true" ? ";relbounded" : "") * (cfg["relnone"] == "true" ? ";relnone" : "") : "") * (cfg["headsdist"] == "true" ? ";headsdist" : "") *
       (isempty(cfg["pptable"]) ? "" : cfg["pprel"] == "true" ? ";pptable;pprel" : ";pptable") * (cfg["treerank"] == "true" ? ";treerank" : "") * (cfg["headtrank"] == "true" ? ";headtrank" : "") * (isempty(cfg["headwc"]) ? "" : ";headwc=" * cfg["headwc"]) *
-      (isempty(cfg["headsibs"]) ? "" : ";headsibs=" * cfg["headsibs"]) * (cfg["idxeq"] == "true" ? ";idxeq" : "") * "]"
+      (isempty(cfg["headsibs"]) ? "" : ";headsibs=" * cfg["headsibs"]) * (cfg["idxeq"] == "true" ? ";idxeq" : "") *
+      (cfg["kinitems"] == "true" ? ";kinitems" : "") * (isempty(cfg["headkin"]) ? "" : ";headkin=" * cfg["headkin"]) * (cfg["neighbor2"] == "true" ? ";neighbor2" : "") * "]"
   elseif cfg["model"] == "count"
     lex = Lexicon()
     model = train!(CountModel(), trainsample, specs, lex)
@@ -510,7 +521,8 @@ function start_workers(cfg, s)
       pprel = $(cfg["pprel"] == "true"), relbounded = $(cfg["relbounded"] == "true"), relnone = $(cfg["relnone"] == "true"), treerank = $(cfg["treerank"] == "true"), headtrank = $(cfg["headtrank"] == "true"),
       headwc = $(isempty(cfg["headwc"]) ? Int[] : parse.(Int, split(cfg["headwc"], ','))),
       headwcclasses = $(isempty(cfg["headwc"]) ? nothing : :(load_wordclasses($(isempty(cfg["wclasses"]) ? cfg["headwcdir"] : cfg["wclasses"])))),
-      headsibs = $(headsib_names(cfg)), idxeq = $(cfg["idxeq"] == "true"))
+      headsibs = $(headsib_names(cfg)), idxeq = $(cfg["idxeq"] == "true"),
+      kinitems = $(cfg["kinitems"] == "true"), headkin = $(headkin_names(cfg)), neighbor2 = $(cfg["neighbor2"] == "true"))
     const WLEX = deserialize(joinpath($rundir, "lex.jls"))
     $(cfg["fwdcheck"] == "true") && (SeqLayers.FWDCHECK[] = true)
     $(cfg["softheads"] == "true") && (SeqLayers.SOFTHEADS[] = true)

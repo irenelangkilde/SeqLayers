@@ -513,6 +513,51 @@ end
     sdir = record_events(docs, sspecs, Lexicon(), mktempdir())
     msb = ChainModel(sdir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1)
     @test 0 <= eval_scores(evaluate_counts(docs, sspecs, msb, Lexicon())).uas <= 1
+    # kinship to a neighbour: a hand tree (heads 1->2, 2 root, 3->2, 4->3, 5->4, 6->3, 7->6, 8->1)
+    let H = [2, 0, 2, 3, 4, 3, 6, 1], P = Set{Int}()
+      hd(u) = u in P ? PENDING : H[u] == 0 ? NONE : UInt32(H[u])
+      kin(t, n) = (v = SeqLayers.kin_between(hd, t, n, hd(t), 8); v == PENDING ? "?" : SeqLayers.KIN_LABELS[v])
+      @test kin(1, 2) == "parent" && kin(2, 1) == "dep" && kin(1, 3) == "sibling" && kin(4, 1) == "aunt/uncle"
+      @test kin(1, 4) == "niece/nephew" && kin(8, 4) == "1stcousin" && kin(4, 2) == "grandparent" && kin(5, 2) == "other_ancestor"
+      @test kin(2, 5) == "other_descendant" && kin(5, 1) == "other_relative" && kin(5, 6) == "aunt/uncle"
+      @test SeqLayers.KIN_LABELS[SeqLayers.kincode(3, 3)] == "2ndcousin" && SeqLayers.KIN_LABELS[SeqLayers.kincode(3, 2)] == "other_relative"
+      @test SeqLayers.kin_between(hd, 1, 3, NONE, 8) == SeqLayers.KIN_OTHER   # t a second root: no common ancestor
+      @test SeqLayers.kin_between(hd, 2, 1, UInt32(4), 8) == PENDING          # 4 is under 2: a cycle
+      push!(P, 3)
+      @test kin(1, 4) == "?" && kin(1, 3) == "?" && kin(4, 3) == "parent" && kin(5, 4) == "parent"   # (3's head unknown)
+    end
+    # kinship head properties: the oracle commits the gold labels; each equals the value its gold head implies
+    kspecs = default_specs(headkin = [:head_kinleft, :head_kinright])
+    ks = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, kspecs, Lexicon())
+    solve!(ks, OracleModel())
+    tk_ = ks.layers[:token]
+    kinseen = Set{String}()
+    for t in 1:length(tk_), name in (:head_kinleft, :head_kinright)
+      h = tk_[:attach, t]
+      h == PENDING && continue
+      @test SeqLayers.head_value(ks, t, h, name) == tk_[name, t]
+      push!(kinseen, SeqLayers.ALLHEADSETS[name][tk_[name, t]])
+      h == NONE && continue
+      @test SeqLayers.kin_items(ks, t, h)[1] == SeqLayers.item(tk_[:head_kinleft, t], (SeqLayers.KIN_TAG, 1, tk_[:head_kinleft, t]))
+    end
+    @test length(kinseen) >= 5                         # (parent, dep, sibling, none, root, ...)
+    @test evaluate(docs, kspecs, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
+    for ksp in (kspecs, default_specs(kinitems = true), default_specs(kinitems = true, idxeq = true))
+      @test evaluate(docs, ksp, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
+      kdir = record_events(docs, ksp, Lexicon(), mktempdir())
+      mk = ChainModel(kdir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1)
+      @test 0 <= eval_scores(evaluate_counts(docs, ksp, mk, Lexicon())).uas <= 1
+    end
+    # neighbor2: the tokens two over (form, upos, head direction) as context and attachment paths
+    nspecs2 = default_specs(neighbor2 = true, headsibs = [:head_sibin])
+    ctx2 = nspecs2[2].context
+    @test (ctx2[end].rels, ctx2[end].feat) == ([:right_neighbor, :right_neighbor], :head_dir) && (ctx2[end-5].rels, ctx2[end-5].feat) == ([:left_neighbor, :left_neighbor], :form) && length(ctx2) == length(default_specs(headsibs = [:head_sibin])[2].context) + 6
+    @test SeqLayers.LINKPATHS[nspecs2[2]][end-5:end] == collect(length(ctx2)-5:length(ctx2))
+    @test evaluate(docs, nspecs2, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
+    ndir2 = record_events(docs, nspecs2, Lexicon(), mktempdir())
+    mn2 = ChainModel(ndir2; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1)
+    mn2.generalize = SeqLayers.generalization_slots(nspecs2)
+    @test 0 <= eval_scores(evaluate_counts(docs, nspecs2, mn2, Lexicon())).uas <= 1
     hspecs = default_specs(headtrank = true)
     @test evaluate(docs, hspecs, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
     hdir = record_events(docs, hspecs, Lexicon(), mktempdir())

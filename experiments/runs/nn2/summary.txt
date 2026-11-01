@@ -1,0 +1,7 @@
+=== neighbor2=true  Sun Nov  1 07:04:35 MST 2026
+ALL         2899    0.9977  0.8675  0.8148  0.0162  1.0     
+score 579.6 s, run 20261101-072218 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== idxeq=true neighbor2=true  Sun Nov  1 07:22:19 MST 2026
+ALL         2899    0.9977  0.8679  0.8141  0.0162  1.0     
+score 625.0 s, run 20261101-074155 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Sun Nov  1 07:41:56 MST 2026
