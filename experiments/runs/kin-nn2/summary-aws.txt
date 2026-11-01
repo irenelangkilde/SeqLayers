@@ -1,0 +1,12 @@
+=== start Sun Nov  1 14:46:44 UTC 2026
+=== neighbor2=true kinitems=true headkin=left,right
+ALL         2899    0.9977  0.8779  0.8224  0.0162  1.0     
+score 523.5 s, run 20261101-151102 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+head_kinleft  2899    0.143   0.761
+head_kinright 2899    0.143   0.7941
+=== idxeq=true neighbor2=true kinitems=true headkin=left,right
+ALL         2899    0.9977  0.8789  0.8241  0.0162  1.0     
+score 484.2 s, run 20261101-151305 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+head_kinleft  2899    0.143   0.761
+head_kinright 2899    0.143   0.7941
+=== all done Sun Nov  1 15:13:06 UTC 2026
