@@ -69,6 +69,17 @@ const HEADSETS = (
   head_xpos = [filter(!=("XX"), TAGSETS.xpos); "ROOT"; "XX"],
   head_dir = ["left", "right", "root"],
   head_dist = ["1", "2", "3-5", "6-10", "11+", "root"])
+"""
+Kinship of a token t to a neighbour n (user's design 2026-11-01), from t's side: n is t's parent (head), dep
+(dependent), sibling, aunt/uncle (a sibling of t's parent), niece/nephew (a child of t's sibling), 1st / 2nd cousin,
+grandparent, grandchild (a dependent's dependent), other ancestor, other descendant (below a grandchild), other
+relative (any other link through a common ancestor, or none in the tree); none: no neighbour in the sentence.  Codes
+are positions in this list.
+"""
+const KIN_LABELS = ["parent", "dep", "sibling", "aunt/uncle", "niece/nephew", "1stcousin", "2ndcousin", "grandparent",
+  "grandchild", "other_ancestor", "other_descendant", "other_relative", "none"]
+const KIN_NONE, KIN_OTHER = UInt32(findfirst(==("none"), KIN_LABELS)), UInt32(findfirst(==("other_relative"), KIN_LABELS))
+
 # Optional head properties (default_specs(headsdist = true)): the head's signed distance, direction
 # and distance in one label (L = head to the left).
 # head_trank (default_specs(headtrank = true)): the token's tree rank under its head -- its rank among the head's
@@ -86,29 +97,17 @@ const ALLHEADSETS = merge(HEADSETS, (
   head_sibin = ["none", "1", "2", "3-5", "6-10", "11+", "root"], head_sibout = ["none", "1", "2", "3-5", "6-10", "11+", "root"], head_sibleft = ["none", "1", "2", "3-5", "6-10", "11+", "root"], head_sibright = ["none", "1", "2", "3-5", "6-10", "11+", "root"],
   # head_kinleft / head_kinright (default_specs(headkin = [...])): the token's kinship to its left / right neighbour
   # token in the tree its head gives (see KIN_LABELS), or root
-  head_kinleft = ["parent", "dep", "sibling", "aunt/uncle", "niece/nephew", "1stcousin", "2ndcousin", "grandparent",
-    "other_ancestor", "other_descendant", "other_relative", "none", "root"],
-  head_kinright = ["parent", "dep", "sibling", "aunt/uncle", "niece/nephew", "1stcousin", "2ndcousin", "grandparent",
-    "other_ancestor", "other_descendant", "other_relative", "none", "root"]))
+  head_kinleft = [KIN_LABELS; "root"], head_kinright = [KIN_LABELS; "root"]))
 "Sibling head properties -> sibling kind."
 const HEADSIB_KIND = (head_sibin = :inner_sibling, head_sibout = :outer_sibling, head_sibleft = :left_sibling, head_sibright = :right_sibling)
 
 "Kinship head properties -> the neighbour's direction."
 const HEADKIN_DIR = (head_kinleft = -1, head_kinright = 1)
 
-"""
-Kinship of a token t to a neighbour n (user's design 2026-11-01), from t's side: n is t's parent (head), dep
-(dependent), sibling, aunt/uncle (a sibling of t's parent), niece/nephew (a child of t's sibling), 1st / 2nd cousin,
-grandparent, other ancestor, other descendant (a grandchild or below), other relative (any other link through a
-common ancestor, or none in the tree); none: no neighbour in the sentence.  Codes are positions in this list.
-"""
-const KIN_LABELS = ["parent", "dep", "sibling", "aunt/uncle", "niece/nephew", "1stcousin", "2ndcousin", "grandparent",
-  "other_ancestor", "other_descendant", "other_relative", "none"]
-const KIN_NONE, KIN_OTHER = UInt32(12), UInt32(11)
 
 "The kinship code for i steps up from t and j steps up from n to their lowest common ancestor."
 function kincode(i::Int, j::Int)
-  lab = (i, j) == (1, 0) ? "parent" : (i, j) == (0, 1) ? "dep" : i == 0 ? "other_descendant" :
+  lab = (i, j) == (1, 0) ? "parent" : (i, j) == (0, 1) ? "dep" : (i, j) == (0, 2) ? "grandchild" : i == 0 ? "other_descendant" :
     (i, j) == (2, 0) ? "grandparent" : j == 0 ? "other_ancestor" : (i, j) == (1, 1) ? "sibling" :
     (i, j) == (2, 1) ? "aunt/uncle" : (i, j) == (1, 2) ? "niece/nephew" : (i, j) == (2, 2) ? "1stcousin" :
     (i, j) == (3, 3) ? "2ndcousin" : "other_relative"

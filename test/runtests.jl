@@ -520,6 +520,9 @@ end
       @test kin(1, 2) == "parent" && kin(2, 1) == "dep" && kin(1, 3) == "sibling" && kin(4, 1) == "aunt/uncle"
       @test kin(1, 4) == "niece/nephew" && kin(8, 4) == "1stcousin" && kin(4, 2) == "grandparent" && kin(5, 2) == "other_ancestor"
       @test kin(2, 5) == "other_descendant" && kin(5, 1) == "other_relative" && kin(5, 6) == "aunt/uncle"
+      @test kin(2, 4) == "grandchild" && kin(3, 5) == "grandchild" && kin(3, 7) == "grandchild" && kin(2, 7) == "other_descendant"
+      @test SeqLayers.KIN_LABELS[SeqLayers.KIN_NONE] == "none" && SeqLayers.KIN_LABELS[SeqLayers.KIN_OTHER] == "other_relative"
+      @test SeqLayers.ALLHEADSETS.head_kinright == [SeqLayers.KIN_LABELS; "root"]
       @test SeqLayers.KIN_LABELS[SeqLayers.kincode(3, 3)] == "2ndcousin" && SeqLayers.KIN_LABELS[SeqLayers.kincode(3, 2)] == "other_relative"
       @test SeqLayers.kin_between(hd, 1, 3, NONE, 8) == SeqLayers.KIN_OTHER   # t a second root: no common ancestor
       @test SeqLayers.kin_between(hd, 2, 1, UInt32(4), 8) == PENDING          # 4 is under 2: a cycle
