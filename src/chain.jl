@@ -165,7 +165,7 @@ struct ChainOpts
   gate::Float64
   redundant::Bool                                 # greedy: redundant features join the leftovers' conditioning pool
   ctxchain::Bool                                  # greedy: a leftover's context has exactly as many features as the chain
-  stepscore::Symbol                               # :maxdev step score: :abs |Δ|, :signed Δ (raise the odds most), :maxmin, :maxmin2, :posneg / :posnegprior (raise the odds most; when no step raises them by tau, the one lowering them most below the chain / the prior)
+  stepscore::Symbol                               # :maxdev step score: :abs |Δ|, :signed Δ (raise the odds most), :maxmin, :maxmin2, :posneg / :posnegprior (raise the odds most; when no step raises them by tau, the one lowering them most below the chain / the prior); :pmi, :mi, :oddspmi, :moi, :logor -- among the steps moving the odds by tau, the most associated with the candidate's choice (see step_crit)
   top2::Bool                                      # :maxdev: only the two leading candidates' chains advance (run_top2)
   contest::Bool                                   # re-decide the top two by a contest chain on their odds ratio (contest!)
   pickfewest::Int                                 # >0: of the k best-scoring features passing tau, take the one with fewest records
@@ -367,7 +367,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs, :look1red, :look1ind, :look1nonred, :look1int, :wsel) ||
     error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc or :bfs, :look1red, :look1ind, :look1nonred, :look1int, :wsel)")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
-  stepscore in (:abs, :signed, :maxmin, :maxmin2, :posneg, :posnegprior, :negpos) ||
+  stepscore in (:abs, :signed, :maxmin, :maxmin2, :posneg, :posnegprior, :negpos, CRIT_STEPS...) ||
     error("unknown stepscore $stepscore (use :abs, :signed, :maxmin, :maxmin2, :posneg, :posnegprior or :negpos)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
   poolmarginal in (:off, :leftover, :drop) || error("unknown poolmarginal $poolmarginal (use :off, :leftover or :drop)")
@@ -1326,6 +1326,7 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
   alts = rec ? Dict{UInt64,Float64}() : nothing    # every supported alternative's odds at this step
   single = Dict{Int,Tuple{Any,Float64,Float64}}()   # with pairsteps: slot -> (entry, odds, score) of supported singles
   negfall = ss in (:posneg, :posnegprior, :negpos)
+  pc = ss in CRIT_STEPS ? prefixcounts(m, st, label) : (0.0, 0.0)   # (association scores) the prefix's counts
   nbest, nbs, nby, nbe = -Inf, 0, x, nothing
   unsup = Int[]                                     # (peek) the present slots the prefix doesn't support with
   for (s, e) in zip(slots, extend_all(m, st, depth(st), present_items(Ic, slots); cap))
@@ -1337,6 +1338,8 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
       ss == :negpos ? log(x) - log(y) :                                    # (negpos: lowers them most)
       ss == :maxmin ? minimum(o -> abs(log(y) - log(o)), st.odds) :   # away from every earlier stage
       ss == :maxmin2 ? maxmin2(e, label, st.odds) :                    # ...each smoothed toward that stage
+      ss in CRIT_STEPS ? (abs(log(y) - log(x)) >= m.opts.tau ?         # association (if the step moves the odds by tau),
+        m.opts.tau + step_crit(ss, pc..., get(e[2], label, (0.0, 0.0))...) : -Inf) :   # shifted so tau still stops the chain
       abs(log(y) - log(x))
     usepairs && (single[s] = (e, y, sc))
     rec && (alts[Ic[s]] = y)
@@ -1397,6 +1400,46 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
   rec && push!(st.alts, alts)
   deleteat!(remaining, findfirst(==(bs), remaining))
   true
+end
+
+const CRIT_STEPS = (:pmi, :mi, :oddspmi, :moi, :logor)
+
+"Counts (chosen, not) for `label` in chain state st's last prefix (the decision type's prior at depth 0)."
+function prefixcounts(m::ChainModel, st::ChainState, label::UInt32)
+  depth(st) > 0 && return get(st.cnt[end], label, (0.0, 0.0))
+  isempty(st.views[1].base) && return (0.0, 0.0)
+  get(m.prior, lpriorkey(m.recs[st.views[1].base[1]].typekey, label), (0.0, 0.0))
+end
+
+"""
+Association step scores (user's request 2026-11-02) between C (the candidate chosen) and feature x within the
+prefix's records, from its counts (c1 chosen, c2 not) and the step's (k1, k2: those with x as well).  Every smoothing is
+one count (user 2026-11-02: counts are discrete, so less than one is not enough):
+  :pmi      |log p(C, x) / (p(C) p(x))|, 1 added to each cell of the 2x2 table
+  :mi       the table's mutual information, sum of p log p / (p p) over its four cells (1 added to each)
+  :oddspmi  |log O(C & x) - log O_ind| -- odds O(e) = n(e) / (N - n(e)), the joint smoothed (smoothOdds) toward its
+            independence expectation O_ind, the odds of p(C) p(x) (marginals with 1 added).  (The word-embeddings
+            project's calcBinaryMoi takes O_ind = O(C) O(x), which holds only for rare events: C here is common.)
+  :moi      mutual odds information, |p(C & x) * oddspmi| with p from the smoothed joint odds
+  :logor    |log odds ratio|, |log (n(C x) n(~C ~x)) / (n(C ~x) n(~C x))| = |log O(C | x) - log O(C | ~x)|, 1 added to each cell
+"""
+function step_crit(ss::Symbol, c1, c2, k1, k2)
+  N = c1 + c2
+  if ss in (:pmi, :mi, :logor)
+    n = (max(k1, 0.0), max(c1 - k1, 0.0), max(k2, 0.0), max(c2 - k2, 0.0)) .+ 1.0   # (C x, C ~x, ~C x, ~C ~x)
+    T = sum(n)
+    pC, px = (n[1] + n[2]) / T, (n[1] + n[3]) / T
+    ss == :pmi && return abs(log(n[1] / T / (pC * px)))
+    ss == :logor && return abs(log(n[1] * n[4] / (n[2] * n[3])))
+    marg = ((pC, px), (pC, 1 - px), (1 - pC, px), (1 - pC, 1 - px))
+    return sum(n[i] / T * log(n[i] / T / (marg[i][1] * marg[i][2])) for i in 1:4)
+  end
+  nx = k1 + k2
+  pind = (c1 + 1) / (N + 2) * (nx + 1) / (N + 2)
+  oind = pind / (1 - pind)
+  lj = log(smoothOdds(k1, N - k1, oind))
+  d = lj - log(oind)
+  ss == :oddspmi ? abs(d) : abs(d * exp(lj) / (1 + exp(lj)))
 end
 
 """

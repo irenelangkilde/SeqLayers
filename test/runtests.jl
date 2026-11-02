@@ -350,6 +350,16 @@ end
       @test sum(exp.(lp)) ≈ 1
       @test argmax(lp) == 1
     end
+    # association step scores: independence scores 0, association scores more; MI is non-negative
+    for ss in SeqLayers.CRIT_STEPS
+      @test SeqLayers.step_crit(ss, 400.0, 600.0, 40.0, 60.0) < 0.02                  # x independent of C
+      @test SeqLayers.step_crit(ss, 400.0, 600.0, 90.0, 10.0) > SeqLayers.step_crit(ss, 400.0, 600.0, 55.0, 45.0)
+      @test SeqLayers.step_crit(ss, 400.0, 600.0, 5.0, 95.0) > 0.01                   # (negative association counts too)
+      @test isfinite(SeqLayers.step_crit(ss, 0.0, 10.0, 0.0, 10.0)) && isfinite(SeqLayers.step_crit(ss, 10.0, 0.0, 10.0, 0.0))
+      mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum, stepscore = ss)
+      mp.generalize = SeqLayers.generalization_slots(specs)
+      @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
+    end
     # interleave: chain steps and leftovers in one loop (abs and posneg steps, with the leftover weightings)
     @test_throws ErrorException ChainModel(dir; select = :maxdev, leftovers = :greedy, ctxmode = :greedy, interleave = true)
     @test_throws ErrorException ChainModel(dir; select = :maxdev, leftovers = :greedy, ctxmode = :accum, interleave = true, stepscore = :signed)

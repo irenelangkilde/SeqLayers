@@ -1,0 +1,7 @@
+=== start Mon Nov  2 08:29:34 MST 2026
+=== stepscore=pmi
+ALL         2899    0.9979  0.8468  0.7868  0.0162  1.0     
+score 2660.7 s, run 20261102-091930 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== stepscore=mi
+ALL         2899    0.9979  0.8496  0.7979  0.0162  1.0     
+score 2781.1 s, run 20261102-092154 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv

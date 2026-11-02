@@ -1,0 +1,8 @@
+=== start Mon Nov  2 14:58:01 UTC 2026
+=== stepscore=oddspmi
+ALL         2899    0.998   0.8499  0.7968  0.0162  1.0     
+score 174.5 s, run 20261102-150412 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== stepscore=moi
+ALL         2899    0.9982  0.8489  0.793   0.0162  1.0     
+score 822.4 s, run 20261102-151514 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Mon Nov  2 15:15:15 UTC 2026
