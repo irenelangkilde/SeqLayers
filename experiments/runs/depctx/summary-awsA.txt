@@ -1,0 +1,26 @@
+=== start Mon Nov  2 17:12:21 UTC 2026
+=== ctxmode=greedy greedyby=dep depmeasure=oddspmi
+ALL         2899    0.9981  0.8386  0.7792  0.0162  1.0     
+score 607.6 s, run 20261102-172543 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== ctxmode=greedy greedyby=dep depmeasure=logor
+ALL         2899    0.998   0.8368  0.7823  0.0162  1.0     
+score 955.4 s, run 20261102-173216 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== ctxmode=greedy greedyby=dep depmeasure=mi
+ALL         2899    0.9979  0.841   0.7896  0.0162  1.0     
+score 1365.2 s, run 20261102-173817 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== ctxmode=greedy greedyby=dep depmeasure=moi
+ALL         2899    0.9979  0.8389  0.7879  0.0162  1.0     
+score 1504.3 s, run 20261102-174102 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== accumby=depodds depmeasure=mi
+ALL         2899    0.9977  0.8524  0.801   0.0162  1.0     
+score 168.0 s, run 20261102-174707 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== accumby=depodds depmeasure=oddspmi
+ALL         2899    0.9972  0.8499  0.7982  0.0162  1.0     
+score 184.1 s, run 20261102-174724 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== accumby=depodds depmeasure=moi
+ALL         2899    0.9977  0.852   0.8003  0.0162  1.0     
+score 168.6 s, run 20261102-174731 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== accumby=depodds depmeasure=logor
+ALL         2899    0.9973  0.8527  0.8006  0.0162  1.0     
+score 186.6 s, run 20261102-174809 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Mon Nov  2 17:48:10 UTC 2026

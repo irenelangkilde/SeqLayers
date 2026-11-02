@@ -360,6 +360,13 @@ end
       mp.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
+    # the association measures as leftover-context dependence (greedy and accum)
+    for dmeas in (:mi, :oddspmi, :moi, :logor), (cm, kw) in ((:greedy, (greedyby = :dep,)), (:accum, (accumby = :depodds,)))
+      mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = cm,
+        depmeasure = dmeas, kw...)
+      mp.generalize = SeqLayers.generalization_slots(specs)
+      @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
+    end
     # interleave: chain steps and leftovers in one loop (abs and posneg steps, with the leftover weightings)
     @test_throws ErrorException ChainModel(dir; select = :maxdev, leftovers = :greedy, ctxmode = :greedy, interleave = true)
     @test_throws ErrorException ChainModel(dir; select = :maxdev, leftovers = :greedy, ctxmode = :accum, interleave = true, stepscore = :signed)

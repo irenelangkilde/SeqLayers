@@ -363,7 +363,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   stickbreak in (:off, :renorm, :cond) || error("unknown stickbreak $stickbreak (use :off, :renorm or :cond)")
   lookw in (:dw, :int, :min, :max) || error("unknown lookw $lookw (use :dw, :int, :min or :max)")
   chainshrinkto in (:prev, :gen, :prior) || error("unknown chainshrinkto $chainshrinkto (use :prev, :gen or :prior)")
-  depmeasure in (:yule, :pmi, :pmipos) || error("unknown depmeasure $depmeasure (use :yule, :pmi or :pmipos)")
+  depmeasure in DEP_MEASURES || error("unknown depmeasure $depmeasure (use $(join(DEP_MEASURES, ", ")))")
   accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs, :look1red, :look1ind, :look1nonred, :look1int, :wsel) ||
     error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc or :bfs, :look1red, :look1ind, :look1nonred, :look1int, :wsel)")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
@@ -3127,16 +3127,22 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
 end
 
 const DEPQ = Dict{Tuple{UInt64,UInt64,UInt32},Float64}()
+const DEP_MEASURES = (:yule, :pmi, :pmipos, :mi, :oddspmi, :moi, :logor)
+# cache tags per measure (high bits of the label)
+const DEP_TAGS = Dict(:yule => 0x00000000, :pmi => 0x40000000, :pmipos => 0x80000000, :mi => 0x10000000,
+  :oddspmi => 0x20000000, :moi => 0x30000000, :logor => 0x50000000)
 
 """
 ρ(E, a): how strongly leftover E and feature a go together, label-blind -- |Yule's Q| of their 2×2 table over the
 decision type's records for `label` (chosen + not), with 1/2 added to each cell: 1 when one implies the other, 0 when
 independent.  depmeasure :pmi -- log p(E,a) / (p(E) p(a)) (0 when independent, < 0 when they avoid each other);
-:pmipos -- max(pmi, 0).  Cached (symmetric).
+:pmipos -- max(pmi, 0).  :mi, :oddspmi, :moi, :logor (user 2026-11-02) -- step_crit's one-count-smoothed scores on
+the E x a table (E in the role of the choice): mutual information, |odds PMI|, mutual odds information, |log odds
+ratio| (|Yule's Q| = tanh(|log OR| / 2) ranks as |log OR|, but its differences don't).  Cached (symmetric).
 """
 function depq(m::ChainModel, base, E::UInt64, a::UInt64, label::UInt32, prior; measure = m.opts.depmeasure)
   (E == a || isempty(base)) && return 1.0
-  tag = measure == :yule ? UInt32(0) : measure == :pmi ? 0x40000000 : 0x80000000
+  tag = DEP_TAGS[measure]
   key = E < a ? (E, a, label ⊻ tag) : (a, E, label ⊻ tag)
   r = get(DEPQ, key, nothing)
   r === nothing || return r
@@ -3151,6 +3157,10 @@ function depq(m::ChainModel, base, E::UInt64, a::UInt64, label::UInt32, prior; m
   n10, n01 = n(eE) - n11, n(ea) - n11
   n00 = c + oc - n11 - n10 - n01
   length(DEPQ) >= MAXMEMO && empty!(DEPQ)
+  if measure in (:mi, :oddspmi, :moi, :logor)     # E present / absent against a present / absent
+    nE, N = max(n11, 0.0) + max(n10, 0.0), max(n11, 0.0) + max(n10, 0.0) + max(n01, 0.0) + max(n00, 0.0)
+    return DEPQ[key] = step_crit(measure, nE, N - nE, max(n11, 0.0), max(n01, 0.0))
+  end
   if measure != :yule                           # pointwise mutual information, 1/2 added to each cell
     N = max(n11, 0.0) + max(n10, 0.0) + max(n01, 0.0) + max(n00, 0.0) + 2.0
     pmi = log((max(n11, 0.0) + 0.5) * N / ((max(n11, 0.0) + max(n10, 0.0) + 1.0) * (max(n11, 0.0) + max(n01, 0.0) + 1.0)))
