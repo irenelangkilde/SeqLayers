@@ -35,6 +35,13 @@ const TAGSETS = (
   number = ["singular", "plural", "0"],
   person = ["1st", "2nd", "3rd", "0"],
   tense = ["present", "past", "infinitive", "0"])
+# oclass (default_specs(oclass = true); user's design 2026-11-02): open-class words (NOUN, PROPN, VERB, ADJ, ADV) vs
+# closed-class (everything else), a tag decision of its own, from gold UPOS
+const OCLASS_LABELS = ["open", "closed"]
+const OCLASS_CODES = UInt32[1, 2]
+const OCLASS_TAG = hash("token.oclass")
+const OPEN_UPOS = ("NOUN", "PROPN", "VERB", "ADJ", "ADV")
+oclass_code(upos::AbstractString) = upos in OPEN_UPOS ? UInt32(1) : UInt32(2)
 tagcode(name::Symbol, s::AbstractString) =
   UInt32(something(findfirst(==(s), TAGSETS[name]), length(TAGSETS[name])))
 const TAG_CODES = map(ls -> UInt32.(1:length(ls)), TAGSETS)
@@ -157,6 +164,52 @@ end
 const KIN_TAG = hash("token.attach.kin")
 "Kinship items for t under candidate head c (default_specs(kinitems = true)): to its left neighbour, then its right."
 kin_items(st, t, c) = UInt64[item(v, (KIN_TAG, j, v)) for (j, v) in enumerate((kin_value(st, t, c, -1), kin_value(st, t, c, 1)))]
+
+const BIOES_TAG = hash("token.attach.bioes")
+
+"""
+BIOES label of token u by its own subtree (user's design 2026-11-02), with t's attachment taken to be c: 1 S (no
+dependents), 2 B (dependents only to its right: it starts its subtree), 3 E (only to its left: it ends it), 4 I (both
+sides).  PENDING while a side has no dependent yet and some other token on it (in u's sentence) is unattached.
+"""
+function bioes_label(st, u::Int, t::Int, c)
+  toks = st.layers[:token]
+  ord, rank, cp, sfirst, slast = relranks(st)
+  ru, rt = rank[u], rank[t]
+  ch = children_index(st)[u]
+  hasL = any(v -> v != t && rank[v] < ru, ch) || (c == u && rt < ru)
+  hasR = any(v -> v != t && rank[v] > ru, ch) || (c == u && rt > ru)
+  function settled(a, b)                             # every token in ranks a..b attached (t: hypothetically)
+    a > b && return true
+    n = cp[b+1] - cp[a]
+    a <= rt <= b && toks[:attach, t] == PENDING && (n -= 1)
+    n == 0
+  end
+  open_ = toks[:sentence, u] == PENDING
+  okL = hasL || (!open_ && settled(sfirst[ru], ru - 1))
+  okR = hasR || (!open_ && settled(ru + 1, slast[ru]))
+  (okL && okR) || return PENDING
+  UInt32(hasL ? (hasR ? 4 : 3) : (hasR ? 2 : 1))
+end
+
+"""
+BIOES items for t under candidate head c (default_specs(bioes = true)): the gap to t's left as the pair (label of t's
+left neighbour, t's label), the gap to its right (t's, the right neighbour's), and c's own label -- all with t attached
+to c.  Labels 1-4 as bioes_label, 5 no neighbour in the sentence; c the root: 6.
+"""
+function bioes_values(st, t, c)
+  toks = st.layers[:token]
+  c == PENDING && return (PENDING, PENDING, PENDING)
+  lab(u) = u == PENDING ? PENDING : u == NONE ? UInt32(5) :
+    (toks[:sentence, t] == PENDING || toks[:sentence, Int(u)] == PENDING) ? PENDING :
+    toks[:sentence, Int(u)] != toks[:sentence, t] ? UInt32(5) : bioes_label(st, Int(u), t, c)
+  lt = bioes_label(st, t, t, c)
+  ll, lr = lab(adjacent_token(st, t, -1)), lab(adjacent_token(st, t, 1))
+  pair(a, b) = (a == PENDING || b == PENDING) ? PENDING : UInt32(5 * (a - 1) + b)
+  lc = c == NONE ? UInt32(6) : bioes_label(st, Int(c), t, c)
+  (pair(ll, lt), pair(lt, lr), lc)
+end
+bioes_items(st, t, c) = UInt64[item(v, (BIOES_TAG, j, v)) for (j, v) in enumerate(bioes_values(st, t, c))]
 
 "Word classes for the head_wc properties (set by default_specs(headwc = ...))."
 const HEADWC = Ref{Any}(nothing)
@@ -1136,6 +1189,9 @@ function oracle_choice(st, key)
   span = tokspan(st, i)
   name = st.layers[lname].spec.decisions[k].name
   iswclass(name) && return first(st.layers[lname].spec.decisions[k].candidates(st, i))   # gold first
+  if name == :oclass
+    return haskey(gold.tags, :oclass) ? get(gold.tags[:oclass], span, UInt32(2)) : UInt32(2)
+  end
   if haskey(TAGSETS, name) || haskey(ALLHEADSETS, name)
     fallback = UInt32(length(haskey(TAGSETS, name) ? TAGSETS[name] : ALLHEADSETS[name]))
     return haskey(gold.tags, name) ? get(gold.tags[name], span, fallback) : fallback
@@ -1193,7 +1249,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
   relations::Bool = false, headsdist::Bool = false, pptable = nothing, pprel::Bool = false,
   relbounded::Bool = false, relnone::Bool = false, treerank::Bool = false, headtrank::Bool = false,
   headwc::Vector{Int} = Int[], headwcclasses = nothing, headsibs::Vector{Symbol} = Symbol[], idxeq::Bool = false,
-  kinitems::Bool = false, headkin::Vector{Symbol} = Symbol[], neighbor2::Bool = false)
+  kinitems::Bool = false, headkin::Vector{Symbol} = Symbol[], neighbor2::Bool = false, oclass::Bool = false, bioes::Bool = false)
   all(n -> haskey(HEADKIN_DIR, n), headkin) || error("headkin: names are $(join(keys(HEADKIN_DIR), ", "))")
   all(n -> haskey(HEADSIB_KIND, n), headsibs) || error("headsibs: names are $(join(keys(HEADSIB_KIND), ", "))")
   safeats = charindex === nothing ? FeatDef[] : [sa_feats(charindex, :left); sa_feats(charindex, :right)]
@@ -1244,6 +1300,12 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
   nn2paths = neighbor2 ? [FeatPath([r, r], f) for r in (:left_neighbor, :right_neighbor) for f in (:form, :upos, :head_dir)] : FeatPath[]
   nn2at = 22 + extra + length(relpaths) + headsdist + headtrank + length(hwnames) + length(headsibs) + length(headkin)
   append!(linkpaths, nn2at .+ eachindex(nn2paths))
+  # oclass: the token's, its neighbours' and its head's open / closed class, last in the context; the first three in the
+  # attachment features (both sides), as upos
+  oclpaths = oclass ? [FeatPath(:oclass), FeatPath([:left_neighbor], :oclass), FeatPath([:right_neighbor], :oclass),
+    FeatPath([:head], :oclass)] : FeatPath[]
+  oclat = nn2at + length(nn2paths)
+  oclass && append!(linkpaths, oclat .+ (1:3))
   tokens = LayerSpec{TokenLayer}(:token,
     vcat([FeatDef(:form, (st, t) -> intern!(st.lex, :form, lowercase(tokstr(st, t)))),
         FeatDef(:caps, (st, t) -> UInt32(capsclass(tokstr(st, t)))),
@@ -1269,6 +1331,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
           treerank ? (v = trank_code(tree_rank(st, t, c)); UInt64[item(v, (TRANK_TAG, v))]) : UInt64[],
           idxeq ? idxeq_items(st, t, c) : UInt64[],
           kinitems ? kin_items(st, t, c) : UInt64[],
+          bioes ? bioes_items(st, t, c) : UInt64[],
           pptable === nothing ? UInt64[] :
             pp_items(pptable, st, t, c; cands = pprel ? attach_candidates(st, t; projective) : nothing)),
         allcandidates = attach_allcandidates,
@@ -1293,6 +1356,10 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
           # once the attachment is committed, the backward step derives it (the oracle decides it itself)
           ready = (st, t) -> !st.infer || (!SOFTHEADS[] && st.layers[:token][:attach, t] == PENDING))
         for name in [collect(keys(HEADSETS)); headsdist ? [:head_sdist] : Symbol[]; headtrank ? [:head_trank] : Symbol[]; hwnames; headsibs; headkin]],
+      [DecisionDef(:oclass;
+          candidates = (st, t) -> OCLASS_CODES,
+          features = (st, t, c) -> label_features(st, :token, OCLASS_TAG, t, c),
+          items = (st, t, c) -> label_items(st, :token, OCLASS_TAG, t)) for _ in 1:oclass],
       [DecisionDef(wnames[l];
           candidates = (st, t) -> wclass_candidates(wc, l, lowercase(tokstr(st, t))),
           features = (st, t, c) -> label_features(st, :token, witemtags[l], t, c),
@@ -1316,10 +1383,11 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
       [FeatPath(n) for n in hwnames],
       [FeatPath(n) for n in headsibs],
       [FeatPath(n) for n in headkin],
-      nn2paths),
+      nn2paths,
+      oclpaths),
     (st, t) -> Int(st.layers[:token][:last_char, t]))
 
-  length(tokens.context) == 22 + extra + length(relpaths) + headsdist + headtrank + length(hwnames) + length(headsibs) + length(headkin) + length(nn2paths) || error("token context paths moved: update linkpaths")
+  length(tokens.context) == 22 + extra + length(relpaths) + headsdist + headtrank + length(hwnames) + length(headsibs) + length(headkin) + length(nn2paths) + length(oclpaths) || error("token context paths moved: update linkpaths")
   LINKPATHS[tokens] = linkpaths
   sentences = LayerSpec{SentenceLayer}(:sentence,
     FeatDef[],

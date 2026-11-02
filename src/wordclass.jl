@@ -119,7 +119,7 @@ context paths.  For the soft redundant pool (ChainOpts.poolsigma).
 function generalization_slots(specs)
   toks = specs[2]
   ctx = toks.context
-  isgen(f) = f in (:upos, :xpos, :basepos) || iswclass(f) || startswith(String(f), "suffix")
+  isgen(f) = f in (:upos, :xpos, :basepos, :oclass) || iswclass(f) || startswith(String(f), "suffix")
   function group(paths, slotof)
     forms, gens = Dict{Vector{Symbol},Int}(), Dict{Vector{Symbol},Vector{Int}}()
     for (j, k) in enumerate(paths)

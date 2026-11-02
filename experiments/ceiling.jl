@@ -151,6 +151,9 @@ function ceiling_main(cfg)
     pp, cc = get(a, :lw_pair, 0) / 1000, get(a, :lw_ctx, 0) / 1000
     println("lookwback: $(round(Int, pp + cc)) interactions -- pairwise $(round(pp / (pp + cc); digits = 3)), context (or blended) $(round(cc / (pp + cc); digits = 3))")
   end
+  if get(a, :fk_cands, 0) > 0                         # forkcap: forks and chains per candidate
+    println("forkcap: $(round(Int, get(a, :fk_forks, 0) / 1000)) forks; $(round(get(a, :fk_leaves, 0) / a[:fk_cands]; digits = 2)) chains per candidate")
+  end
   if get(a, :as_taken, 0) + get(a, :as_stop, 0) > 0   # accumstop: leftovers taken before a stop, and dropped by it
     tk_, sp, dr = get(a, :as_taken, 0) / 1000, get(a, :as_stop, 0) / 1000, get(a, :as_dropped, 0) / 1000
     println("accumstop: $(round(Int, tk_)) leftovers taken, $(round(Int, sp)) stops discarding $(round(Int, dr)) leftovers ($(round(dr / (tk_ + dr); digits = 3)) of those reached)")

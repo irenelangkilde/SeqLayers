@@ -292,10 +292,10 @@ end
     # every option lands in its own ChainOpts field (positional constructor)
     mo = ChainModel(dir; select = :maxdev, leftovers = :greedy, mincount = 1, ctxmode = :accum, greedymin = true, greedysel = false,
       driftsigma = 0.25, drifttau = 0.5, driftstep = 0.75, distback = true, shrink = 7.0, accumwin = 3, accumreset = true, cidrop = 0.125,
-      shrinkleft = 9.0, leftmin2 = 4, depmeasure = :pmi, mindevtau = 0.3, mindevstop = :pathmin, explainpool = true, chainshrink = 20.0, chainshrinkto = :gen, chainsel = 2.5, lookw = :max, lookwsmooth = 5.0, lookwback = 5.0, lookwsoft = true, stickbreak = :cond, posnegrestart = true, posnegseed = :oldtop, dualchain = :inchain, dualcombine = :sumdedup, dualw = 0.25, dualleft = false, dualturn = :refine, posnegafter = true, posnegleftneg = true, posnegonly = :attach, leftwback = 2.0, leftwovl = true, leftwcomb = :min, wselcomb = :min, wselmove = :wcorr, wselweight = true, tuplek = 6, tuplemin = 1.5, interleave = false, accumgreedy = 0.75, accumstop = 0.6)
+      shrinkleft = 9.0, leftmin2 = 4, depmeasure = :pmi, mindevtau = 0.3, mindevstop = :pathmin, explainpool = true, chainshrink = 20.0, chainshrinkto = :gen, chainsel = 2.5, lookw = :max, lookwsmooth = 5.0, lookwback = 5.0, lookwsoft = true, stickbreak = :cond, posnegrestart = true, posnegseed = :oldtop, dualchain = :inchain, dualcombine = :sumdedup, dualw = 0.25, dualleft = false, dualturn = :refine, posnegafter = true, posnegleftneg = true, posnegonly = :attach, leftwback = 2.0, leftwovl = true, leftwcomb = :min, wselcomb = :min, wselmove = :wcorr, wselweight = true, tuplek = 6, tuplemin = 1.5, interleave = false, accumgreedy = 0.75, accumstop = 0.6, forkcap = 0, forkcomb = :avg, forkleft = :each)
     o = mo.opts
     @test (o.greedymin, o.greedysel, o.driftsigma, o.drifttau, o.driftstep, o.distback, o.shrink, o.accumwin, o.accumreset, o.cidrop,
-      o.shrinkleft, o.leftmin2, o.depmeasure, o.mindevtau, o.mindevstop, o.explainpool, o.chainshrink, o.chainshrinkto, o.chainsel, o.lookw, o.lookwsmooth, o.lookwback, o.lookwsoft, o.stickbreak, o.posnegrestart, o.posnegseed, o.dualchain, o.dualcombine, o.dualw, o.dualleft, o.dualturn, o.posnegafter, o.posnegleftneg, o.posnegonly, o.leftwback, o.leftwovl, o.leftwcomb, o.wselcomb, o.wselmove, o.wselweight, o.tuplek, o.tuplemin, o.interleave, o.accumgreedy, o.accumstop) == (true, false, 0.25, 0.5, 0.75, true, 7.0, 3, true, 0.125, 9.0, 4, :pmi, 0.3, :pathmin, true, 20.0, :gen, 2.5, :max, 5.0, 5.0, true, :cond, true, :oldtop, :inchain, :sumdedup, 0.25, false, :refine, true, true, :attach, 2.0, true, :min, :min, :wcorr, true, 6, 1.5, false, 0.75, 0.6)
+      o.shrinkleft, o.leftmin2, o.depmeasure, o.mindevtau, o.mindevstop, o.explainpool, o.chainshrink, o.chainshrinkto, o.chainsel, o.lookw, o.lookwsmooth, o.lookwback, o.lookwsoft, o.stickbreak, o.posnegrestart, o.posnegseed, o.dualchain, o.dualcombine, o.dualw, o.dualleft, o.dualturn, o.posnegafter, o.posnegleftneg, o.posnegonly, o.leftwback, o.leftwovl, o.leftwcomb, o.wselcomb, o.wselmove, o.wselweight, o.tuplek, o.tuplemin, o.interleave, o.accumgreedy, o.accumstop, o.forkcap, o.forkcomb, o.forkleft) == (true, false, 0.25, 0.5, 0.75, true, 7.0, 3, true, 0.125, 9.0, 4, :pmi, 0.3, :pathmin, true, 20.0, :gen, 2.5, :max, 5.0, 5.0, true, :cond, true, :oldtop, :inchain, :sumdedup, 0.25, false, :refine, true, true, :attach, 2.0, true, :min, :min, :wcorr, true, 6, 1.5, false, 0.75, 0.6, 0, :avg, :each)
     for (cs, to, zs) in ((20.0, :prev, 0.0), (20.0, :gen, 0.0), (20.0, :prior, 0.0), (0.0, :prev, 2.6))
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum,
         chainshrink = cs, chainshrinkto = to, chainsel = zs)
@@ -366,6 +366,26 @@ end
       rg = eval_scores(evaluate_counts(docs, specs, GoldGapsModel(mg), lex))
       @test rg.token_f1 == 1.0 && rg.sentence_f1 == 1.0 && 0 <= rg.uas <= 1
       @test eval_scores(evaluate_counts(docs, specs, GoldGapsModel(OracleModel()), lex)).token_f1 == 1.0
+    end
+    # forked chains: forks happen, never more than forkcap chains, the maxdev chain first; cap 1 = plain maxdev
+    @test_throws ErrorException ChainModel(dir; select = :maxdev, forkcap = 4, stepscore = :posneg)
+    @test_throws ErrorException ChainModel(dir; select = :maxdev, forkcap = 4, forkcomb = :avg, forkleft = :chosen)
+    let base_ = (select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum)
+      m1 = ChainModel(dir; base_...); m1.generalize = SeqLayers.generalization_slots(specs)
+      r1 = eval_scores(evaluate_counts(docs, specs, m1, lex))
+      mf1 = ChainModel(dir; base_..., forkcap = 1); mf1.generalize = SeqLayers.generalization_slots(specs)
+      @test eval_scores(evaluate_counts(docs, specs, mf1, lex)) == r1     # (cap 1: never forks)
+      for (cmb, lft) in ((:max, :each), (:avg, :each), (:max, :chosen))
+        mf = ChainModel(dir; base_..., forkcap = 4, forkcomb = cmb, forkleft = lft); mf.generalize = SeqLayers.generalization_slots(specs)
+        SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()
+        try
+          @test 0 <= eval_scores(evaluate_counts(docs, specs, mf, lex)).uas <= 1
+          d = SeqLayers.DC_STATS[]
+          @test get(d, :fk_forks, 0) > 0 && get(d, :fk_leaves, 0) <= 4 * get(d, :fk_cands, 0)
+        finally
+          SeqLayers.DC_STATS[] = nothing
+        end
+      end
     end
     # accumgreedy: drifted accum contexts switch to greedy ones (theta 0.01 switches nearly all of them)
     @test_throws ErrorException ChainModel(dir; select = :maxdev, leftovers = :greedy, ctxmode = :greedy, accumgreedy = 1.0)
@@ -634,6 +654,38 @@ end
     mn2 = ChainModel(ndir2; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1)
     mn2.generalize = SeqLayers.generalization_slots(nspecs2)
     @test 0 <= eval_scores(evaluate_counts(docs, nspecs2, mn2, Lexicon())).uas <= 1
+    # oclass: gold open / closed from UPOS, a ladder rung after the tags; bioes: labels agree with the gold tree
+    ospecs = default_specs(oclass = true, bioes = true)
+    os_ = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, ospecs, Lexicon())
+    solve!(os_, OracleModel())
+    to_ = os_.layers[:token]
+    for t in 1:length(to_)
+      up = SeqLayers.TAGSETS.upos[to_[:upos, t]]
+      @test to_[:oclass, t] == SeqLayers.oclass_code(up)
+    end
+    @test Set(to_[:oclass, t] for t in 1:length(to_)) == Set(UInt32[1, 2])
+    labs = Set{UInt32}()
+    for t in 1:length(to_)
+      pos(u) = to_[:first_char, u]
+      ch = [u for u in 1:length(to_) if to_[:attach, u] == UInt32(t)]
+      want = UInt32(any(u -> pos(u) < pos(t), ch) ? (any(u -> pos(u) > pos(t), ch) ? 4 : 3) : (any(u -> pos(u) > pos(t), ch) ? 2 : 1))
+      h = to_[:attach, t]
+      other = h == NONE || h == PENDING ? 0 : Int(h)        # (t's own head doesn't change t's label)
+      @test SeqLayers.bioes_label(os_, t, other == t ? 1 : t, h) == want
+      push!(labs, want)
+      h == PENDING || @test length(SeqLayers.bioes_items(os_, t, h)) == 3
+    end
+    @test length(labs) >= 3                              # (S, B, E at least, in a tree of 16 words)
+    gens = SeqLayers.generalization_slots(ospecs)
+    ctx = ospecs[2].context
+    @test any(g -> any(sl -> ctx[sl].feat == :oclass, g), values(gens[SeqLayers.typekey(:token, 3)]))   # a ladder rung
+    for osp in (ospecs, default_specs(oclass = true), default_specs(bioes = true))
+      @test evaluate(docs, osp, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
+      odir = record_events(docs, osp, Lexicon(), mktempdir())
+      mo2 = ChainModel(odir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, ctxmode = :accum)
+      mo2.generalize = SeqLayers.generalization_slots(osp)
+      @test 0 <= eval_scores(evaluate_counts(docs, osp, mo2, Lexicon())).uas <= 1
+    end
     hspecs = default_specs(headtrank = true)
     @test evaluate(docs, hspecs, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
     hdir = record_events(docs, hspecs, Lexicon(), mktempdir())

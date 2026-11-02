@@ -52,7 +52,7 @@ end
 function build_doc(sents)
   text, gap = Char[], UInt32[]
   head, deprel, ends = Dict{UnitRange{Int},UnitRange{Int}}(), Dict{UnitRange{Int},UInt32}(), Set{Int}()
-  tags = Dict(name => Dict{UnitRange{Int},UInt32}() for name in [collect(keys(TAGSETS)); collect(keys(ALLHEADSETS))])
+  tags = Dict(name => Dict{UnitRange{Int},UInt32}() for name in [collect(keys(TAGSETS)); collect(keys(ALLHEADSETS)); :oclass])
   dropped = 0
   for (stext, words, _) in sents
     chars = collect(stext)
@@ -74,6 +74,7 @@ function build_doc(sents)
       for (name, code) in pairs(gold_tags(w.form, w.upos, w.xpos))
         tags[name][s] = code
       end
+      tags[:oclass][s] = oclass_code(w.upos)
       for (name, code) in pairs(gold_head(wi, w.head, words))
         tags[name][s] = code
       end
