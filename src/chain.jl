@@ -224,6 +224,7 @@ struct ChainOpts
   wselweight::Bool                                # accumby=:wsel: the leftover's correction times w of its chosen context (min, or sum / 2)
   tuplek::Int                                     # > 0: a :maxdev chain's first step adds the best tuple (triple, else pair, else single) of its tuplek largest single steps (see tuple_step!)
   interleave::Bool                                # ctxmode :accum: chain steps and leftovers in one maxdev loop (see accum_leftovers)
+  accumgreedy::Float64                            # > 0 (ctxmode :accum): a leftover whose backed-off context's log odds drift more than this from T gets a greedy (greedyby :dep) context instead
   tuplemin::Float64                               # > 0: the tuple pool is the features whose single step reaches tuplemin (and tau; with tuplek too: the tuplek largest of them)
   posnegonly::Symbol                              # posneg / posnegrestart for :all decisions, :attach (unlabeled decisions) only, or :heads (attachment and head properties) -- the others then use :abs chains
   posnegafter::Bool                               # posnegrestart: pick the candidate to restart by its full score (chain + leftovers), recomputing its leftovers after each restart
@@ -344,7 +345,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms, :maxpos, :maxabsscore, :maxposneg) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
@@ -356,6 +357,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   wselcomb in (:min, :sum) || error("unknown wselcomb $wselcomb (use :min or :sum)")
   interleave && (leftovers != :greedy || ctxmode != :accum || select != :maxdev || pairsteps || pickfewest > 0 || target || lockstep != :none || sample > 0 || dualchain != :off) &&
     error("interleave: needs select = :maxdev, leftovers = :greedy, ctxmode = :accum, and no pairsteps, pickfewest, target, lockstep, sample or dualchain")
+  accumgreedy > 0 && (leftovers != :greedy || ctxmode != :accum) && error("accumgreedy: needs leftovers = :greedy, ctxmode = :accum")
   interleave && !(stepscore in (:abs, :posneg)) && error("interleave: stepscore :abs or :posneg")
   wselmove in (:weights, :wcorr) || error("unknown wselmove $wselmove (use :weights or :wcorr)")
   leftwcomb in (:prod, :min, :max) || error("unknown leftwcomb $leftwcomb (use :prod, :min or :max)")
@@ -426,7 +428,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -3024,6 +3026,19 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
         continue
       end
       xr = xpath[xk][1]
+      # accumgreedy (user's design 2026-11-02): the context drifted too far from T -- a greedy context instead (grown from
+      # the chain and the taken leftovers by dependence, as greedyby = :dep); the shared context's rungs stay as they are
+      if m.opts.accumgreedy > 0
+        cx = build(xr)
+        lc = cx === nothing || cx[2] === nothing ? log(prior) : log(cx[1].odds[end])
+        if abs(lc - T) > m.opts.accumgreedy
+          g = greedy_dep_context(m, base, X, UInt64[st.members; collect(taken)], label, prior, m.opts.minctx, m.opts.maxctx)
+          (d = DC_STATS[]) === nothing || (d[g === nothing ? :ag_kept : :ag_greedy] = get(d, g === nothing ? :ag_kept : :ag_greedy, 0.0) + 1)
+          g === nothing || ((xc, xr) = (g[1], copy(path[1][1])))
+        else
+          (d = DC_STATS[]) === nothing || (d[:ag_accum] = get(d, :ag_accum, 0.0) + 1)
+        end
+      end
       if m.opts.branches > 1 && xk > 1                # X needed generalizing: its contexts along the other branches too
         ctxs = Any[(xr, xc, xv)]
         for bp in branchpaths()
@@ -3124,6 +3139,40 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
     filter!(s -> !(Ic[s] in items(rung)), pending)  # leftovers now in the context are redundant
   end
   total_
+end
+
+"""
+A greedy context for leftover X (accumgreedy): grown from `avail` (chain features, taken leftovers) one feature at a
+time -- the one X depends on most (depq, depmeasure), among those keeping S ∪ f ∪ X supported -- as greedy contexts
+with greedyby = :dep are; (correction, context) once no feature can join, or nothing if under `needmin` features.
+"""
+function greedy_dep_context(m::ChainModel, base, X::UInt64, avail::Vector{UInt64}, label::UInt32, prior, needmin::Int, needmax::Int)
+  S, SX = ChainState(prior, base), ChainState(prior, base)
+  eX = only(extend_all(m, S, 0, [X]))
+  yX, okX = update_odds(m, eX, label, prior)
+  advance!(m, SX, X, eX, yX)
+  corr = okX ? log(yX) - log(prior) : 0.0
+  chosen = UInt64[]
+  while length(chosen) < needmax
+    fs = UInt64[f for f in avail if !(f in chosen) && f != X]
+    isempty(fs) && break
+    eS, eSX = extend_all(m, S, depth(S), fs), extend_all(m, SX, depth(SX), fs)
+    oS = S.odds[end]
+    bs, bi, by1, by2, bcorr = -Inf, 0, 0.0, 0.0, 0.0
+    for (i, f) in enumerate(fs)
+      y1, ok1 = update_odds(m, eS[i], label, oS)
+      y2, ok2 = leftover_update(m, eS[i], eSX[i], label, y1)
+      (ok1 && ok2 && ctxsupported(m, eSX[i], label)) || continue
+      sc = depq(m, base, X, f, label, prior)
+      sc > bs && ((bs, bi, by1, by2, bcorr) = (sc, i, y1, y2, log(y2) - log(y1)))
+    end
+    bi == 0 && break
+    advance!(m, S, fs[bi], eS[bi], by1)
+    advance!(m, SX, fs[bi], eSX[bi], by2)
+    push!(chosen, fs[bi])
+    corr = bcorr
+  end
+  length(chosen) >= needmin ? (corr, chosen) : nothing
 end
 
 const DEPQ = Dict{Tuple{UInt64,UInt64,UInt32},Float64}()

@@ -151,6 +151,10 @@ function ceiling_main(cfg)
     pp, cc = get(a, :lw_pair, 0) / 1000, get(a, :lw_ctx, 0) / 1000
     println("lookwback: $(round(Int, pp + cc)) interactions -- pairwise $(round(pp / (pp + cc); digits = 3)), context (or blended) $(round(cc / (pp + cc); digits = 3))")
   end
+  if (agn = get(a, :ag_accum, 0) + get(a, :ag_greedy, 0) + get(a, :ag_kept, 0)) > 0   # accumgreedy: which context each leftover used
+    println("accumgreedy: $(round(Int, agn / 1000)) leftover contexts -- accum $(round(get(a, :ag_accum, 0) / agn; digits = 3)), ",
+      "switched to greedy $(round(get(a, :ag_greedy, 0) / agn; digits = 3)), drifted but no greedy context $(round(get(a, :ag_kept, 0) / agn; digits = 3))")
+  end
   if get(a, :il_chain, 0) + get(a, :il_left, 0) > 0   # interleave: who won the steps while the chain ran
     ic, il = a[:il_chain] / 1000, get(a, :il_left, 0) / 1000
     println("interleave: $(round(Int, ic + il)) steps while the chain ran -- chain $(round(ic / (ic + il); digits = 3)), leftover $(round(il / (ic + il); digits = 3))")
