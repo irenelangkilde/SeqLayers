@@ -155,6 +155,24 @@ function decide(::OracleModel, st::State, key::AgendaKey)
   (choice, -3.0 * pos - key[2] - (key[1] == first(st.order) ? 0 : 1))
 end
 
+"""
+Gold tokens and sentences (user's request 2026-11-02): the char layer's gap decisions -- token boundaries and sentence
+ends -- answered from gold, with certainty (taken as soon as ready); every other decision by `inner`.  Isolates what
+segmentation errors cost the full decode.
+"""
+struct GoldGapsModel{M<:AbstractModel} <: AbstractModel
+  inner::M
+end
+
+function decide(m::GoldGapsModel, st::State, key::AgendaKey)
+  key[1] == :char || return decide(m.inner, st, key)
+  d, i = decisiondef(st, key), key[3]
+  d.ready(st, i) || return (NONE, -Inf)
+  choice = oracle_choice(st, key)
+  choice == PENDING ? (NONE, -Inf) : (choice, Inf)
+end
+waitscore(m::GoldGapsModel, st::State, key::AgendaKey) = waitscore(m.inner, st, key)
+
 "Training hook: records the features of every candidate as they looked when the decision was made."
 mutable struct Recorder
   model::CountModel

@@ -360,6 +360,13 @@ end
       mp.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
+    # gold tokens: with the gap decisions from gold, tokens and sentences come out exactly right, whatever the model
+    let mg = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 3, redundant = true, ctxmode = :accum)
+      mg.generalize = SeqLayers.generalization_slots(specs)
+      rg = eval_scores(evaluate_counts(docs, specs, GoldGapsModel(mg), lex))
+      @test rg.token_f1 == 1.0 && rg.sentence_f1 == 1.0 && 0 <= rg.uas <= 1
+      @test eval_scores(evaluate_counts(docs, specs, GoldGapsModel(OracleModel()), lex)).token_f1 == 1.0
+    end
     # accumgreedy: drifted accum contexts switch to greedy ones (theta 0.01 switches nearly all of them)
     @test_throws ErrorException ChainModel(dir; select = :maxdev, leftovers = :greedy, ctxmode = :greedy, accumgreedy = 1.0)
     for th in (0.01, 1.0)

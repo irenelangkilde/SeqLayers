@@ -1,0 +1,9 @@
+=== goldtok_decode_posnegheads  Mon Nov  2 19:33:32 UTC 2026
+CHILDES     324     1.0     0.7778  0.679   0.9901  
+ESLSpok     502     1.0     0.7371  0.6952  1.0     
+EWT         86      1.0     0.7442  0.6628  1.0     
+GUM         963     1.0     0.7217  0.6636  0.96    
+GUMReddit   1024    1.0     0.6396  0.5557  0.9346  
+ALL         2899    1.0     0.7023  0.6326  0.9728  
+build 18.8 s, decode 7468.2 s, run 20261102-214129 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== all done Mon Nov  2 21:41:29 UTC 2026

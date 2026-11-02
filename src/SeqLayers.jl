@@ -34,7 +34,7 @@ export NONE, PENDING,
   FeatDef, RelDef, FeatPath, DecisionDef, Constraint, LayerSpec,
   Sequence, CharSeq, TokenSeq, SentenceSeq, Lexicon, Gold, Doc, State,
   addcol!, follow, context, label_features, link_features, solve!,
-  AbstractModel, CountModel, OracleModel, decide, score,
+  AbstractModel, CountModel, OracleModel, GoldGapsModel, decide, score,
   default_specs, read_conllu, doc_from_text, CharIndex,
   ParsedSentence, process, train!, evaluate, evaluate_counts, eval_scores, LDS, DFS,
   LatticeModel, record_events, ChainModel, climb_table, load_wordclasses, load_pptable
