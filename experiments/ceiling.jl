@@ -151,6 +151,10 @@ function ceiling_main(cfg)
     pp, cc = get(a, :lw_pair, 0) / 1000, get(a, :lw_ctx, 0) / 1000
     println("lookwback: $(round(Int, pp + cc)) interactions -- pairwise $(round(pp / (pp + cc); digits = 3)), context (or blended) $(round(cc / (pp + cc); digits = 3))")
   end
+  if get(a, :as_taken, 0) + get(a, :as_stop, 0) > 0   # accumstop: leftovers taken before a stop, and dropped by it
+    tk_, sp, dr = get(a, :as_taken, 0) / 1000, get(a, :as_stop, 0) / 1000, get(a, :as_dropped, 0) / 1000
+    println("accumstop: $(round(Int, tk_)) leftovers taken, $(round(Int, sp)) stops discarding $(round(Int, dr)) leftovers ($(round(dr / (tk_ + dr); digits = 3)) of those reached)")
+  end
   if (agn = get(a, :ag_accum, 0) + get(a, :ag_greedy, 0) + get(a, :ag_kept, 0)) > 0   # accumgreedy: which context each leftover used
     println("accumgreedy: $(round(Int, agn / 1000)) leftover contexts -- accum $(round(get(a, :ag_accum, 0) / agn; digits = 3)), ",
       "switched to greedy $(round(get(a, :ag_greedy, 0) / agn; digits = 3)), drifted but no greedy context $(round(get(a, :ag_kept, 0) / agn; digits = 3))")

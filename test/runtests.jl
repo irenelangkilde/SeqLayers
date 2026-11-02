@@ -292,10 +292,10 @@ end
     # every option lands in its own ChainOpts field (positional constructor)
     mo = ChainModel(dir; select = :maxdev, leftovers = :greedy, mincount = 1, ctxmode = :accum, greedymin = true, greedysel = false,
       driftsigma = 0.25, drifttau = 0.5, driftstep = 0.75, distback = true, shrink = 7.0, accumwin = 3, accumreset = true, cidrop = 0.125,
-      shrinkleft = 9.0, leftmin2 = 4, depmeasure = :pmi, mindevtau = 0.3, mindevstop = :pathmin, explainpool = true, chainshrink = 20.0, chainshrinkto = :gen, chainsel = 2.5, lookw = :max, lookwsmooth = 5.0, lookwback = 5.0, lookwsoft = true, stickbreak = :cond, posnegrestart = true, posnegseed = :oldtop, dualchain = :inchain, dualcombine = :sumdedup, dualw = 0.25, dualleft = false, dualturn = :refine, posnegafter = true, posnegleftneg = true, posnegonly = :attach, leftwback = 2.0, leftwovl = true, leftwcomb = :min, wselcomb = :min, wselmove = :wcorr, wselweight = true, tuplek = 6, tuplemin = 1.5, interleave = false, accumgreedy = 0.75)
+      shrinkleft = 9.0, leftmin2 = 4, depmeasure = :pmi, mindevtau = 0.3, mindevstop = :pathmin, explainpool = true, chainshrink = 20.0, chainshrinkto = :gen, chainsel = 2.5, lookw = :max, lookwsmooth = 5.0, lookwback = 5.0, lookwsoft = true, stickbreak = :cond, posnegrestart = true, posnegseed = :oldtop, dualchain = :inchain, dualcombine = :sumdedup, dualw = 0.25, dualleft = false, dualturn = :refine, posnegafter = true, posnegleftneg = true, posnegonly = :attach, leftwback = 2.0, leftwovl = true, leftwcomb = :min, wselcomb = :min, wselmove = :wcorr, wselweight = true, tuplek = 6, tuplemin = 1.5, interleave = false, accumgreedy = 0.75, accumstop = 0.6)
     o = mo.opts
     @test (o.greedymin, o.greedysel, o.driftsigma, o.drifttau, o.driftstep, o.distback, o.shrink, o.accumwin, o.accumreset, o.cidrop,
-      o.shrinkleft, o.leftmin2, o.depmeasure, o.mindevtau, o.mindevstop, o.explainpool, o.chainshrink, o.chainshrinkto, o.chainsel, o.lookw, o.lookwsmooth, o.lookwback, o.lookwsoft, o.stickbreak, o.posnegrestart, o.posnegseed, o.dualchain, o.dualcombine, o.dualw, o.dualleft, o.dualturn, o.posnegafter, o.posnegleftneg, o.posnegonly, o.leftwback, o.leftwovl, o.leftwcomb, o.wselcomb, o.wselmove, o.wselweight, o.tuplek, o.tuplemin, o.interleave, o.accumgreedy) == (true, false, 0.25, 0.5, 0.75, true, 7.0, 3, true, 0.125, 9.0, 4, :pmi, 0.3, :pathmin, true, 20.0, :gen, 2.5, :max, 5.0, 5.0, true, :cond, true, :oldtop, :inchain, :sumdedup, 0.25, false, :refine, true, true, :attach, 2.0, true, :min, :min, :wcorr, true, 6, 1.5, false, 0.75)
+      o.shrinkleft, o.leftmin2, o.depmeasure, o.mindevtau, o.mindevstop, o.explainpool, o.chainshrink, o.chainshrinkto, o.chainsel, o.lookw, o.lookwsmooth, o.lookwback, o.lookwsoft, o.stickbreak, o.posnegrestart, o.posnegseed, o.dualchain, o.dualcombine, o.dualw, o.dualleft, o.dualturn, o.posnegafter, o.posnegleftneg, o.posnegonly, o.leftwback, o.leftwovl, o.leftwcomb, o.wselcomb, o.wselmove, o.wselweight, o.tuplek, o.tuplemin, o.interleave, o.accumgreedy, o.accumstop) == (true, false, 0.25, 0.5, 0.75, true, 7.0, 3, true, 0.125, 9.0, 4, :pmi, 0.3, :pathmin, true, 20.0, :gen, 2.5, :max, 5.0, 5.0, true, :cond, true, :oldtop, :inchain, :sumdedup, 0.25, false, :refine, true, true, :attach, 2.0, true, :min, :min, :wcorr, true, 6, 1.5, false, 0.75, 0.6)
     for (cs, to, zs) in ((20.0, :prev, 0.0), (20.0, :gen, 0.0), (20.0, :prior, 0.0), (0.0, :prev, 2.6))
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum,
         chainshrink = cs, chainshrinkto = to, chainsel = zs)
@@ -375,6 +375,23 @@ end
       finally
         SeqLayers.DC_STATS[] = nothing
       end
+    end
+    # accumstop: a drifted best leftover ends the leftover pass (a tiny theta stops at once; a huge one never)
+    let corr(th) = begin
+        mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 3, redundant = true, ctxmode = :accum, accumstop = th)
+        mp.generalize = SeqLayers.generalization_slots(specs)
+        SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()
+        try
+          r = eval_scores(evaluate_counts(docs, specs, mp, lex)).uas
+          (r, copy(SeqLayers.DC_STATS[]))
+        finally
+          SeqLayers.DC_STATS[] = nothing
+        end
+      end
+      r1, d1 = corr(1e-6)
+      r2, d2 = corr(1e6)
+      @test 0 <= r1 <= 1 && 0 <= r2 <= 1
+      @test get(d1, :as_stop, 0) > 0 && get(d2, :as_stop, 0) == 0 && get(d2, :as_taken, 0) > get(d1, :as_taken, 0)
     end
     # the association measures as leftover-context dependence (greedy and accum)
     for dmeas in (:mi, :oddspmi, :moi, :logor), (cm, kw) in ((:greedy, (greedyby = :dep,)), (:accum, (accumby = :depodds,)))

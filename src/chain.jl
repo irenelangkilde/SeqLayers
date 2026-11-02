@@ -224,6 +224,7 @@ struct ChainOpts
   wselweight::Bool                                # accumby=:wsel: the leftover's correction times w of its chosen context (min, or sum / 2)
   tuplek::Int                                     # > 0: a :maxdev chain's first step adds the best tuple (triple, else pair, else single) of its tuplek largest single steps (see tuple_step!)
   interleave::Bool                                # ctxmode :accum: chain steps and leftovers in one maxdev loop (see accum_leftovers)
+  accumstop::Float64                              # > 0 (ctxmode :accum): stop taking leftovers once the best one's backed-off context drifts more than this from T (the rest are discarded)
   accumgreedy::Float64                            # > 0 (ctxmode :accum): a leftover whose backed-off context's log odds drift more than this from T gets a greedy (greedyby :dep) context instead
   tuplemin::Float64                               # > 0: the tuple pool is the features whose single step reaches tuplemin (and tau; with tuplek too: the tuplek largest of them)
   posnegonly::Symbol                              # posneg / posnegrestart for :all decisions, :attach (unlabeled decisions) only, or :heads (attachment and head properties) -- the others then use :abs chains
@@ -345,7 +346,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0, accumstop = 0.0)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms, :maxpos, :maxabsscore, :maxposneg) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
@@ -358,6 +359,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   interleave && (leftovers != :greedy || ctxmode != :accum || select != :maxdev || pairsteps || pickfewest > 0 || target || lockstep != :none || sample > 0 || dualchain != :off) &&
     error("interleave: needs select = :maxdev, leftovers = :greedy, ctxmode = :accum, and no pairsteps, pickfewest, target, lockstep, sample or dualchain")
   accumgreedy > 0 && (leftovers != :greedy || ctxmode != :accum) && error("accumgreedy: needs leftovers = :greedy, ctxmode = :accum")
+  accumstop > 0 && (leftovers != :greedy || ctxmode != :accum) && error("accumstop: needs leftovers = :greedy, ctxmode = :accum")
   interleave && !(stepscore in (:abs, :posneg)) && error("interleave: stepscore :abs or :posneg")
   wselmove in (:weights, :wcorr) || error("unknown wselmove $wselmove (use :weights or :wcorr)")
   leftwcomb in (:prod, :min, :max) || error("unknown leftwcomb $leftwcomb (use :prod, :min or :max)")
@@ -428,7 +430,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, accumstop, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -3122,6 +3124,17 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       continue
     end
     sx = pending[bestX]
+    # accumstop (user's design 2026-11-02): the best leftover's context drifted more than theta from T -- it and every
+    # remaining leftover are discarded
+    if m.opts.accumstop > 0
+      cx = build(bestr)
+      lc = cx === nothing || cx[2] === nothing ? log(prior) : log(cx[1].odds[end])
+      if abs(lc - T) > m.opts.accumstop
+        (d = DC_STATS[]) === nothing || (d[:as_stop] = get(d, :as_stop, 0.0) + 1; d[:as_dropped] = get(d, :as_dropped, 0.0) + length(pending))
+        break
+      end
+      (d = DC_STATS[]) === nothing || (d[:as_taken] = get(d, :as_taken, 0.0) + 1)
+    end
     ACCUM_TRACE[] === nothing || ACCUM_TRACE[](sx, T, tries[sx], bestk, bestc)
     DC_STATS[] === nothing || dc_record!(m, base, Ic[sx], setdiff(union(st.members, taken), items(bestr)), label, prior, bestc)
     LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](sx, true, [something(findfirst(==(f), Ic), 0) for f in items(bestr)], bestc)
