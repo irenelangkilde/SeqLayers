@@ -1,0 +1,857 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 1076.9 s
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=odds;leftsmooth=evidence;ctxmode=accum;ctxattach=false;cidrop=0.0;ciorder=off;telescope=false;branches=1;combine=avg;accumwin=0;accumreset=false;driftsigma=0.0;drifttau=0.0;driftstep=0.0;distback=false;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective;headtrank;idxeq;kinitems;headkin=left,right;neighbor2;bioes]  [domains=product domeps=0.0]
+
+================ "How about right here ?"
+  How           gold -> ROOT        ok
+  about         gold -> here        WRONG: predicted -> right
+  right         gold -> here        ok
+  here          gold -> How         ok
+  ?             gold -> How         ok
+
+  ---- 'about': gold head 'here', predicted 'right'
+    head properties predicted (with the attachment and all of them hidden; values are probabilities):
+      head_upos ADV 0.649, VERB 0.234, PRON 0.114   (gold head: ADV, predicted head: ADV)
+      head_xpos RB 0.998, WRB 0.001, VBG 0.0   (gold head: RB, predicted head: RB)
+      head_dir  right 1.0, root 0.0, left 0.0   (gold head: right, predicted head: right)
+      head_dist 1 0.993, 2 0.007, 3-5 0.0   (gold head: 2, predicted head: 1)
+      head_trank1 1.0, 2 0.0, 3 0.0   (gold head: 2, predicted head: 1)
+      head_kinleftgrandparent 0.964, sibling 0.023, other_ancestor 0.008   (gold head: grandparent, predicted head: other_ancestor)
+      head_kinrightparent 0.757, niece/nephew 0.241, sibling 0.001   (gold head: sibling, predicted head: parent)
+    log margins predicted - gold (log of probability ratios; > 0 favours the predicted head):  attach -1.98;  head_trank +8.62, head_kinright +6.83, head_dist +4.91, head_xpos +0.0, head_dir +0.0, head_upos +0.0, head_kinleft -4.76;  total +13.62
+    candidates: 3   (product score = log P(attach) + Σ log P(head property value): a log probability)
+
+    -- GOLD -> here:  P(attach) 0.3511 (probability), product score -22.16
+       head-property terms (probabilities): head_xpos=RB 0.998, head_dist=2 0.007, head_kinright=sibling 0.001, head_kinleft=grandparent 0.964, head_dir=right 1.0, head_upos=ADV 0.649, head_trank=2 0.0
+       prior: log odds -4.23 = odds 0.0146 = probability 0.0143
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. idxeq:tok.right_neighbor=cand.depleft1?yes  +4.06  n 6147/7265       +4.06  n 6147/7265
+       2. dep.upos=ADP                              +0.03  n 3975/266042     +2.25  n 1519/188
+       3. cand.person=0                             -0.35  n 21586/2106086   -3.11  n 27/78
+       4. cand.right_neighbor.upos=PUNCT            +0.58  n 10010/386425    +1.87  n 14/5
+       5. idxeq:cand.head=tok.left_neighbor?yes     +2.58  n 6067/31684      +0.41  n 7/1
+       6. dep.xpos=IN                               +0.03  n 4651/311343     +0.69  n 7/0
+       chain: log odds +1.95 = odds 7.0
+
+       LEFTOVER 1: dep.right_neighbor.upos=ADV   Δ alone -0.02 (n 2189/153788);  running estimate before: log odds +1.95
+         ctx 1: context log odds  +1.95  n 7/0          with X: n 0/0         corr unsupported
+                 context: idxeq:tok.right_neighbor=cand.depleft1?yes, dep.upos=ADP, cand.person=0, cand.right_neighbor.upos=PUNCT, idxeq:cand.head=tok.left_neighbor?yes, dep.xpos=IN
+         ctx 2: context log odds   +2.4  n 11/0         with X: n 0/0         corr unsupported   [-dep.upos=ADP]
+         ctx 3: context log odds  +1.58  n 29/5         with X: n 2/1         corr unsupported   [-idxeq:cand.head=tok.left_neighbor?yes]
+         ctx 4: context log odds  +0.93  n 195/76       with X: n 13/28       corr -1.62  <= TAKEN   [-cand.right_neighbor.upos=PUNCT]
+
+       LEFTOVER 2: cand.basepos=R   Δ alone -1.35 (n 644/170666);  running estimate before: log odds +0.33
+         ctx 1: context log odds  -0.69  n 13/28        with X: n 1/1         corr unsupported
+                 context: idxeq:tok.right_neighbor=cand.depleft1?yes, cand.person=0, dep.xpos=IN, dep.right_neighbor.upos=ADV
+         ctx 2: context log odds  +0.34  n 502/358      with X: n 15/95       corr -2.11  <= TAKEN   [-dep.xpos=IN]
+
+       LEFTOVER 3: dep.form=about   Δ alone -0.04 (n 94/6809);  running estimate before: log odds -1.79
+         ctx 1: context log odds  -1.78  n 15/95        with X: n 0/0         corr unsupported
+                 context: idxeq:tok.right_neighbor=cand.depleft1?yes, cand.person=0, dep.right_neighbor.upos=ADV, cand.basepos=R
+         ctx 2: context log odds  -1.78  n 15/95        with X: n 0/0         corr unsupported   [-cand.person=0]
+         ctx 3: context log odds  -1.44  n 41/178       with X: n 0/0         corr unsupported   [-dep.right_neighbor.upos=ADV]
+         ctx 4: context log odds  -0.17  n 6147/7265    with X: n 43/9        corr +1.6  <= TAKEN   [-cand.basepos=R]
+
+       LEFTOVER 4: dep.right_neighbor.xpos=RB   Δ alone -0.03 (n 2278/161063);  running estimate before: log odds -0.18
+         ctx 1: context log odds  +1.46  n 43/9         with X: n 1/0         corr unsupported
+                 context: idxeq:tok.right_neighbor=cand.depleft1?yes, dep.form=about
+         ctx 2: context log odds  +2.08  n 1519/188     with X: n 7/21        corr -3.01  <= TAKEN   [-dep.form=about, +dep.upos=ADP]
+
+       LEFTOVER 5: cand.form=here   Δ alone -0.05 (n 42/3091);  running estimate before: log odds -3.19
+         ctx 1: context log odds  -0.97  n 7/21         with X: n 1/0         corr unsupported
+                 context: idxeq:tok.right_neighbor=cand.depleft1?yes, dep.upos=ADP, dep.right_neighbor.xpos=RB
+         ctx 2: context log odds  -4.27  n 59/4302      with X: n 5/6         corr +3.75  <= TAKEN   [-idxeq:tok.right_neighbor=cand.depleft1?yes]
+
+       LEFTOVER 6: dep.len=5   Δ alone -0.0 (n 3714/255488);  running estimate before: log odds +0.55
+         ctx 1: context log odds  -0.41  n 5/6          with X: n 0/0         corr unsupported
+                 context: dep.upos=ADP, dep.right_neighbor.xpos=RB, cand.form=here
+         ctx 2: context log odds  -0.85  n 4/7          with X: n 0/0         corr unsupported   [-dep.upos=ADP, +dep.xpos=IN]
+         ctx 3: context log odds  -2.82  n 6/84         with X: n 0/0         corr unsupported   [-dep.xpos=IN, +dep.basepos=0]
+         ctx 4: context log odds  -2.93  n 13/225       with X: n 4/14        corr +1.33  <= TAKEN   [-dep.basepos=0]
+
+       LEFTOVER 7: cand.left_neighbor.form=right   Δ alone -0.01 (n 25/1812);  running estimate before: log odds +1.88
+         ctx 1: context log odds  -1.54  n 4/14         with X: n 4/2         corr +1.39  <= TAKEN
+                 context: dep.right_neighbor.xpos=RB, cand.form=here, dep.len=5
+
+       LEFTOVER 8: cand.left_neighbor.left_neighbor.form=about   Δ alone +0.28 (n 128/6605);  running estimate before: log odds +3.27
+         ctx 1: context log odds  +0.29  n 4/2          with X: n 0/0         corr unsupported
+                 context: dep.right_neighbor.xpos=RB, cand.form=here, dep.len=5, cand.left_neighbor.form=right
+         ctx 2: context log odds  +0.36  n 10/6         with X: n 0/0         corr unsupported   [-cand.form=here, +cand.upos=ADV]
+         ctx 3: context log odds  +0.36  n 10/6         with X: n 0/0         corr unsupported   [-cand.upos=ADV, +cand.xpos=RB]
+         ctx 4: context log odds  +0.36  n 10/6         with X: n 0/0         corr unsupported   [-cand.xpos=RB, +cand.basepos=R]
+         ctx 5: context log odds  -0.37  n 10/13        with X: n 0/0         corr unsupported   [-cand.basepos=R]
+         ctx 6: context log odds  -2.54  n 12/140       with X: n 0/0         corr unsupported   [-dep.len=5]
+         ctx 7: context log odds  -2.62  n 753/10373    with X: n 0/52        corr -1.31  <= TAKEN   [-cand.left_neighbor.form=right, +cand.left_neighbor.upos=ADV]
+
+       LEFTOVER 9: cand.xpos=RB   Δ alone -1.41 (n 577/162282);  running estimate before: log odds +1.95
+         ctx 1: context log odds  -3.95  n 0/52         with X: n 0/0         corr unsupported
+                 context: dep.right_neighbor.xpos=RB, cand.left_neighbor.upos=ADV, cand.left_neighbor.left_neighbor.form=about
+         ctx 2: context log odds  -3.11  n 1/45         with X: n 0/0         corr unsupported   [-cand.left_neighbor.upos=ADV, +cand.left_neighbor.xpos=RB]
+         ctx 3: context log odds  -3.35  n 9/286        with X: n 3/23        corr +1.1  <= TAKEN   [-cand.left_neighbor.left_neighbor.form=about, +cand.left_neighbor.left_neighbor.upos=ADP]
+
+       LEFTOVER 10: dep.right_neighbor.right_neighbor.form=here   Δ alone -0.05 (n 43/3181);  running estimate before: log odds +3.05
+         ctx 1: context log odds  -2.44  n 3/23         with X: n 1/1         corr unsupported
+                 context: dep.right_neighbor.xpos=RB, cand.left_neighbor.xpos=RB, cand.left_neighbor.left_neighbor.upos=ADP, cand.xpos=RB
+         ctx 2: context log odds  -2.67  n 101/1471     with X: n 4/14        corr +1.08  <= TAKEN   [-cand.left_neighbor.left_neighbor.upos=ADP]
+
+       LEFTOVER 11: bioes.leftgap(left|tok)=B|S   Δ alone +0.3 (n 1688/85628);  running estimate before: log odds +4.13
+         ctx 1: context log odds  -1.54  n 4/14         with X: n 0/0         corr unsupported
+                 context: dep.right_neighbor.xpos=RB, cand.left_neighbor.xpos=RB, cand.xpos=RB, dep.right_neighbor.right_neighbor.form=here
+         ctx 2: context log odds  -2.38  n 4/45         with X: n 0/0         corr unsupported   [-cand.xpos=RB]
+         ctx 3: context log odds   -2.6  n 114/1542     with X: n 1/87        corr -1.17  <= TAKEN   [-dep.right_neighbor.right_neighbor.form=here, +dep.right_neighbor.right_neighbor.upos=ADV]
+
+       LEFTOVER 12: dep.left_neighbor.xpos=WRB   Δ alone -0.04 (n 202/14563);  running estimate before: log odds +2.96
+         ctx 1: context log odds  -3.77  n 1/87         with X: n 1/5         corr +1.99  <= TAKEN
+                 context: dep.right_neighbor.xpos=RB, cand.left_neighbor.xpos=RB, dep.right_neighbor.right_neighbor.upos=ADV, bioes.leftgap(left|tok)=B|S
+
+       LEFTOVER 13: cand.number=0   Δ alone -0.58 (n 17010/2087195);  running estimate before: log odds +4.96
+         ctx 1: context log odds  -3.77  n 1/5          with X: n 0/4         corr unsupported
+                 context: dep.right_neighbor.xpos=RB, cand.left_neighbor.xpos=RB, dep.right_neighbor.right_neighbor.upos=ADV, bioes.leftgap(left|tok)=B|S, dep.left_neighbor.xpos=WRB
+         ctx 2: context log odds  -1.79  n 2/6          with X: n 0/5         corr -0.76  <= TAKEN   [-dep.right_neighbor.right_neighbor.upos=ADV]
+
+       LEFTOVER 14: dep.left_neighbor.form=how   Δ alone -0.03 (n 61/4385);  running estimate before: log odds +4.19
+         ctx 1: context log odds  -1.79  n 0/5          with X: n 0/1         corr unsupported
+                 context: dep.right_neighbor.xpos=RB, cand.left_neighbor.xpos=RB, bioes.leftgap(left|tok)=B|S, dep.left_neighbor.xpos=WRB, cand.number=0
+         ctx 2: context log odds  -1.79  n 2/6          with X: n 1/1         corr unsupported   [-cand.number=0]
+         ctx 3: context log odds  -2.37  n 5/43         with X: n 1/1         corr unsupported   [-bioes.leftgap(left|tok)=B|S]
+         ctx 4: context log odds  -2.38  n 1043/11261   with X: n 1/1         corr unsupported   [-dep.left_neighbor.xpos=WRB]
+         ctx 5: context log odds  -3.55  n 4543/157461  with X: n 3/265       corr -0.64  <= TAKEN   [-dep.right_neighbor.xpos=RB]
+
+       LEFTOVER 15: dep.right_neighbor.form=right   Δ alone -0.02 (n 26/1887);  running estimate before: log odds +3.55
+         ctx 1: context log odds  -4.19  n 3/265        with X: n 0/0         corr unsupported
+                 context: cand.left_neighbor.xpos=RB, dep.left_neighbor.form=how
+         ctx 2: context log odds  -3.71  n 20/859       with X: n 0/0         corr unsupported   [-dep.left_neighbor.form=how, +dep.left_neighbor.xpos=WRB]
+         ctx 3: context log odds  -3.52  n 272/9197     with X: n 0/0         corr unsupported   [-dep.left_neighbor.xpos=WRB, +dep.left_neighbor.upos=ADV]
+         ctx 4: context log odds  -3.55  n 4543/157461  with X: n 6/150       corr +0.14  <= TAKEN   [-dep.left_neighbor.upos=ADV]
+
+       LEFTOVER 16: cand.len=4   Δ alone +0.26 (n 8440/444977);  running estimate before: log odds +3.69
+         ctx 1: context log odds   -3.4  n 6/150        with X: n 5/32        corr +1.18  <= TAKEN
+                 context: cand.left_neighbor.xpos=RB, dep.right_neighbor.form=right
+
+       LEFTOVER 17: cand.right_neighbor.right_neighbor.form=i   Δ alone -0.02 (n 564/39497);  running estimate before: log odds +4.87
+         ctx 1: context log odds  -2.08  n 5/32         with X: n 0/2         corr unsupported
+                 context: cand.left_neighbor.xpos=RB, dep.right_neighbor.form=right, cand.len=4
+         ctx 2: context log odds  -2.34  n 226/2337     with X: n 5/36        corr +0.12  <= TAKEN   [-dep.right_neighbor.form=right, +dep.right_neighbor.upos=ADV]
+
+       LEFTOVER 18: cand.right_neighbor.form=?   Δ alone +0.37 (n 410/19443);  running estimate before: log odds +4.99
+         ctx 1: context log odds   -2.2  n 5/36         with X: n 0/0         corr unsupported
+                 context: cand.left_neighbor.xpos=RB, dep.right_neighbor.upos=ADV, cand.len=4, cand.right_neighbor.right_neighbor.form=i
+         ctx 2: context log odds  -1.97  n 38/264       with X: n 0/0         corr unsupported   [-cand.right_neighbor.right_neighbor.form=i, +cand.right_neighbor.right_neighbor.upos=PRON]
+         ctx 3: context log odds  -1.87  n 48/304       with X: n 0/0         corr unsupported   [-dep.right_neighbor.upos=ADV, +dep.right_neighbor.xpos=RB]
+         ctx 4: context log odds  -2.07  n 321/2542     with X: n 1/18        corr -0.07  <= TAKEN   [-cand.right_neighbor.right_neighbor.upos=PRON]
+
+       LEFTOVER 19: cand.upos=ADV   Δ alone -1.17 (n 700/154715);  running estimate before: log odds +4.91
+         ctx 1: context log odds   -2.2  n 1/18         with X: n 0/11        corr -0.15  <= TAKEN
+                 context: cand.left_neighbor.xpos=RB, dep.right_neighbor.xpos=RB, cand.len=4, cand.right_neighbor.form=?
+
+       LEFTOVER 20: dep.left_neighbor.upos=ADV   Δ alone -0.02 (n 2196/154215);  running estimate before: log odds +4.77
+         ctx 1: context log odds   -2.4  n 0/11         with X: n 0/3         corr unsupported
+                 context: cand.left_neighbor.xpos=RB, dep.right_neighbor.xpos=RB, cand.len=4, cand.right_neighbor.form=?, cand.upos=ADV
+         ctx 2: context log odds   -2.2  n 1/18         with X: n 0/3         corr unsupported   [-cand.upos=ADV]
+         ctx 3: context log odds  -2.69  n 3/59         with X: n 0/9         corr +0.0  <= TAKEN   [-cand.len=4]
+
+       LEFTOVER 21: cand.right_neighbor.xpos=?   Δ alone +0.32 (n 137/6799);  running estimate before: log odds +4.77
+         ctx 1: context log odds  -2.69  n 0/9          with X: n 0/1         corr unsupported
+                 context: cand.left_neighbor.xpos=RB, dep.right_neighbor.xpos=RB, cand.right_neighbor.form=?, dep.left_neighbor.upos=ADV
+         ctx 2: context log odds  -2.69  n 3/59         with X: n 1/20        corr +0.0  <= TAKEN   [-dep.left_neighbor.upos=ADV]
+
+       LEFTOVER 22: cand.right_neighbor.right_neighbor.upos=PRON   Δ alone +0.07 (n 3854/246202);  running estimate before: log odds +4.77
+         ctx 1: context log odds  -2.69  n 1/20         with X: n 0/6         corr +0.0  <= TAKEN
+                 context: cand.left_neighbor.xpos=RB, dep.right_neighbor.xpos=RB, cand.right_neighbor.form=?, cand.right_neighbor.xpos=?
+
+       LEFTOVER 23: cand.right_neighbor.right_neighbor.head_dir=right   Δ alone -0.03 (n 23941/1701684);  running estimate before: log odds +4.77
+         ctx 1: context log odds  -2.69  n 0/6          with X: n 0/6         corr +0.0  <= TAKEN
+                 context: cand.left_neighbor.xpos=RB, dep.right_neighbor.xpos=RB, cand.right_neighbor.form=?, cand.right_neighbor.xpos=?, cand.right_neighbor.right_neighbor.upos=PRON
+
+       evidence (sums of Δ log odds): positive +22.95, negative -13.95;  final log odds +4.77 = odds 118.0
+
+    -- PREDICTED -> right:  P(attach) 0.0484 (probability), product score -8.54
+       head-property terms (probabilities): head_xpos=RB 0.998, head_dist=1 0.993, head_kinright=parent 0.757, head_kinleft=other_ancestor 0.008, head_dir=right 1.0, head_upos=ADV 0.649, head_trank=1 1.0
+       prior: log odds -4.23 = odds 0.0146 = probability 0.0143
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. kin.right=parent                          +3.84  n 12793/18898     +3.84  n 12793/18898
+       2. kin.left=other_ancestor                    -1.8  n 141/59141       -3.21  n 97/3594
+       3. dep.left_neighbor.form=how                -0.03  n 61/4385         +2.91  n 3/4   <- sign flips
+       4. cand.tense=0                               -0.2  n 32216/2717339   +0.29  n 3/3   <- sign flips
+       chain: log odds -0.41 = odds 0.667
+
+       LEFTOVER 1: cand.xpos=RB   Δ alone -1.41 (n 577/162282);  running estimate before: log odds -0.41
+         ctx 1: context log odds  -0.41  n 3/3          with X: n 0/1         corr unsupported
+                 context: kin.right=parent, kin.left=other_ancestor, dep.left_neighbor.form=how, cand.tense=0
+         ctx 2: context log odds  -0.36  n 15/23        with X: n 0/1         corr unsupported   [-kin.left=other_ancestor]
+         ctx 3: context log odds  -0.31  n 55/76        with X: n 0/10        corr -1.91  <= TAKEN   [-dep.left_neighbor.form=how, +dep.left_neighbor.xpos=WRB]
+
+       LEFTOVER 2: bioes.leftgap(left|tok)=B|S   Δ alone +0.3 (n 1688/85628);  running estimate before: log odds -2.31
+         ctx 1: context log odds   -2.3  n 0/10         with X: n 0/2         corr unsupported
+                 context: kin.right=parent, dep.left_neighbor.xpos=WRB, cand.tense=0, cand.xpos=RB
+         ctx 2: context log odds   -2.3  n 0/10         with X: n 0/2         corr unsupported   [-cand.tense=0]
+         ctx 3: context log odds  -1.18  n 18/62        with X: n 8/2         corr +2.16  <= TAKEN   [-dep.left_neighbor.xpos=WRB, +dep.left_neighbor.upos=ADV]
+
+       LEFTOVER 3: cand.len=5   Δ alone +0.46 (n 5768/250048);  running estimate before: log odds -0.15
+         ctx 1: context log odds  +0.98  n 8/2          with X: n 4/0         corr unsupported
+                 context: kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB, bioes.leftgap(left|tok)=B|S
+         ctx 2: context log odds  +0.02  n 41/39        with X: n 7/1         corr +1.1  <= TAKEN   [-cand.xpos=RB]
+
+       LEFTOVER 4: dep.right_neighbor.form=right   Δ alone -0.02 (n 26/1887);  running estimate before: log odds +0.95
+         ctx 1: context log odds  +1.25  n 7/1          with X: n 0/0         corr unsupported
+                 context: kin.right=parent, dep.left_neighbor.upos=ADV, bioes.leftgap(left|tok)=B|S, cand.len=5
+         ctx 2: context log odds  +0.19  n 63/51        with X: n 1/1         corr unsupported   [-dep.left_neighbor.upos=ADV]
+         ctx 3: context log odds  +0.33  n 1794/1285    with X: n 7/16        corr -0.96  <= TAKEN   [-bioes.leftgap(left|tok)=B|S]
+
+       LEFTOVER 5: dep.form=about   Δ alone -0.04 (n 94/6809);  running estimate before: log odds -0.02
+         ctx 1: context log odds  -0.69  n 7/16         with X: n 0/0         corr unsupported
+                 context: kin.right=parent, cand.len=5, dep.right_neighbor.form=right
+         ctx 2: context log odds  -0.69  n 7/16         with X: n 0/0         corr unsupported   [-cand.len=5]
+         ctx 3: context log odds  -1.78  n 218/1293     with X: n 5/2         corr +2.07  <= TAKEN   [-dep.right_neighbor.form=right, +dep.right_neighbor.upos=ADV]
+
+       LEFTOVER 6: cand.right_neighbor.right_neighbor.form=?   Δ alone -0.36 (n 199/19656);  running estimate before: log odds +2.05
+         ctx 1: context log odds  +0.51  n 5/2          with X: n 0/0         corr unsupported
+                 context: kin.right=parent, dep.right_neighbor.upos=ADV, dep.form=about
+         ctx 2: context log odds   +0.0  n 3/2          with X: n 0/0         corr unsupported   [-dep.right_neighbor.upos=ADV, +dep.right_neighbor.xpos=RB]
+         ctx 3: context log odds  -0.66  n 31/62        with X: n 1/1         corr unsupported   [-dep.right_neighbor.xpos=RB]
+         ctx 4: context log odds  -0.71  n 1293/2636    with X: n 3/22        corr -0.95  <= TAKEN   [-dep.form=about, +dep.upos=ADP]
+
+       LEFTOVER 7: dep.right_neighbor.xpos=RB   Δ alone -0.03 (n 2278/161063);  running estimate before: log odds +1.11
+         ctx 1: context log odds   -1.7  n 3/22         with X: n 1/0         corr unsupported
+                 context: kin.right=parent, dep.upos=ADP, cand.right_neighbor.right_neighbor.form=?
+         ctx 2: context log odds  -1.75  n 3/23         with X: n 1/0         corr unsupported   [-dep.upos=ADP, +dep.xpos=IN]
+         ctx 3: context log odds  -0.37  n 45/64        with X: n 1/1         corr unsupported   [-dep.xpos=IN, +dep.basepos=0]
+         ctx 4: context log odds  -0.46  n 63/101       with X: n 1/3         corr unsupported   [-dep.basepos=0]
+         ctx 5: context log odds  -0.93  n 1146/2902    with X: n 16/179      corr -1.42  <= TAKEN   [-cand.right_neighbor.right_neighbor.form=?, +cand.right_neighbor.right_neighbor.upos=PUNCT]
+
+       LEFTOVER 8: cand.right_neighbor.form=here   Δ alone +0.22 (n 57/3075);  running estimate before: log odds -0.31
+         ctx 1: context log odds  -2.35  n 16/179       with X: n 2/3         corr +1.1  <= TAKEN
+                 context: kin.right=parent, cand.right_neighbor.right_neighbor.upos=PUNCT, dep.right_neighbor.xpos=RB
+
+       LEFTOVER 9: dep.xpos=IN   Δ alone +0.03 (n 4651/311343);  running estimate before: log odds +0.79
+         ctx 1: context log odds   -1.1  n 2/3          with X: n 0/1         corr unsupported
+                 context: kin.right=parent, cand.right_neighbor.right_neighbor.upos=PUNCT, dep.right_neighbor.xpos=RB, cand.right_neighbor.form=here
+         ctx 2: context log odds  +0.25  n 9/6          with X: n 0/1         corr unsupported   [-dep.right_neighbor.xpos=RB]
+         ctx 3: context log odds  +0.06  n 18/16        with X: n 0/1         corr unsupported   [-cand.right_neighbor.right_neighbor.upos=PUNCT]
+         ctx 4: context log odds  -0.88  n 486/1175     with X: n 41/48       corr +0.68  <= TAKEN   [-cand.right_neighbor.form=here, +cand.right_neighbor.upos=ADV]
+
+       LEFTOVER 10: cand.person=0   Δ alone -0.35 (n 21586/2106086);  running estimate before: log odds +1.47
+         ctx 1: context log odds  -0.18  n 41/48        with X: n 12/32       corr -0.75  <= TAKEN
+                 context: kin.right=parent, cand.right_neighbor.upos=ADV, dep.xpos=IN
+
+       LEFTOVER 11: cand.right_neighbor.right_neighbor.head_dir=left   Δ alone -0.15 (n 12906/1034023);  running estimate before: log odds +0.72
+         ctx 1: context log odds   -0.9  n 12/32        with X: n 7/6         corr +0.93  <= TAKEN
+                 context: kin.right=parent, cand.right_neighbor.upos=ADV, dep.xpos=IN, cand.person=0
+
+       LEFTOVER 12: dep.right_neighbor.right_neighbor.form=here   Δ alone -0.05 (n 43/3181);  running estimate before: log odds +1.65
+         ctx 1: context log odds   +0.0  n 7/6          with X: n 0/1         corr unsupported
+                 context: kin.right=parent, cand.right_neighbor.upos=ADV, dep.xpos=IN, cand.person=0, cand.right_neighbor.right_neighbor.head_dir=left
+         ctx 2: context log odds  +0.38  n 22/14        with X: n 0/1         corr unsupported   [-cand.person=0]
+         ctx 3: context log odds  +0.22  n 20/15        with X: n 0/1         corr unsupported   [-cand.right_neighbor.upos=ADV, +cand.right_neighbor.xpos=RB]
+         ctx 4: context log odds  -0.08  n 37/39        with X: n 0/1         corr unsupported   [-cand.right_neighbor.right_neighbor.head_dir=left]
+         ctx 5: context log odds  -0.77  n 1454/3139    with X: n 0/1         corr unsupported   [-cand.right_neighbor.xpos=RB]
+         ctx 6: context log odds  -0.39  n 12793/18898  with X: n 18/16       corr +0.39  <= TAKEN   [-dep.xpos=IN]
+
+       LEFTOVER 13: bioes.cand=E   Δ alone -0.58 (n 9124/1123585);  running estimate before: log odds +2.04
+         ctx 1: context log odds  +0.06  n 18/16        with X: n 8/16        corr -0.69  <= TAKEN
+                 context: kin.right=parent, dep.right_neighbor.right_neighbor.form=here
+
+       LEFTOVER 14: cand.number=0   Δ alone -0.58 (n 17010/2087195);  running estimate before: log odds +1.36
+         ctx 1: context log odds  -0.58  n 8/16         with X: n 2/16        corr -1.04  <= TAKEN
+                 context: kin.right=parent, dep.right_neighbor.right_neighbor.form=here, bioes.cand=E
+
+       LEFTOVER 15: cand.basepos=R   Δ alone -1.35 (n 644/170666);  running estimate before: log odds +0.32
+         ctx 1: context log odds  -1.67  n 2/16         with X: n 2/4         corr +0.82  <= TAKEN
+                 context: kin.right=parent, dep.right_neighbor.right_neighbor.form=here, bioes.cand=E, cand.number=0
+
+       LEFTOVER 16: cand.left_neighbor.xpos=IN   Δ alone -0.51 (n 2718/309689);  running estimate before: log odds +1.14
+         ctx 1: context log odds  -1.39  n 2/4          with X: n 0/1         corr unsupported
+                 context: kin.right=parent, dep.right_neighbor.right_neighbor.form=here, bioes.cand=E, cand.number=0, cand.basepos=R
+         ctx 2: context log odds  -0.37  n 2/4          with X: n 0/1         corr unsupported   [-bioes.cand=E]
+         ctx 3: context log odds  -0.29  n 2/4          with X: n 0/1         corr unsupported   [-cand.number=0]
+         ctx 4: context log odds  +0.06  n 18/16        with X: n 0/1         corr unsupported   [-cand.basepos=R]
+         ctx 5: context log odds  -0.88  n 486/1175     with X: n 41/48       corr +0.68  <= TAKEN   [-dep.right_neighbor.right_neighbor.form=here, +dep.right_neighbor.right_neighbor.upos=ADV]
+
+       LEFTOVER 17: bioes.rightgap(tok|right)=S|E   Δ alone +0.73 (n 5304/176096);  running estimate before: log odds +1.82
+         ctx 1: context log odds  -0.18  n 41/48        with X: n 28/46       corr -0.29  <= TAKEN
+                 context: kin.right=parent, dep.right_neighbor.right_neighbor.upos=ADV, cand.left_neighbor.xpos=IN
+
+       LEFTOVER 18: cand.left_neighbor.upos=ADP   Δ alone -0.53 (n 2268/263622);  running estimate before: log odds +1.53
+         ctx 1: context log odds  -0.46  n 28/46        with X: n 28/30       corr +0.37  <= TAKEN
+                 context: kin.right=parent, dep.right_neighbor.right_neighbor.upos=ADV, cand.left_neighbor.xpos=IN, bioes.rightgap(tok|right)=S|E
+
+       LEFTOVER 19: cand.right_neighbor.xpos=RB   Δ alone -0.46 (n 1474/160163);  running estimate before: log odds +1.9
+         ctx 1: context log odds  -0.11  n 28/30        with X: n 25/19       corr +0.27  <= TAKEN
+                 context: kin.right=parent, dep.right_neighbor.right_neighbor.upos=ADV, cand.left_neighbor.xpos=IN, bioes.rightgap(tok|right)=S|E, cand.left_neighbor.upos=ADP
+
+       LEFTOVER 20: cand.left_neighbor.form=about   Δ alone -0.42 (n 63/6719);  running estimate before: log odds +2.17
+         ctx 1: context log odds  +0.22  n 25/19        with X: n 1/1         corr unsupported
+                 context: kin.right=parent, dep.right_neighbor.right_neighbor.upos=ADV, cand.left_neighbor.xpos=IN, bioes.rightgap(tok|right)=S|E, cand.left_neighbor.upos=ADP, cand.right_neighbor.xpos=RB
+         ctx 2: context log odds  +0.37  n 32/21        with X: n 1/1         corr unsupported   [-bioes.rightgap(tok|right)=S|E]
+         ctx 3: context log odds  +0.29  n 32/23        with X: n 1/1         corr unsupported   [-dep.right_neighbor.right_neighbor.upos=ADV]
+         ctx 4: context log odds  +0.06  n 32/29        with X: n 1/1         corr unsupported   [-cand.left_neighbor.xpos=IN]
+         ctx 5: context log odds  -0.71  n 1293/2636    with X: n 19/50       corr -0.18  <= TAKEN   [-cand.right_neighbor.xpos=RB]
+
+       LEFTOVER 21: cand.upos=ADV   Δ alone -1.17 (n 700/154715);  running estimate before: log odds +1.99
+         ctx 1: context log odds  -0.92  n 19/50        with X: n 2/2         corr unsupported
+                 context: kin.right=parent, cand.left_neighbor.upos=ADP, cand.left_neighbor.form=about
+         ctx 2: context log odds  -0.66  n 31/62        with X: n 5/2         corr +1.03  <= TAKEN   [-cand.left_neighbor.upos=ADP]
+
+       LEFTOVER 22: cand.left_neighbor.left_neighbor.head_dir=root   Δ alone -0.46 (n 1606/175170);  running estimate before: log odds +3.02
+         ctx 1: context log odds  +0.51  n 5/2          with X: n 0/0         corr unsupported
+                 context: kin.right=parent, cand.left_neighbor.form=about, cand.upos=ADV
+         ctx 2: context log odds  -0.66  n 31/62        with X: n 4/13        corr -0.23  <= TAKEN   [-cand.upos=ADV]
+
+       LEFTOVER 23: distance=1 word (bucket 1)   Δ alone +3.06 (n 10046/32367);  running estimate before: log odds +2.79
+         ctx 1: context log odds  -0.96  n 4/13         with X: n 4/13        corr +0.0  <= TAKEN
+                 context: kin.right=parent, cand.left_neighbor.form=about, cand.left_neighbor.left_neighbor.head_dir=root
+
+       LEFTOVER 24: dep.len=5   Δ alone -0.0 (n 3714/255488);  running estimate before: log odds +2.79
+         ctx 1: context log odds  -0.96  n 4/13         with X: n 4/13        corr +0.0  <= TAKEN
+                 context: kin.right=parent, cand.left_neighbor.form=about, cand.left_neighbor.left_neighbor.head_dir=root, distance=1 word (bucket 1)
+
+       evidence (sums of Δ log odds): positive +18.64, negative -11.63;  final log odds +2.79 = odds 16.2
+
+================ "No no don 't play with that ."
+  No            gold -> no          WRONG: predicted -> play
+  no            gold -> play        ok
+  don           gold -> play        ok
+  't            gold -> play        ok
+  play          gold -> ROOT        ok
+  with          gold -> that        ok
+  that          gold -> play        ok
+  .             gold -> play        ok
+
+  ---- 'No': gold head 'no', predicted 'play'
+    head properties predicted (with the attachment and all of them hidden; values are probabilities):
+      head_upos INTJ 0.909, VERB 0.069, ADJ 0.013   (gold head: INTJ, predicted head: VERB)
+      head_xpos UH 0.764, VB 0.223, WP 0.004   (gold head: UH, predicted head: VB)
+      head_dir  right 0.971, root 0.023, left 0.006   (gold head: right, predicted head: right)
+      head_dist 3-5 0.824, 6-10 0.173, root 0.002   (gold head: 1, predicted head: 3-5)
+      head_trank4+ 0.994, 2 0.004, 3 0.001   (gold head: 1, predicted head: 4+)
+      head_kinleftnone 0.991, root 0.008, other_relative 0.0   (gold head: none, predicted head: none)
+      head_kinrightsibling 0.77, dep 0.214, root 0.011   (gold head: parent, predicted head: sibling)
+    log margins predicted - gold (log of probability ratios; > 0 favours the predicted head):  attach +14.06;  head_trank +13.97, head_dist +9.21, head_kinright +9.04, head_kinleft +0.0, head_dir +0.0, head_xpos -1.23, head_upos -2.58;  total +42.47
+    candidates: 2   (product score = log P(attach) + Σ log P(head property value): a log probability)
+
+    -- GOLD -> no:  P(attach) 0.0 (probability), product score -47.15
+       head-property terms (probabilities): head_xpos=UH 0.764, head_dist=1 0.0, head_kinright=parent 0.0, head_kinleft=none 0.991, head_dir=right 0.971, head_upos=INTJ 0.909, head_trank=1 0.0
+       prior: log odds -4.23 = odds 0.0146 = probability 0.0143
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. kin.right=parent                          +3.84  n 12793/18898     +3.84  n 12793/18898
+       2. cand.basepos=0                            -3.02  n 1027/1441107    -2.93  n 396/11028
+       3. cand.right_neighbor.xpos=VB               -2.93  n 91/118200       -2.57  n 1/728
+       4. idxeq:cand.head=tok.left_neighbor?no      -0.13  n 37775/2967689   -0.67  n 0/714
+       chain: log odds -6.57 = odds 0.0014
+
+       LEFTOVER 1: cand.upos=INTJ   Δ alone -0.89 (n 75/12687);  running estimate before: log odds -6.57
+         ctx 1: context log odds  -6.57  n 0/714        with X: n 0/3         corr unsupported
+                 context: kin.right=parent, cand.basepos=0, cand.right_neighbor.xpos=VB, idxeq:cand.head=tok.left_neighbor?no
+         ctx 2: context log odds   -5.9  n 1/728        with X: n 0/3         corr unsupported   [-idxeq:cand.head=tok.left_neighbor?no]
+         ctx 3: context log odds  -3.32  n 396/11028    with X: n 12/48       corr +1.84  <= TAKEN   [-cand.right_neighbor.xpos=VB]
+
+       LEFTOVER 2: dep.form=no   Δ alone -0.09 (n 76/5772);  running estimate before: log odds -4.74
+         ctx 1: context log odds  -1.47  n 12/48        with X: n 0/0         corr unsupported
+                 context: kin.right=parent, cand.basepos=0, cand.upos=INTJ
+         ctx 2: context log odds  -5.14  n 73/12286     with X: n 3/59        corr +1.74  <= TAKEN   [-kin.right=parent]
+
+       LEFTOVER 3: cand.form=no   Δ alone -1.15 (n 25/5657);  running estimate before: log odds -3.0
+         ctx 1: context log odds  -3.38  n 3/59         with X: n 3/13        corr +1.17  <= TAKEN
+                 context: cand.basepos=0, cand.upos=INTJ, dep.form=no
+
+       LEFTOVER 4: dep.right_neighbor.form=no   Δ alone -0.09 (n 76/5786);  running estimate before: log odds -1.83
+         ctx 1: context log odds  -1.87  n 3/13         with X: n 0/1         corr unsupported
+                 context: cand.basepos=0, cand.upos=INTJ, dep.form=no, cand.form=no
+         ctx 2: context log odds  -1.87  n 3/13         with X: n 0/1         corr unsupported   [-cand.basepos=0]
+         ctx 3: context log odds  -2.44  n 3/23         with X: n 0/1         corr unsupported   [-cand.upos=INTJ]
+         ctx 4: context log odds  -3.38  n 3/59         with X: n 0/3         corr unsupported   [-cand.form=no, +cand.xpos=UH]
+         ctx 5: context log odds  -2.97  n 11/195       with X: n 0/3         corr unsupported   [-dep.form=no, +dep.xpos=UH]
+         ctx 6: context log odds  -3.01  n 11/203       with X: n 0/3         corr unsupported   [-cand.xpos=UH, +cand.upos=INTJ]
+         ctx 7: context log odds  -2.96  n 12/213       with X: n 0/3         corr unsupported   [-dep.xpos=UH, +dep.upos=INTJ]
+         ctx 8: context log odds  -4.65  n 63/6697      with X: n 4/77        corr +1.42  <= TAKEN   [-dep.upos=INTJ, +dep.basepos=0]
+
+       LEFTOVER 5: dep.upos=INTJ   Δ alone -0.11 (n 163/12612);  running estimate before: log odds -0.41
+         ctx 1: context log odds  -3.25  n 4/77         with X: n 0/3         corr unsupported
+                 context: dep.basepos=0, cand.upos=INTJ, dep.right_neighbor.form=no
+         ctx 2: context log odds  -3.08  n 16/327       with X: n 5/35        corr +0.89  <= TAKEN   [-dep.right_neighbor.form=no, +dep.right_neighbor.xpos=UH]
+
+       LEFTOVER 6: cand.left_neighbor.form=no   Δ alone -0.04 (n 77/5598);  running estimate before: log odds +0.48
+         ctx 1: context log odds  -2.17  n 5/35         with X: n 0/1         corr unsupported
+                 context: dep.basepos=0, cand.upos=INTJ, dep.right_neighbor.xpos=UH, dep.upos=INTJ
+         ctx 2: context log odds  -2.17  n 5/35         with X: n 0/1         corr unsupported   [-dep.basepos=0]
+         ctx 3: context log odds  -2.25  n 5/38         with X: n 0/1         corr unsupported   [-dep.right_neighbor.xpos=UH, +dep.right_neighbor.upos=INTJ]
+         ctx 4: context log odds  -2.96  n 12/213       with X: n 0/3         corr unsupported   [-dep.right_neighbor.upos=INTJ]
+         ctx 5: context log odds  -5.12  n 75/12687     with X: n 0/101       corr +0.0  <= TAKEN   [-dep.upos=INTJ]
+
+       LEFTOVER 7: dep.xpos=UH   Δ alone -0.11 (n 160/12305);  running estimate before: log odds +0.48
+         ctx 1: context log odds  -5.12  n 0/101        with X: n 0/3         corr unsupported
+                 context: cand.upos=INTJ, cand.left_neighbor.form=no
+         ctx 2: context log odds  -5.12  n 7/1013       with X: n 4/35        corr +2.64  <= TAKEN   [-cand.left_neighbor.form=no, +cand.left_neighbor.xpos=UH]
+
+       LEFTOVER 8: dep.right_neighbor.upos=INTJ   Δ alone -0.12 (n 162/12576);  running estimate before: log odds +3.13
+         ctx 1: context log odds  -2.46  n 4/35         with X: n 4/24        corr +0.13  <= TAKEN
+                 context: cand.upos=INTJ, cand.left_neighbor.xpos=UH, dep.xpos=UH
+
+       LEFTOVER 9: cand.right_neighbor.form=don   Δ alone -2.68 (n 0/1006);  running estimate before: log odds +3.25
+         ctx 1: context log odds  -2.08  n 4/24         with X: n 0/0         corr unsupported
+                 context: cand.upos=INTJ, cand.left_neighbor.xpos=UH, dep.xpos=UH, dep.right_neighbor.upos=INTJ
+         ctx 2: context log odds  -2.08  n 4/24         with X: n 0/0         corr unsupported   [-cand.left_neighbor.xpos=UH, +cand.left_neighbor.upos=INTJ]
+         ctx 3: context log odds  -2.17  n 5/35         with X: n 0/0         corr unsupported   [-cand.left_neighbor.upos=INTJ]
+         ctx 4: context log odds  -3.01  n 11/203       with X: n 0/2         corr unsupported   [-dep.right_neighbor.upos=INTJ]
+         ctx 5: context log odds  -5.12  n 75/12687     with X: n 0/79        corr +0.0  <= TAKEN   [-dep.xpos=UH]
+
+       LEFTOVER 10: cand.xpos=UH   Δ alone -0.89 (n 73/12384);  running estimate before: log odds +3.25
+         ctx 1: context log odds  -5.12  n 0/79         with X: n 0/79        corr +0.0  <= TAKEN
+                 context: cand.upos=INTJ, cand.right_neighbor.form=don
+
+       LEFTOVER 11: cand.left_neighbor.upos=INTJ   Δ alone -0.93 (n 72/12676);  running estimate before: log odds +3.25
+         ctx 1: context log odds  -5.12  n 0/79         with X: n 0/0         corr unsupported
+                 context: cand.upos=INTJ, cand.right_neighbor.form=don, cand.xpos=UH
+         ctx 2: context log odds  -5.12  n 0/79         with X: n 0/0         corr unsupported   [-cand.xpos=UH]
+         ctx 3: context log odds  -6.93  n 0/1022       with X: n 0/0         corr unsupported   [-cand.right_neighbor.form=don, +cand.right_neighbor.xpos=VB]
+         ctx 4: context log odds  -5.58  n 0/266        with X: n 0/0         corr unsupported   [-cand.right_neighbor.xpos=VB, +cand.right_neighbor.upos=AUX]
+         ctx 5: context log odds  -5.12  n 75/12687     with X: n 7/1114      corr +0.0  <= TAKEN   [-cand.right_neighbor.upos=AUX]
+
+       LEFTOVER 12: dep.right_neighbor.right_neighbor.form=don   Δ alone -0.12 (n 12/1010);  running estimate before: log odds +3.25
+         ctx 1: context log odds  -5.12  n 7/1114       with X: n 0/8         corr +0.0  <= TAKEN
+                 context: cand.upos=INTJ, cand.left_neighbor.upos=INTJ
+
+       LEFTOVER 13: cand.right_neighbor.right_neighbor.form='t   Δ alone -3.27 (n 0/1804);  running estimate before: log odds +3.25
+         ctx 1: context log odds  -5.12  n 0/8          with X: n 0/0         corr unsupported
+                 context: cand.upos=INTJ, cand.left_neighbor.upos=INTJ, dep.right_neighbor.right_neighbor.form=don
+         ctx 2: context log odds  -5.12  n 0/30         with X: n 0/1         corr unsupported   [-cand.left_neighbor.upos=INTJ]
+         ctx 3: context log odds  -4.64  n 10/936       with X: n 0/6         corr +0.0  <= TAKEN   [-dep.right_neighbor.right_neighbor.form=don, +dep.right_neighbor.right_neighbor.upos=AUX]
+
+       evidence (sums of Δ log odds): positive +13.66, negative -6.18;  final log odds +3.25 = odds 25.9
+
+    -- PREDICTED -> play:  P(attach) 1.0 (probability), product score -4.68
+       head-property terms (probabilities): head_xpos=VB 0.223, head_dist=3-5 0.824, head_kinright=sibling 0.77, head_kinleft=none 0.991, head_dir=right 0.971, head_upos=VERB 0.069, head_trank=4+ 0.994
+       prior: log odds -4.23 = odds 0.0146 = probability 0.0143
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. kin.right=sibling                         +3.83  n 11766/17517     +3.83  n 11766/17517
+       2. dep.right_neighbor.right_neighbor.form=don  -0.12  n 12/1010         +2.01  n 5/0   <- sign flips
+       chain: log odds +1.61 = odds 5.0
+
+       LEFTOVER 1: dep.xpos=UH   Δ alone -0.11 (n 160/12305);  running estimate before: log odds +1.61
+         ctx 1: context log odds  +1.61  n 5/0          with X: n 1/0         corr unsupported
+                 context: kin.right=sibling, dep.right_neighbor.right_neighbor.form=don
+         ctx 2: context log odds  -0.17  n 798/942      with X: n 29/1        corr +2.81  <= TAKEN   [-dep.right_neighbor.right_neighbor.form=don, +dep.right_neighbor.right_neighbor.upos=AUX]
+
+       LEFTOVER 2: cand.left_neighbor.form='t   Δ alone +1.15 (n 81/1734);  running estimate before: log odds +4.42
+         ctx 1: context log odds  +2.67  n 29/1         with X: n 1/0         corr unsupported
+                 context: kin.right=sibling, dep.right_neighbor.right_neighbor.upos=AUX, dep.xpos=UH
+         ctx 2: context log odds  +1.58  n 87/17        with X: n 2/0         corr unsupported   [-dep.right_neighbor.right_neighbor.upos=AUX]
+         ctx 3: context log odds   -0.4  n 11766/17517  with X: n 43/14       corr +1.43  <= TAKEN   [-dep.xpos=UH]
+
+       LEFTOVER 3: direction=right   Δ alone +0.14 (n 25682/1539980);  running estimate before: log odds +5.84
+         ctx 1: context log odds  +1.05  n 43/14        with X: n 26/0        corr +2.18  <= TAKEN
+                 context: kin.right=sibling, cand.left_neighbor.form='t
+
+       LEFTOVER 4: cand.form=play   Δ alone +0.87 (n 24/665);  running estimate before: log odds +8.03
+         ctx 1: context log odds  +3.26  n 26/0         with X: n 0/0         corr unsupported
+                 context: kin.right=sibling, cand.left_neighbor.form='t, direction=right
+         ctx 2: context log odds  +1.05  n 43/14        with X: n 0/0         corr unsupported   [-direction=right]
+         ctx 3: context log odds  -0.43  n 844/1302     with X: n 0/8         corr -1.51  <= TAKEN   [-cand.left_neighbor.form='t, +cand.left_neighbor.upos=PART]
+
+       LEFTOVER 5: kin.left=none   Δ alone -0.0 (n 2568/177045);  running estimate before: log odds +6.51
+         ctx 1: context log odds  -2.08  n 0/8          with X: n 0/0         corr unsupported
+                 context: kin.right=sibling, cand.left_neighbor.upos=PART, cand.form=play
+         ctx 2: context log odds  -0.49  n 647/1059     with X: n 100/7       corr +3.01  <= TAKEN   [-cand.form=play, +cand.xpos=VB]
+
+       LEFTOVER 6: dep.len=2   Δ alone -0.01 (n 7121/493560);  running estimate before: log odds +9.52
+         ctx 1: context log odds  +2.53  n 100/7        with X: n 35/0        corr +1.01  <= TAKEN
+                 context: kin.right=sibling, cand.left_neighbor.upos=PART, cand.xpos=VB, kin.left=none
+
+       LEFTOVER 7: cand.right_neighbor.upos=ADP   Δ alone +0.93 (n 9445/256861);  running estimate before: log odds +10.53
+         ctx 1: context log odds  +3.56  n 35/0         with X: n 1/0         corr unsupported
+                 context: kin.right=sibling, cand.left_neighbor.upos=PART, cand.xpos=VB, kin.left=none, dep.len=2
+         ctx 2: context log odds  +3.64  n 38/0         with X: n 1/0         corr unsupported   [-cand.xpos=VB, +cand.upos=VERB]
+         ctx 3: context log odds  +3.64  n 38/0         with X: n 1/0         corr unsupported   [-cand.upos=VERB, +cand.basepos=V]
+         ctx 4: context log odds   +2.5  n 61/4         with X: n 4/2         corr -1.42  <= TAKEN   [-cand.left_neighbor.upos=PART, +cand.left_neighbor.xpos=RB]
+
+       LEFTOVER 8: distance=4 words (bucket 3-5)   Δ alone +1.78 (n 8391/97268);  running estimate before: log odds +9.11
+         ctx 1: context log odds  +1.39  n 4/2          with X: n 4/0         corr unsupported
+                 context: kin.right=sibling, cand.left_neighbor.xpos=RB, cand.basepos=V, kin.left=none, dep.len=2, cand.right_neighbor.upos=ADP
+         ctx 2: context log odds   +2.5  n 61/4         with X: n 47/0        corr +1.33  <= TAKEN   [-cand.right_neighbor.upos=ADP]
+
+       LEFTOVER 9: cand.left_neighbor.left_neighbor.form=don   Δ alone +1.25 (n 50/962);  running estimate before: log odds +10.45
+         ctx 1: context log odds  +3.85  n 47/0         with X: n 1/0         corr unsupported
+                 context: kin.right=sibling, cand.left_neighbor.xpos=RB, cand.basepos=V, kin.left=none, dep.len=2, distance=4 words (bucket 3-5)
+         ctx 2: context log odds  +3.45  n 63/1         with X: n 1/0         corr unsupported   [-cand.basepos=V]
+         ctx 3: context log odds   +2.3  n 80/7         with X: n 1/0         corr unsupported   [-distance=4 words (bucket 3-5)]
+         ctx 4: context log odds  +1.44  n 241/56       with X: n 10/0        corr +0.76  <= TAKEN   [-dep.len=2]
+
+       LEFTOVER 10: dep.upos=INTJ   Δ alone -0.11 (n 163/12612);  running estimate before: log odds +11.21
+         ctx 1: context log odds   +2.3  n 10/0         with X: n 2/0         corr unsupported
+                 context: kin.right=sibling, cand.left_neighbor.xpos=RB, kin.left=none, cand.left_neighbor.left_neighbor.form=don
+         ctx 2: context log odds   +2.3  n 10/0         with X: n 2/0         corr unsupported   [-cand.left_neighbor.xpos=RB]
+         ctx 3: context log odds  +1.58  n 296/60       with X: n 17/0        corr +1.2  <= TAKEN   [-cand.left_neighbor.left_neighbor.form=don, +cand.left_neighbor.left_neighbor.upos=AUX]
+
+       LEFTOVER 11: dep.right_neighbor.upos=INTJ   Δ alone -0.12 (n 162/12576);  running estimate before: log odds +12.4
+         ctx 1: context log odds  +2.83  n 17/0         with X: n 0/0         corr unsupported
+                 context: kin.right=sibling, kin.left=none, cand.left_neighbor.left_neighbor.upos=AUX, dep.upos=INTJ
+         ctx 2: context log odds  +2.93  n 56/2         with X: n 1/0         corr unsupported   [-cand.left_neighbor.left_neighbor.upos=AUX]
+         ctx 3: context log odds  +1.52  n 87/18        with X: n 3/4         corr -1.36  <= TAKEN   [-kin.left=none]
+
+       LEFTOVER 12: dep.left_neighbor.xpos=.   Δ alone -0.09 (n 1971/147845);  running estimate before: log odds +11.05
+         ctx 1: context log odds   +0.0  n 3/4          with X: n 1/0         corr unsupported
+                 context: kin.right=sibling, dep.upos=INTJ, dep.right_neighbor.upos=INTJ
+         ctx 2: context log odds  +1.52  n 87/18        with X: n 43/1        corr +1.53  <= TAKEN   [-dep.right_neighbor.upos=INTJ]
+
+       LEFTOVER 13: dep.right_neighbor.xpos=UH   Δ alone -0.11 (n 159/12271);  running estimate before: log odds +12.58
+         ctx 1: context log odds  +3.07  n 43/1         with X: n 1/0         corr unsupported
+                 context: kin.right=sibling, dep.upos=INTJ, dep.left_neighbor.xpos=.
+         ctx 2: context log odds  +1.52  n 87/18        with X: n 3/4         corr -1.36  <= TAKEN   [-dep.left_neighbor.xpos=.]
+
+       LEFTOVER 14: bioes.leftgap(left|tok)=edge|S   Δ alone -0.01 (n 2081/143883);  running estimate before: log odds +11.22
+         ctx 1: context log odds   +0.0  n 3/4          with X: n 1/0         corr unsupported
+                 context: kin.right=sibling, dep.upos=INTJ, dep.right_neighbor.xpos=UH
+         ctx 2: context log odds  +1.52  n 87/18        with X: n 56/2        corr +1.39  <= TAKEN   [-dep.right_neighbor.xpos=UH]
+
+       LEFTOVER 15: cand.left_neighbor.left_neighbor.head_dir=right   Δ alone -0.11 (n 22303/1708083);  running estimate before: log odds +12.62
+         ctx 1: context log odds  +2.93  n 56/2         with X: n 45/0        corr +0.86  <= TAKEN
+                 context: kin.right=sibling, dep.upos=INTJ, bioes.leftgap(left|tok)=edge|S
+
+       LEFTOVER 16: dep.right_neighbor.form=no   Δ alone -0.09 (n 76/5786);  running estimate before: log odds +13.48
+         ctx 1: context log odds  +3.81  n 45/0         with X: n 0/0         corr unsupported
+                 context: kin.right=sibling, dep.upos=INTJ, bioes.leftgap(left|tok)=edge|S, cand.left_neighbor.left_neighbor.head_dir=right
+         ctx 2: context log odds  +2.93  n 56/2         with X: n 0/0         corr unsupported   [-cand.left_neighbor.left_neighbor.head_dir=right]
+         ctx 3: context log odds  +1.52  n 87/18        with X: n 0/0         corr unsupported   [-bioes.leftgap(left|tok)=edge|S]
+         ctx 4: context log odds   -0.4  n 11766/17517  with X: n 15/9        corr +0.73  <= TAKEN   [-dep.upos=INTJ]
+
+       LEFTOVER 17: dep.left_neighbor.form=.   Δ alone -0.08 (n 1777/132832);  running estimate before: log odds +14.22
+         ctx 1: context log odds  +0.41  n 15/9         with X: n 2/0         corr unsupported
+                 context: kin.right=sibling, dep.right_neighbor.form=no
+         ctx 2: context log odds  +0.52  n 37/21        with X: n 3/1         corr unsupported   [-dep.right_neighbor.form=no, +dep.right_neighbor.xpos=UH]
+         ctx 3: context log odds  +0.55  n 38/21        with X: n 3/1         corr unsupported   [-dep.right_neighbor.xpos=UH, +dep.right_neighbor.upos=INTJ]
+         ctx 4: context log odds   -0.4  n 11766/17517  with X: n 764/353     corr +1.17  <= TAKEN   [-dep.right_neighbor.upos=INTJ]
+
+       LEFTOVER 18: cand.tense=infinitive   Δ alone +1.14 (n 5173/113373);  running estimate before: log odds +15.38
+         ctx 1: context log odds  +0.77  n 764/353      with X: n 161/33      corr +0.78  <= TAKEN
+                 context: kin.right=sibling, dep.left_neighbor.form=.
+
+       LEFTOVER 19: bioes.rightgap(tok|right)=S|S   Δ alone -0.19 (n 13004/1083883);  running estimate before: log odds +16.16
+         ctx 1: context log odds  +1.56  n 161/33       with X: n 155/17      corr +0.59  <= TAKEN
+                 context: kin.right=sibling, dep.left_neighbor.form=., cand.tense=infinitive
+
+       LEFTOVER 20: cand.right_neighbor.right_neighbor.form=that   Δ alone -0.24 (n 469/41176);  running estimate before: log odds +16.75
+         ctx 1: context log odds  +2.15  n 155/17       with X: n 4/0         corr unsupported
+                 context: kin.right=sibling, dep.left_neighbor.form=., cand.tense=infinitive, bioes.rightgap(tok|right)=S|S
+         ctx 2: context log odds  +2.21  n 182/19       with X: n 4/0         corr unsupported   [-dep.left_neighbor.form=., +dep.left_neighbor.xpos=.]
+         ctx 3: context log odds  +1.99  n 343/46       with X: n 4/0         corr unsupported   [-dep.left_neighbor.xpos=., +dep.left_neighbor.upos=PUNCT]
+         ctx 4: context log odds  +1.18  n 1808/556     with X: n 26/5        corr +0.25  <= TAKEN   [-cand.tense=infinitive]
+
+       LEFTOVER 21: dep.form=no   Δ alone -0.09 (n 76/5772);  running estimate before: log odds +17.0
+         ctx 1: context log odds  +1.47  n 26/5         with X: n 2/0         corr unsupported
+                 context: kin.right=sibling, dep.left_neighbor.upos=PUNCT, bioes.rightgap(tok|right)=S|S, cand.right_neighbor.right_neighbor.form=that
+         ctx 2: context log odds  +1.42  n 219/52       with X: n 2/0         corr unsupported   [-cand.right_neighbor.right_neighbor.form=that, +cand.right_neighbor.right_neighbor.upos=PRON]
+         ctx 3: context log odds  +1.18  n 1808/556     with X: n 17/2        corr +0.5  <= TAKEN   [-cand.right_neighbor.right_neighbor.upos=PRON]
+
+       LEFTOVER 22: cand.right_neighbor.form=with   Δ alone +0.82 (n 449/13512);  running estimate before: log odds +17.5
+         ctx 1: context log odds  +1.73  n 17/2         with X: n 0/0         corr unsupported
+                 context: kin.right=sibling, dep.left_neighbor.upos=PUNCT, bioes.rightgap(tok|right)=S|S, dep.form=no
+         ctx 2: context log odds   +2.8  n 66/3         with X: n 0/0         corr unsupported   [-dep.form=no, +dep.xpos=UH]
+         ctx 3: context log odds   +2.8  n 66/3         with X: n 0/0         corr unsupported   [-dep.xpos=UH, +dep.upos=INTJ]
+         ctx 4: context log odds   +2.3  n 70/6         with X: n 0/0         corr unsupported   [-bioes.rightgap(tok|right)=S|S]
+         ctx 5: context log odds  +1.52  n 87/18        with X: n 0/1         corr unsupported   [-dep.left_neighbor.upos=PUNCT]
+         ctx 6: context log odds  -0.14  n 7936/9112    with X: n 71/126      corr -0.41  <= TAKEN   [-dep.upos=INTJ, +dep.basepos=0]
+
+       LEFTOVER 23: cand.len=4   Δ alone +0.26 (n 8440/444977);  running estimate before: log odds +17.08
+         ctx 1: context log odds  -0.56  n 71/126       with X: n 15/16       corr +0.4  <= TAKEN
+                 context: kin.right=sibling, dep.basepos=0, cand.right_neighbor.form=with
+
+       LEFTOVER 24: cand.upos=VERB   Δ alone +1.31 (n 16680/307908);  running estimate before: log odds +17.49
+         ctx 1: context log odds  -0.13  n 15/16        with X: n 9/13        corr -0.17  <= TAKEN
+                 context: kin.right=sibling, dep.basepos=0, cand.right_neighbor.form=with, cand.len=4
+
+       LEFTOVER 25: cand.right_neighbor.xpos=IN   Δ alone +0.86 (n 10431/302148);  running estimate before: log odds +17.31
+         ctx 1: context log odds  -0.26  n 9/13         with X: n 9/13        corr +0.0  <= TAKEN
+                 context: kin.right=sibling, dep.basepos=0, cand.right_neighbor.form=with, cand.len=4, cand.upos=VERB
+
+       LEFTOVER 26: idxeq:tok.left_neighbor.head=cand?no   Δ alone -0.31 (n 32047/2993711);  running estimate before: log odds +17.31
+         ctx 1: context log odds  -0.26  n 9/13         with X: n 6/10        corr +0.0  <= TAKEN
+                 context: kin.right=sibling, dep.basepos=0, cand.right_neighbor.form=with, cand.len=4, cand.upos=VERB, cand.right_neighbor.xpos=IN
+
+       LEFTOVER 27: bioes.cand=I   Δ alone +1.01 (n 29753/747105);  running estimate before: log odds +17.31
+         ctx 1: context log odds  -0.36  n 6/10         with X: n 6/10        corr +0.0  <= TAKEN
+                 context: kin.right=sibling, dep.basepos=0, cand.right_neighbor.form=with, cand.len=4, cand.upos=VERB, cand.right_neighbor.xpos=IN, idxeq:tok.left_neighbor.head=cand?no
+
+       evidence (sums of Δ log odds): positive +27.78, negative -6.23;  final log odds +17.31 = odds 3.3e7
+
+================ "Watch watch it watch it ."
+  Watch         gold -> watch       ok
+  watch         gold -> ROOT        ok
+  it            gold -> Watch       WRONG: predicted -> watch
+  watch         gold -> watch       WRONG: predicted -> it
+  it            gold -> watch       ok
+  .             gold -> watch       WRONG: predicted -> watch
+
+  ---- 'it': gold head 'Watch', predicted 'watch'
+    head properties predicted (with the attachment and all of them hidden; values are probabilities):
+      head_upos VERB 1.0, ADJ 0.0, ADV 0.0   (gold head: VERB, predicted head: VERB)
+      head_xpos VB 0.999, VBP 0.001, VBG 0.0   (gold head: VB, predicted head: VB)
+      head_dir  left 0.997, right 0.003, root 0.0   (gold head: left, predicted head: left)
+      head_dist 1 1.0, 11+ 0.0, 2 0.0   (gold head: 2, predicted head: 1)
+      head_trank1 1.0, 2 0.0, 3 0.0   (gold head: 1, predicted head: 1)
+      head_kinleftparent 1.0, other_relative 0.0, sibling 0.0   (gold head: grandparent, predicted head: parent)
+      head_kinrightparent 0.825, sibling 0.147, dep 0.022   (gold head: aunt/uncle, predicted head: sibling)
+    log margins predicted - gold (log of probability ratios; > 0 favours the predicted head):  attach +27.63;  head_dist +14.19, head_kinleft +9.85, head_kinright +5.47, head_xpos +0.0, head_dir +0.0, head_upos +0.0, head_trank +0.0;  total n/a (predicted head watch is not among the 2 candidates here)
+    candidates: 2   (product score = log P(attach) + Σ log P(head property value): a log probability)
+
+    -- PREDICTED -> watch:  P(attach) 0.9988 (probability), product score -1.93
+       head-property terms (probabilities): head_xpos=VB 0.999, head_dist=1 1.0, head_kinright=sibling 0.147, head_kinleft=parent 1.0, head_dir=left 0.997, head_upos=VERB 1.0, head_trank=1 1.0
+       prior: log odds -4.23 = odds 0.0146 = probability 0.0143
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. kin.right=sibling                         +3.83  n 11766/17517     +3.83  n 11766/17517
+       2. dep.right_neighbor.upos=VERB              -0.01  n 4649/322385     -2.26  n 176/2535
+       3. cand.left_neighbor.upos=VERB              -1.76  n 809/322263      +1.95  n 70/140   <- sign flips
+       4. cand.number=0                             -0.58  n 17010/2087195   -3.26  n 0/53
+       chain: log odds -3.97 = odds 0.0189
+
+       LEFTOVER 1: dep.left_neighbor.xpos=VB   Δ alone -0.03 (n 1675/118882);  running estimate before: log odds -3.97
+         ctx 1: context log odds  -3.97  n 0/53         with X: n 0/0         corr unsupported
+                 context: kin.right=sibling, dep.right_neighbor.upos=VERB, cand.left_neighbor.upos=VERB, cand.number=0
+         ctx 2: context log odds  -3.19  n 56/1390      with X: n 18/69       corr +1.82  <= TAKEN   [-cand.left_neighbor.upos=VERB]
+
+       LEFTOVER 2: cand.left_neighbor.form=watch   Δ alone -1.77 (n 1/807);  running estimate before: log odds -2.16
+         ctx 1: context log odds   -1.4  n 18/69        with X: n 0/0         corr unsupported
+                 context: kin.right=sibling, dep.right_neighbor.upos=VERB, cand.number=0, dep.left_neighbor.xpos=VB
+         ctx 2: context log odds  -1.36  n 20/74        with X: n 0/0         corr unsupported   [-cand.number=0]
+         ctx 3: context log odds  -2.66  n 176/2535     with X: n 0/0         corr unsupported   [-dep.left_neighbor.xpos=VB]
+         ctx 4: context log odds   -0.4  n 11766/17517  with X: n 0/1         corr unsupported   [-dep.right_neighbor.upos=VERB]
+         ctx 5: context log odds  -4.23  n -            with X: n 1/807       corr -1.77  <= TAKEN   [-kin.right=sibling]
+
+       LEFTOVER 3: dep.form=it   Δ alone -0.06 (n 426/31183);  running estimate before: log odds -3.93
+         ctx 1: context log odds   -6.0  n 1/807        with X: n 1/11        corr +3.52  <= TAKEN
+                 context: cand.left_neighbor.form=watch
+
+       LEFTOVER 4: bioes.cand=I   Δ alone +1.01 (n 29753/747105);  running estimate before: log odds -0.41
+         ctx 1: context log odds   -6.0  n 1/11         with X: n 0/1         corr unsupported
+                 context: cand.left_neighbor.form=watch, dep.form=it
+         ctx 2: context log odds  -4.87  n 11/1559      with X: n 6/122       corr +1.85  <= TAKEN   [-cand.left_neighbor.form=watch, +cand.left_neighbor.xpos=VB]
+
+       LEFTOVER 5: cand.form=watch   Δ alone +1.2 (n 38/766);  running estimate before: log odds +1.44
+         ctx 1: context log odds  -3.19  n 6/122        with X: n 0/0         corr unsupported
+                 context: cand.left_neighbor.xpos=VB, dep.form=it, bioes.cand=I
+         ctx 2: context log odds  -3.13  n 30/664       with X: n 0/0         corr unsupported   [-dep.form=it, +dep.xpos=PRP]
+         ctx 3: context log odds  -3.27  n 45/1156      with X: n 0/0         corr unsupported   [-dep.xpos=PRP, +dep.upos=PRON]
+         ctx 4: context log odds  -3.17  n 282/6671     with X: n 0/0         corr unsupported   [-dep.upos=PRON, +dep.basepos=0]
+         ctx 5: context log odds  -2.97  n 708/13739    with X: n 0/0         corr unsupported   [-dep.basepos=0]
+         ctx 6: context log odds  -4.39  n 225/18019    with X: n 0/0         corr unsupported   [-cand.left_neighbor.xpos=VB, +cand.left_neighbor.upos=VERB]
+         ctx 7: context log odds  -3.22  n 29753/747105 with X: n 35/663      corr +0.25  <= TAKEN   [-cand.left_neighbor.upos=VERB]
+
+       LEFTOVER 6: dep.left_neighbor.left_neighbor.form=watch   Δ alone -0.0 (n 10/757);  running estimate before: log odds +1.69
+         ctx 1: context log odds  -2.97  n 35/663       with X: n 4/5         corr +2.28  <= TAKEN
+                 context: bioes.cand=I, cand.form=watch
+
+       LEFTOVER 7: bioes.leftgap(left|tok)=I|S   Δ alone +0.16 (n 7354/429231);  running estimate before: log odds +3.97
+         ctx 1: context log odds  -0.51  n 4/5          with X: n 0/0         corr unsupported
+                 context: bioes.cand=I, cand.form=watch, dep.left_neighbor.left_neighbor.form=watch
+         ctx 2: context log odds  -0.22  n 5/5          with X: n 0/0         corr unsupported   [-bioes.cand=I]
+         ctx 3: context log odds  -2.64  n 4/42         with X: n 0/0         corr unsupported   [-cand.form=watch, +cand.xpos=VB]
+         ctx 4: context log odds  -2.81  n 822/13590    with X: n 2/70        corr -0.33  <= TAKEN   [-dep.left_neighbor.left_neighbor.form=watch, +dep.left_neighbor.left_neighbor.upos=VERB]
+
+       LEFTOVER 8: dep.right_neighbor.right_neighbor.form=it   Δ alone -0.07 (n 424/31274);  running estimate before: log odds +3.64
+         ctx 1: context log odds  -3.15  n 2/70         with X: n 0/0         corr unsupported
+                 context: cand.xpos=VB, dep.left_neighbor.left_neighbor.upos=VERB, bioes.leftgap(left|tok)=I|S
+         ctx 2: context log odds  -2.81  n 822/13590    with X: n 12/160      corr +0.12  <= TAKEN   [-bioes.leftgap(left|tok)=I|S]
+
+       LEFTOVER 9: cand.len=5   Δ alone +0.46 (n 5768/250048);  running estimate before: log odds +3.76
+         ctx 1: context log odds  -2.68  n 12/160       with X: n 4/14        corr +1.07  <= TAKEN
+                 context: cand.xpos=VB, dep.left_neighbor.left_neighbor.upos=VERB, dep.right_neighbor.right_neighbor.form=it
+
+       LEFTOVER 10: cand.right_neighbor.form=it   Δ alone +0.3 (n 595/30134);  running estimate before: log odds +4.83
+         ctx 1: context log odds  -1.54  n 4/14         with X: n 0/1         corr unsupported
+                 context: cand.xpos=VB, dep.left_neighbor.left_neighbor.upos=VERB, dep.right_neighbor.right_neighbor.form=it, cand.len=5
+         ctx 2: context log odds  -2.22  n 18/157       with X: n 3/11        corr +0.44  <= TAKEN   [-dep.right_neighbor.right_neighbor.form=it, +dep.right_neighbor.right_neighbor.upos=PRON]
+
+       LEFTOVER 11: cand.right_neighbor.right_neighbor.form=watch   Δ alone -0.37 (n 7/797);  running estimate before: log odds +5.27
+         ctx 1: context log odds   -1.7  n 3/11         with X: n 0/0         corr unsupported
+                 context: cand.xpos=VB, dep.left_neighbor.left_neighbor.upos=VERB, dep.right_neighbor.right_neighbor.upos=PRON, cand.len=5, cand.right_neighbor.form=it
+         ctx 2: context log odds  -1.61  n 6/25         with X: n 0/0         corr unsupported   [-cand.right_neighbor.form=it, +cand.right_neighbor.xpos=PRP]
+         ctx 3: context log odds  -1.36  n 10/35        with X: n 0/0         corr unsupported   [-cand.right_neighbor.xpos=PRP, +cand.right_neighbor.upos=PRON]
+         ctx 4: context log odds  -1.71  n 55/298       with X: n 0/0         corr unsupported   [-dep.left_neighbor.left_neighbor.upos=VERB]
+         ctx 5: context log odds  -1.92  n 154/1047     with X: n 0/0         corr unsupported   [-cand.xpos=VB, +cand.upos=VERB]
+         ctx 6: context log odds  -1.92  n 843/5734     with X: n 0/0         corr unsupported   [-cand.len=5]
+         ctx 7: context log odds  -2.14  n 849/7212     with X: n 0/0         corr unsupported   [-cand.upos=VERB, +cand.basepos=V]
+         ctx 8: context log odds  -3.05  n 2530/53222   with X: n 0/0         corr unsupported   [-dep.right_neighbor.right_neighbor.upos=PRON]
+         ctx 9: context log odds  -3.29  n 16775/448947 with X: n 5/255       corr -0.46  <= TAKEN[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 164.6 s): 18 of 55 slots always, 467 gate values
+[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+[ Info: ChainModel: joint tables for 1262 frequent items, 343718 pairs (195.4 s)
+   [-cand.right_neighbor.upos=PRON]
+
+       LEFTOVER 12: cand.left_neighbor.left_neighbor.form=.   Δ alone -0.25 (n 1557/137165);  running estimate before: log odds +4.81
+         ctx 1: context log odds  -3.75  n 5/255        with X: n 0/0         corr unsupported
+                 context: cand.basepos=V, cand.right_neighbor.right_neighbor.form=watch
+         ctx 2: context log odds  -3.58  n 1673/59859   with X: n 72/6023     corr -0.84  <= TAKEN   [-cand.right_neighbor.right_neighbor.form=watch, +cand.right_neighbor.right_neighbor.upos=VERB]
+
+       LEFTOVER 13: cand.tense=infinitive   Δ alone +1.14 (n 5173/113373);  running estimate before: log odds +3.98
+         ctx 1: context log odds  -4.41  n 72/6023      with X: n 12/341      corr +1.0  <= TAKEN
+                 context: cand.basepos=V, cand.right_neighbor.right_neighbor.upos=VERB, cand.left_neighbor.left_neighbor.form=.
+
+       LEFTOVER 14: dep.left_neighbor.upos=VERB   Δ alone -0.01 (n 4656/323453);  running estimate before: log odds +4.98
+         ctx 1: context log odds  -3.43  n 12/341       with X: n 2/52        corr +0.0  <= TAKEN
+                 context: cand.basepos=V, cand.right_neighbor.right_neighbor.upos=VERB, cand.left_neighbor.left_neighbor.form=., cand.tense=infinitive
+
+       LEFTOVER 15: cand.left_neighbor.left_neighbor.upos=PUNCT   Δ alone -0.14 (n 4873/385619);  running estimate before: log odds +4.98
+         ctx 1: context log odds  -3.43  n 2/52         with X: n 2/52        corr +0.0  <= TAKEN
+                 context: cand.basepos=V, cand.right_neighbor.right_neighbor.upos=VERB, cand.left_neighbor.left_neighbor.form=., cand.tense=infinitive, dep.left_neighbor.upos=VERB
+
+       evidence (sums of Δ log odds): positive +18.13, negative -8.92;  final log odds +4.98 = odds 146.0
+
+    -- other -> watch:  P(attach) 0.0011 (probability), product score -22.65
+       head-property terms (probabilities): head_xpos=VB 0.999, head_dist=1 1.0, head_kinright=parent 0.825, head_kinleft=grandparent 0.0, head_dir=right 0.003, head_upos=VERB 1.0, head_trank=1 1.0
+       prior: log odds -4.23 = odds 0.0146 = probability 0.0143
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. kin.right=parent                          +3.84  n 12793/18898     +3.84  n 12793/18898
+       2. cand.form=watch                            +1.2  n 38/766          +2.59  n 9/0
+       chain: log odds +2.2 = odds 9.0
+
+       LEFTOVER 1: dep.form=it   Δ alone -0.06 (n 426/31183);  running estimate before: log odds +2.2
+         ctx 1: context log odds   +2.2  n 9/0          with X: n 0/0         corr unsupported
+                 context: kin.right=parent, cand.form=watch
+         ctx 2: context log odds  +1.43  n 1262/301     with X: n 3/0         corr unsupported   [-cand.form=watch, +cand.xpos=VB]
+         ctx 3: context log odds  +2.14  n 3854/454     with X: n 68/0        corr +2.07  <= TAKEN   [-cand.xpos=VB, +cand.upos=VERB]
+
+       LEFTOVER 2: dep.left_neighbor.xpos=VB   Δ alone -0.03 (n 1675/118882);  running estimate before: log odds +4.27
+         ctx 1: context log odds  +4.22  n 68/0         with X: n 0/0         corr unsupported
+                 context: kin.right=parent, cand.upos=VERB, dep.form=it
+         ctx 2: context log odds   +3.3  n 762/27       with X: n 5/13        corr -4.07  <= TAKEN   [-dep.form=it, +dep.xpos=PRP]
+
+       LEFTOVER 3: cand.right_neighbor.form=it   Δ alone +0.3 (n 595/30134);  running estimate before: log odds +0.19
+         ctx 1: context log odds  -0.77  n 5/13         with X: n 0/3         corr unsupported
+                 context: kin.right=parent, cand.upos=VERB, dep.xpos=PRP, dep.left_neighbor.xpos=VB
+         ctx 2: context log odds  -0.56  n 7/14         with X: n 0/3         corr unsupported   [-dep.xpos=PRP, +dep.upos=PRON]
+         ctx 3: context log odds  +1.26  n 67/20        with X: n 1/3         corr unsupported   [-dep.upos=PRON, +dep.basepos=0]
+         ctx 4: context log odds  +0.42  n 67/45        with X: n 1/3         corr unsupported   [-cand.upos=VERB, +cand.basepos=V]
+         ctx 5: context log odds  +0.49  n 2267/1391    with X: n 69/5        corr +1.94  <= TAKEN   [-dep.left_neighbor.xpos=VB]
+
+       LEFTOVER 4: cand.left_neighbor.left_neighbor.head_dir=root   Δ alone -0.46 (n 1606/175170);  running estimate before: log odds +2.13
+         ctx 1: context log odds  +2.44  n 69/5         with X: n 5/3         corr -1.76  <= TAKEN
+                 context: kin.right=parent, cand.basepos=V, dep.basepos=0, cand.right_neighbor.form=it
+
+       LEFTOVER 5: cand.right_neighbor.right_neighbor.form=.   Δ alone -0.49 (n 1263/141359);  running estimate before: log odds +0.37
+         ctx 1: context log odds  +0.92  n 5/3          with X: n 0/1         corr unsupported
+                 context: kin.right=parent, cand.basepos=V, dep.basepos=0, cand.right_neighbor.form=it, cand.left_neighbor.left_neighbor.head_dir=root
+         ctx 2: context log odds  +0.92  n 5/3          with X: n 0/1         corr unsupported   [-dep.basepos=0]
+         ctx 3: context log odds  -0.47  n 9/16         with X: n 0/1         corr unsupported   [-cand.basepos=V]
+         ctx 4: context log odds   -0.4  n 124/186      with X: n 26/2        corr +2.54  <= TAKEN   [-cand.left_neighbor.left_neighbor.head_dir=root]
+
+       LEFTOVER 6: cand.left_neighbor.form=it   Δ alone -0.38 (n 305/30700);  running estimate before: log odds +2.91
+         ctx 1: context log odds  +2.16  n 26/2         with X: n 0/0         corr unsupported
+                 context: kin.right=parent, cand.right_neighbor.form=it, cand.right_neighbor.right_neighbor.form=.
+         ctx 2: context log odds  +1.87  n 39/5         with X: n 0/0         corr unsupported   [-cand.right_neighbor.right_neighbor.form=., +cand.right_neighbor.right_neighbor.upos=PUNCT]
+         ctx 3: context log odds   +0.8  n 71/31        with X: n 0/1         corr unsupported   [-cand.right_neighbor.form=it, +cand.right_neighbor.xpos=PRP]
+         ctx 4: context log odds  +0.67  n 104/52       with X: n 0/1         corr unsupported   [-cand.right_neighbor.xpos=PRP, +cand.right_neighbor.upos=PRON]
+         ctx 5: context log odds  -0.51  n 869/1442     with X: n 5/28        corr -1.0  <= TAKEN   [-cand.right_neighbor.right_neighbor.upos=PUNCT]
+
+       LEFTOVER 7: dep.left_neighbor.upos=VERB   Δ alone -0.01 (n 4656/323453);  running estimate before: log odds +1.91
+         ctx 1: context log odds  -1.54  n 5/28         with X: n 0/19        corr -1.37  <= TAKEN
+                 context: kin.right=parent, cand.right_neighbor.upos=PRON, cand.left_neighbor.form=it
+
+       LEFTOVER 8: cand.right_neighbor.right_neighbor.upos=PUNCT   Δ alone -0.53 (n 3370/392233);  running estimate before: log odds +0.54
+         ctx 1: context log odds  -2.94  n 0/19         with X: n 0/1         corr unsupported
+                 context: kin.right=parent, cand.right_neighbor.upos=PRON, cand.left_neighbor.form=it, dep.left_neighbor.upos=VERB
+         ctx 2: context log odds  -1.54  n 5/28         with X: n 0/1         corr unsupported   [-dep.left_neighbor.upos=VERB]
+         ctx 3: context log odds  +0.49  n 141/85       with X: n 18/6        corr +0.4  <= TAKEN   [-cand.left_neighbor.form=it, +cand.left_neighbor.xpos=PRP]
+
+       LEFTOVER 9: cand.left_neighbor.left_neighbor.upos=VERB   Δ alone -0.41 (n 3082/318633);  running estimate before: log odds +0.94
+         ctx 1: context log odds  +0.94  n 18/6         with X: n 0/6         corr -2.79  <= TAKEN
+                 context: kin.right=parent, cand.right_neighbor.upos=PRON, cand.left_neighbor.xpos=PRP, cand.right_neighbor.right_neighbor.upos=PUNCT
+
+       LEFTOVER 10: idxeq:cand.head=tok.left_neighbor?yes   Δ alone +2.58 (n 6067/31684);  running estimate before: log odds -1.85
+         ctx 1: context log odds  -1.79  n 0/6          with X: n 0/2         corr unsupported
+                 context: kin.right=parent, cand.right_neighbor.upos=PRON, cand.left_neighbor.xpos=PRP, cand.right_neighbor.right_neighbor.upos=PUNCT, cand.left_neighbor.left_neighbor.upos=VERB
+         ctx 2: context log odds  -1.25  n 1/7          with X: n 1/2         corr unsupported   [-cand.left_neighbor.xpos=PRP, +cand.left_neighbor.upos=PRON]
+         ctx 3: context log odds  -1.58  n 14/73        with X: n 14/15       corr +1.46  <= TAKEN   [-cand.right_neighbor.upos=PRON]
+
+       LEFTOVER 11: cand.right_neighbor.xpos=PRP   Δ alone -0.13 (n 1947/153077);  running estimate before: log odds -0.39
+         ctx 1: context log odds  -0.14  n 14/15        with X: n 0/2         corr unsupported
+                 context: kin.right=parent, cand.left_neighbor.upos=PRON, cand.right_neighbor.right_neighbor.upos=PUNCT, cand.left_neighbor.left_neighbor.upos=VERB, idxeq:cand.head=tok.left_neighbor?yes
+         ctx 2: context log odds  -0.34  n 113/157      with X: n 2/22        corr -1.63  <= TAKEN   [-cand.right_neighbor.right_neighbor.upos=PUNCT]
+
+       LEFTOVER 12: distance=1 word (bucket 1)   Δ alone +3.28 (n 4412/11424);  running estimate before: log odds -2.02
+         ctx 1: context log odds  -1.99  n 2/22         with X: n 0/17        corr -0.8  <= TAKEN
+                 context: kin.right=parent, cand.left_neighbor.upos=PRON, cand.left_neighbor.left_neighbor.upos=VERB, idxeq:cand.head=tok.left_neighbor?yes, cand.right_neighbor.xpos=PRP
+
+       LEFTOVER 13: cand.left_neighbor.left_neighbor.form=watch   Δ alone -1.08 (n 3/806);  running estimate before: log odds -2.82
+         ctx 1: context log odds  -2.83  n 0/17         with X: n 0/0         corr unsupported
+                 context: kin.right=parent, cand.left_neighbor.upos=PRON, cand.left_neighbor.left_neighbor.upos=VERB, idxeq:cand.head=tok.left_neighbor?yes, cand.right_neighbor.xpos=PRP, distance=1 word (bucket 1)
+         ctx 2: context log odds  -2.83  n 0/17         with X: n 0/0         corr unsupported   [-kin.right=parent]
+         ctx 3: context log odds  -2.66  n 2/43         with X: n 0/0         corr unsupported   [-distance=1 word (bucket 1)]
+         ctx 4: context log odds  -1.54  n 113/521      with X: n 0/2         corr unsupported   [-cand.right_neighbor.xpos=PRP]
+         ctx 5: context log odds  -1.77  n 416/2442     with X: n 0/2         corr unsupported   [-cand.left_neighbor.left_neighbor.upos=VERB]
+         ctx 6: context log odds  -1.65  n 6067/31684   with X: n 3/7         corr +0.27  <= TAKEN   [-cand.left_neighbor.upos=PRON]
+
+       LEFTOVER 14: dep.left_neighbor.form=watch   Δ alone +0.0 (n 11/810);  running estimate before: log odds -2.55
+         ctx 1: context log odds  -1.25  n 3/7          with X: n 3/2         corr +0.69  <= TAKEN
+                 context: idxeq:cand.head=tok.left_neighbor?yes, cand.left_neighbor.left_neighbor.form=watch
+
+       LEFTOVER 15: idxeq:tok.left_neighbor.head=cand?no   Δ alone -0.31 (n 32047/2993711);  running estimate before: log odds -1.86
+         ctx 1: context log odds   +0.0  n 3/2          with X: n 3/2         corr +0.0  <= TAKEN
+                 context: idxeq:cand.head=tok.left_neighbor?yes, cand.left_neighbor.left_neighbor.form=watch, dep.left_neighbor.form=watch
+
+       LEFTOVER 16: kin.left=grandparent   Δ alone +2.61 (n 6067/30516);  running estimate before: log odds -1.86
+         ctx 1: context log odds   +0.0  n 3/2          with X: n 3/2         corr +0.0  <= TAKEN
+                 context: idxeq:cand.head=tok.left_neighbor?yes, cand.left_neighbor.left_neighbor.form=watch, dep.left_neighbor.form=watch, idxeq:tok.left_neighbor.head=cand?no
+
+       evidence (sums of Δ log odds): positive +15.8, negative -13.42;  final log odds -1.86 = odds 0.156
+
+  ---- 'watch': gold head 'watch', predicted 'it'
+    head properties predicted (with the attachment and all of them hidden; values are probabilities):
+      head_upos VERB 0.996, ROOT 0.003, PRON 0.0   (gold head: VERB, predicted head: PRON)
+      head_xpos VB 0.992, ROOT 0.002, VBN 0.002   (gold head: VB, predicted head: PRP)
+      head_dir  left 0.997, root 0.003, right 0.0   (gold head: left, predicted head: left)
+      head_dist 2 1.0, root 0.0, 11+ 0.0   (gold head: 2, predicted head: 1)
+      head_trank2 0.998, root 0.002, 3 0.0   (gold head: 1, predicted head: 1)
+      head_kinleftsibling 0.899, root 0.06, dep 0.038   (gold head: niece/nephew, predicted head: parent)
+      head_kinrightdep 0.991, root 0.008, sibling 0.0   (gold head: dep, predicted head: dep)
+    log margins predicted - gold (log of probability ratios; > 0 favours the predicted head):  attach +20.45;  head_kinleft +1.3, head_kinright +0.0, head_dir +0.0, head_trank +0.0, head_upos -7.84, head_xpos -10.4, head_dist -12.29;  total n/a (predicted head it is not among the 2 candidates here)
+    candidates: 2   (product score = log P(attach) + Σ log P(head property value): a log probability)
+
+    -- PREDICTED -> it:  P(attach) 0.0008 (probability), product score -54.26
+       head-property terms (probabilities): head_xpos=PRP 0.0, head_dist=1 0.0, head_kinright=dep 0.991, head_kinleft=parent 0.001, head_dir=left 0.997, head_upos=PRON 0.0, head_trank=1 0.0
+       prior: log odds -4.23 = odds 0.0146 = probability 0.0143
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. cand.basepos=0                            -3.02  n 1027/1441107    -3.02  n 1027/1441107
+       2. cand.right_neighbor.xpos=VB               -2.93  n 91/118200       -3.48  n 1/91218
+       3. idxeq:cand.head=tok.left_neighbor?no      -0.13  n 37775/2967689   -0.68  n 0/89952
+       chain: log odds -11.41 = odds 1.11e-5
+
+       LEFTOVER 1: cand.left_neighbor.form=watch   Δ alone -1.77 (n 1/807);  running estimate before: log odds -11.41
+         ctx 1: context log odds -11.41  n 0/89952      with X: n 0/0         corr unsupported
+                 context: cand.basepos=0, cand.right_neighbor.xpos=VB, idxeq:cand.head=tok.left_neighbor?no
+         ctx 2: context log odds -10.73  n 1/91218      with X: n 0/0         corr unsupported   [-idxeq:cand.head=tok.left_neighbor?no]
+         ctx 3: context log odds  -7.25  n 1027/1441107 with X: n 1/650       corr +0.0  <= TAKEN   [-cand.right_neighbor.xpos=VB]
+
+       evidence (sums of Δ log odds): positive +0.0, negative -7.18;  final log odds -11.41 = odds 1.11e-5
+
+    -- other -> .:  P(attach) 0.0002 (probability), product score -66.71
+       head-property terms (probabilities): head_xpos=. 0.0, head_dist=2 1.0, head_kinright=dep 0.991, head_kinleft=1stcousin 0.0, head_dir=right 0.0, head_upos=PUNCT 0.0, head_trank=1 0.0
+       prior: log odds -4.23 = odds 0.0146 = probability 0.0143
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. cand.upos=PUNCT                           -8.66  n 0/395815        -8.66  n 0/395815
+       chain: log odds -12.89 = odds 2.53e-6
+       (no accum leftovers traced)
+
+       evidence (sums of Δ log odds): positive +0.0, negative -8.66;  final log odds -12.89 = odds 2.53e-6

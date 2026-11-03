@@ -1,0 +1,37 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 112.1 s): 16 of 46 slots always, 423 gate values
+[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+[ Info: ChainModel: joint tables for 1222 frequent items, 311639 pairs (128.9 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 55 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank-kin-hkinleftright-nn2/events
+ceiling: 409 attachments in 278.6 s
+decode: 410 attachments in 1467.5 s
+
+407 tokens in both: both right 301, ceiling only 72, decode only 10, neither 24
+
+conditions at the decode's commit		ceiling right, decode wrong	decode right
+own UPOS / XPOS wrong                   	0.403				0.17
+a neighbour's tags wrong                	0.653				0.547
+a neighbour's attachment pending        	0.583				0.736
+gold head not a candidate               	0.347				0.0
+gold head's kinship unknown             	0.681				0.711
+inferred, not decided                   	0.0				0.0
+candidates (median)                     	4				4
+attachments already committed (median)  	89				50
+
+examples (ceiling right, decode wrong):
+  'run' gold head 'ROOT', decode 'around'  [own tags ok, nb tags ok, nb pending false, gold in cands false of 2, kin unknown missing, committed 145]
+  'AP' gold head 'comes', decode 'story'  [own tags ok, nb tags WRONG, nb pending true, gold in cands true of 4, kin unknown false, committed 84]
+  ':' gold head 'comes', decode 'President'  [own tags ok, nb tags ok, nb pending true, gold in cands true of 13, kin unknown true, committed 73]
+  'President' gold head 'Bush', decode 'courts'  [own tags ok, nb tags ok, nb pending false, gold in cands false of 7, kin unknown missing, committed 80]
+  'Bush' gold head 'nominated', decode 'President'  [own tags ok, nb tags WRONG, nb pending true, gold in cands true of 23, kin unknown true, committed 37]
+  'nominated' gold head 'ROOT', decode 'AP'  [own tags WRONG, nb tags ok, nb pending false, gold in cands true of 8, kin unknown false, committed 83]
+  'with' gold head 'monkeys', decode 'around'  [own tags ok, nb tags ok, nb pending true, gold in cands false of 13, kin unknown missing, committed 72]
+  'just' gold head 'monkeys', decode 'around'  [own tags ok, nb tags WRONG, nb pending true, gold in cands true of 14, kin unknown true, committed 70]
+  'around' gold head 'live', decode 'ROOT'  [own tags WRONG, nb tags WRONG, nb pending false, gold in cands true of 6, kin unknown false, committed 124]
+  '.' gold head 'got', decode 'watch'  [own tags ok, nb tags WRONG, nb pending true, gold in cands true of 3, kin unknown false, committed 120]
+  '.' gold head 'play', decode 'nominated'  [own tags WRONG, nb tags WRONG, nb pending false, gold in cands false of 3, kin unknown missing, committed 82]
+  'What' gold head 'ROOT', decode 'else'  [own tags WRONG, nb tags WRONG, nb pending true, gold in cands true of 3, kin unknown true, committed 26]
+  'else' gold head 'What', decode 'ROOT'  [own tags WRONG, nb tags WRONG, nb pending false, gold in cands false of 1, kin unknown missing, committed 125]
+  '?' gold head 'What', decode 'else'  [own tags WRONG, nb tags WRONG, nb pending true, gold in cands true of 3, kin unknown false, committed 121]
+  'Once' gold head 'die', decode 'better'  [own tags WRONG, nb tags WRONG, nb pending true, gold in cands true of 5, kin unknown true, committed 89]
