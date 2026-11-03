@@ -685,6 +685,13 @@ end
       push!(P, 3)
       @test kin(1, 4) == "?" && kin(1, 3) == "?" && kin(4, 3) == "parent" && kin(5, 4) == "parent"   # (3's head unknown)
     end
+    # kin_trace: the same answers as kin_between, naming the token whose head holds it up (P: 3 pending, as above)
+    let H = [2, 0, 2, 3, 4, 3, 6, 1], P = Set([3])
+      hd(u) = u in P ? PENDING : H[u] == 0 ? NONE : UInt32(H[u])
+      @test SeqLayers.kin_trace(hd, 1, 4, hd(1), 8) == (PENDING, 3)       # 4 -> 3 -> ?
+      @test SeqLayers.kin_trace(hd, 4, 3, hd(4), 8) == (SeqLayers.kincode(1, 0), 0)
+      @test first(SeqLayers.kin_trace(hd, 1, 2, hd(1), 8)) == SeqLayers.kin_between(hd, 1, 2, hd(1), 8)
+    end
     # kinship head properties: the oracle commits the gold labels; each equals the value its gold head implies
     kspecs = default_specs(headkin = [:head_kinleft, :head_kinright])
     ks = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, kspecs, Lexicon())
@@ -748,6 +755,42 @@ end
       mo2 = ChainModel(odir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, ctxmode = :accum)
       mo2.generalize = SeqLayers.generalization_slots(osp)
       @test 0 <= eval_scores(evaluate_counts(docs, osp, mo2, Lexicon())).uas <= 1
+    end
+    # forward-checking value sets: under the gold tree each known value lies in its set; sets are small
+    fspecs = default_specs(kinitems = true, bioes = true, idxeq = true, fwdsets = true)
+    fs_ = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, fspecs, Lexicon())
+    solve!(fs_, OracleModel())
+    tf = fs_.layers[:token]
+    nsets = 0
+    for t in 1:length(tf)
+      h = tf[:attach, t]
+      h == PENDING && continue
+      for dir in (-1, 1)
+        kv, ks = SeqLayers.kin_value(fs_, t, h, dir), SeqLayers.kin_set(fs_, t, h, dir)
+        ks === nothing || (@test kv in ks; @test length(ks) <= SeqLayers.FSET_MAX; nsets += 1)
+        bs = SeqLayers.bioes_gap_set(fs_, t, h, dir)
+        bv = SeqLayers.bioes_values(fs_, t, h)[dir < 0 ? 1 : 2]
+        bs === nothing || (@test bv in bs; nsets += 1)
+      end
+      iv = SeqLayers.idxeq_values(fs_, t, h)
+      for j in 3:6
+        is_ = SeqLayers.idxeq_set(fs_, t, h, j)
+        is_ === nothing || iv[j] == PENDING || (@test iv[j] in is_; nsets += 1)
+      end
+      @test length(SeqLayers.fwd_set_items(fs_, t, h; kin = true, bioes = true, idxeq = true)) == 8
+    end
+    @test nsets > 20
+    @test evaluate(docs, fspecs, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
+    fdir = record_events(docs, fspecs, Lexicon(), mktempdir())
+    for fc in (false, true)
+      SeqLayers.FCOMMIT[] = fc
+      try
+        mf2 = ChainModel(fdir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, ctxmode = :accum, candmemo = true)
+        mf2.generalize = SeqLayers.generalization_slots(fspecs)
+        @test 0 <= eval_scores(evaluate_counts(docs, fspecs, mf2, Lexicon())).uas <= 1
+      finally
+        SeqLayers.FCOMMIT[] = false
+      end
     end
     hspecs = default_specs(headtrank = true)
     @test evaluate(docs, hspecs, OracleModel(), Lexicon(); words = 128, edge = 4).uas == 1.0
