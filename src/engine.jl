@@ -226,12 +226,25 @@ function note_rescore!(st::State, key, reads)
   end
 end
 
-function rescore!(st::State, model)
+"""
+Periodic rescoring (rescoreevery n, set for decoding; user's design 2026-11-03): a decision whose reads changed is
+rescored only on every nth commit (or when first scored); in between it keeps its old margin.  The top decision is
+always brought up to date before it is committed (solve!), so nothing is committed on a stale score.  n = 1: as before.
+"""
+const RESCORE_EVERY = Ref(1)
+const RESCORE_TICK = Ref(0)
+
+stale(st::State, key) = (reads = get(st.reads, key, nothing); reads === nothing || !haskey(st.best, key) || any(cell -> read_changed(st, cell), reads))
+
+function rescore!(st::State, model; force = false)
+  RESCORE_TICK[] += 1
+  lazy = !force && RESCORE_EVERY[] > 1 && RESCORE_TICK[] % RESCORE_EVERY[] != 0
   for key in collect(keys(st.agenda))
     reads = get(st.reads, key, nothing)
     if reads !== nothing && haskey(st.best, key) && !any(cell -> read_changed(st, cell), reads)
       continue
     end
+    lazy && reads !== nothing && haskey(st.best, key) && continue      # (stale until the next round)
     RESCORE_STATS[] === nothing || note_rescore!(st, key, reads)
     choice, margin = tracked_decide(model, st, key)
     st.agenda[key] = margin
@@ -249,6 +262,20 @@ function solve!(st::State, model; observer = nothing)
     activate!(st)
     isempty(st.agenda) && break
     rescore!(st, model)
+    if RESCORE_EVERY[] > 1                           # the top must be fresh; a stalled agenda gets a full round
+      while true
+        key, margin = first(st.agenda)
+        if margin == -Inf
+          any(k -> stale(st, k), keys(st.agenda)) || break
+          rescore!(st, model; force = true)
+          continue
+        end
+        stale(st, key) || break
+        choice, margin = tracked_decide(model, st, key)
+        st.agenda[key] = margin
+        st.best[key] = choice
+      end
+    end
     key, margin = first(st.agenda)
     margin == -Inf && break
     delete!(st.agenda, key)

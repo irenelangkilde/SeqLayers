@@ -352,6 +352,38 @@ possible head once no other head can appear -- not only those narrowed by commit
 """
 const FCOMMIT = Ref(false)
 
+"""
+Attachment readiness (attachwait, set for decoding; user's design 2026-11-03): t's attachment is scored only once t's
+own UPOS and XPOS are decided and each neighbour token exists -- or is missing only because the gap that would end it
+could still be a sentence end, so attachments across a doubtful boundary can still help decide it.
+"""
+const ATTACH_WAIT = Ref(false)
+
+"Is the token whose chars run up to (and including) char j still missing only for an undecided gap that may be a sentence end?"
+function open_boundary(st, j::Int)
+  chars = st.layers[:char]
+  (1 <= j <= nchars(st) && !isspace(segchar(st, j))) || return false
+  chars[:gap, j] == PENDING && GAP_E in gap_candidates(st, j)
+end
+
+function attach_context_ready(st, t)
+  toks, chars = st.layers[:token], st.layers[:char]
+  (toks[:upos, t] == PENDING || toks[:xpos, t] == PENDING) && return false
+  for dir in (-1, 1)
+    adjacent_token(st, t, dir) == PENDING || continue
+    if dir < 0                                       # the missing left neighbour ends at the char before t (spaces skipped)
+      j = Int(toks[:first_char, t]) - 1
+      while j >= 1 && isspace(segchar(st, j)); j -= 1; end
+    else                                             # the missing right neighbour: from after t to the end of its run
+      j = Int(toks[:last_char, t]) + 1
+      while j <= nchars(st) && isspace(segchar(st, j)); j += 1; end
+      while j < nchars(st) && !isspace(segchar(st, j + 1)); j += 1; end
+    end
+    open_boundary(st, j) || return false
+  end
+  true
+end
+
 "Word classes for the head_wc properties (set by default_specs(headwc = ...))."
 const HEADWC = Ref{Any}(nothing)
 headwc_level(name::Symbol) = (n = parse(Int, String(name)[8:end]); something(findfirst(==(n), HEADWC[].sizes), 0))
@@ -1466,6 +1498,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
       relrels),
     vcat([DecisionDef(:attach;
         candidates = (st, t) -> attach_candidates(st, t; projective),
+        ready = (st, t) -> !ATTACH_WAIT[] || attach_context_ready(st, t),
         features = (st, t, c) -> attach_features(st, t, c, linkpaths),
         items = (st, t, c) -> vcat(attach_items(st, t, c, linkpaths; rootabsent),
           relations ? hypothetical_sibling_items(st, t, c, relf) : UInt64[],

@@ -443,6 +443,28 @@ end
         SeqLayers.RESCORE_STATS[] = nothing; SeqLayers.DC_STATS[] = nothing
       end
     end
+    # attachwait / rescoreevery: the same tokens and sentences here; n = 1 and no wait: unchanged
+    let mw = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 3, redundant = true, ctxmode = :accum, candmemo = true)
+      mw.generalize = SeqLayers.generalization_slots(specs)
+      r0 = evaluate_counts(docs, specs, mw, lex)
+      for (aw, n) in ((false, 1), (true, 1), (false, 4), (true, 4), (true, 16))
+        SeqLayers.ATTACH_WAIT[] = aw; SeqLayers.RESCORE_EVERY[] = n
+        try
+          r = evaluate_counts(docs, specs, mw, lex)
+          (aw, n) == (false, 1) && @test r == r0
+          @test r[:tok_pred] == r0[:tok_pred] && r[:sent_pred] == r0[:sent_pred] && 0 <= eval_scores(r).uas <= 1
+        finally
+          SeqLayers.ATTACH_WAIT[] = false; SeqLayers.RESCORE_EVERY[] = 1
+        end
+      end
+      # the open-boundary rule: a token is ready only with its tags decided
+      st_ = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, specs, lex)
+      solve!(st_, OracleModel())
+      tl = st_.layers[:token]
+      @test all(t -> SeqLayers.attach_context_ready(st_, t), 1:length(tl))
+      tl[:upos, 2] = PENDING
+      @test !SeqLayers.attach_context_ready(st_, 2)
+    end
     # decode profiling: the same parse as the inner model, with its decide calls counted
     let mc = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 3, redundant = true, ctxmode = :accum)
       mc.generalize = SeqLayers.generalization_slots(specs)
