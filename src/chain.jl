@@ -224,6 +224,7 @@ struct ChainOpts
   wselweight::Bool                                # accumby=:wsel: the leftover's correction times w of its chosen context (min, or sum / 2)
   tuplek::Int                                     # > 0: a :maxdev chain's first step adds the best tuple (triple, else pair, else single) of its tuplek largest single steps (see tuple_step!)
   interleave::Bool                                # ctxmode :accum: chain steps and leftovers in one maxdev loop (see accum_leftovers)
+  candmemo::Bool                                  # per-candidate score memo (see cand_scores): only candidates whose own items changed are re-scored; exact
   accumpick::Symbol                               # ctxmode :accum: each round take the leftover with the largest :abs correction, or the largest :signed one (the biggest raise)
   forkcap::Int                                    # > 0 (:maxdev): when the largest |step| lowers the odds and a different feature raises them most (by tau), the chain forks; at most this many chains per candidate (see fork_chains)
   forkcomb::Symbol                                # forkcap: a candidate's score from its chains, :max or :avg
@@ -335,6 +336,7 @@ mutable struct ChainModel <: AbstractModel
   ctxtypes::Set{UInt64}                          # decision types that use ctxmode (empty: all; the others keep greedy contexts)
   ci::Dict{UInt64,Matrix{Float32}}               # decision type -> D[A, B]: B's effect on o(x) given A (ci_table)
   civ::Dict{UInt64,Dict{Tuple{Int16,UInt64,Int16},Float32}}   # decision type -> (A, A's value a, B) -> B's effect on o(x) given A = a (ci_values)
+  cmemo::Dict{Tuple{UInt64,Int},Float64}         # (candmemo) (candidate key, part) -> its score: 1 chain + leftovers, 2 after a restart (NaN: none), 3 forked
 end
 
 const MAXMEMO = 2_000_000
@@ -350,7 +352,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0, accumstop = 0.0, forkcap = 0, forkcomb = :max, forkleft = :each, accumpick = :abs)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0, accumstop = 0.0, forkcap = 0, forkcomb = :max, forkleft = :each, accumpick = :abs, candmemo = false)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms, :maxpos, :maxabsscore, :maxposneg) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
@@ -440,7 +442,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, accumpick, forkcap, forkcomb, forkleft, accumstop, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, candmemo, accumpick, forkcap, forkcomb, forkleft, accumstop, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -450,7 +452,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), false, 10_000, Dict{UInt64,Int}(),
     Dict{UInt64,Vector{Int32}}(), zeros(Int32, length(lsets)), Dict{UInt64,Set{Int}}(), Dict{UInt64,Gates}(),
     Dict{UInt64,Float64}(), Dict{UInt64,Dict{Int,Vector{Int}}}(), Dict{UInt64,Set{Int}}(), Set{UInt64}(), Dict{UInt64,Matrix{Float32}}(),
-    Dict{UInt64,Dict{Tuple{Int16,UInt64,Int16},Float32}}())
+    Dict{UInt64,Dict{Tuple{Int16,UInt64,Int16},Float32}}(), Dict{Tuple{UInt64,Int},Float64}())
   tally_shapes!(m)
   if gate > 0
     t = @elapsed build_gates!(m; mincount = gatemincount)
@@ -3754,6 +3756,13 @@ function chain_scores_inner(m::ChainModel, st::State, key::AgendaKey, d, i, cand
       m.memo[memokey] = copy(dscores)
       return (cands, dscores)
     end
+    if m.opts.candmemo && CHAIN_TRACE[] === nothing && LEFTOVER_TRACE[] === nothing && PARTS_HOOK[] === nothing &&
+       m.opts.sample <= 0 && !m.opts.contest && m.opts.stickbreak == :off && !(restart && !m.opts.posnegafter && length(cands) > 1)
+      cs_ = cand_scores(m, cands, I, labels, priors, tr, tk, restart)
+      length(m.memo) >= MAXMEMO && empty!(m.memo)
+      m.memo[memokey] = copy(cs_)
+      return (cands, cs_)
+    end
     if m.opts.forkcap > 0                            # forked chains: each candidate's score from its chains
       fscores = [fork_score(m, I[c], labels[c], priors[c], tr; tk) for c in eachindex(cands)]
       m.opts.stickbreak != :off && (fscores = stickbreak_scores(m, fscores, labels, nothing, tk, d.labeled))
@@ -3854,6 +3863,83 @@ function chain_scores_inner(m::ChainModel, st::State, key::AgendaKey, d, i, cand
   length(m.memo) >= MAXMEMO && empty!(m.memo)
   m.memo[memokey] = copy(scores)
   (cands, scores)
+end
+
+"""
+Per-candidate scores (candmemo; 2026-11-03): each candidate's chain + leftovers score depends only on its decision type,
+label and items, so it is memoized under (type, label, items, step score) -- a decision whose other candidates changed
+re-scores only the changed ones.  Exact: the same scores as the decision-level path.  With posneg restarts after the
+leftovers (posnegafter), the top-ranked candidate's restarted score is memoized too (NaN: no negative step to seed
+from), and the ranking / restart loop replayed from the memo.  With forkcap, the forked score.
+"""
+function cand_scores(m::ChainModel, cands, I, labels, priors, tr, tk, restart::Bool)
+  K = length(cands)
+  ss = STEPSCORE_OVERRIDE[] === nothing ? m.opts.stepscore : STEPSCORE_OVERRIDE[]
+  ck = [hash((tk, labels[c], I[c], ss)) for c in 1:K]
+  length(m.cmemo) >= MAXMEMO && empty!(m.cmemo)
+  hit!(part) = (d = DC_STATS[]) === nothing || (k = Symbol(:cmemo_, part); d[k] = get(d, k, 0.0) + 1)
+  if m.opts.forkcap > 0
+    return map(1:K) do c
+      v = get(m.cmemo, (ck[c], 3), nothing)
+      v === nothing || (hit!(:hit); return v)
+      hit!(:miss)
+      m.cmemo[(ck[c], 3)] = fork_score(m, I[c], labels[c], priors[c], tr; tk)
+    end
+  end
+  chains = Vector{Any}(nothing, K)
+  leftneg = [UInt64[] for _ in 1:K]
+  leftall = [Tuple{UInt64,Float64}[] for _ in 1:K]
+  # chain + leftovers of candidate c's chain chains[c], noting its negative and all taken leftovers (as full! does)
+  function full!(c)
+    empty!(leftneg[c]); empty!(leftall[c])
+    LEFTOVER_TRACE[] = (s, inc, ctxs, corr) -> (inc && corr < 0 && push!(leftneg[c], I[c][s]); inc && push!(leftall[c], (I[c][s], corr)))
+    try
+      chain_logodds(m, chains[c][1], I[c], labels[c], priors[c], chains[c][2])
+    finally
+      LEFTOVER_TRACE[] = nothing
+    end
+  end
+  function first!(c)                                 # candidate c's own chain and its score
+    chains[c] = run_single(m, I[c], labels[c], priors[c], tr; tk)
+    full!(c)
+  end
+  fs = map(1:K) do c
+    v = get(m.cmemo, (ck[c], 1), nothing)
+    v === nothing || (hit!(:hit); return v)
+    hit!(:miss)
+    m.cmemo[(ck[c], 1)] = first!(c)
+  end
+  (restart && m.opts.posnegafter && K > 1) || return fs
+  done_ = Set{Int}()
+  for _ in 1:3
+    top = argmax(fs)
+    top in done_ && break
+    push!(done_, top)
+    r = get(m.cmemo, (ck[top], 2), nothing)
+    if r === nothing
+      chains[top] === nothing && first!(top)        # (its first score was memoized: rebuild the chain for the seed)
+      cs = chains[top][1]
+      negs = UInt64[cs.members[j] for j in eachindex(cs.members) if cs.odds[j+1] < cs.odds[j]]
+      m.opts.posnegleftneg && append!(negs, leftneg[top])
+      if m.opts.posnegseed in (:reorder, :reorderabs)
+        used = [[(cs.members[j], log(cs.odds[j+1]) - log(cs.odds[j])) for j in eachindex(cs.members)]; leftall[top]]
+        sort!(used; by = u -> m.opts.posnegseed == :reorder ? -u[2] : -abs(u[2]))
+        negs = UInt64[u[1] for u in used]
+      end
+      if isempty(negs)
+        r = NaN
+      else
+        chains[top] = run_single(m, I[top], labels[top], priors[top], tr; tk, seed = negs)
+        r = full!(top)
+      end
+      m.cmemo[(ck[top], 2)] = r
+    end
+    isnan(r) && break
+    fs[top] = r
+    (d = DC_STATS[]) === nothing || (d[:pn_restart] = get(d, :pn_restart, 0.0) + 1)
+    argmax(fs) == top && break
+  end
+  fs
 end
 
 "log(1 + exp(x)), without overflow."
