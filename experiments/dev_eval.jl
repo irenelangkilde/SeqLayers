@@ -172,6 +172,9 @@
 #                running estimate) gets a greedy context (by depmeasure, as greedyby=dep) instead
 #   golddec      decode with these decision groups from gold (comma list): gap (tokens, sentence ends), tags, heads
 #                (head properties, committed before their attachment even with softheads); goldtok=true = gap
+#   devtb        decode only these treebanks' dev docs (comma list; "" = all)
+#   rescorestats true (with profdecode): why decisions were rescored -- per decision type and changed row -- and the
+#                chain score memo's hits and misses per decision type
 #   profdecode   true: decode profiling -- per decision type, decide calls, not-ready calls and time (CountingModel),
 #                and each doc's decode time
 #   goldtok      true: decode on gold tokens and sentences -- the char layer's gap decisions from gold, the rest by the
@@ -305,7 +308,7 @@ const RESULTS = joinpath(HERE, "results.csv")
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
   "wmo" => 1e-3, "train_sents" => 500, "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
-  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "fwdcheck" => "false", "softheads" => "false", "dfsepshead" => NaN, "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "ciorder" => "off", "telescope" => "false", "smoothd" => 1.0, "smootha" => 0.0, "smoothn" => "set", "accumby" => "odds", "depmeasure" => "yule", "mindevtau" => 0.1, "mindevstop" => "localmin", "explainpool" => "false", "chainshrink" => 0.0, "chainshrinkto" => "prev", "chainsel" => 0.0, "lookw" => "dw", "headsibs" => "", "idxeq" => "false", "kinitems" => "false", "neighbor2" => "false", "oclass" => "false", "bioes" => "false", "headkin" => "", "lookwsmooth" => 0.0, "lookwback" => 0.0, "stickbreak" => "off", "posnegrestart" => "false", "posnegseed" => "own", "dualchain" => "off", "dualcombine" => "sum", "dualw" => 0.5, "dualleft" => "true", "dualturn" => "both", "posnegafter" => "false", "posnegleftneg" => "false", "posnegonly" => "all", "leftwback" => 0.0, "leftwovl" => "false", "leftwcomb" => "prod", "wselcomb" => "sum", "wselmove" => "weights", "wselweight" => "false", "tuplek" => 0, "tuplemin" => 0.0, "interleave" => "false", "goldtok" => "false", "profdecode" => "false", "golddec" => "", "accumgreedy" => 0.0, "accumstop" => 0.0, "accumpick" => "abs", "forkcap" => 0, "forkcomb" => "max", "forkleft" => "each", "lookwsoft" => "false", "depweight" => "false", "gatemincount" => -1, "branches" => 1, "combine" => "avg", "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "driftsigma" => 0.0, "distback" => "false", "shrink" => 0.0, "shrinkleft" => 0.0, "leftmin2" => 0, "headwc" => "", "headwcdir" => "/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5", "drifttau" => 0.0, "driftstep" => 0.0, "relbounded" => "false", "relnone" => "false", "treerank" => "false", "headtrank" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
+  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "fwdcheck" => "false", "softheads" => "false", "dfsepshead" => NaN, "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "ciorder" => "off", "telescope" => "false", "smoothd" => 1.0, "smootha" => 0.0, "smoothn" => "set", "accumby" => "odds", "depmeasure" => "yule", "mindevtau" => 0.1, "mindevstop" => "localmin", "explainpool" => "false", "chainshrink" => 0.0, "chainshrinkto" => "prev", "chainsel" => 0.0, "lookw" => "dw", "headsibs" => "", "idxeq" => "false", "kinitems" => "false", "neighbor2" => "false", "oclass" => "false", "bioes" => "false", "headkin" => "", "lookwsmooth" => 0.0, "lookwback" => 0.0, "stickbreak" => "off", "posnegrestart" => "false", "posnegseed" => "own", "dualchain" => "off", "dualcombine" => "sum", "dualw" => 0.5, "dualleft" => "true", "dualturn" => "both", "posnegafter" => "false", "posnegleftneg" => "false", "posnegonly" => "all", "leftwback" => 0.0, "leftwovl" => "false", "leftwcomb" => "prod", "wselcomb" => "sum", "wselmove" => "weights", "wselweight" => "false", "tuplek" => 0, "tuplemin" => 0.0, "interleave" => "false", "goldtok" => "false", "profdecode" => "false", "devtb" => "", "rescorestats" => "false", "golddec" => "", "accumgreedy" => 0.0, "accumstop" => 0.0, "accumpick" => "abs", "forkcap" => 0, "forkcomb" => "max", "forkleft" => "each", "lookwsoft" => "false", "depweight" => "false", "gatemincount" => -1, "branches" => 1, "combine" => "avg", "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "driftsigma" => 0.0, "distback" => "false", "shrink" => 0.0, "shrinkleft" => 0.0, "leftmin2" => 0, "headwc" => "", "headwcdir" => "/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5", "drifttau" => 0.0, "driftstep" => 0.0, "relbounded" => "false", "relnone" => "false", "treerank" => "false", "headtrank" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
 
 "The sibling head-property names of the headsibs option (in, out, left, right)."
@@ -402,6 +405,7 @@ function setup(cfg)
   tunedocs = [(tb, d) for (tb, ds) in zip(tbs, alltrain)
               for d in firstsents(ds[length(firstsents(ds, cfg["train_sents"]))+1:end], cfg["tune_sents"])]
   devdocs = [(tb, d) for (tb, f) in zip(tbs, devfiles) for d in firstsents(read_conllu(f), cfg["dev_sents"])]
+  isempty(cfg["devtb"]) || filter!(p -> p[1] in split(cfg["devtb"], ','), devdocs)   # (devtb: only these treebanks' docs)
   hwc === nothing || SeqLayers.add_head_wclass_gold!(last.(devdocs), hwc, hwl)
   println("train sample: ", sum(nsents, trainsample), " sentences;  dev: ", sum(p -> nsents(p[2]), devdocs), " sentences")
 
@@ -559,6 +563,8 @@ function start_workers(cfg, s)
       oclass = $(cfg["oclass"] == "true"), bioes = $(cfg["bioes"] == "true"))
     const WLEX = deserialize(joinpath($rundir, "lex.jls"))
     $(cfg["fwdcheck"] == "true") && (SeqLayers.FWDCHECK[] = true)
+    $(cfg["rescorestats"] == "true") && (SeqLayers.RESCORE_STATS[] = Dict{Tuple{Symbol,Symbol,Symbol},Int}();
+      SeqLayers.DC_STATS[] === nothing && (SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()))
     $(cfg["softheads"] == "true") && (SeqLayers.SOFTHEADS[] = true)
     const WSEARCH = $(cfg["dfs"] == "true" ? :(SeqLayers.DFS(eps = $(cfg["dfseps"]), budget = $(cfg["dfsbudget"]), jump = $(cfg["dfsjump"] == "true"), order = $(QuoteNode(Symbol(cfg["dfsorder"]))), epshead = $(cfg["dfsepshead"]))) : cfg["search"] > 0 ? :(SeqLayers.LDS($(cfg["search"]); score = $(QuoteNode(Symbol(cfg["ldsscore"]))),
       tokenonly = $(cfg["ldsall"] != "true"))) : nothing)
@@ -618,6 +624,25 @@ function main(cfg)
   wrap(mm) = (mm = isempty(golds) ? mm : SeqLayers.GoldModel(mm, golds); prof ? SeqLayers.CountingModel(mm) : mm)
   counts = pmap(p -> (p[1], (t = time(); c = evaluate_counts([p[2]], WSPECS, wrap(WMODEL), WLEX; search = WSEARCH);
     prof && println("doc $(p[1]) $(length(p[2].text)) chars: $(round(time() - t; digits = 1)) s"); c)), devdocs[order])
+  if cfg["rescorestats"] == "true"
+    rs = Dict{Tuple{Symbol,Symbol,Symbol},Int}()
+    mm = Dict{Symbol,Float64}()
+    for w in workers()
+      for (k, v) in remotecall_fetch(() -> copy(something(SeqLayers.RESCORE_STATS[], Dict{Tuple{Symbol,Symbol,Symbol},Int}())), w)
+        rs[k] = get(rs, k, 0) + v
+      end
+      for (k, v) in remotecall_fetch(() -> copy(something(SeqLayers.DC_STATS[], Dict{Symbol,Float64}())), w)
+        startswith(String(k), "memo_") && (mm[k] = get(mm, k, 0.0) + v)
+      end
+    end
+    println("rescorestats: decision\tchanged row\trescores")
+    for (k, v) in sort(collect(rs); by = kv -> -kv[2])[1:min(end, 40)]
+      println("rescorestats: $(k[1]).$(k[2])\t$(k[3])\t$v")
+    end
+    for (k, v) in sort(collect(mm); by = kv -> String(kv[1]))
+      println("rescorestats: $k\t$(Int(v))")
+    end
+  end
   if prof
     tot = Dict{Tuple{Symbol,Symbol},Vector{Float64}}()
     for w in workers(), (k, v) in remotecall_fetch(() -> copy(SeqLayers.DECIDE_STATS), w)

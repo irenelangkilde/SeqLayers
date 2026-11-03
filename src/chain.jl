@@ -3705,6 +3705,7 @@ function chain_scores(m::ChainModel, st::State, key::AgendaKey)
   isempty(m.climb) || (I = [[haskey(m.climb, x) ? climbkey!(m, x, labels[c]) : x for x in I[c]] for c in eachindex(I)])
   memokey = hash((tk, labels, I))
   scores = get(m.memo, memokey, nothing)
+  (d_ = DC_STATS[]) === nothing || (k_ = scores === nothing ? Symbol(:memo_miss_, d.name) : Symbol(:memo_hit_, d.name); d_[k_] = get(d_, k_, 0.0) + 1)
   scores === nothing || return (cands, copy(scores))
   if m.opts.posnegonly != :all && d.labeled && m.opts.stepscore != :abs &&    # labeled decisions (but head properties with :heads):
      !(m.opts.posnegonly == :heads && haskey(ALLHEADSETS, d.name))            # plain :abs chains, no restart

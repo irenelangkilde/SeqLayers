@@ -407,6 +407,22 @@ end
       r3 = eval_scores(evaluate_counts(docs, specs, GoldModel(mg, Set([:gap, :tags, :heads])), lex)).uas
       @test 0 <= r2 <= 1 && 0 <= r3 <= 1
     end
+    # rescoring diagnostics: same parse; attachments are rescored for changed rows, and first scorings are counted
+    let mr = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 3, redundant = true, ctxmode = :accum)
+      mr.generalize = SeqLayers.generalization_slots(specs)
+      r0 = evaluate_counts(docs, specs, mr, lex)
+      SeqLayers.RESCORE_STATS[] = Dict{Tuple{Symbol,Symbol,Symbol},Int}()
+      SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()
+      empty!(mr.memo)
+      try
+        @test evaluate_counts(docs, specs, mr, lex) == r0
+        rs = SeqLayers.RESCORE_STATS[]
+        @test get(rs, (:token, :attach, :fresh), 0) > 0 && any(k -> k[2] == :attach && k[3] != :fresh, keys(rs))
+        @test get(SeqLayers.DC_STATS[], :memo_miss_attach, 0) > 0
+      finally
+        SeqLayers.RESCORE_STATS[] = nothing; SeqLayers.DC_STATS[] = nothing
+      end
+    end
     # decode profiling: the same parse as the inner model, with its decide calls counted
     let mc = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 3, redundant = true, ctxmode = :accum)
       mc.generalize = SeqLayers.generalization_slots(specs)

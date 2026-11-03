@@ -200,12 +200,39 @@ function tracked_decide(model, st::State, key::AgendaKey)
   end
 end
 
+"""
+Rescoring diagnostics (rescorestats; 2026-11-03): when set, per (layer, decision name) and each row whose change set
+off a rescore, how many rescores it caused (a rescore counts once for every changed row); key (layer, name, :fresh)
+counts first scorings.
+"""
+const RESCORE_STATS = Ref{Union{Nothing,Dict{Tuple{Symbol,Symbol,Symbol},Int}}}(nothing)
+
+function note_rescore!(st::State, key, reads)
+  stats = RESCORE_STATS[]
+  name = decisiondef(st, key).name
+  if reads === nothing || !haskey(st.best, key)
+    k = (key[1], name, :fresh)
+    stats[k] = get(stats, k, 0) + 1
+    return
+  end
+  rows = Set{Tuple{Symbol,Int}}()
+  for cell in reads
+    read_changed(st, cell) && push!(rows, (cell[1], cell[2]))
+  end
+  for (l, r) in rows
+    rn = r == READ_NCOLS_ROW ? :ncols : something(findfirst(==(r), st.layers[l].spec.rows), :unknown)
+    k = (key[1], name, Symbol(l, ".", rn))
+    stats[k] = get(stats, k, 0) + 1
+  end
+end
+
 function rescore!(st::State, model)
   for key in collect(keys(st.agenda))
     reads = get(st.reads, key, nothing)
     if reads !== nothing && haskey(st.best, key) && !any(cell -> read_changed(st, cell), reads)
       continue
     end
+    RESCORE_STATS[] === nothing || note_rescore!(st, key, reads)
     choice, margin = tracked_decide(model, st, key)
     st.agenda[key] = margin
     st.best[key] = choice
