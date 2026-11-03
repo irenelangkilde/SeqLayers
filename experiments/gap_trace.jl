@@ -70,10 +70,29 @@ function observe!(::GapRec, st, key, choice)
   gtok = gh === nothing ? nothing : isempty(gh) ? NONE : something(findfirst(u -> S.tokspan(st, u) == gh, 1:length(toks)), PENDING)
   cands = S.decisiondef(st, key).candidates(st, t)
   ingold = gtok !== nothing && gtok != PENDING && UInt32(gtok) in cands
+  # which filter (attach_candidates' order) removed the gold head, if it isn't a candidate
+  prune = ingold ? :none : gtok === nothing ? :misaligned : gtok == PENDING ? :tokenization : pruned_by(st, t, UInt32(gtok))
   kinunk = cfg["kinitems"] == "true" && ingold ? any(dir -> S.kin_value(st, t, UInt32(gtok), dir) == PENDING, (-1, 1)) : missing
   NOTES[sp] = (owntag = tagok(t), nbtag = all(skipmissing([tagok(ln), tagok(rn)])), nbpending = pend(ln) || pend(rn),
-    goldincands = ingold, ncands = length(cands), kinunknown = kinunk, ncommitted = count(u -> toks[:attach, u] != PENDING, 1:length(toks)),
+    goldincands = ingold, prune = prune, ncands = length(cands), kinunknown = kinunk, ncommitted = count(u -> toks[:attach, u] != PENDING, 1:length(toks)),
     words = [S.tokstr(st, u) for u in sort(1:length(toks); by = u -> toks[:first_char, u])])
+end
+"The first of attach_candidates' filters that excludes head h for t (:other if none does: e.g. changed since)."
+function pruned_by(st, t, h)
+  toks = st.layers[:token]
+  s_ = toks[:sentence, t]
+  if h == NONE
+    hasroot = s_ != PENDING && any(u -> u != t && toks[:sentence, u] == s_ && toks[:attach, u] == NONE, 1:length(toks))
+    return hasroot ? :root_taken : :other
+  end
+  hh = Int(h)
+  toks[:sentence, hh] == s_ || return :sentence
+  abs(Int(toks[:first_char, hh]) - Int(toks[:first_char, t])) <= S.MAX_LINK_CHARS || return :distance
+  S.creates_cycle(st, t, h) && return :cycle
+  S.crosses_E(st, t, h) && return :sentence_end
+  S.head_consistent(st, t, h) || return :headprops
+  S.crosses_arc(st, t, h) && return :projectivity
+  :other
 end
 segment_done!(::GapRec, st) = nothing
 segment_discard!(::GapRec) = nothing
@@ -104,6 +123,12 @@ for (nm, f) in (("own UPOS / XPOS wrong", x -> x.owntag === missing ? missing : 
   println(rpad(nm, 40), "\t", share(cats[:ceilonly], f), "\t\t\t\t", share(vcat(cats[:both], cats[:deconly]), f))
 end
 println(rpad("inferred, not decided", 40), "\t", inferred(cats[:ceilonly]), "\t\t\t\t", inferred(vcat(cats[:both], cats[:deconly])))
+for (nm, grp) in (("ceiling right, decode wrong", cats[:ceilonly]), ("both wrong", cats[:neither]))
+  rs = [NOTES[sp].prune for sp in grp if haskey(NOTES, sp) && NOTES[sp].prune != :none]
+  isempty(rs) && continue
+  println("\ngold head pruned ($nm): $(length(rs)) of $(length(grp)) -- ",
+    join(["$k $(count(==(k), rs))" for k in sort(unique(rs); by = k -> -count(==(k), rs))], ", "))
+end
 med(sps, f) = (v = [f(NOTES[sp]) for sp in sps if haskey(NOTES, sp)]; isempty(v) ? "-" : string(sort(v)[cld(length(v), 2)]))
 println(rpad("candidates (median)", 40), "\t", med(cats[:ceilonly], x -> x.ncands), "\t\t\t\t", med(vcat(cats[:both], cats[:deconly]), x -> x.ncands))
 println(rpad("attachments already committed (median)", 40), "\t", med(cats[:ceilonly], x -> x.ncommitted), "\t\t\t\t", med(vcat(cats[:both], cats[:deconly]), x -> x.ncommitted))
@@ -116,5 +141,5 @@ for sp in first(sort(cats[:ceilonly]; by = first), cfg["examples"])
   g, _ = ceil[sp]
   x = get(NOTES, sp, nothing)
   println("  '$(word(sp))' gold head '$(word(g))', decode '$(word(dec[sp]))'",
-    x === nothing ? "  (inferred)" : "  [own tags $(x.owntag === missing ? "?" : x.owntag ? "ok" : "WRONG"), nb tags $(x.nbtag ? "ok" : "WRONG"), nb pending $(x.nbpending), gold in cands $(x.goldincands) of $(x.ncands), kin unknown $(x.kinunknown), committed $(x.ncommitted)]")
+    x === nothing ? "  (inferred)" : "  [own tags $(x.owntag === missing ? "?" : x.owntag ? "ok" : "WRONG"), nb tags $(x.nbtag ? "ok" : "WRONG"), nb pending $(x.nbpending), gold in cands $(x.goldincands) of $(x.ncands)$(x.prune == :none ? "" : " (pruned: $(x.prune))"), kin unknown $(x.kinunknown), committed $(x.ncommitted)]")
 end
