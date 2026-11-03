@@ -1,0 +1,23 @@
+=== start Mon Nov  2 19:21:19 UTC 2026
+=== 1 best3_posnegheads_kinnn2  Mon Nov  2 19:21:19 UTC 2026
+recorded events in 602.0 s
+ALL         2899    0.9977  0.88    0.823   0.0162  1.0     
+posnegrestart: 3314 chain restarts
+head_kinleft  2899    0.143   0.7682
+head_kinright 2899    0.143   0.7858
+score 906.4 s, run 20261102-195222 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== 2 best3_relations_kinnn2  Mon Nov  2 19:52:24 UTC 2026
+recorded events in 3570.2 s
+ALL         2899    0.9977  0.8772  0.8161  0.0162  1.0     
+head_kinleft  2899    0.167   0.7799
+head_kinright 2899    0.167   0.8148
+score 781.3 s, run 20261102-211245 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== 3 best3_decode_posnegheads_kinnn2  Mon Nov  2 21:12:46 UTC 2026
+CHILDES     324     1.0     0.7778  0.6759  0.9901  
+ESLSpok     502     0.997   0.7425  0.6906  0.9796  
+EWT         86      0.9655  0.7381  0.6905  0.8889  
+GUM         963     0.9845  0.6993  0.6562  0.96    
+GUMReddit   1024    0.9917  0.6428  0.577   0.9038  
+ALL         2899    0.9904  0.6968  0.6374  0.9558  
+build 16.6 s, decode 68240.0 s, run 20261103-161600 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== all done Tue Nov  3 16:16:01 UTC 2026
