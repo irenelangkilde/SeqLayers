@@ -17,6 +17,9 @@
 using SeqLayers
 import SeqLayers: observe!, segment_done!, segment_discard!
 
+"(gap_trace.jl) called with (state, token, gold head, predicted head, gold deprel, predicted deprel) per scored attachment."
+const TOKEN_HOOK = Ref{Any}(nothing)
+
 const CEILING_COUNTS = (:tok_gold, :gap_n, :gap_ok, :gap_lost, :tok_n, :uas, :las, :head_lost, :notready,
   :inferred, :inferred_ok, :nocands)
 
@@ -96,6 +99,7 @@ function segment_done!(r::CeilingRecorder, st)
     r.c[:head_lost] += !incands
     r.c[:uas] += pa == a
     r.c[:las] += pa == a && pr == rel
+    TOKEN_HOOK[] === nothing || TOKEN_HOOK[](st, t, a, pa, rel, pr)
     breakdown!(r.c, st, t, a, rel, pa, pr)
     r.scoretags || continue
     for k in 3:length(toks.spec.decisions)        # tag decisions (head properties: scored in the pipeline)

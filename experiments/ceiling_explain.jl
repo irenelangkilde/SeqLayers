@@ -52,7 +52,9 @@ s = setup(cfg)
 idx = s.idx
 widx = CharIndex(idx.fwd, idx.rev, idx.gap, idx.saL, idx.saR, idx.cumL, idx.cumR, idx.prior, IdDict{Doc,Int}(), idx.maxlen, idx.mincount, idx.beta)
 specs = default_specs(charindex = widx, wordclasses = s.wc, suffixes = s.sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true",
-  projective = cfg["projective"] == "true", relations = cfg["relations"] == "true", headsdist = cfg["headsdist"] == "true", relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true", treerank = cfg["treerank"] == "true", headtrank = cfg["headtrank"] == "true", headwc = isempty(cfg["headwc"]) ? Int[] : parse.(Int, split(cfg["headwc"], ',')), headwcclasses = S.HEADWC[], headsibs = headsib_names(cfg), idxeq = cfg["idxeq"] == "true")
+  projective = cfg["projective"] == "true", relations = cfg["relations"] == "true", headsdist = cfg["headsdist"] == "true", relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true", treerank = cfg["treerank"] == "true", headtrank = cfg["headtrank"] == "true", headwc = isempty(cfg["headwc"]) ? Int[] : parse.(Int, split(cfg["headwc"], ',')), headwcclasses = S.HEADWC[], headsibs = headsib_names(cfg), idxeq = cfg["idxeq"] == "true",
+  kinitems = cfg["kinitems"] == "true", headkin = headkin_names(cfg), neighbor2 = cfg["neighbor2"] == "true",
+  oclass = cfg["oclass"] == "true", bioes = cfg["bioes"] == "true", fwdsets = cfg["fwdsets"] == "true")
 eventsdir, opts = s.recipe
 pc = S.load_counts(eventsdir, eventsig(eventsdir))
 function build_model(opts)
@@ -84,8 +86,13 @@ function ctxval(st, t, p)
   haskey(S.TAGSETS, f) && return S.TAGSETS[f][v]
   haskey(S.ALLHEADSETS, f) && return S.ALLHEADSETS[f][v]
   f == :deprel && return S.DEPRELS[v]
+  f == :oclass && return S.OCLASS_LABELS[v]
   string(v)
 end
+const BIOES_NAMES = ("S", "B", "E", "I", "edge")
+bioesname(v) = v == PENDING ? "?" : v <= 5 ? BIOES_NAMES[v] : "root"
+bioespair(v) = v == PENDING ? "?" : bioesname(div(v - 1, 5) + 1) * "|" * bioesname(mod(v - 1, 5) + 1)
+kinname(v) = v == PENDING ? "?" : S.KIN_LABELS[v]
 function slotdesc(st, t, c, sl)
   ctx = st.layers[:token].spec.context
   if sl <= 2                                       # distance (word bucket) and direction, with their values for this candidate
@@ -122,6 +129,29 @@ function slotdesc(st, t, c, sl)
         return "idxeq:" * names[k] * "?" * (v == PENDING ? "unknown" : v == 1 ? "yes" : "no")
       end
       k -= 6
+    end
+    if cfg["kinitems"] == "true"                   # the token's kinship to its left / right neighbour under c
+      k <= 2 && return "kin.$(k == 1 ? "left" : "right")=" * kinname(S.kin_value(st, t, c, k == 1 ? -1 : 1))
+      k -= 2
+    end
+    if cfg["bioes"] == "true"                      # subtree labels: left gap pair, right gap pair, the candidate's
+      if k <= 3
+        v = S.bioes_values(st, t, c)[k]
+        return k == 1 ? "bioes.leftgap(left|tok)=" * bioespair(v) : k == 2 ? "bioes.rightgap(tok|right)=" * bioespair(v) :
+          "bioes.cand=" * bioesname(v)
+      end
+      k -= 3
+    end
+    if cfg["fwdsets"] == "true"                    # forward-checking sets, in fwd_set_items' order
+      sets = Any[]
+      cfg["kinitems"] == "true" && append!(sets, [("set.kin.left", S.kin_set(st, t, c, -1), kinname), ("set.kin.right", S.kin_set(st, t, c, 1), kinname)])
+      cfg["bioes"] == "true" && append!(sets, [("set.bioes.leftgap", S.bioes_gap_set(st, t, c, -1), bioespair), ("set.bioes.rightgap", S.bioes_gap_set(st, t, c, 1), bioespair)])
+      cfg["idxeq"] == "true" && append!(sets, [("set.idxeq$j", S.idxeq_set(st, t, c, j), v -> v == 1 ? "yes" : "no") for j in 3:6])
+      if k <= length(sets)
+        nm, vs, f = sets[k]
+        return nm * "=" * (vs === nothing ? "?" : "{" * join(f.(vs), ",") * "}")
+      end
+      k -= length(sets)
     end
     return "slot $sl"
   end
