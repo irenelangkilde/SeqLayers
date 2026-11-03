@@ -1,0 +1,31 @@
+=== start Tue Nov  3 20:12:26 UTC 2026
+=== base
+doc ESLSpok 2239 chars: 672.7 s
+doc CHILDES 1314 chars: 167.1 s
+doc EWT 471 chars: 119.7 s
+doc GUMReddit 4903 chars: 2305.7 s
+doc GUM 4409 chars: 2479.2 s
+profdecode: token.attach	51547	4784	5435.2	105.441
+CHILDES     324     1.0     0.7747  0.6636  0.9804  
+ESLSpok     502     0.997   0.7405  0.6926  0.9796  
+EWT         86      0.9655  0.7262  0.6429  0.8889  
+GUM         963     0.9845  0.7024  0.6488  0.9388  
+GUMReddit   1024    0.9917  0.6497  0.5662  0.9038  
+ALL         2899    0.9904  0.6992  0.6287  0.9503  
+build 17.3 s, decode 2495.1 s, run 20261103-205713 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== kinnn2
+recorded events in 612.6 s
+doc EWT 471 chars: 537.3 s
+doc CHILDES 1314 chars: 698.5 s
+doc ESLSpok 2239 chars: 2395.3 s
+doc GUMReddit 4903 chars: 7861.2 s
+doc GUM 4409 chars: 10466.4 s
+profdecode: token.attach	46513	4852	21350.1	459.014
+CHILDES     324     1.0     0.7716  0.6605  0.9901  
+ESLSpok     502     0.997   0.7405  0.7026  0.9796  
+EWT         86      0.9655  0.75    0.6905  0.8889  
+GUM         963     0.9845  0.7192  0.6698  0.9796  
+GUMReddit   1024    0.9917  0.6202  0.5574  0.9126  
+ALL         2899    0.9904  0.6947  0.6353  0.9611  
+build 629.5 s, decode 10493.9 s, run 20261103-232343 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== all done Tue Nov  3 23:23:44 UTC 2026

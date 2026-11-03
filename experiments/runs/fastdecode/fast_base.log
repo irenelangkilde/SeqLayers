@@ -1,0 +1,41 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/events
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.3 s): 14 of 32 slots always, 280 gate values
+      From worker 4:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.4 s): 14 of 32 slots always, 280 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.7 s): 14 of 32 slots always, 280 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 4:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (57.4 s)
+      From worker 2:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (59.3 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (59.8 s)
+      From worker 4:	doc ESLSpok 2239 chars: 672.7 s
+      From worker 4:	doc CHILDES 1314 chars: 167.1 s
+      From worker 4:	doc EWT 471 chars: 119.7 s
+      From worker 2:	doc GUMReddit 4903 chars: 2305.7 s
+      From worker 3:	doc GUM 4409 chars: 2479.2 s
+profdecode: decision	calls	not ready	seconds	ms per call
+profdecode: token.attach	51547	4784	5435.2	105.441
+profdecode: token.xpos	19491	0	68.8	3.531
+profdecode: char.gap	33166	251	60.4	1.822
+profdecode: token.deprel	6435	3081	55.6	8.644
+profdecode: token.upos	18084	0	29.7	1.641
+profdecode: token.basepos	14063	0	10.9	0.775
+profdecode: token.number	12583	0	7.9	0.63
+profdecode: token.person	11760	0	6.8	0.576
+profdecode: token.tense	9758	0	5.4	0.551
+profdecode: token.head_upos	3081	3081	0.0	0.01
+profdecode: token.head_xpos	3081	3081	0.0	0.009
+profdecode: token.head_dist	3081	3081	0.0	0.008
+profdecode: token.head_trank	3081	3081	0.0	0.001
+profdecode: token.head_dir	3081	3081	0.0	0.001
+count cache: 455114 new feature sets, 2447071 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/events
+treebank    words   token_f1  uas     las     sent_f1
+CHILDES     324     1.0     0.7747  0.6636  0.9804  
+ESLSpok     502     0.997   0.7405  0.6926  0.9796  
+EWT         86      0.9655  0.7262  0.6429  0.8889  
+GUM         963     0.9845  0.7024  0.6488  0.9388  
+GUMReddit   1024    0.9917  0.6497  0.5662  0.9038  
+ALL         2899    0.9904  0.6992  0.6287  0.9503  
+build 17.3 s, decode 2495.1 s, run 20261103-205713 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
