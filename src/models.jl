@@ -156,22 +156,48 @@ function decide(::OracleModel, st::State, key::AgendaKey)
 end
 
 """
-Gold tokens and sentences (user's request 2026-11-02): the char layer's gap decisions -- token boundaries and sentence
-ends -- answered from gold, with certainty (taken as soon as ready); every other decision by `inner`.  Isolates what
-segmentation errors cost the full decode.
+Partial-gold decoding (user's requests 2026-11-02): the decisions in `groups` answered from gold, with certainty (taken
+as soon as possible), every other one by `inner` -- :gap (the char layer's gap decisions: tokens and sentence ends),
+:tags (the tag decisions, oclass included), :heads (head-property decisions; committed even when softheads holds them
+back until the attachment, so they narrow its candidates as in the ceiling).  Shows where the decode loses to the
+ceiling.  GoldGapsModel(inner): gaps only.
 """
-struct GoldGapsModel{M<:AbstractModel} <: AbstractModel
+struct GoldModel{M<:AbstractModel} <: AbstractModel
   inner::M
+  groups::Set{Symbol}
 end
+GoldGapsModel(inner) = GoldModel(inner, Set([:gap]))
+"The gold group of a decision name (:gap, :tags, :heads), or nothing."
+goldgroup(name::Symbol) = name == :gap ? :gap : (haskey(TAGSETS, name) || name == :oclass) ? :tags :
+  haskey(ALLHEADSETS, name) ? :heads : nothing
 
-function decide(m::GoldGapsModel, st::State, key::AgendaKey)
-  key[1] == :char || return decide(m.inner, st, key)
+function decide(m::GoldModel, st::State, key::AgendaKey)
   d, i = decisiondef(st, key), key[3]
-  d.ready(st, i) || return (NONE, -Inf)
+  g = goldgroup(d.name)
+  (g === nothing || !(g in m.groups)) && return decide(m.inner, st, key)
+  g == :heads || d.ready(st, i) || return (NONE, -Inf)          # (gold head properties don't wait for softheads)
   choice = oracle_choice(st, key)
   choice == PENDING ? (NONE, -Inf) : (choice, Inf)
 end
-waitscore(m::GoldGapsModel, st::State, key::AgendaKey) = waitscore(m.inner, st, key)
+waitscore(m::GoldModel, st::State, key::AgendaKey) = waitscore(m.inner, st, key)
+
+"""
+Decode profiling (profdecode; 2026-11-03): every decide call passed to `inner`, with per decision type (layer,
+name) the calls, the not-ready ones (margin -Inf) and the time, in DECIDE_STATS of this process.
+"""
+struct CountingModel{M<:AbstractModel} <: AbstractModel
+  inner::M
+end
+const DECIDE_STATS = Dict{Tuple{Symbol,Symbol},Vector{Float64}}()   # (layer, name) -> [calls, not ready, seconds]
+
+function decide(m::CountingModel, st::State, key::AgendaKey)
+  t0 = time_ns()
+  r = decide(m.inner, st, key)
+  v = get!(() -> zeros(3), DECIDE_STATS, (key[1], decisiondef(st, key).name))
+  v[1] += 1; v[2] += r[2] == -Inf; v[3] += (time_ns() - t0) / 1e9
+  r
+end
+waitscore(m::CountingModel, st::State, key::AgendaKey) = waitscore(m.inner, st, key)
 
 "Training hook: records the features of every candidate as they looked when the decision was made."
 mutable struct Recorder

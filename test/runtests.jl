@@ -387,6 +387,33 @@ end
         end
       end
     end
+    # partial gold: gold tags come out right; gold head properties too, and they narrow (never hurt) the attachments
+    let mg = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 3, redundant = true, ctxmode = :accum)
+      mg.generalize = SeqLayers.generalization_slots(specs)
+      for groups in ([:gap, :tags], [:gap, :tags, :heads])
+        gm = GoldModel(mg, Set(groups))
+        st_ = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, specs, lex)
+        st_.infer = true
+        solve!(st_, gm)
+        tl = st_.layers[:token]
+        for t in 1:length(tl)
+          span = SeqLayers.tokspan(st_, t)
+          @test tl[:upos, t] == get(only(docs).gold.tags[:upos], span, tl[:upos, t])
+          :heads in groups && @test tl[:head_dir, t] == get(only(docs).gold.tags[:head_dir], span, tl[:head_dir, t])
+        end
+        @test eval_scores(evaluate_counts(docs, specs, gm, lex)).token_f1 == 1.0
+      end
+      r2 = eval_scores(evaluate_counts(docs, specs, GoldModel(mg, Set([:gap, :tags])), lex)).uas
+      r3 = eval_scores(evaluate_counts(docs, specs, GoldModel(mg, Set([:gap, :tags, :heads])), lex)).uas
+      @test 0 <= r2 <= 1 && 0 <= r3 <= 1
+    end
+    # decode profiling: the same parse as the inner model, with its decide calls counted
+    let mc = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 3, redundant = true, ctxmode = :accum)
+      mc.generalize = SeqLayers.generalization_slots(specs)
+      empty!(SeqLayers.DECIDE_STATS)
+      @test evaluate_counts(docs, specs, CountingModel(mc), lex) == evaluate_counts(docs, specs, mc, lex)
+      @test SeqLayers.DECIDE_STATS[(:token, :attach)][1] > 0 && SeqLayers.DECIDE_STATS[(:char, :gap)][1] > 0
+    end
     # accumgreedy: drifted accum contexts switch to greedy ones (theta 0.01 switches nearly all of them)
     @test_throws ErrorException ChainModel(dir; select = :maxdev, leftovers = :greedy, ctxmode = :greedy, accumgreedy = 1.0)
     for th in (0.01, 1.0)

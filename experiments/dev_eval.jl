@@ -170,6 +170,10 @@
 #                from T; it and the rest are discarded
 #   accumgreedy  > 0 (ctxmode=accum): a leftover whose backed-off context's log odds drift more than this from T (the
 #                running estimate) gets a greedy context (by depmeasure, as greedyby=dep) instead
+#   golddec      decode with these decision groups from gold (comma list): gap (tokens, sentence ends), tags, heads
+#                (head properties, committed before their attachment even with softheads); goldtok=true = gap
+#   profdecode   true: decode profiling -- per decision type, decide calls, not-ready calls and time (CountingModel),
+#                and each doc's decode time
 #   goldtok      true: decode on gold tokens and sentences -- the char layer's gap decisions from gold, the rest by the
 #                model (GoldGapsModel)
 #   interleave   true (ctxmode=accum): build the chain inside the leftover loop -- each step the best chain step competes
@@ -301,7 +305,7 @@ const RESULTS = joinpath(HERE, "results.csv")
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
   "wmo" => 1e-3, "train_sents" => 500, "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
-  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "fwdcheck" => "false", "softheads" => "false", "dfsepshead" => NaN, "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "ciorder" => "off", "telescope" => "false", "smoothd" => 1.0, "smootha" => 0.0, "smoothn" => "set", "accumby" => "odds", "depmeasure" => "yule", "mindevtau" => 0.1, "mindevstop" => "localmin", "explainpool" => "false", "chainshrink" => 0.0, "chainshrinkto" => "prev", "chainsel" => 0.0, "lookw" => "dw", "headsibs" => "", "idxeq" => "false", "kinitems" => "false", "neighbor2" => "false", "oclass" => "false", "bioes" => "false", "headkin" => "", "lookwsmooth" => 0.0, "lookwback" => 0.0, "stickbreak" => "off", "posnegrestart" => "false", "posnegseed" => "own", "dualchain" => "off", "dualcombine" => "sum", "dualw" => 0.5, "dualleft" => "true", "dualturn" => "both", "posnegafter" => "false", "posnegleftneg" => "false", "posnegonly" => "all", "leftwback" => 0.0, "leftwovl" => "false", "leftwcomb" => "prod", "wselcomb" => "sum", "wselmove" => "weights", "wselweight" => "false", "tuplek" => 0, "tuplemin" => 0.0, "interleave" => "false", "goldtok" => "false", "accumgreedy" => 0.0, "accumstop" => 0.0, "accumpick" => "abs", "forkcap" => 0, "forkcomb" => "max", "forkleft" => "each", "lookwsoft" => "false", "depweight" => "false", "gatemincount" => -1, "branches" => 1, "combine" => "avg", "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "driftsigma" => 0.0, "distback" => "false", "shrink" => 0.0, "shrinkleft" => 0.0, "leftmin2" => 0, "headwc" => "", "headwcdir" => "/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5", "drifttau" => 0.0, "driftstep" => 0.0, "relbounded" => "false", "relnone" => "false", "treerank" => "false", "headtrank" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
+  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "fwdcheck" => "false", "softheads" => "false", "dfsepshead" => NaN, "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "ciorder" => "off", "telescope" => "false", "smoothd" => 1.0, "smootha" => 0.0, "smoothn" => "set", "accumby" => "odds", "depmeasure" => "yule", "mindevtau" => 0.1, "mindevstop" => "localmin", "explainpool" => "false", "chainshrink" => 0.0, "chainshrinkto" => "prev", "chainsel" => 0.0, "lookw" => "dw", "headsibs" => "", "idxeq" => "false", "kinitems" => "false", "neighbor2" => "false", "oclass" => "false", "bioes" => "false", "headkin" => "", "lookwsmooth" => 0.0, "lookwback" => 0.0, "stickbreak" => "off", "posnegrestart" => "false", "posnegseed" => "own", "dualchain" => "off", "dualcombine" => "sum", "dualw" => 0.5, "dualleft" => "true", "dualturn" => "both", "posnegafter" => "false", "posnegleftneg" => "false", "posnegonly" => "all", "leftwback" => 0.0, "leftwovl" => "false", "leftwcomb" => "prod", "wselcomb" => "sum", "wselmove" => "weights", "wselweight" => "false", "tuplek" => 0, "tuplemin" => 0.0, "interleave" => "false", "goldtok" => "false", "profdecode" => "false", "golddec" => "", "accumgreedy" => 0.0, "accumstop" => 0.0, "accumpick" => "abs", "forkcap" => 0, "forkcomb" => "max", "forkleft" => "each", "lookwsoft" => "false", "depweight" => "false", "gatemincount" => -1, "branches" => 1, "combine" => "avg", "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "driftsigma" => 0.0, "distback" => "false", "shrink" => 0.0, "shrinkleft" => 0.0, "leftmin2" => 0, "headwc" => "", "headwcdir" => "/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5", "drifttau" => 0.0, "driftstep" => 0.0, "relbounded" => "false", "relnone" => "false", "treerank" => "false", "headtrank" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
 
 "The sibling head-property names of the headsibs option (in, out, left, right)."
@@ -512,7 +516,8 @@ function setup(cfg)
       (isempty(cfg["pptable"]) ? "" : cfg["pprel"] == "true" ? ";pptable;pprel" : ";pptable") * (cfg["treerank"] == "true" ? ";treerank" : "") * (cfg["headtrank"] == "true" ? ";headtrank" : "") * (isempty(cfg["headwc"]) ? "" : ";headwc=" * cfg["headwc"]) *
       (isempty(cfg["headsibs"]) ? "" : ";headsibs=" * cfg["headsibs"]) * (cfg["idxeq"] == "true" ? ";idxeq" : "") *
       (cfg["kinitems"] == "true" ? ";kinitems" : "") * (isempty(cfg["headkin"]) ? "" : ";headkin=" * cfg["headkin"]) * (cfg["neighbor2"] == "true" ? ";neighbor2" : "") * (cfg["oclass"] == "true" ? ";oclass" : "") *
-      (cfg["bioes"] == "true" ? ";bioes" : "") * (cfg["goldtok"] == "true" ? ";goldtok" : "") * "]"
+      (cfg["bioes"] == "true" ? ";bioes" : "") * (cfg["goldtok"] == "true" ? ";goldtok" : "") *
+      (isempty(cfg["golddec"]) ? "" : ";gold=" * replace(cfg["golddec"], ',' => "+")) * "]"
   elseif cfg["model"] == "count"
     lex = Lexicon()
     model = train!(CountModel(), trainsample, specs, lex)
@@ -606,8 +611,23 @@ function main(cfg)
   t1 = time()
   order = sortperm(devdocs; by = p -> length(p[2].text), rev = true)     # biggest first, for load balance
   goldtok = cfg["goldtok"] == "true"                 # (gold tokens and sentences: the gap decisions from gold)
-  counts = pmap(p -> (p[1], evaluate_counts([p[2]], WSPECS, goldtok ? SeqLayers.GoldGapsModel(WMODEL) : WMODEL, WLEX; search = WSEARCH)),
-    devdocs[order])
+  prof = cfg["profdecode"] == "true"                 # (decode profiling: decide calls and time per decision type)
+  golds = Set(Symbol.(filter(!isempty, split(cfg["golddec"], ','))))   # (partial gold: gap, tags, heads)
+  goldtok && push!(golds, :gap)
+  all(g -> g in (:gap, :tags, :heads), golds) || error("golddec: gap, tags, heads")
+  wrap(mm) = (mm = isempty(golds) ? mm : SeqLayers.GoldModel(mm, golds); prof ? SeqLayers.CountingModel(mm) : mm)
+  counts = pmap(p -> (p[1], (t = time(); c = evaluate_counts([p[2]], WSPECS, wrap(WMODEL), WLEX; search = WSEARCH);
+    prof && println("doc $(p[1]) $(length(p[2].text)) chars: $(round(time() - t; digits = 1)) s"); c)), devdocs[order])
+  if prof
+    tot = Dict{Tuple{Symbol,Symbol},Vector{Float64}}()
+    for w in workers(), (k, v) in remotecall_fetch(() -> copy(SeqLayers.DECIDE_STATS), w)
+      tot[k] = get(tot, k, zeros(3)) .+ v
+    end
+    println("profdecode: decision\tcalls\tnot ready\tseconds\tms per call")
+    for (k, v) in sort(collect(tot); by = kv -> -kv[2][3])
+      println("profdecode: $(k[1]).$(k[2])\t$(Int(v[1]))\t$(Int(v[2]))\t$(round(v[3]; digits = 1))\t$(round(1000v[3] / max(v[1], 1); digits = 3))")
+    end
+  end
   if cfg["dfs"] == "true"
     st = [remotecall_fetch(() -> copy(SeqLayers.DFS_STATS), w) for w in workers()]
     println("dfs: ", Dict(k => sum(d[k] for d in st) for k in keys(first(st))))
