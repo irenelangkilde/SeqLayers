@@ -1,0 +1,19 @@
+=== queued Tue Nov  3 05:21:29 UTC 2026
+=== profiles not done after 4 h: stopped Tue Nov  3 09:21:29 UTC 2026
+=== golddec=gap,tags  Tue Nov  3 09:21:59 UTC 2026
+CHILDES     324     1.0     0.7932  0.7346  0.9901  
+ESLSpok     502     1.0     0.7988  0.7769  1.0     
+EWT         86      1.0     0.8605  0.814   1.0     
+GUM         963     1.0     0.7819  0.7529  0.9796  
+GUMReddit   1024    1.0     0.7441  0.7021  0.9174  
+ALL         2899    1.0     0.7751  0.7389  0.9702  
+build 17.0 s, decode 26957.7 s, run 20261103-165417 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== golddec=gap,tags,heads  Tue Nov  3 16:54:17 UTC 2026
+CHILDES     324     1.0     1.0     0.9043  1.0     
+ESLSpok     502     1.0     1.0     0.9482  1.0     
+EWT         86      1.0     1.0     0.9651  1.0     
+GUM         963     1.0     0.9865  0.9252  1.0     
+GUMReddit   1024    1.0     0.999   0.9062  1.0     
+ALL         2899    1.0     0.9952  0.9214  1.0     
+build 17.1 s, decode 1221.9 s, run 20261103-171740 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== all done Tue Nov  3 17:17:41 UTC 2026

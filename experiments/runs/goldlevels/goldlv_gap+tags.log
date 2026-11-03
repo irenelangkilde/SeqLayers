@@ -1,0 +1,54 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/events
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.6 s): 14 of 32 slots always, 280 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 11:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.6 s): 14 of 32 slots always, 280 gate values
+      From worker 11:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 14:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.6 s): 14 of 32 slots always, 280 gate values
+      From worker 14:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 10:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.6 s): 14 of 32 slots always, 280 gate values
+      From worker 10:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.8 s): 14 of 32 slots always, 280 gate values
+      From worker 8:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.8 s): 14 of 32 slots always, 280 gate values
+      From worker 4:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 8:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 9:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.7 s): 14 of 32 slots always, 280 gate values
+      From worker 9:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 12:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.8 s): 14 of 32 slots always, 280 gate values
+      From worker 12:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 5:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.0 s): 14 of 32 slots always, 280 gate values
+      From worker 5:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.9 s): 14 of 32 slots always, 280 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 7:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 55.9 s): 14 of 32 slots always, 280 gate values
+      From worker 7:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 13:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.0 s): 14 of 32 slots always, 280 gate values
+      From worker 13:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 15:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.0 s): 14 of 32 slots always, 280 gate values
+      From worker 15:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 6:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 56.3 s): 14 of 32 slots always, 280 gate values
+      From worker 6:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 9:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (63.0 s)
+      From worker 11:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (63.6 s)
+      From worker 10:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (63.7 s)
+      From worker 14:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (64.1 s)
+      From worker 5:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (64.3 s)
+      From worker 2:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (64.8 s)
+      From worker 8:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (64.7 s)
+      From worker 12:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (64.8 s)
+      From worker 7:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (65.0 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (65.2 s)
+      From worker 4:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (65.4 s)
+      From worker 15:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (66.3 s)
+      From worker 13:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (66.6 s)
+      From worker 6:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (66.7 s)
+count cache: 840884 new feature sets, 2366780 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/events
+treebank    words   token_f1  uas     las     sent_f1
+CHILDES     324     1.0     0.7932  0.7346  0.9901  
+ESLSpok     502     1.0     0.7988  0.7769  1.0     
+EWT         86      1.0     0.8605  0.814   1.0     
+GUM         963     1.0     0.7819  0.7529  0.9796  
+GUMReddit   1024    1.0     0.7441  0.7021  0.9174  
+ALL         2899    1.0     0.7751  0.7389  0.9702  
+build 17.0 s, decode 26957.7 s, run 20261103-165417 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv

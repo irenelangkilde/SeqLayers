@@ -1,0 +1,323 @@
+
+[1871] signal 15: Terminated
+in expression starting at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/dev_eval.jl:660
+unknown function (ip: 0xedbb850d5ae8) at /usr/lib/aarch64-linux-gnu/libc.so.6
+unknown function (ip: 0xedbb850c843f) at /usr/lib/aarch64-linux-gnu/libc.so.6
+unknown function (ip: 0xedbb850c88b3) at /usr/lib/aarch64-linux-gnu/libc.so.6
+pthread_cond_wait at /usr/lib/aarch64-linux-gnu/libc.so.6 (unknown line)
+uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+ijl_task_get_next at /cache/build/builder-armageddon-7/julialang/julia-ci/src/scheduler.c:614
+wait at ./task.jl:1297
+#wait#392 at ./condition.jl:141
+wait at ./condition.jl:136 [inlined]
+_trywait at ./asyncevent.jl:186
+profile_printing_listener at ./Base.jl:335
+#start_profile_listener##0 at ./Base.jl:355
+jfptr_YY.start_profile_listenerYY.YY.0_16723.3 at /home/ubuntu/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-armageddon-7/julialang/julia-ci/src/julia.h:2319 [inlined]
+start_task at /cache/build/builder-armageddon-7/julialang/julia-ci/src/task.c:1287
+unknown function (ip: (nil)) at (unknown file)
+unknown function (ip: 0xedbb850d5aec) at /usr/lib/aarch64-linux-gnu/libc.so.6
+unknown function (ip: 0xedbb850c843f) at /usr/lib/aarch64-linux-gnu/libc.so.6
+unknown function (ip: 0xedbb850c848f) at /usr/lib/aarch64-linux-gnu/libc.so.6
+epoll_pwait at /usr/lib/aarch64-linux-gnu/libc.so.6 (unknown line)
+uv__io_poll at /workspace/srcdir/libuv/src/unix/linux.c:1404
+uv_run at /workspace/srcdir/libuv/src/unix/core.c:430
+ijl_task_get_next at /cache/build/builder-armageddon-7/julialang/julia-ci/src/scheduler.c:533
+wait at ./task.jl:1297
+wait_forever at ./task.jl:1196
+jfptr_wait_forever_64498.3 at /home/ubuntu/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/builder-armageddon-7/julialang/julia-ci/src/julia.h:2319 [inlined]
+start_task at /cache/build/builder-armageddon-7/julialang/julia-ci/src/task.c:1287
+unknown function (ip: (nil)) at (unknown file)
+Allocations: 6047403914 (Pool: 6047403590; Big: 324); GC: 7873
+┌ Warning: Forcibly interrupting busy workers
+│   exception = TypeError: non-boolean (Nothing) used in boolean context
+└ @ Distributed ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/cluster.jl:1269
+val already in a list
+Stacktrace:
+  [1] error(s::String)
+    @ Base ./error.jl:44
+  [2] push!
+    @ ./linked_list.jl:53 [inlined]
+  [3] _wait2(c::Base.GenericCondition{Base.Threads.SpinLock}, waiter::Task, first::Bool)
+    @ Base ./condition.jl:89
+  [4] wait(c::Base.GenericCondition{Base.Threads.SpinLock}; first::Bool)
+    @ Base ./condition.jl:138
+  [5] wait
+    @ ./condition.jl:136 [inlined]
+  [6] _wait(t::Task)
+    @ Base ./task.jl:312
+  [7] sync_end(c::Channel{Any})
+    @ Base ./task.jl:589
+  [8] macro expansion
+    @ ./task.jl:663 [inlined]
+  [9] interrupt(pids::Vector{Int64})
+    @ Distributed ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/cluster.jl:1236
+ [10] terminate_all_workers()
+    @ Distributed ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/cluster.jl:1271
+ [11] _atexit(exitcode::Int32)
+    @ Base ./initdefs.jl:488
+val already in a list
+Stacktrace:
+ [1] error(s::String)
+   @ Base ./error.jl:44
+ [2] push!
+   @ ./linked_list.jl:53 [inlined]
+ [3] _wait2(c::Base.GenericCondition{Base.Threads.SpinLock}, waiter::Task, first::Bool)
+   @ Base ./condition.jl:89
+ [4] wait(c::Base.GenericCondition{Base.Threads.SpinLock}; first::Bool)
+   @ Base ./condition.jl:138
+ [5] wait
+   @ ./condition.jl:136 [inlined]
+ [6] close(t::Base.AsyncCondition)
+   @ Base ./asyncevent.jl:232
+ [7] (::Base.var"#start_profile_listener##2#start_profile_listener##3"{Task, Base.AsyncCondition})()
+   @ Base ./Base.jl:360
+ [8] _atexit(exitcode::Int32)
+   @ Base ./initdefs.jl:488
+┌ Warning: Failed to clean up temporary path "/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank-kin-hkinleftright-nn2/jl_f9ujFb"
+│ ErrorException("schedule: Task not runnable")
+└ @ Base.Filesystem file.jl:691
+schedule: Task not runnable
+Stacktrace:
+  [1] error(s::String)
+    @ Base ./error.jl:44
+  [2] schedule(t::Task, arg::Any; error::Bool)
+    @ Base ./task.jl:1079
+  [3] schedule
+    @ ./task.jl:1071 [inlined]
+  [4] uv_writecb_task(req::Ptr{Nothing}, status::Int32)
+    @ Base ./stream.jl:1215
+  [5] process_events
+    @ ./libuv.jl:133 [inlined]
+  [6] wait()
+    @ Base ./task.jl:1280
+  [7] uv_write_wait(uvw::Ptr{Nothing})
+    @ Base ./stream.jl:1087
+  [8] uv_write
+    @ ./stream.jl:1066 [inlined]
+  [9] unsafe_write(s::Base.PipeEndpoint, p::Ptr{UInt8}, n::UInt64)
+    @ Base ./stream.jl:1157
+ [10] write
+    @ ./strings/io.jl:239 [inlined]
+ [11] print
+    @ ./strings/io.jl:241 [inlined]
+ [12] join(io::Base.PipeEndpoint, iterator::Base.KeySet{String, Dict{String, Bool}}, delim::String)
+    @ Base ./strings/io.jl:345
+ [13] temp_cleanup_postprocess(cleanup_dirs::Base.KeySet{String, Dict{String, Bool}})
+    @ Base.Filesystem ./file.jl:741
+ [14] macro expansion
+    @ ./lock.jl:376 [inlined]
+ [15] temp_cleanup_atexit()
+    @ Base.Filesystem ./file.jl:749
+ [16] _atexit(exitcode::Int32)
+    @ Base ./initdefs.jl:488
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 611.1 s
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 114.1 s): 16 of 46 slots always, 423 gate values
+      From worker 4:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 114.2 s): 16 of 46 slots always, 423 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 114.3 s): 16 of 46 slots always, 423 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 2:	[ Info: ChainModel: joint tables for 1222 frequent items, 311639 pairs (141.7 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 1222 frequent items, 311639 pairs (143.2 s)
+      From worker 4:	[ Info: ChainModel: joint tables for 1222 frequent items, 311639 pairs (145.7 s)
+      From worker 4:	doc ESLSpok 2239 chars: 8289.6 s
+      From worker 4:	doc CHILDES 1314 chars: 1238.1 s
+      From worker 4:	doc EWT 471 chars: 1314.2 s
+      From worker 2:	
+      From worker 2:	[2911] signal 15: Terminated
+      From worker 2:	in expression starting at none:0
+      From worker 2:	unknown function (ip: 0xe02e2cfc5ae8) at /usr/lib/aarch64-linux-gnu/libc.so.6
+      From worker 2:	unknown function (ip: 0xe02e2cfb843f) at /usr/lib/aarch64-linux-gnu/libc.so.6
+      From worker 2:	unknown function (ip: 0xe02e2cfb88b3) at /usr/lib/aarch64-linux-gnu/libc.so.6
+      From worker 2:	pthread_cond_wait at /usr/lib/aarch64-linux-gnu/libc.so.6 (unknown line)
+      From worker 2:	uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+      From worker 2:	ijl_task_get_next at /cache/build/builder-armageddon-7/julialang/julia-ci/src/scheduler.c:614
+      From worker 2:	wait at ./task.jl:1297
+      From worker 2:	#wait#392 at ./condition.jl:141
+      From worker 2:	wait at ./condition.jl:136 [inlined]
+      From worker 2:	_trywait at ./asyncevent.jl:186
+      From worker 2:	profile_printing_listener at ./Base.jl:335
+      From worker 2:	#start_profile_listener##0 at ./Base.jl:355
+      From worker 2:	jfptr_YY.start_profile_listenerYY.YY.0_16723.3 at /home/ubuntu/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/lib/julia/sys.so (unknown line)
+      From worker 2:	jl_apply at /cache/build/builder-armageddon-7/julialang/julia-ci/src/julia.h:2319 [inlined]
+      From worker 2:	start_task at /cache/build/builder-armageddon-7/julialang/julia-ci/src/task.c:1287
+      From worker 2:	unknown function (ip: (nil)) at (unknown file)
+      From worker 2:	hasmarkedat at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:829 [inlined]
+      From worker 2:	#filterrecs##2 at ./none (unknown line) [inlined]
+      From worker 2:	iterate at ./iterators.jl:547
+      From worker 2:	iterate at ./generator.jl:45 [inlined]
+      From worker 2:	_collect at ./array.jl:680
+      From worker 2:	collect at ./array.jl:672 [inlined]
+      From worker 2:	filterrecs at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:840
+      From worker 2:	buildlist at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:0
+      From worker 2:	materialize! at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:1233
+      From worker 2:	#extend_all#603 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:1112
+      From worker 2:	extend_all at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:1088 [inlined]
+      From worker 2:	#879 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:2547
+      From worker 2:	get! at ./dict.jl:460
+      From worker 2:	build at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:2542 [inlined]
+      From worker 2:	build at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:2542
+      From worker 2:	unknown function (ip: 0xe02e0832b1ef) at (unknown file)
+      From worker 2:	step! at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:2676
+      From worker 2:	unknown function (ip: 0xe02e083457db) at (unknown file)
+      From worker 2:	#accum_leftovers#819 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:3088
+      From worker 2:	accum_leftovers at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:2496
+      From worker 2:	unknown function (ip: 0xe02e0830d183) at (unknown file)
+      From worker 2:	_greedy_leftovers at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:3522
+      From worker 2:	greedy_leftovers at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:2221
+      From worker 2:	#chain_logodds#777 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:2164
+      From worker 2:	chain_logodds at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:2157 [inlined]
+      From worker 2:	full! at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:3780
+      From worker 2:	#chain_scores_inner##22 at ./none (unknown line) [inlined]
+      From worker 2:	iterate at ./generator.jl:48 [inlined]
+      From worker 2:	collect_to! at ./array.jl:886
+      From worker 2:	collect_to_with_first! at ./array.jl:864
+      From worker 2:	unknown function (ip: 0xe02e0843b0fb) at (unknown file)
+      From worker 2:	collect at ./array.jl:838
+      From worker 2:	chain_scores_inner at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:3785
+      From worker 2:	unknown function (ip: 0xe02e07f3ceb7) at (unknown file)
+      From worker 2:	chain_scores at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:3718
+      From worker 2:	decide at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:3661
+      From worker 2:	decide at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/models.jl:187
+      From worker 2:	tracked_decide at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/engine.jl:195
+      From worker 2:	rescore! at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/engine.jl:209
+      From worker 2:	#solve!#34 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/engine.jl:224
+      From worker 2:	solve! at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/engine.jl:220 [inlined]
+      From worker 2:	#process#412 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/driver.jl:58
+      From worker 2:	process at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/driver.jl:49 [inlined]
+      From worker 2:	#evaluate_counts#415 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/driver.jl:106
+      From worker 2:	evaluate_counts at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/driver.jl:102
+      From worker 2:	unknown function (ip: 0xe02e07dd504b) at (unknown file)
+      From worker 2:	#main##3 at ./none (unknown line) [inlined]
+      From worker 2:	#main##3 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/dev_eval.jl:0
+      From worker 2:	#exec_from_cache#152 at /cache/build/builder-armageddon-7/julialang/julia-ci/usr/share/julia/stdlib/v1.13/Distributed/src/workerpool.jl:390
+      From worker 2:	exec_from_cache at /cache/build/builder-armageddon-7/julialang/julia-ci/usr/share/julia/stdlib/v1.13/Distributed/src/workerpool.jl:388
+      From worker 2:	unknown function (ip: 0xe02e07cd8137) at (unknown file)
+      From worker 2:	jl_apply at /cache/build/builder-armageddon-7/julialang/julia-ci/src/julia.h:2319 [inlined]
+      From worker 2:	jl_f_invokelatest at /cache/build/builder-armageddon-7/julialang/julia-ci/src/builtins.c:889
+      From worker 2:	jl_apply at /cache/build/builder-armageddon-7/julialang/julia-ci/src/julia.h:2319 [inlined]
+      From worker 2:	jl_f__apply_iterate at /cache/build/builder-armageddon-7/julialang/julia-ci/src/builtins.c:876
+      From worker 2:	#handle_msg##4 at /cache/build/builder-armageddon-7/julialang/julia-ci/usr/share/julia/stdlib/v1.13/Distributed/src/process_messages.jl:287
+      From worker 2:	run_work_thunk at /cache/build/builder-armageddon-7/julialang/julia-ci/usr/share/julia/stdlib/v1.13/Distributed/src/process_messages.jl:70
+      From worker 2:	#handle_msg##2 at /cache/build/builder-armageddon-7/julialang/julia-ci/usr/share/julia/stdlib/v1.13/Distributed/src/process_messages.jl:287
+      From worker 2:	unknown function (ip: 0xe02e07c6a3e7) at (unknown file)
+      From worker 2:	jl_apply at /cache/build/builder-armageddon-7/julialang/julia-ci/src/julia.h:2319 [inlined]
+      From worker 2:	start_task at /cache/build/builder-armageddon-7/julialang/julia-ci/src/task.c:1287
+      From worker 2:	unknown function (ip: (nil)) at (unknown file)
+      From worker 2:	Allocations: 20979038773 (Pool: 20979038266; Big: 507); GC: 4391
+      From worker 3:	
+      From worker 3:	[2914] signal 15: Terminated
+      From worker 3:	in expression starting at none:0
+      From worker 3:	unknown function (ip: 0xf472037d5ae8) at /usr/lib/aarch64-linux-gnu/libc.so.6
+      From worker 3:	unknown function (ip: 0xf472037c843f) at /usr/lib/aarch64-linux-gnu/libc.so.6
+      From worker 3:	unknown function (ip: 0xf472037c88b3) at /usr/lib/aarch64-linux-gnu/libc.so.6
+      From worker 3:	pthread_cond_wait at /usr/lib/aarch64-linux-gnu/libc.so.6 (unknown line)
+      From worker 3:	uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+      From worker 3:	ijl_task_get_next at /cache/build/builder-armageddon-7/julialang/julia-ci/src/scheduler.c:614
+      From worker 3:	wait at ./task.jl:1297
+      From worker 3:	#wait#392 at ./condition.jl:141
+      From worker 3:	wait at ./condition.jl:136 [inlined]
+      From worker 3:	_trywait at ./asyncevent.jl:186
+      From worker 3:	profile_printing_listener at ./Base.jl:335
+      From worker 3:	#start_profile_listener##0 at ./Base.jl:355
+      From worker 3:	jfptr_YY.start_profile_listenerYY.YY.0_16723.3 at /home/ubuntu/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/lib/julia/sys.so (unknown line)
+      From worker 3:	jl_apply at /cache/build/builder-armageddon-7/julialang/julia-ci/src/julia.h:2319 [inlined]
+      From worker 3:	start_task at /cache/build/builder-armageddon-7/julialang/julia-ci/src/task.c:1287
+      From worker 3:	unknown function (ip: (nil)) at (unknown file)
+      From worker 3:	checkbounds at ./essentials.jl:389 [inlined]
+      From worker 3:	getindex at ./essentials.jl:974 [inlined]
+      From worker 3:	intersect_sorted at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:773
+      From worker 3:	buildlist at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:856
+      From worker 3:	materialize! at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:1233
+      From worker 3:	#extend_all#603 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:1112
+      From worker 3:	extend_all at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:1088 [inlined]
+      From worker 3:	#879 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:2547
+      From worker 3:	get! at ./dict.jl:460
+      From worker 3:	build at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:2542 [inlined]
+      From worker 3:	build at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:2542
+      From worker 3:	unknown function (ip: 0xf471deb361ef) at (unknown file)
+      From worker 3:	step! at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:2676
+      From worker 3:	unknown function (ip: 0xf471deb547db) at (unknown file)
+      From worker 3:	#accum_leftovers#819 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:3088
+      From worker 3:	accum_leftovers at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:2496
+      From worker 3:	unknown function (ip: 0xf471deb1c183) at (unknown file)
+      From worker 3:	_greedy_leftovers at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:3522
+      From worker 3:	greedy_leftovers at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:2221
+      From worker 3:	#chain_logodds#777 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:2164
+      From worker 3:	chain_logodds at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:2157 [inlined]
+      From worker 3:	full! at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:3780
+      From worker 3:	#chain_scores_inner##22 at ./none (unknown line) [inlined]
+      From worker 3:	iterate at ./generator.jl:48 [inlined]
+      From worker 3:	collect_to! at ./array.jl:886
+      From worker 3:	collect_to_with_first! at ./array.jl:864
+      From worker 3:	unknown function (ip: 0xf471dec420fb) at (unknown file)
+      From worker 3:	collect at ./array.jl:838
+      From worker 3:	chain_scores_inner at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:3785
+      From worker 3:	unknown function (ip: 0xf471de9f4ef7) at (unknown file)
+      From worker 3:	chain_scores at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:3718
+      From worker 3:	decide at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/chain.jl:3661
+      From worker 3:	decide at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/models.jl:187
+      From worker 3:	tracked_decide at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/engine.jl:195
+      From worker 3:	rescore! at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/engine.jl:209
+      From worker 3:	#solve!#34 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/engine.jl:224
+      From worker 3:	solve! at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/engine.jl:220 [inlined]
+      From worker 3:	#process#412 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/driver.jl:58
+      From worker 3:	process at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/driver.jl:49 [inlined]
+      From worker 3:	#evaluate_counts#415 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/driver.jl:106
+      From worker 3:	evaluate_counts at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/src/driver.jl:102
+      From worker 3:	unknown function (ip: 0xf471de5d704b) at (unknown file)
+      From worker 3:	#main##3 at ./none (unknown line) [inlined]
+      From worker 3:	#main##3 at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/dev_eval.jl:0
+      From worker 3:	#exec_from_cache#152 at /cache/build/builder-armageddon-7/julialang/julia-ci/usr/share/julia/stdlib/v1.13/Distributed/src/workerpool.jl:390
+      From worker 3:	exec_from_cache at /cache/build/builder-armageddon-7/julialang/julia-ci/usr/share/julia/stdlib/v1.13/Distributed/src/workerpool.jl:388
+      From worker 3:	unknown function (ip: 0xf471de535137) at (unknown file)
+      From worker 3:	jl_apply at /cache/build/builder-armageddon-7/julialang/julia-ci/src/julia.h:2319 [inlined]
+      From worker 3:	jl_f_invokelatest at /cache/build/builder-armageddon-7/julialang/julia-ci/src/builtins.c:889
+      From worker 3:	jl_apply at /cache/build/builder-armageddon-7/julialang/julia-ci/src/julia.h:2319 [inlined]
+      From worker 3:	jl_f__apply_iterate at /cache/build/builder-armageddon-7/julialang/julia-ci/src/builtins.c:876
+      From worker 3:	#handle_msg##4 at /cache/build/builder-armageddon-7/julialang/julia-ci/usr/share/julia/stdlib/v1.13/Distributed/src/process_messages.jl:287
+      From worker 3:	run_work_thunk at /cache/build/builder-armageddon-7/julialang/julia-ci/usr/share/julia/stdlib/v1.13/Distributed/src/process_messages.jl:70
+      From worker 3:	#handle_msg##2 at /cache/build/builder-armageddon-7/julialang/julia-ci/usr/share/julia/stdlib/v1.13/Distributed/src/process_messages.jl:287
+      From worker 3:	unknown function (ip: 0xf471de4703e7) at (unknown file)
+      From worker 3:	jl_apply at /cache/build/builder-armageddon-7/julialang/julia-ci/src/julia.h:2319 [inlined]
+      From worker 3:	start_task at /cache/build/builder-armageddon-7/julialang/julia-ci/src/task.c:1287
+      From worker 3:	unknown function (ip: (nil)) at (unknown file)
+      From worker 3:	Allocations: 15692000866 (Pool: 15692000359; Big: 507); GC: 4413
+      From worker 4:	
+      From worker 4:	[2915] signal 15: Terminated
+      From worker 4:	in expression starting at none:0
+      From worker 4:	unknown function (ip: 0xfa6d31315ae8) at /usr/lib/aarch64-linux-gnu/libc.so.6
+      From worker 4:	unknown function (ip: 0xfa6d3130843f) at /usr/lib/aarch64-linux-gnu/libc.so.6
+      From worker 4:	unknown function (ip: 0xfa6d313088b3) at /usr/lib/aarch64-linux-gnu/libc.so.6
+      From worker 4:	pthread_cond_wait at /usr/lib/aarch64-linux-gnu/libc.so.6 (unknown line)
+      From worker 4:	uv_cond_wait at /workspace/srcdir/libuv/src/unix/thread.c:822
+      From worker 4:	ijl_task_get_next at /cache/build/builder-armageddon-7/julialang/julia-ci/src/scheduler.c:614
+      From worker 4:	wait at ./task.jl:1297
+      From worker 4:	#wait#392 at ./condition.jl:141
+      From worker 4:	wait at ./condition.jl:136 [inlined]
+      From worker 4:	_trywait at ./asyncevent.jl:186
+      From worker 4:	profile_printing_listener at ./Base.jl:335
+      From worker 4:	#start_profile_listener##0 at ./Base.jl:355
+      From worker 4:	jfptr_YY.start_profile_listenerYY.YY.0_16723.3 at /home/ubuntu/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/lib/julia/sys.so (unknown line)
+      From worker 4:	jl_apply at /cache/build/builder-armageddon-7/julialang/julia-ci/src/julia.h:2319 [inlined]
+      From worker 4:	start_task at /cache/build/builder-armageddon-7/julialang/julia-ci/src/task.c:1287
+      From worker 4:	unknown function (ip: (nil)) at (unknown file)
+      From worker 4:	unknown function (ip: 0xfa6d31315aec) at /usr/lib/aarch64-linux-gnu/libc.so.6
+      From worker 4:	unknown function (ip: 0xfa6d3130843f) at /usr/lib/aarch64-linux-gnu/libc.so.6
+      From worker 4:	unknown function (ip: 0xfa6d3130848f) at /usr/lib/aarch64-linux-gnu/libc.so.6
+      From worker 4:	epoll_pwait at /usr/lib/aarch64-linux-gnu/libc.so.6 (unknown line)
+      From worker 4:	uv__io_poll at /workspace/srcdir/libuv/src/unix/linux.c:1404
+      From worker 4:	uv_run at /workspace/srcdir/libuv/src/unix/core.c:430
+      From worker 4:	ijl_task_get_next at /cache/build/builder-armageddon-7/julialang/julia-ci/src/scheduler.c:533
+      From worker 4:	wait at ./task.jl:1297
+      From worker 4:	wait_forever at ./task.jl:1196
+      From worker 4:	jfptr_wait_forever_64498.3 at /home/ubuntu/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/lib/julia/sys.so (unknown line)
+      From worker 4:	jl_apply at /cache/build/builder-armageddon-7/julialang/julia-ci/src/julia.h:2319 [inlined]
+      From worker 4:	start_task at /cache/build/builder-armageddon-7/julialang/julia-ci/src/task.c:1287
+      From worker 4:	unknown function (ip: (nil)) at (unknown file)
+      From worker 4:	Allocations: 22286381948 (Pool: 22286381441; Big: 507); GC: 3291

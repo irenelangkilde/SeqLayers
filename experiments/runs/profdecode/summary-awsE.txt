@@ -1,0 +1,25 @@
+=== start Tue Nov  3 05:05:21 UTC 2026
+=== base
+profdecode: decision	calls	not ready	seconds	ms per call
+profdecode: token.attach	804606	0	11765.9	14.623
+profdecode: token.xpos	25793	0	116.8	4.528
+profdecode: token.deprel	8900	3081	67.5	7.589
+profdecode: char.gap	156357	251	59.8	0.382
+profdecode: token.upos	23454	0	43.4	1.851
+profdecode: token.basepos	16990	0	14.2	0.837
+profdecode: token.number	15321	0	10.3	0.673
+profdecode: token.person	14178	0	8.1	0.568
+profdecode: token.tense	10991	0	6.1	0.559
+profdecode: token.head_upos	3081	3081	0.0	0.011
+profdecode: token.head_xpos	3081	3081	0.0	0.009
+profdecode: token.head_dist	3081	3081	0.0	0.008
+profdecode: token.head_trank	3081	3081	0.0	0.002
+profdecode: token.head_dir	3081	3081	0.0	0.002
+CHILDES     324     1.0     0.7809  0.6821  0.9804  
+ESLSpok     502     0.997   0.7285  0.6866  0.9796  
+EWT         86      0.9655  0.7262  0.631   0.8889  
+GUM         963     0.9845  0.7014  0.6509  0.9388  
+GUMReddit   1024    0.9917  0.6389  0.5604  0.8868  
+ALL         2899    0.9904  0.6936  0.628   0.9451  
+build 17.1 s, decode 6062.7 s, run 20261103-064932 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== stopped after 4 h Tue Nov  3 09:21:29 UTC 2026
