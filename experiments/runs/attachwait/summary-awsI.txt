@@ -1,0 +1,32 @@
+=== start Tue Nov  3 19:59:18 UTC 2026
+=== rescoreevery=4
+doc EWT 471 chars: 129.8 s
+doc CHILDES 1314 chars: 180.2 s
+rescorestats: cmemo_hit	53349
+rescorestats: cmemo_miss	319374
+profdecode: token.attach	13259	666	235.8	17.784
+profdecode: char.gap	8794	25	36.6	4.166
+CHILDES     324     1.0     0.7747  0.6605  0.9804  
+EWT         86      0.9655  0.7143  0.631   0.8889  
+ALL         410     0.9927  0.7623  0.6544  0.973   
+=== rescoreevery=1
+doc EWT 471 chars: 143.4 s
+doc CHILDES 1314 chars: 194.2 s
+rescorestats: cmemo_hit	114527
+rescorestats: cmemo_miss	361877
+profdecode: token.attach	21031	711	259.4	12.335
+profdecode: char.gap	18057	25	37.3	2.065
+CHILDES     324     1.0     0.7747  0.6605  0.9804  
+EWT         86      0.9655  0.7143  0.631   0.8889  
+ALL         410     0.9927  0.7623  0.6544  0.973   
+=== rescoreevery=16
+doc EWT 471 chars: 120.5 s
+doc CHILDES 1314 chars: 170.5 s
+rescorestats: cmemo_hit	20425
+rescorestats: cmemo_miss	296606
+profdecode: token.attach	6066	645	218.7	36.057
+profdecode: char.gap	4246	25	36.9	8.701
+CHILDES     324     1.0     0.7747  0.6636  0.9804  
+EWT         86      0.9655  0.7262  0.6429  0.8889  
+ALL         410     0.9927  0.7647  0.6593  0.973   
+=== all done Tue Nov  3 20:05:54 UTC 2026

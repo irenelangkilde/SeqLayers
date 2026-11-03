@@ -1,0 +1,106 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 55 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/events
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 54.6 s): 14 of 32 slots always, 280 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 54.7 s): 14 of 32 slots always, 280 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+      From worker 2:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (56.4 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (57.4 s)
+      From worker 3:	doc EWT 471 chars: 120.5 s
+      From worker 2:	doc CHILDES 1314 chars: 170.5 s
+rescorestats: decision	changed row	rescores
+rescorestats: token.attach	token.attach	3969
+rescorestats: char.gap	token.ncols	2390
+rescorestats: char.gap	fresh	1500
+rescorestats: token.attach	token.upos	1253
+rescorestats: token.attach	token.ncols	1087
+rescorestats: token.attach	token.xpos	1076
+rescorestats: token.attach	token.basepos	641
+rescorestats: token.attach	token.number	600
+rescorestats: token.attach	token.person	585
+rescorestats: token.xpos	token.upos	573
+rescorestats: token.upos	token.xpos	436
+rescorestats: token.attach	char.gap	436
+rescorestats: token.attach	token.tense	434
+rescorestats: token.deprel	token.attach	420
+rescorestats: token.upos	fresh	420
+rescorestats: token.person	fresh	420
+rescorestats: token.number	fresh	420
+rescorestats: token.head_dir	fresh	420
+rescorestats: token.basepos	fresh	420
+rescorestats: token.attach	fresh	420
+rescorestats: token.deprel	fresh	420
+rescorestats: token.head_xpos	fresh	420
+rescorestats: token.head_dist	fresh	420
+rescorestats: token.xpos	fresh	420
+rescorestats: token.tense	fresh	420
+rescorestats: token.head_upos	fresh	420
+rescorestats: token.head_trank	fresh	420
+rescorestats: token.attach	token.sentence	416
+rescorestats: token.xpos	token.tense	373
+rescorestats: token.xpos	token.xpos	361
+rescorestats: token.xpos	token.person	359
+rescorestats: token.upos	token.upos	349
+rescorestats: token.upos	token.tense	338
+rescorestats: token.xpos	token.number	321
+rescorestats: token.number	token.upos	320
+rescorestats: token.upos	token.person	318
+rescorestats: token.basepos	token.upos	315
+rescorestats: token.xpos	token.basepos	309
+rescorestats: token.basepos	token.xpos	293
+rescorestats: token.upos	token.number	283
+rescorestats: cmemo_hit	20425
+rescorestats: cmemo_miss	296606
+rescorestats: memo_hit_attach	2670
+rescorestats: memo_hit_basepos	90
+rescorestats: memo_hit_deprel	12
+rescorestats: memo_hit_gap	3137
+rescorestats: memo_hit_head_dir	4658
+rescorestats: memo_hit_head_dist	4658
+rescorestats: memo_hit_head_trank	4658
+rescorestats: memo_hit_head_upos	4658
+rescorestats: memo_hit_head_xpos	4658
+rescorestats: memo_hit_number	86
+rescorestats: memo_hit_person	84
+rescorestats: memo_hit_tense	68
+rescorestats: memo_hit_upos	111
+rescorestats: memo_hit_xpos	111
+rescorestats: memo_miss_attach	2751
+rescorestats: memo_miss_basepos	1850
+rescorestats: memo_miss_deprel	448
+rescorestats: memo_miss_gap	1084
+rescorestats: memo_miss_head_dir	763
+rescorestats: memo_miss_head_dist	763
+rescorestats: memo_miss_head_trank	763
+rescorestats: memo_miss_head_upos	763
+rescorestats: memo_miss_head_xpos	763
+rescorestats: memo_miss_number	1630
+rescorestats: memo_miss_person	1532
+rescorestats: memo_miss_tense	1372
+rescorestats: memo_miss_upos	2339
+rescorestats: memo_miss_xpos	2522
+profdecode: decision	calls	not ready	seconds	ms per call
+profdecode: token.attach	6066	645	218.7	36.057
+profdecode: char.gap	4246	25	36.9	8.701
+profdecode: token.xpos	2633	0	9.7	3.666
+profdecode: token.deprel	880	420	6.4	7.327
+profdecode: token.upos	2450	0	3.8	1.55
+profdecode: token.basepos	1940	0	1.2	0.635
+profdecode: token.number	1716	0	0.9	0.522
+profdecode: token.person	1616	0	0.9	0.527
+profdecode: token.tense	1440	0	0.7	0.487
+profdecode: token.head_upos	420	420	0.0	0.058
+profdecode: token.head_dist	420	420	0.0	0.048
+profdecode: token.head_xpos	420	420	0.0	0.011
+profdecode: token.head_trank	420	420	0.0	0.001
+profdecode: token.head_dir	420	420	0.0	0.001
+count cache: 4241 new feature sets, 2478822 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/events
+treebank    words   token_f1  uas     las     sent_f1
+CHILDES     324     1.0     0.7747  0.6636  0.9804  
+ESLSpok     0       0.0     0.0     0.0     0.0     
+EWT         86      0.9655  0.7262  0.6429  0.8889  
+GUM         0       0.0     0.0     0.0     0.0     
+GUMReddit   0       0.0     0.0     0.0     0.0     
+ALL         410     0.9927  0.7647  0.6593  0.973   
+build 18.1 s, decode 184.5 s, run 20261103-200553 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
