@@ -1,0 +1,46 @@
+=== start Tue Nov  3 00:11:06 UTC 2026
+=== accumpick=signed
+recorded events in 598.7 s
+ALL         2899    0.9983  0.8772  0.821   0.0162  1.0     
+score 476.3 s, run 20261103-003457 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== forkcap=16 forkcomb=max forkleft=chosen accumpick=abs
+UNHANDLED TASK ERROR: EOFError: read end of file
+UNHANDLED TASK ERROR: IOError: read: connection reset by peer (ECONNRESET)
+UNHANDLED TASK ERROR: IOError: read: connection reset by peer (ECONNRESET)
+ERROR: LoadError: ProcessExitedException(2)
+=== forkcap=16 forkcomb=max forkleft=each accumpick=abs
+ALL         2899    0.9983  0.8817  0.8179  0.0162  1.0     
+forkcap: 927262 forks; 3.09 chains per candidate
+score 2633.2 s, run 20261103-012440 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== forkcap=16 forkcomb=avg forkleft=each accumpick=abs
+UNHANDLED TASK ERROR: EOFError: read end of file
+ALL         2899    0.9988  0.8834  0.8337  0.0162  1.0     
+forkcap: 927262 forks; 3.09 chains per candidate
+score 2636.2 s, run 20261103-012530 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== forkcap=16 forkcomb=max forkleft=chosen accumpick=signed
+UNHANDLED TASK ERROR: EOFError: read end of file
+UNHANDLED TASK ERROR: IOError: read: connection reset by peer (ECONNRESET)
+UNHANDLED TASK ERROR: IOError: read: connection reset by peer (ECONNRESET)
+ERROR: LoadError: ProcessExitedException(2)
+=== forkcap=16 forkcomb=avg forkleft=each accumpick=signed
+ALL         2899    0.9988  0.8789  0.8241  0.0162  1.0     
+forkcap: 927262 forks; 3.09 chains per candidate
+score 1817.4 s, run 20261103-020222 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== forkcap=16 forkcomb=max forkleft=each accumpick=signed
+ALL         2899    0.9987  0.8679  0.7613  0.0162  1.0     
+forkcap: 927262 forks; 3.09 chains per candidate
+score 1833.0 s, run 20261103-020225 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== idxeq=true bioes=true
+recorded events in 1051.8 s
+ALL         2899    0.9977  0.881   0.8251  0.0162  1.0     
+score 538.6 s, run 20261103-023647 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Tue Nov  3 02:36:48 UTC 2026
+=== (rerun) forkcap=16 forkcomb=max forkleft=chosen accumpick=abs
+ALL         2899    0.9985  0.8793  0.8182  0.0162  1.0     
+forkcap: 927262 forks; 3.09 chains per candidate
+score 798.7 s, run 20261103-025646 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== (rerun) forkcap=16 forkcomb=max forkleft=chosen accumpick=signed
+ALL         2899    0.9984  0.8634  0.7499  0.0162  1.0     
+forkcap: 927262 forks; 3.09 chains per candidate
+score 738.2 s, run 20261103-031422 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== reruns done Tue Nov  3 03:14:24 UTC 2026

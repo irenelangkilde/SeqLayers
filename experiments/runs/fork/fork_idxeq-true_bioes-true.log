@@ -1,0 +1,131 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 1051.8 s
+      From worker 15:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 161.2 s): 18 of 55 slots always, 467 gate values
+      From worker 15:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 161.3 s): 18 of 55 slots always, 467 gate values
+      From worker 4:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 10:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 161.4 s): 18 of 55 slots always, 467 gate values
+      From worker 10:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 9:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 161.3 s): 18 of 55 slots always, 467 gate values
+      From worker 9:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 8:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 161.7 s): 18 of 55 slots always, 467 gate values
+      From worker 8:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 7:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 162.2 s): 18 of 55 slots always, 467 gate values
+      From worker 7:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 12:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 162.1 s): 18 of 55 slots always, 467 gate values
+      From worker 12:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 162.5 s): 18 of 55 slots always, 467 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 14:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 162.4 s): 18 of 55 slots always, 467 gate values
+      From worker 14:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 162.8 s): 18 of 55 slots always, 467 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 6:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 163.0 s): 18 of 55 slots always, 467 gate values
+      From worker 13:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 162.6 s): 18 of 55 slots always, 467 gate values
+      From worker 13:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 6:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 5:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 163.3 s): 18 of 55 slots always, 467 gate values
+      From worker 5:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 11:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 166.6 s): 18 of 55 slots always, 467 gate values
+      From worker 11:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 15:	[ Info: ChainModel: joint tables for 1262 frequent items, 343718 pairs (236.0 s)
+      From worker 4:	[ Info: ChainModel: joint tables for 1262 frequent items, 343718 pairs (236.1 s)
+      From worker 8:	[ Info: ChainModel: joint tables for 1262 frequent items, 343718 pairs (236.9 s)
+      From worker 10:	[ Info: ChainModel: joint tables for 1262 frequent items, 343718 pairs (238.5 s)
+      From worker 11:	[ Info: ChainModel: joint tables for 1262 frequent items, 343718 pairs (234.6 s)
+      From worker 9:	[ Info: ChainModel: joint tables for 1262 frequent items, 343718 pairs (241.5 s)
+      From worker 2:	[ Info: ChainModel: joint tables for 1262 frequent items, 343718 pairs (241.4 s)
+      From worker 7:	[ Info: ChainModel: joint tables for 1262 frequent items, 343718 pairs (243.0 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 1262 frequent items, 343718 pairs (242.6 s)
+      From worker 14:	[ Info: ChainModel: joint tables for 1262 frequent items, 343718 pairs (243.1 s)
+      From worker 12:	[ Info: ChainModel: joint tables for 1262 frequent items, 343718 pairs (245.6 s)
+      From worker 13:	[ Info: ChainModel: joint tables for 1262 frequent items, 343718 pairs (245.5 s)
+      From worker 6:	[ Info: ChainModel: joint tables for 1262 frequent items, 343718 pairs (247.2 s)
+      From worker 5:	[ Info: ChainModel: joint tables for 1262 frequent items, 343718 pairs (247.0 s)
+count cache: 193519 new feature sets, 193519 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank-idxeq-kin-hkinleftright-nn2-bioes/events
+treebank    words   gap_acc uas     las     head_lost coverage
+CHILDES     324     1.0     0.9167  0.8364  0.0093  1.0     
+ESLSpok     502     0.9983  0.9084  0.8665  0.004   1.0     
+EWT         86      0.9924  0.9419  0.8605  0.0     1.0     
+GUM         963     0.9973  0.8442  0.7975  0.0322  1.0     
+GUMReddit   1024    0.9977  0.8857  0.8242  0.0107  1.0     
+ALL         2899    0.9977  0.881   0.8251  0.0162  1.0     
+domains: attachment candidates 8191 -> 8191 after propagation (1.0)
+double counting: 346131 leftovers taken, 0.713 with |Q| >= 0.5 to a counted feature outside the context; |corr|-weighted max |Q| 0.689; mean |corr| 0.845
+
+dist          n       share   uas     las
+R1            842     0.29    0.979   0.96
+R2            417     0.144   0.966   0.935
+L3-5          310     0.107   0.774   0.655
+R3-5          309     0.107   0.88    0.819
+L1            265     0.091   0.951   0.864
+L6+           261     0.09    0.46    0.383
+L2            236     0.081   0.877   0.767
+root          179     0.062   1.0     1.0
+R6+           80      0.028   0.712   0.612
+
+deprel        n       share   uas     las
+punct         478     0.165   0.791   0.791
+case          258     0.089   0.961   0.946
+nsubj         252     0.087   0.98    0.909
+det           181     0.062   0.994   0.994
+root          179     0.062   1.0     1.0
+advmod        178     0.061   0.916   0.871
+obl           145     0.05    0.738   0.593
+nmod          136     0.047   0.816   0.765
+obj           132     0.046   0.939   0.826
+amod          121     0.042   0.95    0.909
+conj          115     0.04    0.565   0.47
+cc            103     0.036   0.883   0.864
+aux           97      0.033   1.0     1.0
+mark          91      0.031   0.956   0.956
+compound      80      0.028   0.95    0.812
+cop           49      0.017   0.98    0.898
+parataxis     44      0.015   0.5     0.364
+advcl         41      0.014   0.659   0.415
+acl           41      0.014   0.707   0.683
+xcomp         35      0.012   0.943   0.8
+nummod        33      0.011   0.909   0.697
+ccomp         26      0.009   0.923   0.769
+discourse     18      0.006   0.889   0.778
+flat          14      0.005   0.857   0.786
+expl          11      0.004   1.0     0.818
+iobj          11      0.004   0.909   0.273
+fixed         8       0.003   0.875   0.875
+appos         6       0.002   0.667   0.667
+vocative      4       0.001   1.0     0.0
+reparandum    3       0.001   0.667   0.0
+csubj         3       0.001   1.0     0.333
+dep           2       0.001   1.0     0.5
+orphan        2       0.001   0.5     0.0
+goeswith      1       0.0     0.0     0.0
+dislocated    1       0.0     1.0     0.0
+
+depfreq       n       share   uas     las
+50+           1616    0.557   0.903   0.884
+5-49          711     0.245   0.864   0.785
+1-4           354     0.122   0.811   0.701
+0             218     0.075   0.885   0.725
+
+headfreq      n       share   uas     las
+5-49          1170    0.404   0.885   0.844
+1-4           841     0.29    0.857   0.784
+0             435     0.15    0.887   0.825
+50+           274     0.095   0.85    0.759
+root          179     0.062   1.0     1.0
+
+err           n       share   
+too_near      198     0.574   
+wrong_side    79      0.229   
+too_far       68      0.197   
+
+tag           n       share   acc
+head_xpos     2899    0.143   0.6202
+head_upos     2899    0.143   0.7782
+head_trank    2899    0.143   0.7627
+head_dir      2899    0.143   0.9013
+head_dist     2899    0.143   0.763
+head_kinleft  2899    0.143   0.7606
+head_kinright 2899    0.143   0.7927
+score 538.6 s, run 20261103-023647 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
