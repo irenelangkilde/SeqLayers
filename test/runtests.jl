@@ -898,6 +898,35 @@ end
     @test length(alive) == count(h -> SeqLayers.head_value(sd, t_, h, :head_dir) == L, cs)
     c1, n1 = SeqLayers.domain_choice(sd, t_, cs, fill(1 / length(cs), length(cs)), props; mode = :product)
     @test SeqLayers.head_value(sd, t_, c1, :head_dir) == L && n1 == length(alive)
+    # prodnorm (2026-11-04): dividing by the values' priors can flip the product toward a value the context raises
+    if any(h -> SeqLayers.head_value(sd, t_, h, :head_dir) == R, cs)
+      props2 = Dict(:head_dir => (UInt32[L, R, Rt], [0.6, 0.39, 0.01]))
+      pri = Dict(:head_dir => [0.95, 0.04, 0.01])
+      u = fill(1 / length(cs), length(cs))
+      @test SeqLayers.head_value(sd, t_, first(SeqLayers.domain_choice(sd, t_, cs, u, props2; eps = 0.0)), :head_dir) == L
+      SeqLayers.PROD_NORM[] = :prior
+      try
+        @test SeqLayers.head_value(sd, t_, first(SeqLayers.domain_choice(sd, t_, cs, u, props2; eps = 0.0, priors = pri)), :head_dir) == R
+        SeqLayers.PROD_NORM[] = :attach
+        c3, _ = SeqLayers.domain_choice(sd, t_, cs, u, props2; eps = 0.0)
+        @test c3 in cs
+      finally
+        SeqLayers.PROD_NORM[] = :off
+      end
+    end
+    # shapeitems = false: no distance, direction (but the root's) or kinship items in the attachment's
+    let sp = default_specs(rootabsent = true, kinitems = true, shapeitems = false), spk = default_specs(rootabsent = true, kinitems = true)
+      s2 = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, sp, lex)
+      solve!(s2, OracleModel())
+      d2 = SeqLayers.decisiondef(s2, (:token, 1, 2))
+      dk = spk[findfirst(l -> l.name == :token, spk)].decisions[1]
+      for c in UInt32[NONE; 1]
+        I2, Ik = d2.items(s2, 2, c), dk.items(s2, 2, c)
+        @test length(I2) == length(Ik) && I2[1] == SeqLayers.ABSENT && (I2[2] == SeqLayers.ABSENT) == (c != NONE)
+        @test I2[3:end-2] == Ik[3:end-2] && all(==(SeqLayers.ABSENT), I2[end-1:end])
+      end
+      default_specs()
+    end
     st0 = SeqLayers.State(only(docs), 1:length(only(docs).text), true, 0, specs, lex)
     st1 = SeqLayers.copy_state(st0)
     solve!(st1, mg)

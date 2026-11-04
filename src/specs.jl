@@ -932,6 +932,13 @@ const GAP_TAG = hash("char.gap")
 attach_dist(st, t, c) =
   c == NONE ? 0 : distbucket(Int(st.layers[:token][:first_char, c]) - Int(st.layers[:token][:first_char, t]))
 
+"""
+Without shape items (default_specs(shapeitems = false); user 2026-11-04): the attachment chain sees no item that only
+describes the hypothesized tree's shape -- distance and direction absent (direction kept for the root candidate, which
+rootabsent otherwise leaves unmarked), kinship items absent -- so the head-property terms of the product carry the shape.
+"""
+noshape!(items, c) = (items[1] = ABSENT; c == NONE || (items[2] = ABSENT); items)
+
 attach_features(st, t, c, paths = LINK_PATHS) = link_features(st, :token, ATTACH_TAG, t, c, attach_dist(st, t, c), paths)
 attach_items(st, t, c, paths = LINK_PATHS; rootabsent = false) =
   link_items(st, :token, ATTACH_TAG, t, c, attach_dist(st, t, c), paths; rootabsent)
@@ -1502,7 +1509,8 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
   relations::Bool = false, headsdist::Bool = false, pptable = nothing, pprel::Bool = false,
   relbounded::Bool = false, relnone::Bool = false, treerank::Bool = false, headtrank::Bool = false,
   headwc::Vector{Int} = Int[], headwcclasses = nothing, headsibs::Vector{Symbol} = Symbol[], idxeq::Bool = false,
-  kinitems::Bool = false, headkin::Vector{Symbol} = Symbol[], neighbor2::Bool = false, oclass::Bool = false, bioes::Bool = false, fwdsets::Bool = false)
+  kinitems::Bool = false, headkin::Vector{Symbol} = Symbol[], neighbor2::Bool = false, oclass::Bool = false, bioes::Bool = false, fwdsets::Bool = false,
+  shapeitems::Bool = true)
   PROJECTIVE[] = projective
   all(n -> haskey(HEADKIN_DIR, n), headkin) || error("headkin: names are $(join(keys(HEADKIN_DIR), ", "))")
   all(n -> haskey(HEADSIB_KIND, n), headsibs) || error("headsibs: names are $(join(keys(HEADSIB_KIND), ", "))")
@@ -1581,11 +1589,11 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
         candidates = (st, t) -> attach_candidates(st, t; projective),
         ready = (st, t) -> !ATTACH_WAIT[] || attach_context_ready(st, t),
         features = (st, t, c) -> attach_features(st, t, c, linkpaths),
-        items = (st, t, c) -> vcat(attach_items(st, t, c, linkpaths; rootabsent),
+        items = (st, t, c) -> vcat(shapeitems ? attach_items(st, t, c, linkpaths; rootabsent) : noshape!(attach_items(st, t, c, linkpaths; rootabsent), c),
           relations ? hypothetical_sibling_items(st, t, c, relf) : UInt64[],
           treerank ? (v = trank_code(tree_rank(st, t, c)); UInt64[item(v, (TRANK_TAG, v))]) : UInt64[],
           idxeq ? idxeq_items(st, t, c) : UInt64[],
-          kinitems ? kin_items(st, t, c) : UInt64[],
+          kinitems ? (shapeitems ? kin_items(st, t, c) : UInt64[ABSENT, ABSENT]) : UInt64[],
           bioes ? bioes_items(st, t, c) : UInt64[],
           fwdsets ? fwd_set_items(st, t, c; kin = kinitems, bioes, idxeq) : UInt64[],
           pptable === nothing ? UInt64[] :

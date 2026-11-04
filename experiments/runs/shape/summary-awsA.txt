@@ -1,0 +1,19 @@
+=== start Wed Nov  4 23:15:31 UTC 2026
+=== noshape
+recorded events in 616.6 s
+ALL         2899    0.9977  0.8703  0.8161  0.0162  1.0     
+score 410.3 s, run 20261104-233819 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== base
+recorded events in 620.8 s
+ALL         2899    0.9977  0.8782  0.823   0.0162  1.0     
+score 513.3 s, run 20261104-234024 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== prodprops
+ALL         2899    0.9977  0.8675  0.8134  0.0162  1.0     
+score 346.3 s, run 20261104-235155 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== prior
+ALL         2899    0.9977  0.8838  0.8296  0.0162  1.0     
+score 337.8 s, run 20261104-235230 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== attach
+ALL         2899    0.9977  0.3598  0.3443  0.0162  1.0     
+score 329.7 s, run 20261104-235259 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Wed Nov  4 23:53:01 UTC 2026

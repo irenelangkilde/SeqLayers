@@ -38,15 +38,28 @@ end
 const PROD_BETA = Ref(1.0)
 "Product scoring: the head properties whose terms enter the product (nothing: all); the others still narrow domains."
 const PROD_PROPS = Ref{Union{Nothing,Set{Symbol}}}(nothing)
+"""
+Product scoring (user 2026-11-04): what each head property's term is divided by, so it counts only what the attachment
+doesn't already know -- :off (the plain product), :prior (the value's training prior: the property's term becomes how
+much t's context moves that value's odds) or :attach (the probability the attachment itself gives the value: the sum of
+P(attach) over the surviving candidates implying it).  Both renormalized over the property's surviving domain.
+"""
+const PROD_NORM = Ref(:off)
 
 """
 The attachment of t chosen over its domain: `mode` :prune (its own probabilities) or :product
 (times each head property's renormalized probability of the candidate's value, raised to PROD_BETA,
-over the properties in PROD_PROPS).  Returns (choice, number of surviving candidates).
+over the properties in PROD_PROPS, each divided as PROD_NORM says; `priors`: name => the values' training priors, as
+`props` orders them).  Returns (choice, number of surviving candidates).
 """
-function domain_choice(st, t, cands, pa, props; eps = 1e-3, mode = :product)
+function domain_choice(st, t, cands, pa, props; eps = 1e-3, mode = :product, priors = nothing)
   alive, D = propagate_domains(st, t, cands, pa, props; eps)
   mode == :prune && return cands[alive[argmax(pa[alive])]], length(alive)
+  # (prodnorm :attach) per property, the attachment's own probability of each value, over the surviving candidates
+  za = sum(pa[j] for j in alive)
+  qa = PROD_NORM[] == :attach ? Dict(name => (q = Dict{UInt32,Float64}();
+    for j in alive; v = head_value(st, t, cands[j], name); v == PENDING || (q[v] = get(q, v, 0.0) + pa[j] / za); end; q)
+    for name in keys(props)) : nothing
   score = Float64[]
   for j in alive
     s = log(pa[j])
@@ -56,7 +69,15 @@ function domain_choice(st, t, cands, pa, props; eps = 1e-3, mode = :product)
       v == PENDING && continue
       z = sum(p for (u, p) in zip(vals, ps) if u in D[name]; init = 0.0)
       k = findfirst(==(v), vals)
-      s += PROD_BETA[] * (k === nothing || z <= 0 ? log(1e-12) : log(max(ps[k], 1e-12) / z))
+      term = k === nothing || z <= 0 ? log(1e-12) : log(max(ps[k], 1e-12) / z)
+      if PROD_NORM[] == :prior && priors !== nothing && haskey(priors, name) && k !== nothing
+        pr = priors[name]
+        zp = sum(p for (u, p) in zip(vals, pr) if u in D[name]; init = 0.0)
+        term -= log(max(pr[k], 1e-12) / max(zp, 1e-12))
+      elseif PROD_NORM[] == :attach
+        term -= log(max(qa[name][v], 1e-12))
+      end
+      s += PROD_BETA[] * term
     end
     push!(score, s)
   end

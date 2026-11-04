@@ -20,6 +20,8 @@
 #              domeps: the probability below which a value leaves its domain (default 1e-3)
 #   prodbeta   domains=product: each head-property term raised to this power (default 1)
 #   prodprops  domains=product: only these head properties' terms enter the product (e.g. head_xpos,head_dist;
+#   prodnorm   domains=product: each head property's term divided by the value's training prior (prior) or by the
+#              probability the attachment itself gives that value (attach); off: the plain product
 #              "" = all); the others still narrow the domains
 #   dcstats    true: count possible double counting in accum and greedy leftovers -- per leftover taken, the largest |Yule's Q|
 #              to a counted feature (chain, earlier leftovers) outside its context; prints the share with |Q| >= 0.5
@@ -85,7 +87,8 @@ function ceiling_main(cfg)
   Distributed.remotecall_eval(Main, workers(), :(FORMFREQ[] = $freq))
   pp = isempty(cfg["prodprops"]) ? nothing : Set(Symbol.(split(cfg["prodprops"], ',')))
   pp === nothing || all(n -> haskey(SeqLayers.ALLHEADSETS, n), pp) || error("prodprops: names are $(join(keys(SeqLayers.ALLHEADSETS), ", "))")
-  Distributed.remotecall_eval(Main, workers(), :(SeqLayers.PROD_BETA[] = $(cfg["prodbeta"]); SeqLayers.PROD_PROPS[] = $pp))
+  Distributed.remotecall_eval(Main, workers(), :(SeqLayers.PROD_BETA[] = $(cfg["prodbeta"]); SeqLayers.PROD_PROPS[] = $pp;
+    SeqLayers.PROD_NORM[] = $(QuoteNode(Symbol(cfg["prodnorm"])))))
   cfg["dcstats"] == "true" && Distributed.remotecall_eval(Main, workers(), :(SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()))
   t1 = time()
   order = sortperm(devdocs; by = p -> length(p[2].text), rev = true)
@@ -195,6 +198,7 @@ DEFAULTS["domeps"] = 1e-3
 DEFAULTS["prodbeta"] = 1.0
 DEFAULTS["dcstats"] = "false"
 DEFAULTS["prodprops"] = ""
+DEFAULTS["prodnorm"] = "off"
 DEFAULTS["on"] = "dev"
 DEFAULTS["calibrate"] = "false"
 

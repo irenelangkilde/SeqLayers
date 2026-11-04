@@ -757,6 +757,9 @@ function screen_items!(m::ChainModel, members)
 end
 
 priorodds(m::ChainModel, pk::UInt64) = (p = get(m.prior, pk, (0.0, 0.0)); (p[1] + 0.5) / (p[2] + 0.5))
+"A token decision's (k) training prior over `vals` (prodnorm :prior): each value's prior odds, normalized."
+value_priors(m::ChainModel, k, vals) = (o = [priorodds(m, lpriorkey(typekey(:token, k), v)) for v in vals]; o ./ sum(o))
+value_priors(m, k, vals) = fill(1 / length(vals), length(vals))
 waitscore(m::ChainModel, st::State, key::AgendaKey) = log(priorodds(m, lpriorkey(typekey(key[1], key[2]), UInt32(0))))
 
 "Intersection of two sorted lists (binary-search the longer one when sizes are very different)."

@@ -207,7 +207,9 @@ function domains_attach!(r::CeilingRecorder, st, t, gold::UInt32, hk, old, names
     dist === nothing && return first(rdecide(r, st, (:token, 1, t), gold)), gold in cands
     acands, alps = dist
     alive, D = SeqLayers.propagate_domains(st, t, acands, exp.(alps), props; eps = r.domeps)
-    choice, nalive = SeqLayers.domain_choice(st, t, acands, exp.(alps), props; eps = r.domeps, mode = r.domains)
+    priors = SeqLayers.PROD_NORM[] == :prior ?      # (prodnorm=prior) each head property's training prior over its values
+      Dict(decs[k].name => SeqLayers.value_priors(r.model, k, props[decs[k].name][1]) for k in hk if haskey(props, decs[k].name)) : nothing
+    choice, nalive = SeqLayers.domain_choice(st, t, acands, exp.(alps), props; eps = r.domeps, mode = r.domains, priors)
     nalive == 1 && (r.c[:inferred] += 1; r.c[:inferred_ok] += choice == gold)
     r.c[:dom_cands] = get(r.c, :dom_cands, 0) + length(acands)
     r.c[:dom_alive] = get(r.c, :dom_alive, 0) + nalive

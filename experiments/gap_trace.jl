@@ -28,7 +28,7 @@ specs = default_specs(charindex = widx, wordclasses = s.wc, suffixes = s.sfx, no
   relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true", treerank = cfg["treerank"] == "true",
   headtrank = cfg["headtrank"] == "true", headwc = Int[], headsibs = headsib_names(cfg), idxeq = cfg["idxeq"] == "true",
   kinitems = cfg["kinitems"] == "true", headkin = headkin_names(cfg), neighbor2 = cfg["neighbor2"] == "true",
-  oclass = cfg["oclass"] == "true", bioes = cfg["bioes"] == "true", fwdsets = cfg["fwdsets"] == "true")
+  oclass = cfg["oclass"] == "true", bioes = cfg["bioes"] == "true", fwdsets = cfg["fwdsets"] == "true", shapeitems = cfg["shapeitems"] != "false")
 eventsdir, opts = s.recipe
 pc = S.load_counts(eventsdir, eventsig(eventsdir))
 m = ChainModel(eventsdir; opts...)
