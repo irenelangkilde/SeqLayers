@@ -302,6 +302,24 @@ end
       mp.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
+    # accumfloor: the accum backoff keeps at least minctx features -- no more taken leftovers on 0-1 features than without
+    let small = Dict{Bool,Float64}()
+      for fl in (false, true)
+        mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum, accumfloor = fl)
+        mp.generalize = SeqLayers.generalization_slots(specs)
+        @test mp.opts.accumfloor == fl
+        SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()
+        try
+          @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
+          d = SeqLayers.DC_STATS[]
+          @test any(k -> startswith(String(k), "acc_ctx_"), keys(d))
+          small[fl] = get(d, :acc_ctx_0, 0.0) + get(d, :acc_ctx_1, 0.0)
+        finally
+          SeqLayers.DC_STATS[] = nothing
+        end
+      end
+      @test small[true] <= small[false]
+    end
     for (cm, kw) in ((:accum, (accumby = :mindev,)), (:greedy, (greedyby = :mindev, greedysel = true)), (:greedy, (greedyby = :mindev,)))
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = cm,
         explainpool = true, kw...)

@@ -1,0 +1,14 @@
+Shutdown scheduled for Wed 2026-11-04 20:00:59 UTC, use 'shutdown -c' to cancel.
+awsA (18.217.233.61): copied back, shutdown scheduled in 5 min, Wed Nov  4 12:55:59 MST 2026
+=== start Wed Nov  4 19:38:58 UTC 2026
+=== off
+recorded events in 523.3 s
+ALL         2899    0.9977  0.8531  0.802   0.0162  1.0     
+accum context size: 214658 leftovers taken -- 0 0.141, 1 0.296, 2 0.263, 3 0.157, 4 0.076, 5 0.067
+score 241.7 s, run 20261104-195448 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== on
+recorded events in 529.4 s
+ALL         2899    0.9988  0.8475  0.7917  0.0162  1.0     
+accum context size: 140607 leftovers taken -- 1 0.041, 2 0.412, 3 0.28, 4 0.142, 5 0.125
+score 267.1 s, run 20261104-195545 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Wed Nov  4 19:55:46 UTC 2026
