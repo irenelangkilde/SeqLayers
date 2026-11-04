@@ -1,0 +1,46 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 111.4 s): 16 of 46 slots always, 423 gate values
+[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+[ Info: ChainModel: joint tables for 1222 frequent items, 311639 pairs (123.0 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 105 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank-kin-hkinleftright-nn2/events
+ceiling: 901 attachments in 477.3 s
+decode: 903 attachments in 1915.7 s
+
+898 tokens in both: both right 669, ceiling only 147, decode only 14, neither 68
+
+conditions at the decode's commit		ceiling right, decode wrong	decode right
+own UPOS / XPOS wrong                   	0.327				0.127
+a neighbour's tags wrong                	0.51				0.533
+a neighbour's attachment pending        	0.558				0.742
+gold head not a candidate               	0.381				0.0
+gold head's kinship unknown             	0.692				0.72
+inferred, not decided                   	0.0				0.0
+
+gold head pruned (ceiling right, decode wrong): 56 of 147 -- projectivity 22, cycle 13, root_taken 12, tokenization 7, misaligned 1, other 1
+
+gold head pruned (both wrong): 20 of 68 -- projectivity 11, cycle 5, tokenization 4
+candidates (median)                     	5				6
+attachments already committed (median)  	90				49
+
+examples (ceiling right, decode wrong):
+  'And' gold head 'became', decode 'so'  [own tags ok, nb tags WRONG, nb pending false, gold in cands false of 1 (pruned: projectivity), kin unknown missing, committed 122]
+  'so' gold head 'became', decode 'man'  [own tags WRONG, nb tags ok, nb pending true, gold in cands true of 8, kin unknown true, committed 100]
+  'AP' gold head 'comes', decode 'story'  [own tags ok, nb tags WRONG, nb pending true, gold in cands true of 4, kin unknown false, committed 86]
+  'accident' gold head 'became', decode 'ROOT'  [own tags ok, nb tags WRONG, nb pending false, gold in cands false of 2 (pruned: cycle), kin unknown missing, committed 116]
+  'became' gold head 'ROOT', decode 'man'  [own tags WRONG, nb tags ok, nb pending true, gold in cands true of 11, kin unknown true, committed 76]
+  ':' gold head 'comes', decode 'President'  [own tags ok, nb tags ok, nb pending true, gold in cands true of 14, kin unknown true, committed 72]
+  'President' gold head 'Bush', decode 'courts'  [own tags ok, nb tags ok, nb pending false, gold in cands false of 7 (pruned: cycle), kin unknown missing, committed 81]
+  'Bush' gold head 'nominated', decode 'President'  [own tags ok, nb tags WRONG, nb pending true, gold in cands true of 23, kin unknown true, committed 37]
+  'motorcycle' gold head 'man', decode 'fault'  [own tags ok, nb tags WRONG, nb pending true, gold in cands true of 11, kin unknown true, committed 47]
+  'fault' gold head 'became', decode 'man'  [own tags ok, nb tags ok, nb pending false, gold in cands true of 7, kin unknown false, committed 95]
+  'nominated' gold head 'ROOT', decode 'AP'  [own tags WRONG, nb tags ok, nb pending false, gold in cands true of 8, kin unknown false, committed 83]
+  'with' gold head 'monkeys', decode 'around'  [own tags ok, nb tags ok, nb pending true, gold in cands false of 13 (pruned: projectivity), kin unknown missing, committed 71]
+  '.' gold head 'became', decode 'fault'  [own tags ok, nb tags WRONG, nb pending true, gold in cands true of 12, kin unknown true, committed 46]
+  'just' gold head 'monkeys', decode 'around'  [own tags ok, nb tags WRONG, nb pending true, gold in cands true of 14, kin unknown true, committed 70]
+  'around' gold head 'live', decode 'monkeys'  [own tags ok, nb tags WRONG, nb pending true, gold in cands true of 9, kin unknown true, committed 96]
+  'think' gold head 'ROOT', decode '?'  [own tags ok, nb tags WRONG, nb pending false, gold in cands false of 3 (pruned: root_taken), kin unknown missing, committed 111]
+  'we' gold head 'wanna', decode '?'  [own tags ok, nb tags WRONG, nb pending true, gold in cands false of 10 (pruned: tokenization), kin unknown missing, committed 33]
+  'really' gold head 'wanna', decode '?'  [own tags ok, nb tags WRONG, nb pending true, gold in cands false of 10 (pruned: tokenization), kin unknown missing, committed 30]
+  'eat' gold head 'wanna', decode '?'  [own tags ok, nb tags WRONG, nb pending true, gold in cands false of 10 (pruned: tokenization), kin unknown missing, committed 26]
+  '.' gold head 'think', decode '?'  [own tags ok, nb tags ok, nb pending false, gold in cands false of 2 (pruned: projectivity), kin unknown missing, committed 103]

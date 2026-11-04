@@ -1,0 +1,44 @@
+=== start Wed Nov  4 00:47:03 UTC 2026
+=== d0
+doc ESLSpok 2239 chars: 607.4 s
+doc CHILDES 1314 chars: 197.1 s
+doc EWT 471 chars: 139.8 s
+doc GUMReddit 4903 chars: 1908.8 s
+doc GUM 4409 chars: 2235.4 s
+profdecode: token.attach	53250	4747	4785.2	89.863
+CHILDES     324     1.0     0.7438  0.6265  0.9804  
+ESLSpok     502     0.997   0.6986  0.6567  0.9796  
+EWT         86      0.9655  0.7024  0.631   0.8889  
+GUM         963     0.9845  0.6751  0.6172  0.9388  
+GUMReddit   1024    0.9917  0.6212  0.5388  0.9038  
+ALL         2899    0.9904  0.6686  0.5978  0.9503  
+build 16.7 s, decode 2250.9 s, run 20261104-012745 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== d1
+doc ESLSpok 2239 chars: 608.8 s
+doc CHILDES 1314 chars: 197.5 s
+doc EWT 471 chars: 144.0 s
+doc GUMReddit 4903 chars: 1924.7 s
+doc GUM 4409 chars: 2242.7 s
+profdecode: token.attach	53276	4763	4809.3	90.271
+CHILDES     324     1.0     0.7469  0.6265  0.9804  
+ESLSpok     502     0.997   0.7026  0.6627  0.9796  
+EWT         86      0.9655  0.7024  0.631   0.8889  
+GUM         963     0.9845  0.6877  0.6257  0.9388  
+GUMReddit   1024    0.9917  0.631   0.5456  0.9038  
+ALL         2899    0.9904  0.6773  0.604   0.9503  
+build 16.2 s, decode 2258.1 s, run 20261104-012803 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== d2
+doc ESLSpok 2239 chars: 601.1 s
+doc CHILDES 1314 chars: 192.3 s
+doc EWT 471 chars: 139.6 s
+doc GUMReddit 4903 chars: 1908.3 s
+doc GUM 4409 chars: 2243.3 s
+profdecode: token.attach	53053	4759	4780.4	90.106
+CHILDES     324     1.0     0.7562  0.642   0.9804  
+ESLSpok     502     0.997   0.7066  0.6687  0.9796  
+EWT         86      0.9655  0.7024  0.631   0.8889  
+GUM         963     0.9845  0.6951  0.632   0.9388  
+GUMReddit   1024    0.9917  0.6359  0.5525  0.9038  
+ALL         2899    0.9904  0.6832  0.6113  0.9503  
+build 16.8 s, decode 2259.1 s, run 20261104-012836 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== all done Wed Nov  4 01:28:36 UTC 2026

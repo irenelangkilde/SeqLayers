@@ -31,7 +31,7 @@ const LDS_STATS = Dict(:segments => 0, :branches => 0, :switched => 0)
 function copy_state(st::State)
   layers = Dict{Symbol,Sequence}(n => typeof(s)(s.spec, copy(s.grid), s.ncols) for (n, s) in st.layers)
   State(st.doc, st.span, st.final, st.edge, layers, st.order, st.lex, copy(st.agenda), copy(st.best), copy(st.fresh),
-    Dict(k => copy(v) for (k, v) in st.reads), st.closed_through, copy(st.hidden), st.infer, nothing, nothing)
+    Dict(k => copy(v) for (k, v) in st.reads), st.closed_through, copy(st.hidden), st.infer, nothing, nothing, copy(st.reopened))
 end
 
 "Make `st` the state `src` (in place: the caller holds `st`)."

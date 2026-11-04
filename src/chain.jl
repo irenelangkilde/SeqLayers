@@ -165,7 +165,7 @@ struct ChainOpts
   gate::Float64
   redundant::Bool                                 # greedy: redundant features join the leftovers' conditioning pool
   ctxchain::Bool                                  # greedy: a leftover's context has exactly as many features as the chain
-  stepscore::Symbol                               # :maxdev step score: :abs |Δ|, :signed Δ (raise the odds most), :maxmin, :maxmin2, :posneg / :posnegprior (raise the odds most; when no step raises them by tau, the one lowering them most below the chain / the prior); :pmi, :mi, :oddspmi, :moi, :logor -- among the steps moving the odds by tau, the most associated with the candidate's choice (see step_crit)
+  stepscore::Symbol                               # :maxdev step score: :abs |Δ|, :signed Δ (raise the odds most), :maxmin, :maxmin2, :posneg / :posnegprior (raise the odds most; when no step raises them by tau, the one lowering them most below the chain / the prior); :bipolar (first step :abs, then the previous step's direction first: :posneg after a raise, :negpos after a lowering); :pmi, :mi, :oddspmi, :moi, :logor -- among the steps moving the odds by tau, the most associated with the candidate's choice (see step_crit)
   top2::Bool                                      # :maxdev: only the two leading candidates' chains advance (run_top2)
   contest::Bool                                   # re-decide the top two by a contest chain on their odds ratio (contest!)
   pickfewest::Int                                 # >0: of the k best-scoring features passing tau, take the one with fewest records
@@ -383,8 +383,8 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   accumby in (:odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs, :look1red, :look1ind, :look1nonred, :look1int, :wsel) ||
     error("unknown accumby $accumby (use :odds, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc or :bfs, :look1red, :look1ind, :look1nonred, :look1int, :wsel)")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
-  stepscore in (:abs, :signed, :maxmin, :maxmin2, :posneg, :posnegprior, :negpos, CRIT_STEPS...) ||
-    error("unknown stepscore $stepscore (use :abs, :signed, :maxmin, :maxmin2, :posneg, :posnegprior or :negpos)")
+  stepscore in (:abs, :signed, :maxmin, :maxmin2, :posneg, :posnegprior, :negpos, :bipolar, CRIT_STEPS...) ||
+    error("unknown stepscore $stepscore (use :abs, :signed, :maxmin, :maxmin2, :posneg, :posnegprior, :negpos or :bipolar)")
   lockstep in (:none, :top2) || error("unknown lockstep $lockstep (use :none or :top2)")
   poolmarginal in (:off, :leftover, :drop) || error("unknown poolmarginal $poolmarginal (use :off, :leftover or :drop)")
   pairorder in (:slot, :maxdev) || error("unknown pairorder $pairorder (use :slot or :maxdev)")
@@ -1331,6 +1331,9 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
   cap = EXACT, nosingle = NOSINGLE, peek = false)
   x = st.odds[end]
   ss = STEPSCORE_OVERRIDE[] === nothing ? m.opts.stepscore : STEPSCORE_OVERRIDE[]   # (posnegonly = :attach: labeled decisions :abs)
+  # bipolar (user's design 2026-11-03): the first step by |Δ|; later ones keep the previous step's direction -- the
+  # largest move that way, by tau -- and else turn (the largest the other way, by tau)
+  ss == :bipolar && (ss = length(st.odds) < 2 ? :abs : st.odds[end] >= st.odds[end-1] ? :posneg : :negpos)
   pn = m.opts.smoothn == :parent ? parentn(m, st, label) : NaN
   best, bs, by, be = -Inf, 0, x, nothing
   slots = [s for s in remaining if Ic[s] != ABSENT]
@@ -2652,7 +2655,12 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
   end
   # X waits while a coarser rung of its ladder is still pending
   blocked(sx) = any(a -> a in pending, get(ancestors, sx, Int[]))
+  # (trace) each leftover's score in every round it was scored, the context then growing as leftovers join it:
+  # slot -> [(round, running estimate T, context, its odds, X's records there, correction, the score it competed with)]
+  hist = ACCUM_TRACE[] === nothing ? nothing : Dict{Int,Vector{Any}}()
+  rnd = 0
   while true
+    rnd += 1
     chainon && refresh!()
     isempty(pending) && !chainon && break
     # the generalization path from the current rungs (the same for every X), built as far as needed
@@ -3149,6 +3157,11 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       end
       # X's correction in its chosen context; the X with the largest |correction| is taken
       # (accumpick :signed: the biggest raise instead of the largest |correction|)
+      if hist !== nothing && !isempty(tries[sx])
+        tr_ = something(findlast(t_ -> t_.corr !== nothing, tries[sx]), length(tries[sx]))
+        push!(get!(hist, sx, Any[]), (round = rnd, T = T, ctx = tries[sx][tr_].ctx, odds = tries[sx][tr_].odds,
+          nX = tries[sx][tr_].nX, corr = tries[sx][tr_].corr, score = xc))
+      end
       (bestX == 0 || (m.opts.accumpick == :signed ? xc > bestc : abs(xc) > abs(bestc))) && ((bestX, bestc, bestk, bestr) = (pi_, xc, xk, xr))
       chainon && push!(lcands, (pi_, xc, xk, xr))
     end
@@ -3203,7 +3216,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       end
       (d = DC_STATS[]) === nothing || (d[:as_taken] = get(d, :as_taken, 0.0) + 1)
     end
-    ACCUM_TRACE[] === nothing || ACCUM_TRACE[](sx, T, tries[sx], bestk, bestc)
+    ACCUM_TRACE[] === nothing || ACCUM_TRACE[](sx, T, tries[sx], bestk, bestc, get(hist, sx, Any[]))
     DC_STATS[] === nothing || dc_record!(m, base, Ic[sx], setdiff(union(st.members, taken), items(bestr)), label, prior, bestc)
     LEFTOVER_TRACE[] === nothing || LEFTOVER_TRACE[](sx, true, [something(findfirst(==(f), Ic), 0) for f in items(bestr)], bestc)
     m.opts.accumreset || (rung = copy(bestr))         # (accumreset: the context stays at its most specific)
@@ -3454,7 +3467,8 @@ function ci_values(m::ChainModel, tk::UInt64; sample = 200_000, vmin = 200)
   V
 end
 
-"Trace hook (accum): for each leftover taken, (slot, running estimate before, its walk along the path, step taken, correction)."
+"Trace hook (accum): for each leftover taken, (slot, running estimate before, its walk along the path, step taken, correction,
+its score in every round it was scored -- see hist)."
 const ACCUM_TRACE = Ref{Any}(nothing)
 "greedyby=mindev trace hook: (X, path [(a, signed diff, n(B∪a), n(B∪a∪X))], status :explained | :kept | :short, correction) per evaluation."
 const MINDEV_TRACE = Ref{Any}(nothing)
@@ -3666,7 +3680,18 @@ function decide(m::ChainModel, st::State, key::AgendaKey)
   # soft head properties: each candidate head also scored by the (uncommitted) head properties' log
   # probabilities of the values it implies -- the product of the ceiling's domains=product
   SOFTHEADS[] && st.infer && d.name == :attach && (scores = scores .+ soft_head_terms(m, st, i, cands))
-  choose(cands, scores, d.open ? waitscore(m, st, key) : nothing)
+  wait = d.open ? waitscore(m, st, key) : nothing
+  # displacement: a filtered-out head that beats the best allowed one by more than δ is chosen (commit! reopens
+  # the arcs in its way)
+  if d.name == :attach && !isnan(DISPLACE[]) && st.infer && !STRICT[]
+    wide = displace_candidates(st, i, cands)
+    if !isempty(wide)
+      _, ws = chain_scores(m, st, key; cands = wide)
+      SOFTHEADS[] && (ws = ws .+ soft_head_terms(m, st, i, wide))
+      maximum(ws) > maximum(scores) + DISPLACE[] && return choose([cands; wide], [scores; ws], wait)
+    end
+  end
+  choose(cands, scores, wait)
 end
 
 """
@@ -3694,10 +3719,10 @@ function soft_head_terms(m::ChainModel, st::State, t, cands)
   add
 end
 
-"A decision's candidates and their chain log odds (with leftovers), or nothing if it has none; readiness not checked."
-function chain_scores(m::ChainModel, st::State, key::AgendaKey)
+"A decision's candidates (or the given ones) and their chain log odds (with leftovers), or nothing if none; readiness not checked."
+function chain_scores(m::ChainModel, st::State, key::AgendaKey; cands = nothing)
   d, i = decisiondef(st, key), key[3]
-  cands = d.candidates(st, i)
+  cands = cands === nothing ? d.candidates(st, i) : cands
   isempty(cands) && return nothing
   tk = typekey(key[1], key[2])
   CHAIN_TRACE[] === nothing || (TRACE_KEY[] = key)

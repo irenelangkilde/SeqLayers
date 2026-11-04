@@ -320,7 +320,8 @@ end
     end
     for (ss, pr, ps, pa, pl) in ((:posneg, false, :own, false, false), (:posnegprior, false, :own, false, false), (:posneg, true, :own, false, false),
         (:posneg, true, :oldtop, false, false), (:posneg, true, :own, true, false), (:posneg, true, :own, true, true),
-        (:negpos, false, :own, false, false), (:posneg, true, :reorder, true, false), (:posneg, true, :reorderabs, true, false))
+        (:negpos, false, :own, false, false), (:posneg, true, :reorder, true, false), (:posneg, true, :reorderabs, true, false),
+        (:bipolar, false, :own, false, false), (:bipolar, true, :own, true, false))
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, stepscore = ss, posnegrestart = pr, posnegseed = ps,
         posnegafter = pa, posnegleftneg = pl)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
@@ -442,6 +443,29 @@ end
       finally
         SeqLayers.RESCORE_STATS[] = nothing; SeqLayers.DC_STATS[] = nothing
       end
+    end
+    # displacement: a dropped head that wins by more than δ reopens the arcs in its way (δ < 0 forces it); the decode
+    # still ends with every token reaching the root, and off (NaN) leaves the parse as it was
+    let md = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 3, redundant = true, ctxmode = :accum, candmemo = true)
+      md.generalize = SeqLayers.generalization_slots(specs)
+      r0 = evaluate_counts(docs, specs, md, lex)
+      for (pj, δ) in ((false, -2.0), (true, -2.0), (true, 0.0))
+        sp = default_specs(projective = pj)
+        SeqLayers.DISPLACE[] = δ; SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()
+        try
+          @test 0 <= eval_scores(evaluate_counts(docs, sp, md, lex)).uas <= 1
+          δ < 0 && @test get(SeqLayers.DC_STATS[], :displaced, 0) > 0
+          for d in docs, ps in process(d, sp, md, lex)
+            h = ps.heads
+            reaches(k) = (j = k; for _ in eachindex(h); h[j] == 0 && return true; j = h[j]; end; false)
+            @test all(reaches, eachindex(h))
+          end
+        finally
+          SeqLayers.DISPLACE[] = NaN; SeqLayers.DC_STATS[] = nothing
+        end
+      end
+      default_specs()                                  # (PROJECTIVE back to the suite's setting)
+      @test evaluate_counts(docs, specs, md, lex) == r0
     end
     # attachwait / rescoreevery: the same tokens and sentences here; n = 1 and no wait: unchanged
     let mw = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 3, redundant = true, ctxmode = :accum, candmemo = true)

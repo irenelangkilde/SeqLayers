@@ -5,7 +5,7 @@ function State(doc::Doc, span::UnitRange{Int}, final::Bool, edge::Int, specs::Ve
   layers = Dict{Symbol,Sequence}(s.name => Sequence(s, max(n, 1)) for s in specs)
   st = State(doc, span, final, edge, layers, [s.name for s in specs], lex,
     PriorityQueue{AgendaKey,Float64}(Base.Order.Reverse), Dict{AgendaKey,UInt32}(), AgendaKey[],
-    Dict{AgendaKey,Vector{ReadCell}}(), 0, Set{Tuple{Symbol,Int}}(), true, nothing, nothing)
+    Dict{AgendaKey,Vector{ReadCell}}(), 0, Set{Tuple{Symbol,Int}}(), true, nothing, nothing, Set{Int}())
   base = first(st.order)
   for _ in 1:n
     addcol!(st, base)
@@ -291,7 +291,9 @@ end
 function commit!(st::State, key::AgendaKey, choice::UInt32)
   lname, k, i = key
   seq = st.layers[lname]
-  seq[seq.spec.decisions[k].name, i] = choice
+  name = seq.spec.decisions[k].name
+  name == :attach && !isnan(DISPLACE[]) && st.infer && !STRICT[] && displace!(st, key, choice)
+  seq[name, i] = choice
   refresh!(st)
   for l in st.order
     for c in st.layers[l].spec.constraints

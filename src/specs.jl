@@ -585,6 +585,86 @@ function attach_candidates(st, t; maxchars = MAX_LINK_CHARS, projective = false)
   isempty(proj) && !STRICT[] ? cands : proj            # (search: no fallback; an empty set is a failure)
 end
 
+"""
+Displacement (displace δ; user's choice 2026-11-03, from gap2: 47 of 56 pruned gold heads were blocked by an earlier
+wrong commit -- a crossed arc, a cycle, a taken root): an attachment may take a head the filters dropped when its
+score beats the best allowed head's by more than δ; the committed arcs in the way are reopened (displace!).  Each
+token's arc is reopened at most once per segment (st.reopened), at most DISPLACE_CAP arcs per displacement.  NaN: off.
+"""
+const DISPLACE = Ref(NaN)
+const DISPLACE_CAP = Ref(2)
+const PROJECTIVE = Ref(false)                       # the attachment's projective setting (set by default_specs)
+
+"The tokens whose committed arcs an arc between t and h (NONE: the root) would cross (as crosses_arc)."
+function crossed_arcs(st, t, h)
+  toks = st.layers[:token]
+  pos(u) = Int(toks[:first_char, u])
+  a, b = h == NONE ? (0, pos(t)) : minmax(pos(t), pos(Int(h)))
+  out = Int[]
+  for u in 1:length(toks)
+    u == t && continue
+    g = toks[:attach, u]
+    g == PENDING && continue
+    c, d = g == NONE ? (0, pos(u)) : minmax(pos(u), pos(Int(g)))
+    (a < c < b < d || c < a < d < b) && push!(out, u)
+  end
+  out
+end
+
+"""
+The tokens whose committed arcs keep head h from t -- the sentence's root (h = NONE), h itself when t is above it (a
+cycle), arcs t-h would cross (projective) -- or nothing if none do, another filter excludes h, or they can't all be
+reopened (one already was, or more than DISPLACE_CAP).
+"""
+function attach_blockers(st, t, h)
+  toks = st.layers[:token]
+  s = toks[:sentence, t]
+  out = Int[]
+  if h == NONE
+    r = s == PENDING ? nothing : findfirst(u -> u != t && toks[:sentence, u] == s && toks[:attach, u] == NONE, 1:length(toks))
+    r === nothing || push!(out, r)
+  else
+    hh = Int(h)
+    hh == t && return nothing
+    toks[:sentence, hh] == s || return nothing
+    abs(Int(toks[:first_char, hh]) - Int(toks[:first_char, t])) <= MAX_LINK_CHARS || return nothing
+    crosses_E(st, t, hh) && return nothing
+    head_consistent(st, t, h) || return nothing
+    creates_cycle(st, t, hh) && push!(out, hh)
+  end
+  PROJECTIVE[] && append!(out, filter(!in(out), crossed_arcs(st, t, h)))
+  isempty(out) || length(out) > DISPLACE_CAP[] || any(in(st.reopened), out) ? nothing : out
+end
+
+"Heads the filters dropped for t that displacement could give it (not in `cands`)."
+displace_candidates(st, t, cands) =
+  UInt32[h for h in [NONE; UInt32.(1:length(st.layers[:token]))] if !(h in cands) && attach_blockers(st, t, h) !== nothing]
+
+"""
+Before t takes head h (displace): if h isn't one of t's candidates, reopen the committed arcs blocking it, with the
+head properties derived from them, and put those decisions back on the agenda.
+"""
+function displace!(st, key, h)
+  lname, k, t = key
+  toks = st.layers[lname]
+  h in toks.spec.decisions[k].candidates(st, t) && return
+  out = attach_blockers(st, t, h)
+  out === nothing && return
+  hks = [(kk, d.name) for (kk, d) in enumerate(toks.spec.decisions) if haskey(ALLHEADSETS, d.name)]
+  for u in out
+    toks[:attach, u] = PENDING
+    push!(st.fresh, (lname, k, u))
+    for (kk, name) in hks
+      toks[name, u] == PENDING && continue
+      toks[name, u] = PENDING
+      push!(st.fresh, (lname, kk, u))
+    end
+    push!(st.reopened, u)
+  end
+  (d_ = DC_STATS[]) === nothing || (d_[:displaced] = get(d_, :displaced, 0.0) + 1; d_[:reopened] = get(d_, :reopened, 0.0) + length(out))
+  refresh!(st)
+end
+
 function attach_candidates_(st, t; maxchars = MAX_LINK_CHARS)
   toks = st.layers[:token]
   s = toks[:sentence, t]
@@ -1423,6 +1503,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
   relbounded::Bool = false, relnone::Bool = false, treerank::Bool = false, headtrank::Bool = false,
   headwc::Vector{Int} = Int[], headwcclasses = nothing, headsibs::Vector{Symbol} = Symbol[], idxeq::Bool = false,
   kinitems::Bool = false, headkin::Vector{Symbol} = Symbol[], neighbor2::Bool = false, oclass::Bool = false, bioes::Bool = false, fwdsets::Bool = false)
+  PROJECTIVE[] = projective
   all(n -> haskey(HEADKIN_DIR, n), headkin) || error("headkin: names are $(join(keys(HEADKIN_DIR), ", "))")
   all(n -> haskey(HEADSIB_KIND, n), headsibs) || error("headsibs: names are $(join(keys(HEADSIB_KIND), ", "))")
   safeats = charindex === nothing ? FeatDef[] : [sa_feats(charindex, :left); sa_feats(charindex, :right)]

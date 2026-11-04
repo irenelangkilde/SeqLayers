@@ -53,6 +53,7 @@ cfg["softheads"] == "true" && (S.SOFTHEADS[] = true)
 cfg["attachwait"] == "true" && (S.ATTACH_WAIT[] = true)
 cfg["fcommit"] == "true" && (S.FCOMMIT[] = true)
 S.RESCORE_EVERY[] = cfg["rescoreevery"]
+S.DISPLACE[] = cfg["displace"]; S.DISPLACE_CAP[] = cfg["displacecap"]
 empty!(m.memo); empty!(m.cmemo)
 struct GapRec end
 const NOTES = Dict{UnitRange{Int},NamedTuple}()

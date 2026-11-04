@@ -186,7 +186,7 @@ function explain_attach(st, t, gold, pred)
     ev == :reset ? (empty!(events[data.cand].left); empty!(accum[data.cand]); nothing) : nothing
   S.LEFTOVER_TRACE[] = (sl, inc, ctxs, corr) -> push!(events[S.CHAIN_TRACE_CAND[]].left, (sl, inc, ctxs, corr))
   accum = Dict{Any,Vector{Any}}(c => Any[] for c in cands)
-  S.ACCUM_TRACE[] = (sx, T, tries, k, corr) -> push!(accum[S.CHAIN_TRACE_CAND[]], (sx = sx, T = T, tries = tries, corr = corr))
+  S.ACCUM_TRACE[] = (sx, T, tries, k, corr, hist) -> push!(accum[S.CHAIN_TRACE_CAND[]], (sx = sx, T = T, tries = tries, corr = corr, hist = hist))
   mdev = Dict{Any,Dict{UInt64,Any}}(c => Dict{UInt64,Any}() for c in cands)      # greedyby=mindev: each leftover's last path
   S.MINDEV_TRACE[] = (X, path, status, corr) -> (mdev[S.CHAIN_TRACE_CAND[]][X] = (path = copy(path), status = status, corr = corr))
   empty!(m.memo)
@@ -326,7 +326,8 @@ function detail(st, t, c, f, Ic, acc)
   println("       prior: log odds $(fmtd(log(p0))) = odds $(round(p0; sigdigits = 3)) = probability $(round(p0 / (1 + p0); sigdigits = 3))")
   println("       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.")
   println("        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the")
-  println("        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.)")
+  println("        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.\n" *
+    "        'by round': the leftover's corr in each greedy round before it was taken, in that round's context.)")
   println("       CHAIN", " "^41, "Δ alone (vs prior)       Δ in the chain (vs prefix)")
   Sc = S.ChainState(p0, base)
   for (j, x) in enumerate(f.members)
@@ -363,6 +364,20 @@ function detail(st, t, c, f, Ic, acc)
         "  corr ", tr.corr === nothing ? "unsupported" : fmtd(tr.corr), mark, moves)
       i == 1 && println("                 context: ", join(ctxn, ", "))
       prev = ctxn
+    end
+    # its score in every greedy round, the context then (the round's first supported one, growing as leftovers join)
+    if length(a.hist) > 1
+      fc(c) = c === nothing ? "unsup" : fmtd(c)
+      println("         by round: [", join([fc(h.corr) for h in a.hist], ", "), "]")
+      prev = nothing
+      for h in a.hist
+        ctxn = [name(x) for x in h.ctx]
+        moves = prev === nothing ? "context: " * join(ctxn, ", ") :
+          "[" * join([["-" * x for x in setdiff(prev, ctxn)]; ["+" * x for x in setdiff(ctxn, prev)]], ", ") * "]"
+        println("           round ", rpad(h.round, 3), " estimate ", lpad(fmtd(h.T), 6), "  context log odds ", lpad(fmtd(log(h.odds)), 6),
+          "  with X: n ", rpad(fmtn(h.nX), 10), "  corr ", lpad(fc(h.corr), 6), h.corr === nothing || h.score ≈ h.corr ? "" : "  (weighted " * fmtd(h.score) * ")", "   ", moves)
+        prev = ctxn
+      end
     end
     a.corr >= 0 ? (pos += a.corr) : (neg += a.corr)
   end

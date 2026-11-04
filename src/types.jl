@@ -214,4 +214,5 @@ mutable struct State <: AbstractState
   infer::Bool                                    # constraints may infer decisions (not for the oracle)
   memo::Union{Nothing,Dict{Symbol,Any}}          # shared by dynamic relations during one refresh! (else nothing)
   relcache::Any                                  # children lists between refreshes, with the attach row they came from
+  reopened::Set{Int}                             # tokens whose arcs displacement reopened (each once; see DISPLACE)
 end
