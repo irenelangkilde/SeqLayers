@@ -54,6 +54,7 @@ cfg["attachwait"] == "true" && (S.ATTACH_WAIT[] = true)
 cfg["fcommit"] == "true" && (S.FCOMMIT[] = true)
 S.RESCORE_EVERY[] = cfg["rescoreevery"]
 S.DISPLACE[] = cfg["displace"]; S.DISPLACE_CAP[] = cfg["displacecap"]
+S.PROD_NORM[] = Symbol(cfg["prodnorm"])
 empty!(m.memo); empty!(m.cmemo)
 struct GapRec end
 const NOTES = Dict{UnitRange{Int},NamedTuple}()

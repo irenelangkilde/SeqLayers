@@ -1,0 +1,110 @@
+Worker 2 terminated.
+ERROR: LoadError: ProcessExitedException(2)
+Stacktrace:
+  [1] try_yieldto(undo::typeof(Base.ensure_rescheduled))
+    @ Base ./task.jl:1172
+  [2] wait()
+    @ Base ./task.jl:1300
+  [3] wait(c::Base.GenericCondition{ReentrantLock}; first::Bool)
+    @ Base ./condition.jl:141
+  [4] wait
+    @ ./condition.jl:136 [inlined]
+  [5] take_buffered(c::Channel{Any})
+    @ Base ./channels.jl:532
+  [6] take!(c::Channel{Any})
+    @ Base ./channels.jl:526
+  [7] take!(::Distributed.RemoteValue)
+    @ Distributed ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/remotecall.jl:726
+  [8] remotecall_fetch(::Function, ::Distributed.Worker, ::Tuple{var"#ceiling_main##6#ceiling_main##7"{Float64, Symbol, Vector{Symbol}, Float64, Bool, Bool}, RemoteChannel{Channel{Any}}}, ::Vararg{Any}; kwargs::@Kwargs{})
+    @ Distributed ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/remotecall.jl:461
+  [9] remotecall_fetch(::Function, ::Distributed.Worker, ::Tuple{var"#ceiling_main##6#ceiling_main##7"{Float64, Symbol, Vector{Symbol}, Float64, Bool, Bool}, RemoteChannel{Channel{Any}}}, ::Vararg{Any})
+    @ Distributed ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/remotecall.jl:454
+ [10] remotecall_fetch(::Function, ::Int64, ::Tuple{var"#ceiling_main##6#ceiling_main##7"{Float64, Symbol, Vector{Symbol}, Float64, Bool, Bool}, RemoteChannel{Channel{Any}}}, ::Vararg{Any}; kwargs::@Kwargs{})
+    @ Distributed ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/remotecall.jl:492
+ [11] remotecall_pool(rc_f::typeof(remotecall_fetch), f::Function, pool::CachingPool, args::Tuple{SubString{String}, Doc}; kwargs::@Kwargs{})
+    @ Distributed ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/workerpool.jl:399
+ [12] remotecall_pool
+    @ ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/workerpool.jl:393 [inlined]
+ [13] remotecall_fetch
+    @ ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/workerpool.jl:261 [inlined]
+ [14] (::Distributed.var"#remote##4#remote##5"{Distributed.var"#remote##6#remote##7"{CachingPool, var"#ceiling_main##6#ceiling_main##7"{Float64, Symbol, Vector{Symbol}, Float64, Bool, Bool}}})(args::Tuple{SubString{String}, Doc})
+    @ Distributed ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/workerpool.jl:321
+ [15] (::Base.var"#iterate##9#iterate##10"{Base.AsyncCollector})(i::Int64, args::Tuple{Tuple{SubString{String}, Doc}})
+    @ Base ./asyncmap.jl:250
+ [16] (::Base.var"#start_worker_task!##0#start_worker_task!##1"{Base.var"#iterate##9#iterate##10"{Base.AsyncCollector}, Channel{Any}, Nothing})()
+    @ Base ./asyncmap.jl:176
+Stacktrace:
+  [1] #wait_done##0
+    @ ./asyncmap.jl:261 [inlined]
+  [2] foreach
+    @ ./abstractarray.jl:3212 [inlined]
+  [3] wait_done(itr::Base.AsyncCollector, state::Base.AsyncCollectorState)
+    @ Base ./asyncmap.jl:261
+  [4] iterate(itr::Base.AsyncCollector, state::Base.AsyncCollectorState)
+    @ Base ./asyncmap.jl:275
+  [5] foreach
+    @ ./abstractarray.jl:3212 [inlined]
+  [6] asyncmap(f::Function, c::Vector{Tuple{SubString{String}, Doc}}; ntasks::Function, batch_size::Nothing)
+    @ Base ./asyncmap.jl:85
+  [7] asyncmap
+    @ ./asyncmap.jl:76 [inlined]
+  [8] pmap(f::Function, p::CachingPool, c::Vector{Tuple{SubString{String}, Doc}}; distributed::Bool, batch_size::Int64, on_error::Nothing, retry_delays::Vector{Any}, retry_check::Nothing)
+    @ Distributed ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/pmap.jl:126
+  [9] pmap
+    @ ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/pmap.jl:99 [inlined]
+ [10] pmap
+    @ ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/pmap.jl:156 [inlined]
+ [11] ceiling_main(cfg::Dict{String, Any})
+    @ Main /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.jl:101
+ [12] top-level scope
+    @ /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.jl:267
+ [13] include(mod::Module, _path::String)
+    @ Base ./Base.jl:309
+ [14] exec_options(opts::Base.JLOptions)
+    @ Base ./client.jl:344
+ [15] _start()
+    @ Base ./client.jl:577
+in expression starting at /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.jl:267
+UNHANDLED TASK ERROR: EOFError: read end of file
+Stacktrace:
+ [1] (::Base.var"#wait_locked#unsafe_read##0")(s::Sockets.TCPSocket, buf::IOBuffer, nb::Int64)
+   @ Base ./stream.jl:976
+ [2] unsafe_read(s::Sockets.TCPSocket, p::Ptr{UInt8}, nb::UInt64)
+   @ Base ./stream.jl:984
+ [3] unsafe_read
+   @ ./io.jl:914 [inlined]
+ [4] unsafe_read(s::Sockets.TCPSocket, p::Base.RefValue{NTuple{4, Int64}}, n::Int64)
+   @ Base ./io.jl:913
+ [5] read!
+   @ ./io.jl:918 [inlined]
+ [6] deserialize_hdr_raw
+   @ ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/messages.jl:167 [inlined]
+ [7] message_handler_loop(r_stream::Sockets.TCPSocket, w_stream::Sockets.TCPSocket, incoming::Bool)
+   @ Distributed ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/process_messages.jl:172
+ [8] process_tcp_streams(r_stream::Sockets.TCPSocket, w_stream::Sockets.TCPSocket, incoming::Bool)
+   @ Distributed ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/process_messages.jl:133
+ [9] (::Distributed.var"#process_messages##0#process_messages##1"{Sockets.TCPSocket, Sockets.TCPSocket, Bool})()
+   @ Distributed ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/process_messages.jl:121
+┌ Warning: Forcibly interrupting busy workers
+│   exception = rmprocs: pids [3] not terminated after 5.0 seconds.
+└ @ Distributed ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/cluster.jl:1269
+┌ Warning: rmprocs: process 1 not removed
+└ @ Distributed ~/.julia/juliaup/julia-1.13.2+0.aarch64.linux.gnu/share/julia/stdlib/v1.13/Distributed/src/cluster.jl:1065
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 616.0 s
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 114.3 s): 16 of 46 slots always, 423 gate values
+      From worker 4:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 6:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 114.4 s): 16 of 46 slots always, 423 gate values
+      From worker 6:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 5:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 115.1 s): 16 of 46 slots always, 423 gate values
+      From worker 5:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 115.2 s): 16 of 46 slots always, 423 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 115.5 s): 16 of 46 slots always, 423 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+      From worker 6:	[ Info: ChainModel: joint tables for 1222 frequent items, 311639 pairs (174.1 s)
+      From worker 4:	[ Info: ChainModel: joint tables for 1222 frequent items, 311639 pairs (175.0 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 1222 frequent items, 311639 pairs (180.4 s)
+      From worker 5:	[ Info: ChainModel: joint tables for 1222 frequent items, 311639 pairs (180.9 s)
+      From worker 2:	[ Info: ChainModel: joint tables for 1222 frequent items, 311639 pairs (182.9 s)

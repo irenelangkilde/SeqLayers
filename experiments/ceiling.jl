@@ -198,7 +198,6 @@ DEFAULTS["domeps"] = 1e-3
 DEFAULTS["prodbeta"] = 1.0
 DEFAULTS["dcstats"] = "false"
 DEFAULTS["prodprops"] = ""
-DEFAULTS["prodnorm"] = "off"
 DEFAULTS["on"] = "dev"
 DEFAULTS["calibrate"] = "false"
 

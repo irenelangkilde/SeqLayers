@@ -436,13 +436,16 @@ end
       SeqLayers.SOFTHEADS[] = true
       SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()
       try
+        SeqLayers.PROD_NORM[] = :prior                 # (soft head terms over the values' priors: still decodes)
+        @test 0 <= eval_scores(evaluate_counts(docs, specs, mb, lex)).uas <= 1
+        SeqLayers.PROD_NORM[] = :off
         ra = evaluate_counts(docs, specs, ma, lex)
         empty!(SeqLayers.DC_STATS[])
         @test evaluate_counts(docs, specs, mb, lex) == ra
         d = SeqLayers.DC_STATS[]
         @test get(d, :cmemo_hit, 0) > 0 && get(d, :cmemo_miss, 0) > 0
       finally
-        SeqLayers.SOFTHEADS[] = false
+        SeqLayers.SOFTHEADS[] = false; SeqLayers.PROD_NORM[] = :off
         SeqLayers.DC_STATS[] = nothing
       end
     end
@@ -557,8 +560,11 @@ end
     # interleave: chain steps and leftovers in one loop (abs and posneg steps, with the leftover weightings)
     @test_throws ErrorException ChainModel(dir; select = :maxdev, leftovers = :greedy, ctxmode = :greedy, interleave = true)
     @test_throws ErrorException ChainModel(dir; select = :maxdev, leftovers = :greedy, ctxmode = :accum, interleave = true, stepscore = :signed)
+    @test_throws ErrorException ChainModel(dir; select = :maxdev, leftovers = :greedy, ctxmode = :accum, interleave = true, ilscore = :big)
+    @test ChainModel(dir; select = :maxdev, leftovers = :greedy, ctxmode = :accum, interleave = true, ilscore = :raw).opts.ilscore == :raw
     for (ss, kw) in ((:abs, (;)), (:posneg, (;)), (:posneg, (posnegrestart = true, posnegafter = true, posnegonly = :heads)),
-                     (:abs, (leftwback = 1.0, leftwovl = true, leftwcomb = :max)), (:abs, (accumby = :depodds,)), (:abs, (poolsigma = 0.1, poolmarginal = :drop, poolkeepgen = true)))
+                     (:abs, (leftwback = 1.0, leftwovl = true, leftwcomb = :max)), (:abs, (accumby = :depodds,)), (:abs, (poolsigma = 0.1, poolmarginal = :drop, poolkeepgen = true)),
+                     (:abs, (ilscore = :raw,)), (:posneg, (ilscore = :raw,)))
       mp = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 3, redundant = true, ctxmode = :accum,
         interleave = true, stepscore = ss, kw...)
       mp.generalize = SeqLayers.generalization_slots(specs)

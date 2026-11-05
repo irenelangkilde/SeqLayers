@@ -227,6 +227,7 @@ struct ChainOpts
   candmemo::Bool                                  # per-candidate score memo (see cand_scores): only candidates whose own items changed are re-scored; exact
   accumpick::Symbol                               # ctxmode :accum: each round take the leftover with the largest :abs correction, or the largest :signed one (the biggest raise)
   accumfloor::Bool                               # ctxmode :accum: the backoff never drops a context feature once only minctx are left (user 2026-11-04)
+  ilscore::Symbol                                # interleave: a leftover competes with the chain step by its :corr (as it is taken) or :raw correction -- chain-step smoothing, update_odds, in its context (user 2026-11-04)
   forkcap::Int                                    # > 0 (:maxdev): when the largest |step| lowers the odds and a different feature raises them most (by tau), the chain forks; at most this many chains per candidate (see fork_chains)
   forkcomb::Symbol                                # forkcap: a candidate's score from its chains, :max or :avg
   forkleft::Symbol                                # forkcap: :each (every chain gets its leftovers; compared on chain + leftovers) or :chosen (compared on the chain alone; the best gets leftovers; :max only)
@@ -353,7 +354,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0, accumstop = 0.0, forkcap = 0, forkcomb = :max, forkleft = :each, accumpick = :abs, accumfloor = false, candmemo = false)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0, accumstop = 0.0, forkcap = 0, forkcomb = :max, forkleft = :each, accumpick = :abs, accumfloor = false, ilscore = :corr, candmemo = false)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms, :maxpos, :maxabsscore, :maxposneg) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
@@ -367,6 +368,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     error("interleave: needs select = :maxdev, leftovers = :greedy, ctxmode = :accum, and no pairsteps, pickfewest, target, lockstep, sample or dualchain")
   accumgreedy > 0 && (leftovers != :greedy || ctxmode != :accum) && error("accumgreedy: needs leftovers = :greedy, ctxmode = :accum")
   accumpick in (:abs, :signed) || error("unknown accumpick $accumpick (use :abs or :signed)")
+  ilscore in (:corr, :raw) || error("unknown ilscore $ilscore (use :corr or :raw)")
   forkcomb in (:max, :avg) || error("unknown forkcomb $forkcomb (use :max or :avg)")
   forkleft in (:each, :chosen) || error("unknown forkleft $forkleft (use :each or :chosen)")
   forkcap > 0 && (select != :maxdev || stepscore != :abs || posnegrestart || dualchain != :off || interleave || target || lockstep != :none || sample > 0 || pairsteps || pickfewest > 0 || poolm > 0) &&
@@ -443,7 +445,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, candmemo, accumpick, accumfloor, forkcap, forkcomb, forkleft, accumstop, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, candmemo, accumpick, accumfloor, ilscore, forkcap, forkcomb, forkleft, accumstop, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -3006,7 +3008,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       true
     end
     bestX, bestc, bestk, bestr = 0, 0.0, 0, Int[]
-    lcands = Tuple{Int,Float64,Int,Vector{Int}}[]     # (interleave) every scored leftover this round
+    lcands = Tuple{Int,Float64,Int,Vector{Int},Float64}[]   # (interleave) every scored leftover this round, + its competing score
     # accumby :depodds: X's marginal correction |log o(x | X) - log o(x)| (0 if unsupported)
     function margsigned(X)                          # log o(x | X) - log o(x) (0 if unsupported)
       eX = only(extend_all(m, ChainState(prior, base), 0, [X]))
@@ -3169,7 +3171,21 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
           nX = tries[sx][tr_].nX, corr = tries[sx][tr_].corr, score = xc))
       end
       (bestX == 0 || (m.opts.accumpick == :signed ? xc > bestc : abs(xc) > abs(bestc))) && ((bestX, bestc, bestk, bestr) = (pi_, xc, xk, xr))
-      chainon && push!(lcands, (pi_, xc, xk, xr))
+      if chainon
+        # ilscore :raw -- it competes as a chain step would: log o(x | C ∪ X) - log o(x | C) in its context C, with the
+        # chain's own smoothing (update_odds); taken, it still adds xc
+        lsc_ = xc
+        if m.opts.ilscore == :raw
+          r_ = xcorr(xr, X, A)
+          if r_ !== nothing
+            (S_, e_), eX_ = r_[3], r_[4]
+            x_ = e_ === nothing ? prior : S_.odds[end]
+            y_, ok_ = update_odds(m, eX_, label, x_)
+            lsc_ = ok_ ? log(y_) - log(x_) : 0.0
+          end
+        end
+        push!(lcands, (pi_, xc, xk, xr, lsc_))
+      end
     end
     # explainpool: the explained-away leftovers join the context (correction 0) and leave the pending list
     function poolexplained!()
@@ -3185,18 +3201,23 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       tau = m.opts.tau
       cs = pk.bs == 0 ? -Inf : pk.best
       if ss == :posneg
-        lp = isempty(lcands) ? nothing : lcands[argmax([c[2] for c in lcands])]
-        lsc = lp === nothing ? -Inf : lp[2]
+        lp = isempty(lcands) ? nothing : lcands[argmax([c[5] for c in lcands])]
+        lsc = lp === nothing ? -Inf : lp[5]
         if max(cs, lsc) < tau                         # nothing raises the odds by tau: the largest lowering
-          ln = isempty(lcands) ? nothing : lcands[argmin([c[2] for c in lcands])]
-          ncs, nlsc = pk.nbs == 0 ? -Inf : pk.nbest, ln === nothing ? -Inf : -ln[2]
+          ln = isempty(lcands) ? nothing : lcands[argmin([c[5] for c in lcands])]
+          ncs, nlsc = pk.nbs == 0 ? -Inf : pk.nbest, ln === nothing ? -Inf : -ln[5]
           if max(ncs, nlsc) < tau
             finish!(); continue
           end
-          ncs >= nlsc ? (chainstep!(true); continue) : ((bestX, bestc, bestk, bestr) = ln)
+          ncs >= nlsc ? (chainstep!(true); continue) : ((bestX, bestc, bestk, bestr) = ln[1:4])
         else
-          cs >= lsc ? (chainstep!(false); continue) : ((bestX, bestc, bestk, bestr) = lp)
+          cs >= lsc ? (chainstep!(false); continue) : ((bestX, bestc, bestk, bestr) = lp[1:4])
         end
+      elseif m.opts.ilscore == :raw                   # the leftover with the largest |raw| change against the chain step
+        lp = isempty(lcands) ? nothing : lcands[argmax([abs(c[5]) for c in lcands])]
+        lsc = lp === nothing ? -Inf : abs(lp[5])
+        max(cs, lsc) < tau && (finish!(); continue)
+        cs >= lsc ? (chainstep!(false); continue) : ((bestX, bestc, bestk, bestr) = lp[1:4])
       else
         lsc = bestX == 0 ? -Inf : abs(bestc)
         max(cs, lsc) < tau && (finish!(); continue)
@@ -3705,7 +3726,7 @@ end
 
 """
 For soft head properties (SOFTHEADS): per attachment candidate of token t, the sum over t's uncommitted
-head properties of log P(property = the value the candidate implies), the properties scored as their
+head properties of log P(property = the value the candidate implies) (prodnorm :prior: minus log its training prior), the properties scored as their
 decisions would be (whether or not they're ready).
 """
 function soft_head_terms(m::ChainModel, st::State, t, cands)
@@ -3718,11 +3739,12 @@ function soft_head_terms(m::ChainModel, st::State, t, cands)
     vals, sc = r
     mx = maximum(sc)
     lz = mx + log(sum(x -> exp(x - mx), sc))
+    pr = PROD_NORM[] == :prior ? value_priors(m, k, vals) : nothing   # (prodnorm=prior: over the value's training prior)
     for (j, c) in enumerate(cands)
       v = head_value(st, t, c, dd.name)
       v == PENDING && continue
       q = findfirst(==(v), vals)
-      add[j] += q === nothing ? log(1e-12) : sc[q] - lz
+      add[j] += q === nothing ? log(1e-12) : sc[q] - lz - (pr === nothing ? 0.0 : log(max(pr[q], 1e-12)))
     end
   end
   add

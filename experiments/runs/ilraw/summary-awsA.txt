@@ -1,0 +1,14 @@
+=== start Thu Nov  5 01:29:35 UTC 2026
+=== off
+ERROR: LoadError: ProcessExitedException(2)
+UNHANDLED TASK ERROR: EOFError: read end of file
+recorded events in 616.0 s
+=== corr
+recorded events in 614.2 s
+ALL         2899    0.998   0.8775  0.8255  0.0162  1.0     
+score 584.1 s, run 20261105-015605 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== raw
+recorded events in 610.4 s
+ALL         2899    0.998   0.8789  0.8286  0.0162  1.0     
+score 585.0 s, run 20261105-015633 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Thu Nov  5 01:56:35 UTC 2026
