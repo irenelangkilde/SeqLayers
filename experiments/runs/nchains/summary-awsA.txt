@@ -1,0 +1,16 @@
+=== start Thu Nov  5 02:35:03 UTC 2026
+=== nchains 2
+recorded events in 622.6 s
+ALL         2899    0.9979  0.8731  0.8179  0.0162  1.0     
+chains built: 443955 candidate chains -- 1 0.679, 2 0.321
+score 538.9 s, run 20261105-030033 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== nchains 8
+recorded events in 615.5 s
+ALL         2899    0.998   0.8793  0.8199  0.0162  1.0     
+chains built: 443955 candidate chains -- 1 0.679, 2 0.104, 3 0.068, 4 0.054, 5 0.043, 6 0.026, 7 0.013, 8 0.013
+score 531.0 s, run 20261105-030043 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== nchains 4
+ALL         2899    0.998   0.8762  0.8168  0.0162  1.0     
+chains built: 443955 candidate chains -- 1 0.679, 2 0.104, 3 0.068, 4 0.149
+score 364.2 s, run 20261105-031220 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Thu Nov  5 03:12:22 UTC 2026
