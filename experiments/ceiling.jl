@@ -141,6 +141,11 @@ function ceiling_main(cfg)
     n = z + p + kp
     println("chainsel: $(round(Int, n)) chain steps -- collapsed to reference $(round(z / n; digits = 3)), pulled partway $(round(p / n; digits = 3)), kept (w >= 0.9) $(round(kp / n; digits = 3))")
   end
+  if any(k -> startswith(String(k), "mc_chains_"), keys(a))   # nchains: how many chains each candidate built
+    ks = sort([k for k in keys(a) if startswith(String(k), "mc_chains_")]; by = k -> parse(Int, String(k)[11:end]))
+    n = sum(a[k] for k in ks) / 1000
+    println("chains built: $(round(Int, n)) candidate chains -- ", join(["$(String(k)[11:end]) $(round(a[k] / 1000 / n; digits = 3))" for k in ks], ", "))
+  end
   if any(k -> startswith(String(k), "acc_ctx_"), keys(a))   # accum: features in each taken leftover's context (5 = 5+)
     ks = sort([k for k in keys(a) if startswith(String(k), "acc_ctx_")])
     n = sum(a[k] for k in ks) / 1000

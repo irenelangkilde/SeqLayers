@@ -302,6 +302,26 @@ end
       mp.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
+    # nchains: restarted chains -- they run, build more than one chain somewhere, and 1 is the plain decode
+    @test_throws ErrorException ChainModel(dir; select = :maxdev, leftovers = :greedy, ctxmode = :greedy, nchains = 3)
+    let base_ = (select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum)
+      m1 = ChainModel(dir; base_..., nchains = 1); m1.generalize = SeqLayers.generalization_slots(specs)
+      mp = ChainModel(dir; base_...); mp.generalize = SeqLayers.generalization_slots(specs)
+      @test evaluate_counts(docs, specs, m1, lex) == evaluate_counts(docs, specs, mp, lex)
+      for nc in (2, 8)
+        mc = ChainModel(dir; base_..., nchains = nc); mc.generalize = SeqLayers.generalization_slots(specs)
+        @test mc.opts.nchains == nc
+        SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()
+        try
+          @test 0 <= eval_scores(evaluate_counts(docs, specs, mc, lex)).uas <= 1
+          d = SeqLayers.DC_STATS[]
+          @test any(k -> startswith(String(k), "mc_chains_") && String(k) != "mc_chains_1", keys(d))
+          @test all(k -> !startswith(String(k), "mc_chains_") || parse(Int, String(k)[11:end]) <= nc, keys(d))
+        finally
+          SeqLayers.DC_STATS[] = nothing
+        end
+      end
+    end
     # accumfloor: the accum backoff keeps at least minctx features -- no more taken leftovers on 0-1 features than without
     let small = Dict{Bool,Float64}()
       for fl in (false, true)
