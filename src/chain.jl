@@ -3598,6 +3598,9 @@ end
 "Trace hook (accum): for each leftover taken, (slot, running estimate before, its walk along the path, step taken, correction,
 its score in every round it was scored -- see hist)."
 const ACCUM_TRACE = Ref{Any}(nothing)
+"Trace hook (singleton chains; user 2026-11-06): (state, decision key, candidate, its items, its chain) for each candidate
+whose chain has exactly one step -- per-candidate maxdev chains, not under candmemo."
+const SINGLE_HOOK = Ref{Any}(nothing)
 "greedyby=mindev trace hook: (X, path [(a, signed diff, n(B∪a), n(B∪a∪X))], status :explained | :kept | :short, correction) per evaluation."
 const MINDEV_TRACE = Ref{Any}(nothing)
 "Step score in force for the decision being scored (posnegonly = :attach sets :abs for labeled decisions), or nothing."
@@ -3926,6 +3929,11 @@ function chain_scores_inner(m::ChainModel, st::State, key::AgendaKey, d, i, cand
       return (cands, fscores)
     end
     chains = [run_single(m, I[c], labels[c], priors[c], tr; tk) for c in eachindex(cands)]
+    if SINGLE_HOOK[] !== nothing                     # (singleton chains: every one-step chain, with its candidate)
+      for c in eachindex(cands)
+        depth(chains[c][1]) == 1 && SINGLE_HOOK[](st, key, cands[c], I[c], chains[c][1])
+      end
+    end
     if restart && m.opts.posnegafter && length(cands) > 1
       # restart decided after the leftovers: rank by the full score, restart the top candidate's chain seeded with its
       # negative steps (posnegleftneg: then its negative leftovers), recompute its leftovers, re-rank -- until the top

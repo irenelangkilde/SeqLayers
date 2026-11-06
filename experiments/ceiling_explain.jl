@@ -18,6 +18,8 @@
 #   right; each wrong head is then explained under both models.
 # deprel=conj: only errors whose token has this gold deprel (the sentence's other errors are still listed).
 # goldfix=false: don't require that gold head properties fix the errors.
+# singletons=true: instead, over every dev doc, list the features that are the whole of a one-step attachment chain:
+#   per feature (as named in the traces), how many candidates' chains, how many of them the gold head, and the step's Δ.
 # prodprops=head_xpos,head_dir,head_dist: only these head properties' terms in the product (as ceiling.jl).
 # nopunct=true: skip errors where the token, its gold head or its predicted head is punctuation (upos PUNCT).
 # headblame=true (domains=product): only errors the attachment alone gets right (argmax P(attach) is the gold head) --
@@ -44,6 +46,7 @@ DEFAULTS["nopunct"] = "false"
 DEFAULTS["prodprops"] = ""
 DEFAULTS["deprel"] = ""
 DEFAULTS["goldfix"] = "true"
+DEFAULTS["singletons"] = "false"
 DEFAULTS["headconf"] = 1.0
 DEFAULTS["domains"] = "off"
 DEFAULTS["domeps"] = 1e-3
@@ -474,6 +477,36 @@ function segment_done!(r::ExplainRec, st)
 end
 
 println(s.modelname, (domains == :off ? "" : "  [domains=$domains domeps=$domeps]"))
+if cfg["singletons"] == "true"
+  # every dev doc through the ceiling; each one-step attachment chain noted by its feature's name (value included)
+  single = Dict{String,Vector{Any}}()                 # name -> [chains, gold-head ones, sum of Δ]
+  goldof = Dict{Tuple{Doc,UnitRange{Int}},UnitRange{Int}}()
+  curdoc = Ref{Doc}(first(s.devdocs)[2])
+  S.SINGLE_HOOK[] = function (st, key, c, Ic, ch)
+    S.decisiondef(st, key).name == :attach || return
+    t = key[3]
+    sl = findfirst(==(only(ch.members)), Ic)
+    nm = sl === nothing ? "?" : slotdesc(st, t, c, sl)
+    g = get(curdoc[].gold.head, S.tokspan(st, t), nothing)
+    isgold = g !== nothing && (c == NONE ? isempty(g) : S.tokspan(st, Int(c)) == g)
+    v = get!(single, nm, Any[0, 0, 0.0])
+    v[1] += 1; v[2] += isgold; v[3] += log(ch.odds[end]) - log(ch.odds[1])
+  end
+  r = CeilingRecorder(m, first(s.devdocs)[2], false, cfg["headconf"]; domains, domeps)
+  t0 = time()
+  for (_, d) in s.devdocs
+    curdoc[] = d; r.doc = d
+    process(d, specs, OracleModel(), s.lex; observer = r)
+  end
+  S.SINGLE_HOOK[] = nothing
+  tot = sum(v[1] for v in values(single); init = 0)
+  println("singleton chains: $tot one-step attachment chains, $(length(single)) distinct features ($(round(time() - t0; digits = 1)) s)")
+  println(rpad("feature", 60), rpad("chains", 9), rpad("gold head", 11), "mean Δ")
+  for (nm, v) in sort(collect(single); by = p -> -p[2][1])
+    println(rpad(nm, 60), rpad(v[1], 9), rpad(v[2], 11), round(v[3] / v[1]; digits = 2))
+  end
+  exit()
+end
 docs = sort([d for (_, d) in s.devdocs]; by = d -> length(d.text))[1:min(cfg["docs"], end)]
 rec = ExplainRec(CeilingRecorder(m, first(docs), false, cfg["headconf"]; domains, domeps),
   CeilingRecorder(m, first(docs), false, 1.0, collect(keys(S.ALLHEADSETS))),
