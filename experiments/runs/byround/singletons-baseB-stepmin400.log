@@ -1,0 +1,81 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 25.2 s): 14 of 32 slots always, 280 gate values
+[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (23.9 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 299.3 s
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=odds;leftsmooth=evidence;stepmin=400;ctxmode=accum;ctxattach=false;cidrop=0.0;ciorder=off;telescope=false;branches=1;combine=avg;accumwin=0;accumreset=false;driftsigma=0.0;drifttau=0.0;driftstep=0.0;distback=false;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective;headtrank]  [domains=product domeps=0.0]
+singleton chains: 1122 one-step attachment chains, 71 distinct features (323.5 s)
+with leftovers (a nonzero total correction): 222
+feature                                           chains  gold head  mean Δ   w/ leftovers  their mean Δ
+cand.upos=PUNCT                                   804     0          -8.66    47            -0.45
+cand.form=for                                     32      0          -5.74    2             1.2
+cand.form=if                                      19      0          -4.72    0             
+cand.form=n't                                     16      0          -5.21    2             -0.24
+cand.form=just                                    16      0          -4.45    6             -1.67
+cand.form=with                                    13      0          -4.21    2             2.9
+cand.left_neighbor.form=observed                  12      6          -1.91    12            1.98
+cand.right_neighbor.form=case                     11      3          -2.72    11            4.57
+cand.form='re                                     10      0          -3.46    5             -0.36
+cand.right_neighbor.form=been                     10      0          -4.42    8             -0.61
+cand.form=could                                   10      0          -3.6     0             
+cand.form=from                                    9       0          -4.9     4             1.99
+cand.left_neighbor.form=accident                  8       5          -2.14    8             2.52
+cand.form=very                                    7       0          -4.26    3             -1.21
+cand.left_neighbor.form=means                     7       1          -2.29    7             1.18
+cand.form='m                                      7       0          -4.1     0             
+cand.right_neighbor.form=paper                    6       4          -2.18    6             3.01
+cand.left_neighbor.form=whatever                  6       3          -1.98    6             3.58
+cand.right_neighbor.form=taking                   6       2          -2.32    6             3.66
+cand.form=also                                    5       0          -4.08    1             -0.75
+cand.form=by                                      5       0          -5.18    2             3.34
+cand.form=term                                    5       0          1.13     5             0.56
+cand.right_neighbor.form=away                     5       1          1.49     5             2.12
+cand.form=at                                      4       0          -4.16    0             
+cand.right_neighbor.form=think                    4       0          -3.82    4             -0.71
+cand.left_neighbor.form=going                     4       1          -2.57    4             0.89
+cand.left_neighbor.form=thank                     4       0          -3.14    0             
+cand.right_neighbor.form='re                      4       0          -3.46    2             0.27
+cand.form=imagine                                 4       2          1.49     4             2.88
+cand.form=actually                                4       0          -2.77    2             -0.32
+cand.left_neighbor.form=stopped                   4       1          -2.13    4             1.72
+cand.left_neighbor.form=academic                  3       2          1.19     3             1.66
+cand.right_neighbor.form=lot                      3       2          -3.28    3             2.76
+cand.form=probably                                3       2          -2.67    3             1.16
+cand.form=performance                             3       0          0.81     3             -0.86
+cand.form=already                                 3       1          -2.8     3             -0.8
+cand.left_neighbor.form=things                    2       0          -2.38    2             3.4
+cand.right_neighbor.form=generally                2       1          -2.17    2             2.83
+cand.form=either                                  2       0          -1.91    2             -1.0
+cand.form=overall                                 2       0          -1.8     2             1.85
+cand.form=his                                     2       0          -4.62    0             
+cand.form=appears                                 2       1          1.55     2             4.39
+cand.xpos=TO                                      2       0          -5.91    1             -0.75
+cand.form=set                                     2       0          1.37     2             1.42
+cand.right_neighbor.form=second                   2       0          -2.76    2             1.29
+cand.right_neighbor.form=testing                  2       0          -1.3     2             1.58
+cand.left_neighbor.form=though                    2       0          -3.24    2             0.5
+cand.form=academic                                1       0          -2.36    1             -2.64
+cand.form=reason                                  1       0          1.14     1             -1.11
+cand.form=took                                    1       0          1.63     1             0.87
+cand.form=kind                                    1       0          1.32     1             0.32
+cand.left_neighbor.form=pay                       1       1          -1.99    1             0.52
+cand.right_neighbor.form=academic                 1       0          -2.35    1             1.71
+cand.form=particularly                            1       0          -1.99    1             0.32
+cand.left_neighbor.form=country                   1       0          -3.06    1             -2.32
+cand.form=decided                                 1       1          1.4      1             5.58
+cand.form=practice                                1       0          0.93     1             -2.3
+cand.form=he                                      1       0          -3.44    1             3.54
+cand.right_neighbor.form=found                    1       0          -2.63    1             3.46
+cand.form=maybe                                   1       0          -3.01    1             1.15
+cand.form=away                                    1       0          -1.81    0             
+cand.form=certain                                 1       0          -2.12    0             
+cand.form=an                                      1       0          -5.08    0             
+cand.right_neighbor.form=day                      1       0          -3.19    1             2.45
+cand.left_neighbor.form=lot                       1       0          -1.33    1             4.9
+cand.form=still                                   1       0          -3.33    1             -1.1
+cand.form=say                                     1       0          1.32     1             -2.51
+cand.right_neighbor.form=training                 1       0          -1.9     1             -1.58
+cand.form=expect                                  1       1          1.55     1             0.38
+cand.right_neighbor.form=might                    1       0          -1.54    1             2.49
+cand.form=we                                      1       0          -3.69    0             
