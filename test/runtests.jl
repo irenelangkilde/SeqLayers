@@ -425,6 +425,28 @@ end
           SeqLayers.DC_STATS[] = nothing
         end
       end
+      # forkthin: forks on a thin best step (some threshold here), still within the cap; needs forkcap
+      @test_throws ErrorException ChainModel(dir; base_..., forkthin = 10)
+      forks = 0.0
+      for n in (3, 10, 30)
+        mt = ChainModel(dir; base_..., forkcap = 4, forkcomb = :avg, forkthin = n); mt.generalize = SeqLayers.generalization_slots(specs)
+        @test mt.opts.forkthin == n
+        SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()
+        try
+          @test 0 <= eval_scores(evaluate_counts(docs, specs, mt, lex)).uas <= 1
+          d = SeqLayers.DC_STATS[]
+          forks += get(d, :fk_forks, 0)
+          @test get(d, :fk_leaves, 0) <= 4 * get(d, :fk_cands, 0)
+        finally
+          SeqLayers.DC_STATS[] = nothing
+        end
+      end
+      @test forks > 0
+      # stepmin: 1 is mincount's own floor here (no change); a huge one leaves no chain steps but still parses
+      ms1 = ChainModel(dir; base_..., stepmin = 1); ms1.generalize = SeqLayers.generalization_slots(specs)
+      @test eval_scores(evaluate_counts(docs, specs, ms1, lex)) == r1
+      msb = ChainModel(dir; base_..., stepmin = 10^9); msb.generalize = SeqLayers.generalization_slots(specs)
+      @test 0 <= eval_scores(evaluate_counts(docs, specs, msb, lex)).uas <= 1
     end
     # partial gold: gold tags come out right; gold head properties too, and they narrow (never hurt) the attachments
     let mg = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 3, redundant = true, ctxmode = :accum)
