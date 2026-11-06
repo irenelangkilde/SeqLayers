@@ -1,0 +1,30 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 24.6 s): 14 of 32 slots always, 280 gate values
+[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (23.0 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 289.1 s
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=odds;leftsmooth=evidence;firstnz=true;ctxmode=accum;ctxattach=false;cidrop=0.0;ciorder=off;telescope=false;branches=1;combine=avg;accumwin=0;accumreset=false;driftsigma=0.0;drifttau=0.0;driftstep=0.0;distback=false;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective;headtrank]  [domains=product domeps=0.0]
+singleton chains: 50 one-step attachment chains, 20 distinct features (307.1 s)
+with leftovers (a nonzero total correction): 33
+feature                                           chains  gold head  mean Δ   w/ leftovers  their mean Δ
+cand.form=with                                    13      0          -4.21    2             2.9
+cand.form=levels                                  4       2          1.09     4             0.03
+cand.form=at                                      4       0          -4.16    0             
+cand.left_neighbor.form=going                     4       1          -2.57    4             0.89
+cand.form=leads                                   3       2          1.35     3             0.01
+cand.form=receive                                 3       2          1.4      3             -0.72
+cand.left_neighbor.form=things                    2       0          -2.38    2             3.4
+cand.xpos=TO                                      2       0          -5.91    1             -0.75
+cand.right_neighbor.form=testing                  2       0          -1.3     2             1.58
+cand.form=owes                                    2       1          1.38     2             1.09
+cand.form=either                                  2       0          -1.91    2             -1.0
+cand.right_neighbor.form=training                 1       0          -1.9     1             -1.58
+cand.left_neighbor.form=kinda                     1       1          1.81     1             3.85
+cand.form=backing                                 1       1          1.21     1             0.79
+cand.form=we                                      1       0          -3.69    0             
+cand.form=gain                                    1       0          1.48     1             0.36
+cand.form=scenario                                1       0          1.43     1             -2.73
+cand.form=crash                                   1       0          1.54     1             1.26
+cand.form=followed                                1       0          1.42     1             0.32
+cand.form=runs                                    1       1          1.36     1             -0.63

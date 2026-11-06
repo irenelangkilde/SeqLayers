@@ -442,6 +442,16 @@ end
         end
       end
       @test forks > 0
+      # firstnz: no chain starts with a zero-chosen feature (checked on every chain built); it still parses
+      mz = ChainModel(dir; base_..., firstnz = true); mz.generalize = SeqLayers.generalization_slots(specs)
+      @test mz.opts.firstnz
+      SeqLayers.SINGLE_HOOK[] = (st_, key_, c_, Ic_, ch_, lo_) ->
+        @test get(ch_.cnt[2], SeqLayers.decisiondef(st_, key_).labeled ? c_ : UInt32(0), (0.0, 0.0))[1] > 0
+      try
+        @test 0 <= eval_scores(evaluate_counts(docs, specs, mz, lex)).uas <= 1
+      finally
+        SeqLayers.SINGLE_HOOK[] = nothing
+      end
       # stepmin: 1 is mincount's own floor here (no change); a huge one leaves no chain steps but still parses
       ms1 = ChainModel(dir; base_..., stepmin = 1); ms1.generalize = SeqLayers.generalization_slots(specs)
       @test eval_scores(evaluate_counts(docs, specs, ms1, lex)) == r1
