@@ -3,7 +3,8 @@
 # (a chain step needs N records; thinner features stay leftovers) and forkthin=N (fork where the best step is thin: one
 # branch takes it, the other the best step with N records; forkcap 16, forkcomb avg), N = 25 / 100 / 400.  On base B +
 # kin + nn2 (0.8782 / 0.8230; fork-avg on lowering steps 0.8834 / 0.8337).  Pairs (at most two kin + nn2 ceilings
-# building at once), 7 workers each.  Args: tag, stepmin | forkthin (one per machine).  Marks done-<tag>.
+# building at once), 7 workers each.  Args: tag, stepmin | forkthin (one per machine), optional
+# quoted list of N (default 25 100 400).  Marks done-<tag>.
 P=/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers
 cd $P
 export PATH=$HOME/.juliaup/bin:$PATH
@@ -22,9 +23,18 @@ one() {
 }
 echo "=== start $(date)" > $OUT/summary-$TAG.txt
 arg() { [ $KIND = stepmin ] && echo "stepmin=$1" || echo "forkcap=16 forkcomb=avg forkthin=$1"; }
+if [ -n "$3" ]; then                    # (extended sweep, 2026-11-06: the given N, two at a time)
+  set -- $3
+  while [ $# -gt 0 ]; do
+    one "$(arg $1)" ${KIND}$1 & sleep 30
+    [ -n "$2" ] && one "$(arg $2)" ${KIND}$2 &
+    wait; shift; shift
+  done
+else
 one "$(arg 25)" ${KIND}25 & sleep 30
 one "$(arg 100)" ${KIND}100 &
 wait
 one "$(arg 400)" ${KIND}400
+fi
 echo "=== all done $(date)" >> $OUT/summary-$TAG.txt
 touch $OUT/done-$TAG

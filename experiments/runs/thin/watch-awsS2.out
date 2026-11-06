@@ -1,0 +1,10 @@
+Shutdown scheduled for Fri 2026-11-06 20:07:47 UTC, use 'shutdown -c' to cancel.
+awsS2 (3.142.241.156): copied back, shutdown scheduled in 5 min, Fri Nov  6 13:02:47 MST 2026
+=== start Fri Nov  6 19:42:51 UTC 2026
+=== stepmin800
+ALL         2899    0.9986  0.8796  0.833   0.0162  1.0     
+score 534.2 s, run 20261106-195818 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== stepmin1600
+ALL         2899    0.9987  0.8775  0.8275  0.0162  1.0     
+score 634.0 s, run 20261106-195954 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Fri Nov  6 19:59:56 UTC 2026

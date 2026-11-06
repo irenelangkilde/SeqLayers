@@ -1,0 +1,12 @@
+Shutdown scheduled for Fri 2026-11-06 20:08:49 UTC, use 'shutdown -c' to cancel.
+awsF2 (3.145.104.130): copied back, shutdown scheduled in 5 min, Fri Nov  6 13:03:49 MST 2026
+=== start Fri Nov  6 19:42:58 UTC 2026
+=== forkthin800
+ALL         2899    0.9984  0.8824  0.8358  0.0162  1.0     
+forkcap: 222370 forks; 1.5 chains per candidate
+score 775.4 s, run 20261106-200217 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== forkthin1600
+ALL         2899    0.9978  0.882   0.8351  0.0162  1.0     
+forkcap: 265206 forks; 1.6 chains per candidate
+score 818.8 s, run 20261106-200301 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Fri Nov  6 20:03:03 UTC 2026
