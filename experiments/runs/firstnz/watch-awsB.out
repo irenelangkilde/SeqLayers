@@ -1,0 +1,9 @@
+Shutdown scheduled for Sat 2026-11-07 00:03:08 UTC, use 'shutdown -c' to cancel.
+awsB (3.16.137.151): copied back, shutdown scheduled in 5 min, Fri Nov  6 16:58:08 MST 2026
+=== start Fri Nov  6 23:25:40 UTC 2026
+=== forkthin400
+recorded events in 594.0 s
+ALL         2899    0.998   0.8855  0.8355  0.0162  1.0     
+forkcap: 200291 forks; 1.45 chains per candidate
+score 992.2 s, run 20261106-235723 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Fri Nov  6 23:57:25 UTC 2026

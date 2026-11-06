@@ -1,0 +1,10 @@
+=== start Fri Nov  6 23:25:33 UTC 2026
+=== alone
+recorded events in 597.8 s
+ALL         2899    0.9977  0.8772  0.8186  0.0162  1.0     
+score 553.8 s, run 20261106-235031 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== stepmin400
+recorded events in 607.5 s
+ALL         2899    0.9976  0.8834  0.8362  0.0162  1.0     
+score 574.1 s, run 20261106-235122 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Fri Nov  6 23:51:23 UTC 2026
