@@ -21,6 +21,8 @@
 # singletons=true: instead, over every dev doc, list the features that are the whole of a one-step attachment chain:
 #   per feature (as named in the traces), how many candidates' chains, how many of them the gold head, the step's Δ,
 #   and how many took leftovers (a nonzero total correction) with their mean total.
+# singletrace=text (with singletons): for the first 2 singleton chains whose feature contains `text`, the sentence and
+#   every possible second step -- its records (chosen / not), its change in log odds, supported and reaching tau or not.
 # prodprops=head_xpos,head_dir,head_dist: only these head properties' terms in the product (as ceiling.jl).
 # nopunct=true: skip errors where the token, its gold head or its predicted head is punctuation (upos PUNCT).
 # headblame=true (domains=product): only errors the attachment alone gets right (argmax P(attach) is the gold head) --
@@ -48,6 +50,7 @@ DEFAULTS["prodprops"] = ""
 DEFAULTS["deprel"] = ""
 DEFAULTS["goldfix"] = "true"
 DEFAULTS["singletons"] = "false"
+DEFAULTS["singletrace"] = ""
 DEFAULTS["headconf"] = 1.0
 DEFAULTS["domains"] = "off"
 DEFAULTS["domeps"] = 1e-3
@@ -483,6 +486,7 @@ if cfg["singletons"] == "true"
   single = Dict{String,Vector{Any}}()                 # name -> [chains, gold-head ones, sum of Δ, with leftovers, sum of their Δ]
   goldof = Dict{Tuple{Doc,UnitRange{Int}},UnitRange{Int}}()
   curdoc = Ref{Doc}(first(s.devdocs)[2])
+  traced = Ref(0)
   S.SINGLE_HOOK[] = function (st, key, c, Ic, ch, lo)
     S.decisiondef(st, key).name == :attach || return
     t = key[3]
@@ -494,6 +498,30 @@ if cfg["singletons"] == "true"
     v[1] += 1; v[2] += isgold; v[3] += log(ch.odds[end]) - log(ch.odds[1])
     lc = lo - log(ch.odds[end])                       # the leftovers' total correction
     abs(lc) > 1e-9 && (v[4] += 1; v[5] += lc)
+    if !isempty(cfg["singletrace"]) && occursin(cfg["singletrace"], nm) && traced[] < 2
+      traced[] += 1
+      toks = st.layers[:token]
+      words(u) = u == NONE ? "ROOT" : S.tokstr(st, Int(u))
+      gs = g === nothing ? "?" : isempty(g) ? "ROOT" : String(curdoc[].text[g])
+      println("\n== singleton $nm: token '$(words(t))' -> candidate '$(words(c))' (gold head '$gs')")
+      println("   sentence: ", join([S.tokstr(st, u) for u in sort(1:length(toks); by = u -> toks[:first_char, u])
+        if toks[:sentence, u] == toks[:sentence, t]], " "))
+      c0 = get(ch.cnt[end], UInt32(0), (0.0, 0.0))
+      println("   step 1: $nm  records $(Int(c0[1]))/$(Int(c0[2]))  log odds $(round(log(ch.odds[1]); digits = 2)) -> $(round(log(ch.odds[end]); digits = 2));  final with leftovers $(round(lo; digits = 2))")
+      x = ch.odds[end]
+      tk = S.typekey(:token, 1)
+      rest = [q for q in S.admitted(m, tk, Ic) if Ic[q] != S.ABSENT && Ic[q] != only(ch.members)]
+      rows = map(zip(rest, S.extend_all(m, ch, 1, UInt64[Ic[q] for q in rest]))) do (q, e)
+        y, ok = S.update_odds(m, e, UInt32(0), x)
+        cc = get(e[2], UInt32(0), (0.0, 0.0))
+        (slotdesc(st, t, c, q), cc, ok ? log(y) - log(x) : NaN, ok)
+      end
+      nsup = count(r -> r[4], rows); ntau = count(r -> r[4] && abs(r[3]) >= m.opts.tau, rows)
+      println("   second-step candidates: $(length(rows)) admitted; $nsup supported (>= mincount $(m.opts.mincount) records), $ntau of them move the odds by tau ($(m.opts.tau))")
+      for r in sort(rows; by = r -> (r[4] ? 0 : 1, isnan(r[3]) ? 0.0 : -abs(r[3]), -(r[2][1] + r[2][2])))[1:min(15, end)]
+        println("     ", rpad(r[1], 52), "records ", rpad("$(Int(r[2][1]))/$(Int(r[2][2]))", 12), r[4] ? "Δ $(round(r[3]; digits = 3))" : "unsupported")
+      end
+    end
   end
   r = CeilingRecorder(m, first(s.devdocs)[2], false, cfg["headconf"]; domains, domeps)
   t0 = time()

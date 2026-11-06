@@ -1,0 +1,123 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 25.1 s): 14 of 32 slots always, 280 gate values
+[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (26.1 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/events
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=odds;leftsmooth=evidence;ctxmode=accum;ctxattach=false;cidrop=0.0;ciorder=off;telescope=false;branches=1;combine=avg;accumwin=0;accumreset=false;driftsigma=0.0;drifttau=0.0;driftstep=0.0;distback=false;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective;headtrank]  [domains=product domeps=0.0]
+
+== singleton cand.left_neighbor.form=observed: token '17' -> candidate 'losses' (gold head 'associated')
+   sentence: Higher levels of proficiency ( or exposure ) may be associated with less attrition [ 17 ] , [ 18 ] , [ 21 ] , [ 23 ] or even with no observed losses [ 21 ] .
+   step 1: cand.left_neighbor.form=observed  records 0/464  log odds -4.23 -> -6.14;  final with leftovers -4.5
+   second-step candidates: 23 admitted; 15 supported (>= mincount 5 records), 0 of them move the odds by tau (0.1)
+     cand.left_neighbor.upos=VERB                        records 0/464       Δ 0.0
+     cand.left_neighbor.xpos=VBN                         records 0/397       Δ 0.0
+     direction=right                                     records 0/219       Δ 0.0
+     dep.basepos=N                                       records 0/137       Δ 0.0
+     cand.upos=NOUN                                      records 0/118       Δ 0.0
+     cand.basepos=N                                      records 0/118       Δ 0.0
+     cand.person=3rd                                     records 0/118       Δ 0.0
+     cand.xpos=NNS                                       records 0/67        Δ 0.0
+     cand.number=plural                                  records 0/67        Δ 0.0
+     dep.right_neighbor.upos=PUNCT                       records 0/60        Δ 0.0
+     distance=19 words (bucket 11+)                      records 0/37        Δ 0.0
+     dep.upos=NUM                                        records 0/5         Δ 0.0
+     dep.xpos=CD                                         records 0/5         Δ 0.0
+     dep.left_neighbor.xpos=-LRB-                        records 0/5         Δ 0.0
+     dep.right_neighbor.xpos=-RRB-                       records 0/5         Δ 0.0
+
+== singleton cand.left_neighbor.form=observed: token '23' -> candidate 'losses' (gold head '17')
+   sentence: Higher levels of proficiency ( or exposure ) may be associated with less attrition [ 17 ] , [ 18 ] , [ 21 ] , [ 23 ] or even with no observed losses [ 21 ] .
+   step 1: cand.left_neighbor.form=observed  records 0/464  log odds -4.23 -> -6.14;  final with leftovers -4.5
+   second-step candidates: 23 admitted; 15 supported (>= mincount 5 records), 0 of them move the odds by tau (0.1)
+     cand.left_neighbor.upos=VERB                        records 0/464       Δ 0.0
+     cand.left_neighbor.xpos=VBN                         records 0/397       Δ 0.0
+     direction=right                                     records 0/219       Δ 0.0
+     dep.basepos=N                                       records 0/137       Δ 0.0
+     cand.upos=NOUN                                      records 0/118       Δ 0.0
+     cand.basepos=N                                      records 0/118       Δ 0.0
+     cand.person=3rd                                     records 0/118       Δ 0.0
+     cand.xpos=NNS                                       records 0/67        Δ 0.0
+     cand.number=plural                                  records 0/67        Δ 0.0
+     dep.right_neighbor.upos=PUNCT                       records 0/60        Δ 0.0
+     distance=7 words (bucket 6-10)                      records 0/37        Δ 0.0
+     dep.upos=NUM                                        records 0/5         Δ 0.0
+     dep.xpos=CD                                         records 0/5         Δ 0.0
+     dep.left_neighbor.xpos=-LRB-                        records 0/5         Δ 0.0
+     dep.right_neighbor.xpos=-RRB-                       records 0/5         Δ 0.0
+singleton chains: 1136 one-step attachment chains, 73 distinct features (302.2 s)
+with leftovers (a nonzero total correction): 236
+feature                                           chains  gold head  mean Δ   w/ leftovers  their mean Δ
+cand.upos=PUNCT                                   804     0          -8.66    47            -0.45
+cand.form=for                                     32      0          -5.74    2             1.2
+cand.form=if                                      19      0          -4.72    0             
+cand.form=n't                                     16      0          -5.21    2             -0.24
+cand.form=just                                    16      0          -4.45    6             -1.67
+cand.left_neighbor.form=month                     14      5          -1.64    14            1.91
+cand.form=with                                    13      0          -4.21    2             2.9
+cand.left_neighbor.form=observed                  12      6          -1.91    12            1.98
+cand.right_neighbor.form=case                     11      3          -2.72    11            4.57
+cand.form='re                                     10      0          -3.46    5             -0.36
+cand.right_neighbor.form=been                     10      0          -4.42    8             -0.61
+cand.form=could                                   10      0          -3.6     0             
+cand.form=from                                    9       0          -4.9     4             1.99
+cand.left_neighbor.form=accident                  8       5          -2.14    8             2.52
+cand.form=very                                    7       0          -4.26    3             -1.21
+cand.left_neighbor.form=means                     7       1          -2.29    7             1.18
+cand.form='m                                      7       0          -4.1     0             
+cand.right_neighbor.form=paper                    6       4          -2.18    6             3.01
+cand.left_neighbor.form=whatever                  6       3          -1.98    6             3.58
+cand.right_neighbor.form=taking                   6       2          -2.32    6             3.66
+cand.form=also                                    5       0          -4.08    1             -0.75
+cand.form=by                                      5       0          -5.18    2             3.34
+cand.form=at                                      4       0          -4.16    0             
+cand.right_neighbor.form=structure                4       2          -1.68    4             2.43
+cand.right_neighbor.form=think                    4       0          -3.82    4             -0.71
+cand.left_neighbor.form=going                     4       1          -2.57    4             0.89
+cand.left_neighbor.form=thank                     4       0          -3.14    0             
+cand.right_neighbor.form='re                      4       0          -3.46    2             0.27
+cand.form=actually                                4       0          -2.77    2             -0.32
+cand.form=levels                                  4       2          1.09     4             0.03
+cand.left_neighbor.form=stopped                   4       1          -2.13    4             1.72
+cand.right_neighbor.form=lot                      3       2          -3.28    3             2.76
+cand.form=probably                                3       2          -2.67    3             1.16
+cand.form=already                                 3       1          -2.8     3             -0.8
+cand.form=leads                                   3       2          1.35     3             0.01
+cand.form=receive                                 3       2          1.4      3             -0.72
+cand.right_neighbor.form=john                     3       1          -1.58    3             1.67
+cand.left_neighbor.form=things                    2       0          -2.38    2             3.4
+cand.left_neighbor.form=structure                 2       0          -1.66    2             1.78
+cand.form=else                                    2       0          -1.66    2             0.05
+cand.right_neighbor.form=generally                2       1          -2.17    2             2.83
+cand.form=owes                                    2       1          1.38     2             1.09
+cand.form=either                                  2       0          -1.91    2             -1.0
+cand.form=overall                                 2       0          -1.8     2             1.85
+cand.form=his                                     2       0          -4.62    0             
+cand.xpos=TO                                      2       0          -5.91    1             -0.75
+cand.left_neighbor.form=continued                 2       0          -1.02    2             1.39
+cand.right_neighbor.form=second                   2       0          -2.76    2             1.29
+cand.right_neighbor.form=testing                  2       0          -1.3     2             1.58
+cand.left_neighbor.form=though                    2       0          -3.24    2             0.5
+cand.left_neighbor.form=classroom                 1       1          -0.91    1             1.79
+cand.form=academic                                1       0          -2.36    1             -2.64
+cand.form=gain                                    1       0          1.48     1             0.36
+cand.left_neighbor.form=pay                       1       1          -1.99    1             0.52
+cand.left_neighbor.form=john                      1       0          -1.58    1             -0.34
+cand.right_neighbor.form=academic                 1       0          -2.35    1             1.71
+cand.form=particularly                            1       0          -1.99    1             0.32
+cand.left_neighbor.form=kinda                     1       1          1.81     1             3.85
+cand.left_neighbor.form=country                   1       0          -3.06    1             -2.32
+cand.right_neighbor.form=found                    1       0          -2.63    1             3.46
+cand.form=maybe                                   1       0          -3.01    1             1.15
+cand.form=away                                    1       0          -1.81    0             
+cand.form=certain                                 1       0          -2.12    0             
+cand.form=an                                      1       0          -5.08    0             
+cand.right_neighbor.form=day                      1       0          -3.19    1             2.45
+cand.form=runs                                    1       1          1.36     1             -0.63
+cand.form=still                                   1       0          -3.33    1             -1.1
+cand.right_neighbor.form=training                 1       0          -1.9     1             -1.58
+cand.form=backing                                 1       1          1.21     1             0.79
+cand.form=we                                      1       0          -3.69    0             
+cand.form=scenario                                1       0          1.43     1             -2.73
+cand.form=followed                                1       0          1.42     1             0.32
+cand.form=crash                                   1       0          1.54     1             1.26
