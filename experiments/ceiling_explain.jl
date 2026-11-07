@@ -487,6 +487,12 @@ if cfg["singletons"] == "true"
   goldof = Dict{Tuple{Doc,UnitRange{Int}},UnitRange{Int}}()
   curdoc = Ref{Doc}(first(s.devdocs)[2])
   traced = Ref(0)
+  singles = Any[]                                     # (doc, token span, candidate span, feature, gold?) per singleton chain
+  outcome = Dict{Tuple{Doc,UnitRange{Int}},Tuple{UnitRange{Int},Bool,Bool}}()   # token -> (predicted head span, head ok, label ok)
+  TOKEN_HOOK[] = function (st, t, a, pa, rel, pr)
+    hs = pa == NONE || pa == PENDING ? (0:-1) : S.tokspan(st, Int(pa))
+    outcome[(curdoc[], S.tokspan(st, t))] = (hs, pa == a, pa == a && pr == rel)
+  end
   S.SINGLE_HOOK[] = function (st, key, c, Ic, ch, lo)
     S.decisiondef(st, key).name == :attach || return
     t = key[3]
@@ -494,6 +500,7 @@ if cfg["singletons"] == "true"
     nm = sl === nothing ? "?" : slotdesc(st, t, c, sl)
     g = get(curdoc[].gold.head, S.tokspan(st, t), nothing)
     isgold = g !== nothing && (c == NONE ? isempty(g) : S.tokspan(st, Int(c)) == g)
+    push!(singles, (curdoc[], S.tokspan(st, t), c == NONE ? (0:-1) : S.tokspan(st, Int(c)), nm, isgold))
     v = get!(single, nm, Any[0, 0, 0.0, 0, 0.0])
     v[1] += 1; v[2] += isgold; v[3] += log(ch.odds[end]) - log(ch.odds[1])
     lc = lo - log(ch.odds[end])                       # the leftovers' total correction
@@ -529,7 +536,23 @@ if cfg["singletons"] == "true"
     curdoc[] = d; r.doc = d
     process(d, specs, OracleModel(), s.lex; observer = r)
   end
-  S.SINGLE_HOOK[] = nothing
+  S.SINGLE_HOOK[] = nothing; TOKEN_HOOK[] = nothing
+  # each singleton chain against its token's outcome: was the token's head / label right, and was this candidate picked?
+  kind(nm) = startswith(nm, "cand.upos=PUNCT") ? "PUNCT" : occursin("neighbor", nm) ? "neighbour form" : "own form / tag"
+  grp = Dict{String,Vector{Int}}()                   # kind -> [chains, token head wrong, token label wrong (head right), gold & picked, gold & missed, not gold & picked]
+  for (d, sp, cs, nm, isg) in singles
+    o = get(outcome, (d, sp), nothing)
+    o === nothing && continue
+    v = get!(grp, kind(nm), zeros(Int, 6))
+    picked = o[1] == cs
+    v[1] += 1; v[2] += !o[2]; v[3] += o[2] && !o[3]
+    v[4] += isg && picked; v[5] += isg && !picked; v[6] += !isg && picked
+  end
+  println("singleton chains vs their tokens' outcomes (tokens scored by the ceiling):")
+  println(rpad("kind", 18), rpad("chains", 8), rpad("head wrong", 12), rpad("label wrong", 13), rpad("gold, picked", 14), rpad("gold, missed", 14), "not gold, picked")
+  for (k, v) in sort(collect(grp); by = p -> -p[2][1])
+    println(rpad(k, 18), rpad(v[1], 8), rpad(v[2], 12), rpad(v[3], 13), rpad(v[4], 14), rpad(v[5], 14), v[6])
+  end
   tot = sum(v[1] for v in values(single); init = 0)
   println("singleton chains: $tot one-step attachment chains, $(length(single)) distinct features ($(round(time() - t0; digits = 1)) s)")
   nl = sum(v[4] for v in values(single); init = 0)
