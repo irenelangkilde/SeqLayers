@@ -1,0 +1,23 @@
+Connection reset by 18.117.233.124 port 22
+=== start Sat Nov  7 05:47:22 UTC 2026
+=== sfx3
+recorded events in 606.0 s
+ALL         2899    0.9977  0.8755  0.8203  0.0162  1.0     
+score 554.6 s, run 20261107-061254 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== sfx4
+recorded events in 616.9 s
+ALL         2899    0.9977  0.8748  0.8189  0.0162  1.0     
+score 541.6 s, run 20261107-061320 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== sfx5
+recorded events in 610.6 s
+ALL         2899    0.9977  0.8775  0.8206  0.0162  1.0     
+score 551.6 s, run 20261107-063857 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== sfx6
+recorded events in 612.4 s
+ALL         2899    0.9977  0.8769  0.8206  0.0162  1.0     
+score 546.8 s, run 20261107-063928 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== sfx3456
+recorded events in 616.2 s
+ALL         2899    0.9977  0.8734  0.8148  0.0162  1.0     
+score 594.1 s, run 20261107-070629 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Sat Nov  7 07:06:30 UTC 2026
