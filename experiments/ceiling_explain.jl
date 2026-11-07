@@ -488,6 +488,7 @@ if cfg["singletons"] == "true"
   curdoc = Ref{Doc}(first(s.devdocs)[2])
   traced = Ref(0)
   singles = Any[]                                     # (doc, token span, candidate span, feature, gold?) per singleton chain
+  ncand = Dict{Tuple{Doc,UnitRange{Int}},Int}()       # token -> its attachment candidates
   outcome = Dict{Tuple{Doc,UnitRange{Int}},Tuple{UnitRange{Int},Bool,Bool}}()   # token -> (predicted head span, head ok, label ok)
   TOKEN_HOOK[] = function (st, t, a, pa, rel, pr)
     hs = pa == NONE || pa == PENDING ? (0:-1) : S.tokspan(st, Int(pa))
@@ -501,6 +502,7 @@ if cfg["singletons"] == "true"
     g = get(curdoc[].gold.head, S.tokspan(st, t), nothing)
     isgold = g !== nothing && (c == NONE ? isempty(g) : S.tokspan(st, Int(c)) == g)
     push!(singles, (curdoc[], S.tokspan(st, t), c == NONE ? (0:-1) : S.tokspan(st, Int(c)), nm, isgold))
+    ncand[(curdoc[], S.tokspan(st, t))] = length(S.decisiondef(st, key).candidates(st, t))
     v = get!(single, nm, Any[0, 0, 0.0, 0, 0.0])
     v[1] += 1; v[2] += isgold; v[3] += log(ch.odds[end]) - log(ch.odds[1])
     lc = lo - log(ch.odds[end])                       # the leftovers' total correction
@@ -548,6 +550,17 @@ if cfg["singletons"] == "true"
     v[1] += 1; v[2] += !o[2]; v[3] += o[2] && !o[3]
     v[4] += isg && picked; v[5] += isg && !picked; v[6] += !isg && picked
   end
+  # per token with a singleton chain: how many of its candidates have one, and with how many distinct features
+  bytok = Dict{Tuple{Doc,UnitRange{Int}},Vector{Any}}()
+  for (d, sp, cs, nm, _) in singles
+    v = get!(bytok, (d, sp), Any[Set{UnitRange{Int}}(), Set{String}()])
+    push!(v[1], cs); push!(v[2], nm)
+  end
+  shares = [length(v[1]) / max(ncand[k], 1) for (k, v) in bytok]
+  println("tokens with a singleton chain: $(length(bytok));  candidates per token (median) $(sort([ncand[k] for k in keys(bytok)])[(length(bytok) + 1) ÷ 2]);  ",
+    "singleton candidates per token: 1 -> $(count(v -> length(v[1]) == 1, values(bytok))), 2 -> $(count(v -> length(v[1]) == 2, values(bytok))), 3+ -> $(count(v -> length(v[1]) >= 3, values(bytok)));  ",
+    "all candidates singletons: $(count(k -> length(bytok[k][1]) == ncand[k], keys(bytok)));  ",
+    "tokens whose singleton candidates share one feature: $(count(v -> length(v[1]) >= 2 && length(v[2]) == 1, values(bytok))) of $(count(v -> length(v[1]) >= 2, values(bytok))) with 2+")
   println("singleton chains vs their tokens' outcomes (tokens scored by the ceiling):")
   println(rpad("kind", 18), rpad("chains", 8), rpad("head wrong", 12), rpad("label wrong", 13), rpad("gold, picked", 14), rpad("gold, missed", 14), "not gold, picked")
   for (k, v) in sort(collect(grp); by = p -> -p[2][1])

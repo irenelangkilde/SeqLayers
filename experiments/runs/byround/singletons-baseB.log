@@ -1,16 +1,17 @@
-[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 27.0 s): 14 of 32 slots always, 280 gate values
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 25.9 s): 14 of 32 slots always, 280 gate values
 [ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
-[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (25.1 s)
+[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (24.7 s)
 treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
 train sample: 2568 sentences;  dev: 179 sentences
 using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank/events
 chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=odds;leftsmooth=evidence;ctxmode=accum;ctxattach=false;cidrop=0.0;ciorder=off;telescope=false;branches=1;combine=avg;accumwin=0;accumreset=false;driftsigma=0.0;drifttau=0.0;driftstep=0.0;distback=false;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective;headtrank]  [domains=product domeps=0.0]
+tokens with a singleton chain: 998;  candidates per token (median) 3;  singleton candidates per token: 1 -> 866, 2 -> 126, 3+ -> 6;  all candidates singletons: 4;  tokens whose singleton candidates share one feature: 56 of 132 with 2+
 singleton chains vs their tokens' outcomes (tokens scored by the ceiling):
 kind              chains  head wrong  label wrong  gold, picked  gold, missed  not gold, picked
 PUNCT             804     207         93           0             0             0
 own form / tag    199     17          7            8             4             2
 neighbour form    133     29          6            30            10            7
-singleton chains: 1136 one-step attachment chains, 73 distinct features (304.6 s)
+singleton chains: 1136 one-step attachment chains, 73 distinct features (297.7 s)
 with leftovers (a nonzero total correction): 236
 feature                                           chains  gold head  mean Δ   w/ leftovers  their mean Δ
 cand.upos=PUNCT                                   804     0          -8.66    47            -0.45
