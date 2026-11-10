@@ -302,6 +302,24 @@ end
       mp.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
+    # relstrikes: no up-front relevance filter; struck-out leftovers leave (dropped or pooled); every one taken reaches tau
+    @test_throws ErrorException ChainModel(dir; select = :maxdev, leftovers = :greedy, ctxmode = :greedy, relstrikes = 2)
+    for (ns, pool) in ((1, false), (2, false), (2, true))
+      mr = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum,
+        relevance = 0.25, relstrikes = ns, relpool = pool)
+      mr.generalize = SeqLayers.generalization_slots(specs)
+      @test (mr.opts.relstrikes, mr.opts.relpool) == (ns, pool)
+      taken = Float64[]
+      SeqLayers.ACCUM_TRACE[] = (sx, T, tries, k, corr, hist) -> push!(taken, corr)
+      SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()
+      try
+        @test 0 <= eval_scores(evaluate_counts(docs, specs, mr, lex)).uas <= 1
+        @test all(c -> abs(c) >= mr.opts.tau, taken)
+        @test get(SeqLayers.DC_STATS[], pool ? :rs_pooled : :rs_dropped, 0) > 0
+      finally
+        SeqLayers.ACCUM_TRACE[] = nothing; SeqLayers.DC_STATS[] = nothing
+      end
+    end
     # ctxcache: contexts kept across calls -- exactly the same counts, and the cache is used
     let mc = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum)
       mc.generalize = SeqLayers.generalization_slots(specs)

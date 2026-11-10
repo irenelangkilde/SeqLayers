@@ -234,6 +234,8 @@ struct ChainOpts
   firstnz::Bool                                  # a chain's first step can't be a feature with zero chosen records (it would freeze the chain: every later step's Δ is 0); it stays a later step / leftover (user 2026-11-06)
   lefttopn::Int                                   # > 0 (accum): each round only the n pending leftovers that can add most given the context -- min over its features a of D[a, X] (ci_table) -- are scored (user 2026-11-10)
   steptopn::Int                                   # > 0: after the first step, only the n remaining features that can add most given the chain (min over its features a of D[a, X]) are scored
+  relstrikes::Int                                 # > 0 (accum): no up-front relevance filter; a leftover under tau (or unsupported) in a round gets a strike, at relstrikes it leaves (user 2026-11-10)
+  relpool::Bool                                   # relstrikes: a struck-out leftover joins the context without a correction (else it's dropped)
   forkcap::Int                                    # > 0 (:maxdev): when the largest |step| lowers the odds and a different feature raises them most (by tau), the chain forks; at most this many chains per candidate (see fork_chains)
   forkcomb::Symbol                                # forkcap: a candidate's score from its chains, :max or :avg
   forkleft::Symbol                                # forkcap: :each (every chain gets its leftovers; compared on chain + leftovers) or :chosen (compared on the chain alone; the best gets leftovers; :max only)
@@ -360,7 +362,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0, accumstop = 0.0, forkcap = 0, forkcomb = :max, forkleft = :each, accumpick = :abs, accumfloor = false, ilscore = :corr, nchains = 1, stepmin = 0, forkthin = 0, firstnz = false, lefttopn = 0, steptopn = 0, candmemo = false)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0, accumstop = 0.0, forkcap = 0, forkcomb = :max, forkleft = :each, accumpick = :abs, accumfloor = false, ilscore = :corr, nchains = 1, stepmin = 0, forkthin = 0, firstnz = false, lefttopn = 0, steptopn = 0, relstrikes = 0, relpool = false, candmemo = false)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms, :maxpos, :maxabsscore, :maxposneg) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
@@ -377,6 +379,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   ilscore in (:corr, :raw) || error("unknown ilscore $ilscore (use :corr or :raw)")
   nchains >= 1 || error("nchains: at least 1")
   forkthin > 0 && forkcap <= 0 && error("forkthin: needs forkcap > 0")
+  relstrikes > 0 && (ctxmode != :accum || interleave) && error("relstrikes: ctxmode :accum, no interleave")
   nchains > 1 && (ctxmode != :accum || leftovers != :greedy || interleave) && error("nchains > 1: ctxmode :accum, leftovers :greedy, no interleave")
   forkcomb in (:max, :avg) || error("unknown forkcomb $forkcomb (use :max or :avg)")
   forkleft in (:each, :chosen) || error("unknown forkleft $forkleft (use :each or :chosen)")
@@ -454,7 +457,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, candmemo, accumpick, accumfloor, ilscore, nchains, stepmin, forkthin, firstnz, lefttopn, steptopn, forkcap, forkcomb, forkleft, accumstop, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, candmemo, accumpick, accumfloor, ilscore, nchains, stepmin, forkthin, firstnz, lefttopn, steptopn, relstrikes, relpool, forkcap, forkcomb, forkleft, accumstop, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -2859,6 +2862,9 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
   # slot -> [(round, running estimate T, context, its odds, X's records there, correction, the score it competed with)]
   hist = ACCUM_TRACE[] === nothing ? nothing : Dict{Int,Vector{Any}}()
   rnd = 0
+  # relstrikes (user's design 2026-11-10): a leftover under tau (or unsupported) in a round gets a strike; at relstrikes
+  # strikes it leaves -- dropped, or (relpool) into the context without a correction.  Only leftovers reaching tau are taken.
+  strikes = Dict{Int,Int}()
   fullround = false                                  # (lefttopn) the pruned round found nothing: score them all once
   while true
     rnd += 1
@@ -3231,11 +3237,14 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
     lt = m.opts.lefttopn > 0 && !isempty(base) ? get(m.ci, m.recs[base[1]].typekey, nothing) : nothing
     scored = lt === nothing || fullround ? nothing : Set(topn_slots(lt, Int[lslots[i][rung[i]] for i in eachindex(ladders) if rung[i] <= length(ladders[i])],
       pending, m.opts.lefttopn))
+    tried_ = m.opts.relstrikes > 0 ? Set{Int}() : nothing    # (relstrikes) scored this round, and their scores
+    rsc_ = m.opts.relstrikes > 0 ? Dict{Int,Float64}() : nothing
     for (pi_, sx) in enumerate(pending)
       scored === nothing || sx in scored || continue
       X = Ic[sx]
       X in items(rung) && continue                  # already in the context (as a generalization): redundant
       m.opts.telescope && blocked(sx) && continue
+      tried_ === nothing || push!(tried_, sx)
       A = m.opts.telescope ? anchor(sx) : UInt64(0)
       tries === nothing || (tries[sx] = Any[])
       # accumby :dep: X walks its own path, each step the move losing the least of X's dependence on the context
@@ -3379,6 +3388,8 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
         push!(get!(hist, sx, Any[]), (round = rnd, T = T, ctx = tries[sx][tr_].ctx, odds = tries[sx][tr_].odds,
           nX = tries[sx][tr_].nX, corr = tries[sx][tr_].corr, score = xc))
       end
+      rsc_ === nothing || (rsc_[sx] = xc)
+      rsc_ === nothing || abs(xc) >= m.opts.tau || continue      # (relstrikes: only leftovers reaching tau are taken)
       (bestX == 0 || (m.opts.accumpick == :signed ? xc > bestc : abs(xc) > abs(bestc))) && ((bestX, bestc, bestk, bestr) = (pi_, xc, xk, xr))
       if chainon
         # ilscore :raw -- it competes as a chain step would: log o(x | C ∪ X) - log o(x | C) in its context C, with the
@@ -3434,8 +3445,34 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       end
       (d = DC_STATS[]) === nothing || (d[:il_left] = get(d, :il_left, 0.0) + 1)
     end
+    # relstrikes: this round's strikes; the struck-out leave (by slot, after the pick, so bestX stays valid)
+    function strikeout!()
+      tried_ === nothing && return 0
+      out = Int[]
+      for sx in tried_
+        v = get(rsc_, sx, nothing)
+        (v === nothing || abs(v) < m.opts.tau) || continue
+        (strikes[sx] = get(strikes, sx, 0) + 1) >= m.opts.relstrikes && push!(out, sx)
+      end
+      for sx in out
+        sx in pending || continue
+        if m.opts.relpool && !(Ic[sx] in items(rung))
+          (li, ls) = ladder(Ic[sx], sx)
+          push!(ladders, li); push!(lslots, ls); push!(rung, 1)
+        end
+        (d = DC_STATS[]) === nothing || (k = m.opts.relpool ? :rs_pooled : :rs_dropped; d[k] = get(d, k, 0.0) + 1)
+      end
+      filter!(s -> !(s in out), pending)
+      tried_ = nothing
+      length(out)
+    end
     if bestX == 0
       scored === nothing || length(scored) >= length(pending) || (fullround = true; continue)
+      if m.opts.relstrikes > 0                        # nothing reached tau: everything tried got a strike
+        strikeout!()
+        isempty(pending) && break
+        continue
+      end
       isempty(explained) || (poolexplained!(); continue)
       isempty(dead) && break
       filter!(s -> !(s in dead), pending)             # (telescope) their finer rungs may go ahead
@@ -3468,6 +3505,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
     T += bestc
     fullround = false
     deleteat!(pending, bestX)
+    strikeout!()
     chainrem === nothing || filter!(!=(sx), chainrem)
     filter!(s -> s != sx, explained)
     poolexplained!()
@@ -3779,8 +3817,8 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     end
   end
   if mode == :accum
-    rel = Int[s for s in remaining if Ic[s] != ABSENT &&
-      (m.opts.relevance <= 0 || leftover_relevance(m, st, Ic[s], label, prior, base) >= m.opts.relevance)]
+    rel = Int[s for s in remaining if Ic[s] != ABSENT &&   # (relstrikes: no up-front filter -- strikes in the rounds)
+      (m.opts.relevance <= 0 || m.opts.relstrikes > 0 || leftover_relevance(m, st, Ic[s], label, prior, base) >= m.opts.relevance)]
     m.opts.nchains > 1 && return multi_chain_leftovers(m, st, Ic, G, rel, remaining, label, prior, base)
     return accum_leftovers(m, st, Ic, G, rel, label, prior, base)
   end
