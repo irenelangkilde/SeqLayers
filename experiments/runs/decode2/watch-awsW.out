@@ -1,0 +1,19 @@
+Shutdown scheduled for Tue 2026-11-10 19:47:24 UTC, use 'shutdown -c' to cancel.
+awsW (18.220.149.192): copied back, shutdown scheduled in 5 min, Tue Nov 10 12:42:24 MST 2026
+=== start Tue Nov 10 14:44:24 UTC 2026
+=== sfx3wc
+recorded events in 688.2 s
+doc EWT 471 chars: 564.0 s
+doc CHILDES 1314 chars: 1044.3 s
+doc ESLSpok 2239 chars: 3588.3 s
+doc GUMReddit 4903 chars: 11144.0 s
+doc GUM 4409 chars: 16659.0 s
+profdecode: token.attach	50061	4971	32230.3	643.82
+CHILDES     324     1.0     0.8179  0.7346  0.9901  
+ESLSpok     502     0.997   0.7705  0.7246  0.9796  
+EWT         86      0.9655  0.7619  0.6786  0.5714  
+GUM         963     0.9845  0.7298  0.6919  0.898   
+GUMReddit   1024    0.9917  0.6909  0.6183  0.8868  
+ALL         2899    0.9904  0.7339  0.6759  0.9363  
+build 705.5 s, decode 16694.4 s, run 20261110-194134 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== all done Tue Nov 10 19:41:35 UTC 2026
