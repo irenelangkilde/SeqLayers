@@ -302,6 +302,22 @@ end
       mp.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
+    # ctxcache: contexts kept across calls -- exactly the same counts, and the cache is used
+    let mc = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum)
+      mc.generalize = SeqLayers.generalization_slots(specs)
+      r0 = evaluate_counts(docs, specs, mc, lex)
+      empty!(mc.memo); empty!(SeqLayers.CTX_CACHE)
+      SeqLayers.CTX_CACHE_MAX[] = 1000; SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()
+      try
+        @test evaluate_counts(docs, specs, mc, lex) == r0
+        @test get(SeqLayers.DC_STATS[], :ctx_xhits, 0) > 0
+        SeqLayers.CTX_CACHE_MAX[] = 3                  # (tiny: emptied often, still exact)
+        empty!(mc.memo)
+        @test evaluate_counts(docs, specs, mc, lex) == r0
+      finally
+        SeqLayers.CTX_CACHE_MAX[] = 0; empty!(SeqLayers.CTX_CACHE); SeqLayers.DC_STATS[] = nothing
+      end
+    end
     # lefttopn / steptopn: D-ranked pruning (needs the D table); without a table nothing changes; with one, still parses
     let base_ = (select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum)
       mp = ChainModel(dir; base_...); mp.generalize = SeqLayers.generalization_slots(specs)

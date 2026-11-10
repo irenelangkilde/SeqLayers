@@ -1818,6 +1818,26 @@ function topn_slots(D, ctx, xs, n)
   xs[sortperm([pr(x) for x in xs]; rev = true)[1:n]]
 end
 
+"An accum context's (state, final entry), or nothing if unsupported: the features `xs` in order from the prior."
+function build_context(m::ChainModel, xs, label, prior, base)
+  S, e = ChainState(prior, base), nothing
+  for x in xs
+    e = only(extend_all(m, S, depth(S), [x]))
+    y, ok = update_odds(m, e, label, S.odds[end]; pn = m.opts.smoothn == :parent ? parentn(m, S, label) : NaN)
+    ok || return nothing
+    advance!(m, S, x, e, y)
+  end
+  (S, e)
+end
+
+"""
+Cross-call context cache (ctxcache = N; 2026-11-10): accum contexts by (model, features in order, label, prior, records),
+kept across leftovers calls -- 59% of the builds in an EWT decode repeat an earlier one.  Exact (the states are only
+read); emptied at N entries.  0: off.
+"""
+const CTX_CACHE = Dict{Tuple{UInt64,Vector{UInt64},UInt32,Float64,UInt64},Any}()
+const CTX_CACHE_MAX = Ref(0)
+
 """
 Context-rebuild counter (decision stats; 2026-11-10): accum builds each backoff context from scratch, caching it only
 within one leftovers call.  Per build: ctx_builds, ctx_steps (its features, one extension each), and ctx_rebuilds /
@@ -2719,17 +2739,22 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
     dc = DC_STATS[]
     dc === nothing || haskey(cache, (r, A)) && (dc[:ctx_callhits] = get(dc, :ctx_callhits, 0.0) + 1)
     get!(cache, (copy(r), A)) do
-      S, e = ChainState(prior, base), nothing
       xs = items(r)
       A == 0 || A in xs || push!(xs, A)
       dc === nothing || note_ctx_build!(dc, xs, label, prior, base)
-      for x in xs
-        e = only(extend_all(m, S, depth(S), [x]))
-        y, ok = update_odds(m, e, label, S.odds[end]; pn = m.opts.smoothn == :parent ? parentn(m, S, label) : NaN)
-        ok || return nothing
-        advance!(m, S, x, e, y)
+      if CTX_CACHE_MAX[] > 0                          # (ctxcache: the same context from an earlier call)
+        gk = (objectid(m), xs, label, prior, objectid(base))
+        v = get(CTX_CACHE, gk, missing)
+        if v !== missing
+          dc === nothing || (dc[:ctx_xhits] = get(dc, :ctx_xhits, 0.0) + 1)
+          return v
+        end
+        v = build_context(m, xs, label, prior, base)
+        length(CTX_CACHE) >= CTX_CACHE_MAX[] && empty!(CTX_CACHE)
+        CTX_CACHE[gk] = v
+        return v
       end
-      (S, e)
+      build_context(m, xs, label, prior, base)
     end
   end
   # X's correction in context r (+ anchor A): (correction, its variance, (state, entry), X's entry), or nothing if
