@@ -691,7 +691,7 @@ function main(cfg)
         rs[k] = get(rs, k, 0) + v
       end
       for (k, v) in remotecall_fetch(() -> copy(something(SeqLayers.DC_STATS[], Dict{Symbol,Float64}())), w)
-        (startswith(String(k), "memo_") || startswith(String(k), "cmemo_") || startswith(String(k), "t_") || startswith(String(k), "chain") || startswith(String(k), "ctx_")) && (mm[k] = get(mm, k, 0.0) + v)
+        (startswith(String(k), "memo_") || startswith(String(k), "cmemo_") || startswith(String(k), "t_") || startswith(String(k), "chain") || startswith(String(k), "ctx_") || startswith(String(k), "pend_")) && (mm[k] = get(mm, k, 0.0) + v)
       end
     end
     println("rescorestats: decision\tchanged row\trescores")

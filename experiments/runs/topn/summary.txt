@@ -41,3 +41,9 @@ rescorestats: t_chains_ms	41287
 rescorestats: t_leftovers_ms	118236
 profdecode: token.attach	1047	129	153.4	146.477
 EWT         86      0.9655  0.7262  0.6429  0.8889  
+=== pend
+doc EWT 471 chars: 167.8 s
+rescorestats: t_chains_ms	40527
+rescorestats: t_leftovers_ms	114811
+profdecode: token.attach	1047	129	149.5	142.808
+EWT         86      0.9655  0.7262  0.6429  0.8889  

@@ -3216,6 +3216,12 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
     dead = Int[]                                      # (telescope) leftovers with no supported context
     tries = ACCUM_TRACE[] === nothing ? nothing : Dict{Int,Vector{Any}}()   # (trace: each X's walk along the path)
     explained = Int[]                                # (mindev + explainpool) explained-away leftovers this round
+    # (decision stats) the pending list's size at the start of each round, bucketed: pend_0 .. pend_8, pend_9-16, pend_17+
+    if (dc_ = DC_STATS[]) !== nothing
+      np_ = length(pending)
+      k_ = Symbol(:pend_, np_ <= 8 ? string(np_) : np_ <= 16 ? "9-16" : "17+")
+      dc_[k_] = get(dc_, k_, 0.0) + 1
+    end
     # lefttopn: only the leftovers that can add most given the current context are scored this round
     lt = m.opts.lefttopn > 0 && !isempty(base) ? get(m.ci, m.recs[base[1]].typekey, nothing) : nothing
     scored = lt === nothing || fullround ? nothing : Set(topn_slots(lt, Int[lslots[i][rung[i]] for i in eachindex(ladders) if rung[i] <= length(ladders[i])],
