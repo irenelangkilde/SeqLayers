@@ -3221,6 +3221,11 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       np_ = length(pending)
       k_ = Symbol(:pend_, np_ <= 8 ? string(np_) : np_ <= 16 ? "9-16" : "17+")
       dc_[k_] = get(dc_, k_, 0.0) + 1
+      if rnd == 1                                    # the call's first round: its starting size
+        k1_ = Symbol(:pend_start_, np_ <= 8 ? string(np_) : np_ <= 16 ? "9-16" : "17+")
+        dc_[k1_] = get(dc_, k1_, 0.0) + 1
+      end
+      np_ == 1 && rnd > 1 && (dc_[:pend_1_later] = get(dc_, :pend_1_later, 0.0) + 1)   # 1 pending after taking some
     end
     # lefttopn: only the leftovers that can add most given the current context are scored this round
     lt = m.opts.lefttopn > 0 && !isempty(base) ? get(m.ci, m.recs[base[1]].typekey, nothing) : nothing
