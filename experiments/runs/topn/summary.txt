@@ -1,0 +1,37 @@
+=== none
+doc EWT 471 chars: 184.5 s
+rescorestats: t_chains_ms	47056
+rescorestats: t_leftovers_ms	124381
+profdecode: token.attach	1047	129	162.8	155.498
+EWT         86      0.9655  0.7262  0.6429  0.8889  
+=== left4
+doc EWT 471 chars: 91.8 s
+rescorestats: t_chains_ms	16821
+rescorestats: t_leftovers_ms	60864
+profdecode: token.attach	1058	128	73.1	69.077
+EWT         86      0.9655  0.75    0.6548  0.8889  
+=== left8
+doc EWT 471 chars: 69.7 s
+rescorestats: t_chains_ms	12026
+rescorestats: t_leftovers_ms	45849
+profdecode: token.attach	1056	130	54.8	51.867
+EWT         86      0.9655  0.7143  0.631   0.8889  
+=== step8
+doc EWT 471 chars: 70.8 s
+rescorestats: t_chains_ms	14049
+rescorestats: t_leftovers_ms	44725
+profdecode: token.attach	1013	129	55.8	55.13
+EWT         86      0.9655  0.7143  0.6429  0.8889  
+=== rerun (reverse order)
+=== left8b
+doc EWT 471 chars: 66.8 s
+rescorestats: t_chains_ms	12076
+rescorestats: t_leftovers_ms	42621
+profdecode: token.attach	1056	130	51.9	49.192
+EWT         86      0.9655  0.7143  0.631   0.8889  
+=== noneb
+doc EWT 471 chars: 63.5 s
+rescorestats: t_chains_ms	10792
+rescorestats: t_leftovers_ms	40851
+profdecode: token.attach	1047	129	49.2	47.01
+EWT         86      0.9655  0.7262  0.6429  0.8889  
