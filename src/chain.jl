@@ -1818,6 +1818,27 @@ function topn_slots(D, ctx, xs, n)
   xs[sortperm([pr(x) for x in xs]; rev = true)[1:n]]
 end
 
+"""
+Context-rebuild counter (decision stats; 2026-11-10): accum builds each backoff context from scratch, caching it only
+within one leftovers call.  Per build: ctx_builds, ctx_steps (its features, one extension each), and ctx_rebuilds /
+ctx_rebuild_steps when the same context -- the same features in the same order, label, prior and records -- was built
+before in this process (what a cache across calls would save).  CTX_SEEN is cleared past CTX_SEEN_MAX entries.
+"""
+const CTX_SEEN = Set{UInt64}()
+const CTX_SEEN_MAX = 20_000_000
+function note_ctx_build!(dc, xs, label, prior, base)
+  k = hash((xs, label, prior, isempty(base) ? 0 : base[1], length(base)))
+  dc[:ctx_builds] = get(dc, :ctx_builds, 0.0) + 1
+  dc[:ctx_steps] = get(dc, :ctx_steps, 0.0) + length(xs)
+  if k in CTX_SEEN
+    dc[:ctx_rebuilds] = get(dc, :ctx_rebuilds, 0.0) + 1
+    dc[:ctx_rebuild_steps] = get(dc, :ctx_rebuild_steps, 0.0) + length(xs)
+  else
+    length(CTX_SEEN) >= CTX_SEEN_MAX && empty!(CTX_SEEN)
+    push!(CTX_SEEN, k)
+  end
+end
+
 "The leftover context mode for decision type tk (ctxmode, unless ctxattach / ctxtypes keep it greedy)."
 leftmode(m::ChainModel, tk) = (m.opts.ctxattach && tk != typekey(:token, 1)) || (!isempty(m.ctxtypes) && !(tk in m.ctxtypes)) ? :greedy : m.opts.ctxmode
 "Does decision type tk build its chain interleaved with the leftovers (interleave, :accum contexts)?"
@@ -2695,10 +2716,13 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
   items(r) = unique!(UInt64[L[r[i]] for (i, L) in enumerate(ladders) if r[i] <= length(L)])   # (a generalization may equal another feature)
   cache = Dict{Tuple{Vector{Int},UInt64},Any}()
   function build(r, A = UInt64(0))                  # (state, final entry) of the context (+ anchor A), or nothing if unsupported
+    dc = DC_STATS[]
+    dc === nothing || haskey(cache, (r, A)) && (dc[:ctx_callhits] = get(dc, :ctx_callhits, 0.0) + 1)
     get!(cache, (copy(r), A)) do
       S, e = ChainState(prior, base), nothing
       xs = items(r)
       A == 0 || A in xs || push!(xs, A)
+      dc === nothing || note_ctx_build!(dc, xs, label, prior, base)
       for x in xs
         e = only(extend_all(m, S, depth(S), [x]))
         y, ok = update_odds(m, e, label, S.odds[end]; pn = m.opts.smoothn == :parent ? parentn(m, S, label) : NaN)

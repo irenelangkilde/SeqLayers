@@ -35,3 +35,9 @@ rescorestats: t_chains_ms	10792
 rescorestats: t_leftovers_ms	40851
 profdecode: token.attach	1047	129	49.2	47.01
 EWT         86      0.9655  0.7262  0.6429  0.8889  
+=== ctx
+doc EWT 471 chars: 171.8 s
+rescorestats: t_chains_ms	41287
+rescorestats: t_leftovers_ms	118236
+profdecode: token.attach	1047	129	153.4	146.477
+EWT         86      0.9655  0.7262  0.6429  0.8889  
