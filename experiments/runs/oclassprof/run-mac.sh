@@ -13,6 +13,6 @@ COMMON=(model=chain select=maxdev events=gold dev_sents=5 jointmin=10000 leftove
   suffixes=3 devtb=EWT maxcached=50000000)
 for c in ${CONFIGS:-"plain:" "oclass:oclass=true"}; do
   n=oclassprof_${c%%:*}
-  julia --gcthreads=1 --project=experiments experiments/dev_eval.jl "${COMMON[@]}" workers=1 ${c#*:} note=$n > $OUT/$n.log 2>&1
+  julia --gcthreads=1 --project=experiments experiments/dev_eval.jl "${COMMON[@]}" workers=1 $(echo ${c#*:} | tr "," " ") note=$n > $OUT/$n.log 2>&1
 done
 touch $OUT/done

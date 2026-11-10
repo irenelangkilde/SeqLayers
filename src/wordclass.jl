@@ -110,6 +110,9 @@ function wclass_slots(specs; levels = nothing)
   out
 end
 
+"oclass in the generalization ladders (oclassladder; false keeps it a feature and attachment item only -- 2026-11-10)."
+const OCLASS_LADDER = Ref(true)
+
 """
 For each token decision type, each form slot's generalization slots on the same token (same relation
 path: the token itself, a neighbour, ...): its upos, xpos, basepos, suffixes and word classes, when
@@ -119,7 +122,7 @@ context paths.  For the soft redundant pool (ChainOpts.poolsigma).
 function generalization_slots(specs)
   toks = specs[2]
   ctx = toks.context
-  isgen(f) = f in (:upos, :xpos, :basepos, :oclass) || iswclass(f) || startswith(String(f), "suffix")
+  isgen(f) = f in (:upos, :xpos, :basepos) || (f == :oclass && OCLASS_LADDER[]) || iswclass(f) || startswith(String(f), "suffix")
   function group(paths, slotof)
     forms, gens = Dict{Vector{Symbol},Int}(), Dict{Vector{Symbol},Vector{Int}}()
     for (j, k) in enumerate(paths)
