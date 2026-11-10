@@ -1,0 +1,7 @@
+=== start Tue Nov 10 21:07:21 UTC 2026
+=== fk400s2
+recorded events in 606.8 s
+ALL         2899    0.998   0.8858  0.8427  0.0162  1.0     
+forkcap: 185832 forks; 1.42 chains per candidate
+score 552.9 s, run 20261110-213211 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Tue Nov 10 21:32:12 UTC 2026
