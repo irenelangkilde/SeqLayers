@@ -368,7 +368,7 @@ end
 
 function attach_context_ready(st, t)
   toks, chars = st.layers[:token], st.layers[:char]
-  (toks[:upos, t] == PENDING || toks[:xpos, t] == PENDING) && return false
+  SOFTTAGS[] == 0 && (toks[:upos, t] == PENDING || toks[:xpos, t] == PENDING) && return false   # (softtags: mixed over them)
   for dir in (-1, 1)
     adjacent_token(st, t, dir) == PENDING || continue
     if dir < 0                                       # the missing left neighbour ends at the char before t (spaces skipped)

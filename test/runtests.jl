@@ -540,6 +540,24 @@ end
       default_specs()                                  # (PROJECTIVE back to the suite's setting)
       @test evaluate_counts(docs, specs, md, lex) == r0
     end
+    # softtags: attachments of tokens with undecided own tags are mixed over tag pairs; still one tree per sentence
+    let ms = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 3, redundant = true, ctxmode = :accum, candmemo = true)
+      ms.generalize = SeqLayers.generalization_slots(specs)
+      SeqLayers.SOFTTAGS[] = 2; SeqLayers.ATTACH_WAIT[] = true; SeqLayers.SOFTHEADS[] = true
+      SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()
+      try
+        @test 0 <= eval_scores(evaluate_counts(docs, specs, ms, lex)).uas <= 1
+        @test get(SeqLayers.DC_STATS[], :softtags, 0) > 0
+        for d in docs, ps in process(d, specs, ms, lex)
+          h = ps.heads
+          reaches(k) = (j = k; for _ in eachindex(h); h[j] == 0 && return true; j = h[j]; end; false)
+          @test all(reaches, eachindex(h))
+        end
+      finally
+        SeqLayers.SOFTTAGS[] = 0; SeqLayers.ATTACH_WAIT[] = false; SeqLayers.SOFTHEADS[] = false
+        SeqLayers.DC_STATS[] = nothing
+      end
+    end
     # attachwait / rescoreevery: the same tokens and sentences here; n = 1 and no wait: unchanged
     let mw = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 3, redundant = true, ctxmode = :accum, candmemo = true)
       mw.generalize = SeqLayers.generalization_slots(specs)

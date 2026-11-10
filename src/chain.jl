@@ -3822,6 +3822,10 @@ end
 function decide(m::ChainModel, st::State, key::AgendaKey)
   d, i = decisiondef(st, key), key[3]
   d.ready(st, i) || return (NONE, -Inf)
+  if SOFTTAGS[] > 0 && st.infer && !STRICT[] && d.name == :attach && own_tags_pending(st, i)
+    r = soft_tag_choice(m, st, key, d, i)
+    r === nothing || return r
+  end
   r = chain_scores(m, st, key)
   r === nothing && return (NONE, -Inf)
   cands, scores = r
@@ -3840,6 +3844,77 @@ function decide(m::ChainModel, st::State, key::AgendaKey)
     end
   end
   choose(cands, scores, wait)
+end
+
+"""
+Soft tags (softtags = k; user's design 2026-11-09): while token t's own UPOS or XPOS is undecided, its attachment is
+scored under each of the k most probable (UPOS, XPOS) pairs -- from the top 3 values of each tag decision's own
+distribution, by the product of their probabilities -- and the candidates' probabilities (wait included) are mixed by
+the pairs' renormalized weights.  The tags stay ordinary decisions, decided afterwards (with the attachment as
+context).  The hypothetical tags are written in only while scoring; their reads are recorded as they really are
+(pending), so committing them rescores the attachment.  0: off.
+"""
+const SOFTTAGS = Ref(0)
+
+const OWN_TAGS = (:upos, :xpos)
+own_tags_pending(st, t) = any(n -> haskey(st.layers[:token].spec.rows, n) && st.layers[:token][n, t] == PENDING, OWN_TAGS)
+
+function soft_tag_choice(m::ChainModel, st::State, key::AgendaKey, d, i)
+  toks = st.layers[:token]
+  ks = [(k, dd.name) for (k, dd) in enumerate(toks.spec.decisions) if dd.name in OWN_TAGS]
+  length(ks) == 2 || return nothing
+  dists = map(ks) do (k, name)
+    v0 = toks[name, i]
+    v0 == PENDING || return (UInt32[v0], [1.0])
+    r = chain_scores(m, st, (:token, k, i))
+    r === nothing && return nothing
+    vals, sc = r
+    p = exp.(sc .- maximum(sc)); p ./= sum(p)
+    o = sortperm(p; rev = true)[1:min(3, end)]
+    (vals[o], p[o])
+  end
+  any(isnothing, dists) && return nothing
+  hyps = [((a, b), pa * pb) for (a, pa) in zip(dists[1]...) for (b, pb) in zip(dists[2]...)]
+  sort!(hyps; by = h -> -h[2])
+  hyps = hyps[1:min(SOFTTAGS[], end)]
+  z = sum(last, hyps)
+  names = last.(ks)
+  rows = Set(toks.spec.rows[n] for n in names)
+  old = [toks.grid[toks.spec.rows[n], i] for n in names]
+  trace = READ_TRACE[]
+  nt = trace === nothing ? 0 : length(trace)
+  wait = d.open ? waitscore(m, st, key) : nothing
+  cands, mixed = nothing, nothing
+  try
+    for ((a, b), w) in hyps
+      toks.grid[toks.spec.rows[names[1]], i] = a; toks.grid[toks.spec.rows[names[2]], i] = b
+      r = chain_scores(m, st, key)
+      r === nothing && continue
+      cs, sc = r
+      SOFTHEADS[] && (sc = sc .+ soft_head_terms(m, st, i, cs))
+      all_ = wait === nothing ? sc : [sc; wait]
+      p = exp.(all_ .- maximum(all_)); p ./= sum(p)
+      if mixed === nothing
+        cands, mixed = cs, (w / z) .* p
+      elseif cs == cands
+        mixed .+= (w / z) .* p
+      end
+    end
+  finally
+    for (j, n) in enumerate(names)
+      toks.grid[toks.spec.rows[n], i] = old[j]
+    end
+    if trace !== nothing                             # the own tags' reads as they really are
+      for j in nt+1:length(trace)
+        l, row, col, _ = trace[j]
+        l == :token && col == i && row in rows && (trace[j] = (l, row, col, toks.grid[row, i]))
+      end
+    end
+  end
+  mixed === nothing && return nothing
+  (dc = DC_STATS[]) === nothing || (dc[:softtags] = get(dc, :softtags, 0.0) + 1)
+  lp = log.(max.(mixed, 1e-300))
+  wait === nothing ? choose(cands, lp, nothing) : choose(cands, lp[1:end-1], lp[end])
 end
 
 """
