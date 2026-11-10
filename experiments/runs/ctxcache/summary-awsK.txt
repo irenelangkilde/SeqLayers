@@ -1,0 +1,47 @@
+=== start Tue Nov 10 17:06:35 UTC 2026
+=== on
+recorded events in 525.3 s
+doc ESLSpok 2239 chars: 942.3 s
+doc CHILDES 1314 chars: 270.7 s
+doc EWT 471 chars: 215.5 s
+doc GUMReddit 4903 chars: 2941.7 s
+doc GUM 4409 chars: 3237.7 s
+rescorestats: ctx_builds	9568911
+rescorestats: ctx_callhits	11288314
+rescorestats: ctx_rebuild_steps	15866498
+rescorestats: ctx_rebuilds	6255349
+rescorestats: ctx_steps	28253916
+rescorestats: ctx_xhits	5557913
+rescorestats: t_chains_ms	1455990
+rescorestats: t_leftovers_ms	5890435
+profdecode: token.attach	51547	4784	7266.1	140.961
+CHILDES     324     1.0     0.7747  0.6636  0.9804  
+ESLSpok     502     0.997   0.7405  0.6926  0.9796  
+EWT         86      0.9655  0.7262  0.6429  0.8889  
+GUM         963     0.9845  0.7024  0.6488  0.9388  
+GUMReddit   1024    0.9917  0.6497  0.5662  0.9038  
+ALL         2899    0.9904  0.6992  0.6287  0.9503  
+build 543.7 s, decode 3258.5 s, run 20261110-181307 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== off
+recorded events in 527.4 s
+doc ESLSpok 2239 chars: 965.2 s
+doc CHILDES 1314 chars: 274.8 s
+doc EWT 471 chars: 224.0 s
+doc GUMReddit 4903 chars: 3163.2 s
+doc GUM 4409 chars: 3424.2 s
+rescorestats: ctx_builds	9568911
+rescorestats: ctx_callhits	11288314
+rescorestats: ctx_rebuild_steps	15866498
+rescorestats: ctx_rebuilds	6255349
+rescorestats: ctx_steps	28253916
+rescorestats: t_chains_ms	1454627
+rescorestats: t_leftovers_ms	6356254
+profdecode: token.attach	51547	4784	7722.2	149.809
+CHILDES     324     1.0     0.7747  0.6636  0.9804  
+ESLSpok     502     0.997   0.7405  0.6926  0.9796  
+EWT         86      0.9655  0.7262  0.6429  0.8889  
+GUM         963     0.9845  0.7024  0.6488  0.9388  
+GUMReddit   1024    0.9917  0.6497  0.5662  0.9038  
+ALL         2899    0.9904  0.6992  0.6287  0.9503  
+build 544.3 s, decode 3447.1 s, run 20261110-181552 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== all done Tue Nov 10 18:15:53 UTC 2026
