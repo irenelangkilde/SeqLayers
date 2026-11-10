@@ -302,6 +302,21 @@ end
       mp.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
+    # lefttopn / steptopn: D-ranked pruning (needs the D table); without a table nothing changes; with one, still parses
+    let base_ = (select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum)
+      mp = ChainModel(dir; base_...); mp.generalize = SeqLayers.generalization_slots(specs)
+      r0 = evaluate_counts(docs, specs, mp, lex)
+      mt = ChainModel(dir; base_..., lefttopn = 2, steptopn = 2); mt.generalize = SeqLayers.generalization_slots(specs)
+      @test (mt.opts.lefttopn, mt.opts.steptopn) == (2, 2)
+      @test evaluate_counts(docs, specs, mt, lex) == r0                       # (no table: no pruning)
+      tk1 = SeqLayers.typekey(:token, 1)
+      Dt = SeqLayers.ci_table(mt, tk1)
+      @test Dt !== nothing
+      mt.ci[tk1] = Dt
+      @test SeqLayers.topn_slots(Dt, Int[1], collect(2:6), 2) |> length == 2
+      @test SeqLayers.topn_slots(Dt, Int[], collect(2:6), 2) == collect(2:6)
+      @test 0 <= eval_scores(evaluate_counts(docs, specs, mt, lex)).uas <= 1
+    end
     # nchains: restarted chains -- they run, build more than one chain somewhere, and 1 is the plain decode
     @test_throws ErrorException ChainModel(dir; select = :maxdev, leftovers = :greedy, ctxmode = :greedy, nchains = 3)
     let base_ = (select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum)
