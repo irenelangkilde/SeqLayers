@@ -1,0 +1,50 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 637.7 s
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 142.6 s): 18 of 52 slots always, 436 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 3898564 records (842176 grouped, 17 label sets)
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 143.1 s): 18 of 52 slots always, 436 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 3898564 records (842176 grouped, 17 label sets)
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 144.2 s): 18 of 52 slots always, 436 gate values
+      From worker 4:	[ Info: ChainModel: grouped decisions into 3898564 records (842176 grouped, 17 label sets)
+      From worker 5:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 145.1 s): 18 of 52 slots always, 436 gate values
+      From worker 5:	[ Info: ChainModel: grouped decisions into 3898564 records (842176 grouped, 17 label sets)
+      From worker 6:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 145.3 s): 18 of 52 slots always, 436 gate values
+      From worker 6:	[ Info: ChainModel: grouped decisions into 3898564 records (842176 grouped, 17 label sets)
+      From worker 3:	[ Info: ChainModel: joint tables for 1358 frequent items, 325764 pairs (198.2 s)
+      From worker 2:	[ Info: ChainModel: joint tables for 1358 frequent items, 325764 pairs (202.5 s)
+      From worker 4:	[ Info: ChainModel: joint tables for 1358 frequent items, 325764 pairs (211.2 s)
+      From worker 5:	[ Info: ChainModel: joint tables for 1358 frequent items, 325764 pairs (216.6 s)
+      From worker 6:	[ Info: ChainModel: joint tables for 1358 frequent items, 325764 pairs (218.4 s)
+      From worker 6:	doc EWT 471 chars: 1214.0 s
+      From worker 5:	doc CHILDES 1314 chars: 1931.7 s
+      From worker 4:	doc ESLSpok 2239 chars: 7358.0 s
+      From worker 2:	doc GUMReddit 4903 chars: 23667.9 s
+      From worker 3:	doc GUM 4409 chars: 36001.4 s
+profdecode: decision	calls	not ready	seconds	ms per call
+profdecode: token.attach	51346	5027	69076.9	1345.322
+profdecode: token.xpos	27980	0	315.0	11.257
+profdecode: token.deprel	7068	3114	205.0	29.002
+profdecode: token.upos	25727	0	170.0	6.607
+profdecode: char.gap	35583	253	111.8	3.143
+profdecode: token.basepos	21013	0	71.8	3.416
+profdecode: token.number	19231	0	50.6	2.629
+profdecode: token.person	17476	0	39.1	2.238
+profdecode: token.tense	14824	0	32.4	2.187
+profdecode: token.oclass	15295	0	19.6	1.284
+profdecode: token.head_upos	3114	3114	0.1	0.022
+profdecode: token.head_trank	3114	3114	0.0	0.008
+profdecode: token.head_kinleft	3114	3114	0.0	0.008
+profdecode: token.head_xpos	3114	3114	0.0	0.002
+profdecode: token.head_kinright	3114	3114	0.0	0.001
+profdecode: token.head_dist	3114	3114	0.0	0.001
+profdecode: token.head_dir	3114	3114	0.0	0.001
+count cache: 3120329 new feature sets, 3120329 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank-kin-hkinleftright-nn2-ocl/events
+treebank    words   token_f1  uas     las     sent_f1
+CHILDES     324     1.0     0.7778  0.6636  0.9901  
+ESLSpok     502     0.997   0.7645  0.7006  0.9691  
+EWT         86      0.9655  0.7738  0.7381  0.8889  
+GUM         963     0.9845  0.7108  0.6572  0.9388  
+GUMReddit   1024    0.9917  0.6241  0.5545  0.96    
+ALL         2899    0.9904  0.6989  0.6315  0.9663  
+build 654.7 s, decode 36041.9 s, run 20261110-154322 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
