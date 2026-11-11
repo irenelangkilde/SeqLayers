@@ -302,6 +302,20 @@ end
       mp.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
+    # accumby = :mincontrib: the backoff moves the feature adding least given the others; it runs and takes leftovers
+    let mc = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum,
+        accumby = :mincontrib)
+      mc.generalize = SeqLayers.generalization_slots(specs)
+      @test mc.opts.accumby == :mincontrib
+      taken = Ref(0)
+      SeqLayers.ACCUM_TRACE[] = (sx, T, tries, k, corr, hist) -> (taken[] += 1)
+      try
+        @test 0 <= eval_scores(evaluate_counts(docs, specs, mc, lex)).uas <= 1
+      finally
+        SeqLayers.ACCUM_TRACE[] = nothing
+      end
+      @test taken[] > 0
+    end
     # accumby = :lifo: the backoff moves the most recently added context feature first -- each walk drops later features
     # before earlier ones (the context's items at each step are a prefix-closed shrinking of the chain + leftovers order)
     let ml = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum,

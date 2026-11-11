@@ -395,8 +395,8 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   lookw in (:dw, :int, :min, :max) || error("unknown lookw $lookw (use :dw, :int, :min or :max)")
   chainshrinkto in (:prev, :gen, :prior) || error("unknown chainshrinkto $chainshrinkto (use :prev, :gen or :prior)")
   depmeasure in DEP_MEASURES || error("unknown depmeasure $depmeasure (use $(join(DEP_MEASURES, ", ")))")
-  accumby in (:odds, :lifo, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs, :look1red, :look1ind, :look1nonred, :look1int, :wsel) ||
-    error("unknown accumby $accumby (use :odds, :lifo, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc or :bfs, :look1red, :look1ind, :look1nonred, :look1int, :wsel)")
+  accumby in (:odds, :lifo, :mincontrib, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc, :bfs, :look1red, :look1ind, :look1nonred, :look1int, :wsel) ||
+    error("unknown accumby $accumby (use :odds, :lifo, :mincontrib, :dep, :depodds, :marg, :mindev, :mindevsup, :mintw, :mintwc or :bfs, :look1red, :look1ind, :look1nonred, :look1int, :wsel)")
   ctxsize in (:min, :chain, :adaptive) || error("unknown ctxsize $ctxsize (use :min, :chain or :adaptive)")
   stepscore in (:abs, :signed, :maxmin, :maxmin2, :posneg, :posnegprior, :negpos, :bipolar, CRIT_STEPS...) ||
     error("unknown stepscore $stepscore (use :abs, :signed, :maxmin, :maxmin2, :posneg, :posnegprior, :negpos or :bipolar)")
@@ -2874,6 +2874,27 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
     path = Any[(copy(rung), build(rung))]
     function step!(path)
       r = path[end][1]
+      if m.opts.accumby == :mincontrib               # (user's design 2026-11-11) the feature adding least given the others
+        S0, e0 = path[end][2]                        # moves: |log o(context) - log o(context without it)|, smallest first
+        l0 = e0 === nothing ? log(prior) : log(S0.odds[end])
+        contrib = Tuple{Float64,Int}[]
+        for i in eachindex(ladders)
+          r[i] <= length(ladders[i]) || continue      # (already dropped)
+          rd = copy(r); rd[i] = length(ladders[i]) + 1
+          cd = build(rd)
+          ld = cd === nothing ? NaN : (cd[2] === nothing ? log(prior) : log(cd[1].odds[end]))
+          push!(contrib, (isnan(ld) ? Inf : abs(l0 - ld), i))   # (unknown: last)
+        end
+        for (_, i) in sort!(contrib)
+          r[i] == length(ladders[i]) && !maydrop(r, i) && continue
+          r2 = copy(r); r2[i] += 1                  # one rung up its ladder, or dropped past the last
+          c = build(r2)
+          c === nothing && continue
+          push!(path, (r2, c))
+          return true
+        end
+        return false
+      end
       if m.opts.accumby == :lifo                     # (user's design 2026-11-11) the most recently added feature moves
         for i in reverse(eachindex(ladders))         # (ladders: the chain's features in order, then leftovers as taken)
           r[i] <= length(ladders[i]) || continue      # (already dropped)
@@ -3260,11 +3281,11 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       A = m.opts.telescope ? anchor(sx) : UInt64(0)
       tries === nothing || (tries[sx] = Any[])
       # accumby :dep: X walks its own path, each step the move losing the least of X's dependence on the context
-      xpath = m.opts.accumby in (:odds, :lifo) ? path : Any[path[1]]
+      xpath = m.opts.accumby in (:odds, :lifo, :mincontrib) ? path : Any[path[1]]
       imp = m.opts.accumby == :depodds ? margimpact(X) : 0.0
       bfsr = m.opts.accumby == :bfs && xcorr(path[1][1], X, A) === nothing ? bfsctx(X, A) : nothing
       bfsr === nothing || (xpath = Any[(bfsr, build(bfsr))])     # (bfs: the chosen context, taken as is)
-      xstep! = m.opts.accumby in (:odds, :lifo, :bfs) ? (m.opts.accumby == :bfs && bfsr !== nothing ? (p -> false) : step!) : m.opts.accumby in (:dep, :depodds) ? (p -> depstep!(p, X, imp)) :
+      xstep! = m.opts.accumby in (:odds, :lifo, :mincontrib, :bfs) ? (m.opts.accumby == :bfs && bfsr !== nothing ? (p -> false) : step!) : m.opts.accumby in (:dep, :depodds) ? (p -> depstep!(p, X, imp)) :
         m.opts.accumby == :marg ? (p -> margstep!(p, log(prior) + margsigned(X))) :
         m.opts.accumby in (:mintw, :mintwc) ? (p -> twstep!(p, X)) : m.opts.accumby in (:look1red, :look1ind, :look1nonred, :look1int) ? (p -> lookstep!(p, X, A)) :
         m.opts.accumby == :wsel ? (p -> wstep!(p, X, A)) :
