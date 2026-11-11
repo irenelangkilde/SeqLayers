@@ -10,6 +10,7 @@
 # best others, up to `explaintop` in all): the chain (feature = value, odds after each step), the
 # included leftovers with their contexts and corrections, the chain + leftover log odds, the
 # attachment probability, and with domains=product the head-property terms of the product score.
+# subsetdelta=true (with detail): after each chain, every step's Δ given all the chain's other steps (added last).
 # propdetail=true (default, with detail): for each head property whose top value isn't the gold head's, both values'
 #   chains and leftovers -- what the property's prediction conditioned on.
 # detail=true: per chain step the feature's prior (marginal) effect, its effect in the chain, and the records behind
@@ -53,6 +54,7 @@ DEFAULTS["deprel"] = ""
 DEFAULTS["goldfix"] = "true"
 DEFAULTS["singletons"] = "false"
 DEFAULTS["propdetail"] = "true"
+DEFAULTS["subsetdelta"] = "false"
 DEFAULTS["singletrace"] = ""
 DEFAULTS["headconf"] = 1.0
 DEFAULTS["domains"] = "off"
@@ -392,6 +394,30 @@ function detail(st, t, c, f, Ic, acc; k = 1, label = UInt32(0))
     S.advance!(m, Sc, x, e, f.odds[j+1])
   end
   println("       chain: log odds $(fmtd(log(f.odds[end]))) = odds $(round(f.odds[end]; sigdigits = 3))")
+  # subsetdelta (user 2026-11-11): each step's Δ given all the chain's other steps -- the chain rebuilt without it (in
+  # order), then it added last, with the chain's own smoothing; and the records behind each
+  if cfg["subsetdelta"] == "true" && length(f.members) >= 2
+    println("       given the other steps:  Δ of each step added last to the rest (records: rest / rest + step)")
+    for j in eachindex(f.members)
+      S1 = S.ChainState(p0, base)
+      for (i, x) in enumerate(f.members)
+        i == j && continue
+        e = only(S.extend_all(m, S1, S.depth(S1), [x]))
+        y, ok = S.update_odds(m, e, label, S1.odds[end])
+        ok || break
+        S.advance!(m, S1, x, e, y)
+      end
+      if S.depth(S1) < length(f.members) - 1
+        println("         $j. ", rpad(name(f.members[j]), 40), "  (the other steps aren't supported together)")
+        continue
+      end
+      e = only(S.extend_all(m, S1, S.depth(S1), [f.members[j]]))
+      y, ok = S.update_odds(m, e, label, S1.odds[end])
+      println("         $j. ", rpad(name(f.members[j]), 40), " rest: log odds ", lpad(fmtd(log(S1.odds[end])), 6),
+        "  n ", rpad(fmtn(get(S1.cnt[end], label, (0.0, 0.0))), 12),
+        ok ? "  + it: Δ $(fmtd(log(y) - log(S1.odds[end])))  n $(fmtn(get(e[2], label, (0.0, 0.0))))" : "  + it: unsupported")
+    end
+  end
   if isempty(acc)
     println("       (no accum leftovers traced)")
   end
