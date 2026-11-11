@@ -182,20 +182,22 @@ function explain_prop(st, t, k, name, vals, probs)
   cands = decs[k].candidates(st, t)
   events = Dict{Any,Any}(c => nothing for c in cands)
   accum = Dict{Any,Vector{Any}}(c => Any[] for c in cands)
+  disc = Dict{Any,Vector{Any}}(c => Any[] for c in cands)
+  S.DISCARD_TRACE[] = (kind, sxs) -> append!(get!(disc, S.CHAIN_TRACE_CAND[], Any[]), [(kind, sx) for sx in sxs])
   S.CHAIN_TRACE[] = (ev, data) -> ev == :final ? (events[data.cand] = data) :
-    ev == :reset ? (empty!(accum[data.cand]); nothing) : nothing
+    ev == :reset ? (empty!(accum[data.cand]); empty!(disc[data.cand]); nothing) : nothing
   S.ACCUM_TRACE[] = (sx, T, tries, kk, corr, hist) -> push!(accum[S.CHAIN_TRACE_CAND[]], (sx = sx, T = T, tries = tries, corr = corr, hist = hist))
   empty!(m.memo)
   try
     decide(m, st, key)
   finally
-    S.CHAIN_TRACE[] = nothing; S.ACCUM_TRACE[] = nothing
+    S.CHAIN_TRACE[] = nothing; S.ACCUM_TRACE[] = nothing; S.DISCARD_TRACE[] = nothing
   end
   for (v, tag) in vals
     f = get(events, v, nothing)
     println("\n      ~~ $name = $(headval(name, v)) ($tag):  P $(round(get(probs, v, 0.0); digits = 3))")
     f === nothing && (println("       (no chain traced)"); continue)
-    detail(st, t, v, f, decs[k].items(st, t, v), accum[v]; k, label = v)
+    detail(st, t, v, f, decs[k].items(st, t, v), accum[v]; k, label = v, disc = disc[v])
   end
 end
 
@@ -233,8 +235,10 @@ function explain_attach(st, t, gold, pred)
   items = [decs[1].items(st, t, c) for c in cands]
   slotof(c, x) = findfirst(==(x), items[findfirst(==(c), cands)])
   events = Dict{Any,Any}(c => (left = Any[], final = nothing) for c in cands)
+  disc = Dict{Any,Vector{Any}}(c => Any[] for c in cands)
+  S.DISCARD_TRACE[] = (kind, sxs) -> append!(get!(disc, S.CHAIN_TRACE_CAND[], Any[]), [(kind, sx) for sx in sxs])
   S.CHAIN_TRACE[] = (ev, data) -> ev == :final ? (events[data.cand] = (left = events[data.cand].left, final = data)) :
-    ev == :reset ? (empty!(events[data.cand].left); empty!(accum[data.cand]); nothing) : nothing
+    ev == :reset ? (empty!(events[data.cand].left); empty!(accum[data.cand]); empty!(disc[data.cand]); nothing) : nothing
   S.LEFTOVER_TRACE[] = (sl, inc, ctxs, corr) -> push!(events[S.CHAIN_TRACE_CAND[]].left, (sl, inc, ctxs, corr))
   accum = Dict{Any,Vector{Any}}(c => Any[] for c in cands)
   S.ACCUM_TRACE[] = (sx, T, tries, k, corr, hist) -> push!(accum[S.CHAIN_TRACE_CAND[]], (sx = sx, T = T, tries = tries, corr = corr, hist = hist))
@@ -245,6 +249,7 @@ function explain_attach(st, t, gold, pred)
     decide(m, st, key)
   finally
     S.CHAIN_TRACE[] = nothing; S.LEFTOVER_TRACE[] = nothing; S.ACCUM_TRACE[] = nothing; S.MINDEV_TRACE[] = nothing
+    S.DISCARD_TRACE[] = nothing
   end
   dist = S.commit_dist(m, st, key)
   pa = dist === nothing ? Dict{UInt32,Float64}() : Dict(zip(dist[1], exp.(dist[2])))
@@ -287,7 +292,7 @@ function explain_attach(st, t, gold, pred)
     end
     f === nothing && (println("       (no chain)"); continue)
     if cfg["detail"] == "true"
-      detail(st, t, c, f, items[findfirst(==(c), cands)], accum[c])
+      detail(st, t, c, f, items[findfirst(==(c), cands)], accum[c]; disc = disc[c])
       continue
     end
     println("       prior odds $(round(f.odds[1]; sigdigits = 3))")
@@ -362,7 +367,7 @@ fmtn(n) = n === nothing ? "-" : "$(round(Int, n[1]))/$(round(Int, n[2]))"
 fmtd(x) = (x >= 0 ? "+" : "") * string(round(x; digits = 2))
 
 "The detailed view of candidate c's score (detail=true): see the header."
-function detail(st, t, c, f, Ic, acc; k = 1, label = UInt32(0))
+function detail(st, t, c, f, Ic, acc; k = 1, label = UInt32(0), disc = Any[])
   # k: the token decision (1 attachment; a head property's index for its value `label`, whose items are t's context)
   tk = S.typekey(:token, k)
   base = get(m.typerecs, tk, Int32[])
@@ -458,6 +463,27 @@ function detail(st, t, c, f, Ic, acc; k = 1, label = UInt32(0))
       end
     end
     a.corr >= 0 ? (pos += a.corr) : (neg += a.corr)
+  end
+  # not used (user 2026-11-11): the features this candidate had but didn't count, by why; each with its Δ alone
+  used = Set(f.members)
+  foreach(a -> push!(used, Ic[a.sx]), acc)
+  fmtx(sx) = (x = Ic[sx]; (mΔ, mn) = marginal(x); "$(name(x)) ($(isnan(mΔ) ? "unsupported" : fmtd(mΔ)), n $(fmtn(mn)))")
+  gated = [sx for sx in eachindex(Ic) if Ic[sx] != S.ABSENT && !(Ic[sx] in used) && !(sx in S.admitted(m, tk, Ic))]
+  groups = [("not admitted (relevance gates)", gated)]
+  for (kind, label_) in ((:pool, "pooled (redundant to the chain)"), (:weak, "dropped as weak (redundant and weak alone)"),
+                         (:irrelevant, "dropped as irrelevant (up-front relevance filter)"), (:struck, "struck out (relstrikes)"),
+                         (:struck_pooled, "struck out, pooled (relstrikes, relpool)"), (:untaken, "never taken (no supported context)"))
+    push!(groups, (label_, unique([sx for (kk, sx) in disc if kk == kind && !(Ic[sx] in used)])))
+  end
+  if any(g -> !isempty(g[2]), groups)
+    println("\n       NOT USED (Δ alone vs prior, records chosen / not)")
+    for (label_, sxs) in groups
+      isempty(sxs) && continue
+      println("         ", label_, ": ", length(sxs))
+      for sx in sxs
+        println("           ", fmtx(sx))
+      end
+    end
   end
   println("\n       evidence (sums of Δ log odds): positive ", fmtd(pos), ", negative ", fmtd(neg), ";  final log odds ", fmtd(f.logodds),
     " = odds ", round(exp(f.logodds); sigdigits = 3))

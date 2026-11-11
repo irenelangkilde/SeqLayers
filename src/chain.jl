@@ -3495,6 +3495,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
         end
         (d = DC_STATS[]) === nothing || (k = m.opts.relpool ? :rs_pooled : :rs_dropped; d[k] = get(d, k, 0.0) + 1)
       end
+      DISCARD_TRACE[] === nothing || isempty(out) || DISCARD_TRACE[](m.opts.relpool ? :struck_pooled : :struck, [x for x in out if x in pending])
       filter!(s -> !(s in out), pending)
       tried_ = nothing
       length(out)
@@ -3545,6 +3546,7 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
     filter!(s -> !(s in dead), pending)
     filter!(s -> !(Ic[s] in items(rung)), pending)  # leftovers now in the context are redundant
   end
+  DISCARD_TRACE[] === nothing || firstonly || isempty(pending) || DISCARD_TRACE[](:untaken, copy(pending))
   firstonly ? nothing : total_
 end
 
@@ -3783,6 +3785,12 @@ end
 "Trace hook (accum): for each leftover taken, (slot, running estimate before, its walk along the path, step taken, correction,
 its score in every round it was scored -- see hist)."
 const ACCUM_TRACE = Ref{Any}(nothing)
+"""
+Trace hook (user 2026-11-11): (kind, slots) for leftover candidates left out of a candidate's score -- :pool (redundant to
+the chain), :weak (redundant and weak alone: dropped), :irrelevant (the up-front relevance filter), :struck (relstrikes;
+:struck_pooled with relpool), :untaken (still pending when the leftovers ended).
+"""
+const DISCARD_TRACE = Ref{Any}(nothing)
 "Trace hook (singleton chains; user 2026-11-06): (state, decision key, candidate, its items, its chain, its final log odds
 with leftovers) for each candidate whose chain has exactly one step -- plain per-candidate maxdev chains (no restarts,
 forks or candmemo)."
@@ -3825,6 +3833,10 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     red = first.(rd)
     append!(avail, UInt64[Ic[s] for s in red])
     gone = m.opts.poolmarginal == :drop ? union(red, weak) : red   # :drop: weak non-redundant features are discarded
+    if DISCARD_TRACE[] !== nothing
+      DISCARD_TRACE[](:pool, collect(red))
+      m.opts.poolmarginal == :drop && DISCARD_TRACE[](:weak, collect(weak))
+    end
     remaining = [s for s in remaining if !(s in gone)]
     nred = length(red)
     m.opts.poolsigma > 0 && generalization_weights!(poolw, m, st, Ic, label, prior, base, Set(UInt64[Ic[s] for s in red]))
@@ -3852,6 +3864,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
   if mode == :accum
     rel = Int[s for s in remaining if Ic[s] != ABSENT &&   # (relstrikes: no up-front filter -- strikes in the rounds)
       (m.opts.relevance <= 0 || m.opts.relstrikes > 0 || leftover_relevance(m, st, Ic[s], label, prior, base) >= m.opts.relevance)]
+    DISCARD_TRACE[] === nothing || DISCARD_TRACE[](:irrelevant, [s for s in remaining if Ic[s] != ABSENT && !(s in rel)])
     m.opts.nchains > 1 && return multi_chain_leftovers(m, st, Ic, G, rel, remaining, label, prior, base)
     return accum_leftovers(m, st, Ic, G, rel, label, prior, base)
   end
