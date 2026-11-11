@@ -302,6 +302,30 @@ end
       mp.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
+    # accumby = :lifo: the backoff moves the most recently added context feature first -- each walk drops later features
+    # before earlier ones (the context's items at each step are a prefix-closed shrinking of the chain + leftovers order)
+    let ml = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum,
+        accumby = :lifo)
+      ml.generalize = SeqLayers.generalization_slots(specs)
+      @test ml.opts.accumby == :lifo
+      walks = Any[]
+      SeqLayers.ACCUM_TRACE[] = (sx, T, tries, k, corr, hist) -> push!(walks, [t.ctx for t in tries])
+      try
+        @test 0 <= eval_scores(evaluate_counts(docs, specs, ml, lex)).uas <= 1
+      finally
+        SeqLayers.ACCUM_TRACE[] = nothing
+      end
+      @test !isempty(walks)
+      # in each walk, a step changes the context only at its last still-changing feature: the earlier features
+      # stay as they were until every later one is gone
+      ok = true
+      for w in walks, j in 2:length(w)
+        a_, b_ = w[j-1], w[j]
+        k = something(findfirst(i -> i > length(b_) || a_[i] != b_[i], eachindex(a_)), length(a_) + 1)
+        ok &= all(i -> i <= length(b_) && a_[i] == b_[i], 1:k-1) && length(b_) >= k - 1 && (length(b_) <= length(a_))
+      end
+      @test ok
+    end
     # wc3: 3-way classes from the form -- tables from gold UPOS, a fallback rule, and a model that records and decodes
     let w3 = SeqLayers.wc3_tables(docs, [:wc3lex])
       @test !isempty(w3[:wc3lex]) && all(v -> v in UInt32(1):UInt32(3), values(w3[:wc3lex]))

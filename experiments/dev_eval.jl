@@ -143,7 +143,8 @@
 #   depmeasure   the dependence ρ(E, a) for greedyby=dep / accumby=dep: yule (|Yule's Q|) | pmi (log p(e,a) / p(e)p(a),
 #                label-blind) | pmipos (positive association only)
 #                | mi | oddspmi | moi | logor (one-count smoothed, as the stepscore versions; on the E x a table)
-#   accumby      ctxmode=accum walk step: odds (the move keeping the context's odds closest to the running
+#   accumby      ctxmode=accum walk step: lifo (the most recently added feature moves first: up its ladder, then
+#                dropped -- taken leftovers latest first, then the chain's steps last to first) | odds (the move keeping the context's odds closest to the running
 #                estimate; one path for all leftovers) | dep (each leftover its own path: the move giving up
 #                the least of its dependence ρ = |Yule's Q| on the context's features) | depodds (each leftover
 #                its own path: the move with the smallest |marginal correction| * dependence lost + |log odds
