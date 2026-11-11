@@ -1,0 +1,24 @@
+=== start Wed Nov 11 16:15:57 UTC 2026
+=== c200m (maxcached 200000000)
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train100000-EWT-gold-cdc3db987-wcclasses5-sfx3-rootabs-htrank-kin-hkinleftright-nn2/events
+doc EWT 412 chars: 347.8 s
+doc EWT 185 chars: 121.3 s
+rescorestats: worker 2 cache emptied 1 times, holding 85145835 record numbers
+rescorestats: t_chains_ms	80529
+rescorestats: t_leftovers_ms	357099
+profdecode: token.attach	1848	199	419.2	226.841
+EWT         131     1.0     0.7252  0.6641  1.0     
+ALL         131     1.0     0.7252  0.6641  1.0     
+build 8.9 s, decode 488.7 s, run 20261111-170859 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== c2g (maxcached 2000000000)
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train100000-EWT-gold-cdc3db987-wcclasses5-sfx3-rootabs-htrank-kin-hkinleftright-nn2/events
+doc EWT 412 chars: 352.2 s
+doc EWT 185 chars: 113.0 s
+rescorestats: worker 2 cache emptied 0 times, holding 274176286 record numbers
+rescorestats: t_chains_ms	78335
+rescorestats: t_leftovers_ms	354338
+profdecode: token.attach	1848	199	414.7	224.419
+EWT         131     1.0     0.7252  0.6641  1.0     
+ALL         131     1.0     0.7252  0.6641  1.0     
+build 8.6 s, decode 485.0 s, run 20261111-171016 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== all done Wed Nov 11 17:10:17 UTC 2026
