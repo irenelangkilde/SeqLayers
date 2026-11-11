@@ -36,7 +36,7 @@ export NONE, PENDING,
   addcol!, follow, context, label_features, link_features, solve!,
   AbstractModel, CountModel, OracleModel, GoldModel, GoldGapsModel, CountingModel, decide, score,
   default_specs, read_conllu, doc_from_text, CharIndex,
-  ParsedSentence, process, train!, evaluate, evaluate_counts, eval_scores, LDS, DFS,
+  ParsedSentence, write_conllu, process, train!, evaluate, evaluate_counts, eval_scores, LDS, DFS,
   LatticeModel, record_events, ChainModel, climb_table, load_wordclasses, load_pptable
 
 end

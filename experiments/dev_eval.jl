@@ -330,6 +330,8 @@
 #   corpus       a file listing the training .conllu files (# comments; default CORPUS_LIST); its dev/test files are
 #                the same paths with -ud-dev / -ud-test.  Events for a non-default list are kept apart
 #   devsplit     dev | test: which split is decoded and scored
+#   conllu_out   path prefix: write the predictions as <prefix>-pred.conllu and the same gold sentences as
+#                <prefix>-gold.conllu, for the CoNLL shared-task scorers (conll17_ud_eval.py / conll18_ud_eval.py)
 #   tune_sents   held-out tuning sentences per treebank: the training sentences right after those
 #                (ceiling.jl on=tune scores them, e.g. to calibrate the leftovers' weight)
 #   leftalpha    weights of the greedy leftovers' corrections per decision type, from this TSV
@@ -353,7 +355,7 @@ const CORPUS_LIST = "/Users/irenelangkildegeary2015/Projects/crystallization/jul
 const RESULTS = joinpath(HERE, "results.csv")
 
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
-  "wmo" => 1e-3, "train_sents" => 500, "corpus" => "", "devsplit" => "dev", "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
+  "wmo" => 1e-3, "train_sents" => 500, "corpus" => "", "devsplit" => "dev", "conllu_out" => "", "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
   "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "fwdcheck" => "false", "softheads" => "false", "displace" => NaN, "displacecap" => 2, "dfsepshead" => NaN, "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "ciorder" => "off", "telescope" => "false", "smoothd" => 1.0, "smootha" => 0.0, "smoothn" => "set", "accumby" => "odds", "depmeasure" => "yule", "mindevtau" => 0.1, "mindevstop" => "localmin", "explainpool" => "false", "chainshrink" => 0.0, "chainshrinkto" => "prev", "chainsel" => 0.0, "lookw" => "dw", "headsibs" => "", "idxeq" => "false", "kinitems" => "false", "neighbor2" => "false", "oclass" => "false", "fwdsets" => "false", "fcommit" => "false", "attachwait" => "false", "rescoreevery" => 1, "bioes" => "false", "headkin" => "", "lookwsmooth" => 0.0, "lookwback" => 0.0, "stickbreak" => "off", "posnegrestart" => "false", "posnegseed" => "own", "dualchain" => "off", "dualcombine" => "sum", "dualw" => 0.5, "dualleft" => "true", "dualturn" => "both", "posnegafter" => "false", "posnegleftneg" => "false", "posnegonly" => "all", "leftwback" => 0.0, "leftwovl" => "false", "leftwcomb" => "prod", "wselcomb" => "sum", "wselmove" => "weights", "wselweight" => "false", "tuplek" => 0, "tuplemin" => 0.0, "interleave" => "false", "goldtok" => "false", "profdecode" => "false", "devtb" => "", "rescorestats" => "false", "golddec" => "", "accumgreedy" => 0.0, "accumstop" => 0.0, "accumpick" => "abs", "accumfloor" => "false", "ilscore" => "corr", "nchains" => 1, "stepmin" => 0, "forkthin" => 0, "firstnz" => "false", "softtags" => 0, "oclassladder" => "true", "lefttopn" => 0, "relstrikes" => 0, "relpool" => "false", "ctxcache" => 0, "steptopn" => 0, "shapeitems" => "true", "prodnorm" => "off", "candmemo" => "false", "forkcap" => 0, "forkcomb" => "max", "forkleft" => "each", "lookwsoft" => "false", "depweight" => "false", "gatemincount" => -1, "branches" => 1, "combine" => "avg", "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "driftsigma" => 0.0, "distback" => "false", "shrink" => 0.0, "shrinkleft" => 0.0, "leftmin2" => 0, "headwc" => "", "headwcdir" => "/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5", "drifttau" => 0.0, "driftstep" => 0.0, "relbounded" => "false", "relnone" => "false", "treerank" => "false", "headtrank" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
@@ -593,7 +595,7 @@ function setup(cfg)
   end
   build_s = time() - t0
   nlambda = model isa LatticeModel ? length(model.lambda) : model isa CountModel ? length(model.chosen) : 0
-  (; tbs, idx, wc, sfx, devdocs, tunedocs, trainsample, workdir, model, lex, recipe, modelname, build_s, nlambda)
+  (; tbs, idx, wc, sfx, devdocs, devfiles, tunedocs, trainsample, workdir, model, lex, recipe, modelname, build_s, nlambda)
 end
 
 """
@@ -681,7 +683,7 @@ end
 
 function main(cfg)
   s = setup(cfg)
-  (; tbs, devdocs, modelname, build_s, nlambda) = s
+  (; tbs, devdocs, devfiles, modelname, build_s, nlambda) = s
 
   # decode the dev docs in parallel
   rundir = start_workers(cfg, s)
@@ -693,8 +695,31 @@ function main(cfg)
   goldtok && push!(golds, :gap)
   all(g -> g in (:gap, :tags, :heads), golds) || error("golddec: gap, tags, heads")
   wrap(mm) = (mm = isempty(golds) ? mm : SeqLayers.GoldModel(mm, golds); prof ? SeqLayers.CountingModel(mm) : mm)
-  counts = pmap(p -> (p[1], (t = time(); c = evaluate_counts([p[2]], WSPECS, wrap(WMODEL), WLEX; search = WSEARCH);
+  cout = cfg["conllu_out"]                           # (conllu_out: each doc's prediction to a file of its own)
+  docfile(d) = cout * "-doc" * string(hash(String(d.text)); base = 16) * ".conllu"
+  counts = pmap(p -> (p[1], (t = time();
+    isempty(cout) || (SeqLayers.PRED_HOOK[] = (d, pred) -> open(io -> write_conllu(io, d, pred), docfile(d), "w"));
+    c = evaluate_counts([p[2]], WSPECS, wrap(WMODEL), WLEX; search = WSEARCH);
     prof && println("doc $(p[1]) $(length(p[2].text)) chars: $(round(time() - t; digits = 1)) s"); c)), devdocs[order])
+  if !isempty(cout)                                  # predictions in dev order, and the same gold sentences, for the scorer
+    open(cout * "-pred.conllu", "w") do io
+      for (_, d) in devdocs
+        f = docfile(d)
+        isfile(f) && (write(io, read(f, String)); rm(f))
+      end
+    end
+    open(cout * "-gold.conllu", "w") do io
+      for (tb, f) in zip(tbs, devfiles)
+        n = sum((nsents(d) for (t, d) in devdocs if t == tb); init = 0)   # (whole docs: as many sentences as decoded)
+        n == 0 && continue
+        blocks = split(read(f, String), r"\n\s*\n"; keepempty = false)
+        for b in blocks[1:min(n, end)]
+          println(io, strip(b, '\n')); println(io)
+        end
+      end
+    end
+    println("conllu: $(cout)-pred.conllu, $(cout)-gold.conllu")
+  end
   if cfg["rescorestats"] == "true"
     rs = Dict{Tuple{Symbol,Symbol,Symbol},Int}()
     mm = Dict{Symbol,Float64}()

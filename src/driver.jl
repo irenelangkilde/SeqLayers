@@ -6,6 +6,8 @@ struct ParsedSentence
   spans::Vector{UnitRange{Int}}    # doc char range of each token
   heads::Vector{Int}               # 0 = root, else 1-based index within the sentence
   deprels::Vector{String}
+  upos::Vector{String}             # predicted tags ("_" if the specs have none, or still pending)
+  xpos::Vector{String}
 end
 
 nextnonspace(text, p) = (while p <= length(text) && isspace(text[p]); p += 1; end; p)
@@ -31,9 +33,10 @@ function sentences(st::State)
     ts = sort!([t for t in 1:length(toks) if toks[:sentence, t] == s]; by = t -> toks[:first_char, t])
     idx = Dict(t => k for (k, t) in enumerate(ts))
     spans = [tokspan(st, t) for t in ts]
+    tag(name, t) = !haskey(toks.spec.rows, name) || toks[name, t] == PENDING ? "_" : TAGSETS[name][toks[name, t]]
     push!(out, ParsedSentence(first(spans[1]):last(spans[end]), [tokstr(st, t) for t in ts], spans,
       [toks[:attach, t] == NONE ? 0 : idx[Int(toks[:attach, t])] for t in ts],
-      [DEPRELS[toks[:deprel, t]] for t in ts]))
+      [DEPRELS[toks[:deprel, t]] for t in ts], [tag(:upos, t) for t in ts], [tag(:xpos, t) for t in ts]))
   end
   sort!(out; by = s -> first(s.span))
 end
@@ -98,12 +101,40 @@ function eval_scores(c::Dict{Symbol,Int})
     sentence_f1 = f1(c[:sent_ok], c[:sent_pred], c[:sent_gold]))
 end
 
+"""
+Called with each document and its predicted sentences by evaluate_counts when set -- e.g. to write them out as CoNLL-U
+(write_conllu; dev_eval conllu_out=).
+"""
+const PRED_HOOK = Ref{Any}(nothing)
+
+"""
+Write predicted sentences as CoNLL-U (2026-11-10, for the CoNLL shared-task scorers): per sentence `# sent_id` (from
+`first_id` on) and `# text`, then ID, FORM, LEMMA _, UPOS, XPOS, FEATS _, HEAD, DEPREL, DEPS _, MISC (SpaceAfter=No when
+the next token follows with no space).  Returns the next sentence id.
+"""
+function write_conllu(io::IO, d::Doc, pred::Vector{ParsedSentence}; first_id::Int = 1)
+  sid = first_id
+  for ps in pred
+    println(io, "# sent_id = ", sid)
+    println(io, "# text = ", replace(strip(String(d.text[ps.span])), r"\s+" => " "))
+    for k in eachindex(ps.tokens)
+      nospace = k < length(ps.tokens) && first(ps.spans[k+1]) == last(ps.spans[k]) + 1
+      println(io, join((k, ps.tokens[k], "_", ps.upos[k], ps.xpos[k], "_", ps.heads[k], ps.deprels[k], "_",
+        nospace ? "SpaceAfter=No" : "_"), '\t'))
+    end
+    println(io)
+    sid += 1
+  end
+  sid
+end
+
 "The raw counts behind `evaluate`."
 function evaluate_counts(docs::Vector{Doc}, specs, model, lex::Lexicon; kw...)
   c = Dict(k => 0 for k in EVAL_COUNTS)
   for d in docs
     gold = d.gold
     pred = process(d, specs, model, lex; kw...)
+    PRED_HOOK[] === nothing || PRED_HOOK[](d, pred)
     predhead = Dict{UnitRange{Int},Tuple{UnitRange{Int},String}}()
     for ps in pred, (k, sp) in enumerate(ps.spans)
       predhead[sp] = (ps.heads[k] == 0 ? (0:-1) : ps.spans[ps.heads[k]], ps.deprels[k])
