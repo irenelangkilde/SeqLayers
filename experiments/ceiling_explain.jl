@@ -215,7 +215,7 @@ function explain_attach(st, t, gold, pred)
     props[name] = (vals, exp.(lps))
     order = sortperm(lps; rev = true)[1:min(3, end)]
     println("      ", rpad(name, 15), join(["$(headval(name, vals[j])) $(round(exp(lps[j]); digits = 3))" for j in order], ", "),
-      "   (gold head: $(headval(name, S.head_value(st, t, gold, name))), predicted head: $(headval(name, S.head_value(st, t, pred, name))))")
+      "   (gold head '$(tokname(st, gold))': $(headval(name, S.head_value(st, t, gold, name))), predicted attachment '$(tokname(st, pred))': $(headval(name, S.head_value(st, t, pred, name))))")
   end
   # propdetail: for each head property whose top value isn't the gold head's, both values' chains and leftovers
   if cfg["detail"] == "true" && cfg["propdetail"] == "true"
