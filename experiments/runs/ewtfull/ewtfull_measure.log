@@ -1,0 +1,159 @@
+treebanks: EWT
+train sample: 12543 sentences;  dev: 111 sentences
+recorded events in 2872.5 s
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 692.1 s): 20 of 56 slots always, 572 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 18750915 records (3700514 grouped, 2712 label sets)
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 702.5 s): 20 of 56 slots always, 572 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 18750915 records (3700514 grouped, 2712 label sets)
+      From worker 3:	[ Info: ChainModel: joint tables for 6282 frequent items, 4077574 pairs (1869.9 s)
+      From worker 2:	[ Info: ChainModel: joint tables for 6282 frequent items, 4077574 pairs (1968.8 s)
+      From worker 3:	doc EWT 2123 chars: 15232.2 s
+      From worker 2:	doc EWT 2185 chars: 18600.5 s
+      From worker 3:	doc EWT 1784 chars: 15438.5 s
+      From worker 2:	doc EWT 1446 chars: 16064.7 s
+      From worker 3:	doc EWT 1304 chars: 8205.0 s
+      From worker 3:	doc EWT 1085 chars: 3662.9 s
+      From worker 2:	doc EWT 1261 chars: 8639.5 s
+      From worker 2:	doc EWT 662 chars: 1866.6 s
+      From worker 2:	doc EWT 412 chars: 1224.8 s
+      From worker 2:	doc EWT 185 chars: 385.3 s
+      From worker 3:	doc EWT 696 chars: 8542.7 s
+rescorestats: decision	changed row	rescores
+rescorestats: char.gap	token.ncols	50615
+rescorestats: token.attach	token.attach	32449
+rescorestats: token.attach	token.ncols	24244
+rescorestats: token.attach	token.upos	21285
+rescorestats: token.attach	token.xpos	18860
+rescorestats: token.attach	token.basepos	14635
+rescorestats: token.attach	token.head_dir	14413
+rescorestats: token.attach	token.number	13563
+rescorestats: token.attach	token.person	12118
+rescorestats: char.gap	fresh	11672
+rescorestats: token.attach	char.gap	10705
+rescorestats: token.attach	token.tense	9308
+rescorestats: token.attach	token.right_neighbor	5665
+rescorestats: token.attach	token.left_neighbor	5431
+rescorestats: token.xpos	token.upos	4391
+rescorestats: token.attach	char.token_of	4295
+rescorestats: token.upos	token.upos	3422
+rescorestats: token.wclass30	fresh	2712
+rescorestats: token.upos	fresh	2712
+rescorestats: token.person	fresh	2712
+rescorestats: token.head_kinleft	fresh	2712
+rescorestats: token.attach	fresh	2712
+rescorestats: token.head_kinright	fresh	2712
+rescorestats: token.head_dist	fresh	2712
+rescorestats: token.head_trank	fresh	2712
+rescorestats: token.wclass3000	fresh	2712
+rescorestats: token.deprel	token.attach	2712
+rescorestats: token.basepos	fresh	2712
+rescorestats: token.deprel	fresh	2712
+rescorestats: token.wclass300	fresh	2712
+rescorestats: token.head_dir	fresh	2712
+rescorestats: token.head_xpos	fresh	2712
+rescorestats: token.xpos	fresh	2712
+rescorestats: token.tense	fresh	2712
+rescorestats: token.wclass30000	fresh	2712
+rescorestats: token.head_upos	fresh	2712
+rescorestats: token.number	fresh	2712
+rescorestats: token.upos	token.xpos	2648
+rescorestats: token.xpos	token.wclass30	2620
+rescorestats: token.xpos	token.wclass30000	2617
+rescorestats: chain_steps	6902853
+rescorestats: chains_built	3041492
+rescorestats: cmemo_hit	875256
+rescorestats: cmemo_miss	3023359
+rescorestats: ctx_builds	27847849
+rescorestats: ctx_callhits	58468664
+rescorestats: ctx_rebuild_steps	47686602
+rescorestats: ctx_rebuilds	21388731
+rescorestats: ctx_steps	70546059
+rescorestats: memo_hit_attach	10080
+rescorestats: memo_hit_basepos	1917
+rescorestats: memo_hit_deprel	37
+rescorestats: memo_hit_gap	58768
+rescorestats: memo_hit_head_dir	45136
+rescorestats: memo_hit_head_dist	45136
+rescorestats: memo_hit_head_kinleft	45136
+rescorestats: memo_hit_head_kinright	45136
+rescorestats: memo_hit_head_trank	45136
+rescorestats: memo_hit_head_upos	45136
+rescorestats: memo_hit_head_xpos	45136
+rescorestats: memo_hit_number	1617
+rescorestats: memo_hit_person	1808
+rescorestats: memo_hit_tense	1499
+rescorestats: memo_hit_upos	2168
+rescorestats: memo_hit_wclass30	798
+rescorestats: memo_hit_wclass300	772
+rescorestats: memo_hit_wclass3000	795
+rescorestats: memo_hit_wclass30000	795
+rescorestats: memo_hit_xpos	2191
+rescorestats: memo_miss_attach	43638
+rescorestats: memo_miss_basepos	14161
+rescorestats: memo_miss_deprel	3184
+rescorestats: memo_miss_gap	5779
+rescorestats: memo_miss_head_dir	8582
+rescorestats: memo_miss_head_dist	8582
+rescorestats: memo_miss_head_kinleft	8582
+rescorestats: memo_miss_head_kinright	8582
+rescorestats: memo_miss_head_trank	8582
+rescorestats: memo_miss_head_upos	8582
+rescorestats: memo_miss_head_xpos	8582
+rescorestats: memo_miss_number	12652
+rescorestats: memo_miss_person	11510
+rescorestats: memo_miss_tense	9238
+rescorestats: memo_miss_upos	18187
+rescorestats: memo_miss_wclass30	4157
+rescorestats: memo_miss_wclass300	4136
+rescorestats: memo_miss_wclass3000	4244
+rescorestats: memo_miss_wclass30000	4208
+rescorestats: memo_miss_xpos	18695
+rescorestats: pend_1	961913
+rescorestats: pend_17+	209830
+rescorestats: pend_1_later	265249
+rescorestats: pend_2	654649
+rescorestats: pend_3	412107
+rescorestats: pend_4	246885
+rescorestats: pend_5	164544
+rescorestats: pend_6	124064
+rescorestats: pend_7	99222
+rescorestats: pend_8	84536
+rescorestats: pend_9-16	381977
+rescorestats: pend_start_1	696664
+rescorestats: pend_start_17+	175117
+rescorestats: pend_start_2	495786
+rescorestats: pend_start_3	302807
+rescorestats: pend_start_4	164421
+rescorestats: pend_start_5	98570
+rescorestats: pend_start_6	71641
+rescorestats: pend_start_7	55328
+rescorestats: pend_start_8	46968
+rescorestats: pend_start_9-16	233773
+rescorestats: t_chains_ms	17067478
+rescorestats: t_leftovers_ms	80483640
+profdecode: decision	calls	not ready	seconds	ms per call
+profdecode: token.attach	57881	4163	96104.8	1660.386
+profdecode: token.deprel	5933	2712	581.4	97.996
+profdecode: token.xpos	20886	0	383.4	18.357
+profdecode: token.upos	20355	0	357.5	17.561
+profdecode: char.gap	64709	162	118.2	1.827
+profdecode: token.basepos	16078	0	77.3	4.809
+profdecode: token.person	13318	0	43.3	3.253
+profdecode: token.number	14269	0	41.9	2.933
+profdecode: token.tense	10737	0	33.6	3.128
+profdecode: token.wclass3000	5039	0	10.8	2.151
+profdecode: token.wclass30000	5003	0	8.8	1.756
+profdecode: token.wclass300	4908	0	8.6	1.751
+profdecode: token.wclass30	4955	0	8.2	1.651
+profdecode: token.head_upos	2712	2712	0.0	0.01
+profdecode: token.head_dir	2712	2712	0.0	0.008
+profdecode: token.head_xpos	2712	2712	0.0	0.003
+profdecode: token.head_kinright	2712	2712	0.0	0.002
+profdecode: token.head_kinleft	2712	2712	0.0	0.002
+profdecode: token.head_dist	2712	2712	0.0	0.002
+profdecode: token.head_trank	2712	2712	0.0	0.002
+count cache: 3245073 new feature sets, 3245073 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train100000-EWT-gold-cdc3db987-wcclasses5-sfx3-rootabs-htrank-kin-hkinleftright-nn2/events
+treebank    words   token_f1  uas     las     sent_f1
+EWT         2573    0.9868  0.7426  0.6883  0.9391  
+ALL         2573    0.9868  0.7426  0.6883  0.9391  
+build 2881.2 s, decode 51138.6 s, run 20261111-160523 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv

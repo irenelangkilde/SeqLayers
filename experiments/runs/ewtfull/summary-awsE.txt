@@ -1,0 +1,23 @@
+=== Wed Nov 11 16:05:24 UTC 2026
+ALL         2573    0.9868  0.7426  0.6883  0.9391  
+EWT         2573    0.9868  0.7426  0.6883  0.9391  
+[ Info: ChainModel: grouped decisions into 18750915 records (3700514 grouped, 2712 label sets)
+build 2881.2 s, decode 51138.6 s, run 20261111-160523 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+doc EWT 1085 chars: 3662.9 s
+doc EWT 1261 chars: 8639.5 s
+doc EWT 1304 chars: 8205.0 s
+doc EWT 1446 chars: 16064.7 s
+doc EWT 1784 chars: 15438.5 s
+doc EWT 185 chars: 385.3 s
+doc EWT 2123 chars: 15232.2 s
+doc EWT 2185 chars: 18600.5 s
+doc EWT 412 chars: 1224.8 s
+doc EWT 662 chars: 1866.6 s
+doc EWT 696 chars: 8542.7 s
+profdecode: token.attach	57881	4163	96104.8	1660.386
+recorded events in 2872.5 s
+rescorestats: t_chains_ms	17067478
+rescorestats: t_leftovers_ms	80483640
+train sample: 12543 sentences;  dev: 111 sentences
+22G	experiments/work/train100000-EWT-gold-cdc3db987-wcclasses5-sfx3-rootabs-htrank-kin-hkinleftright-nn2/events
+16:05 Mem:             123          65          36           0          23          58
