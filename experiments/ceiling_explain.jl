@@ -24,6 +24,8 @@
 # singletons=true: instead, over every dev doc, list the features that are the whole of a one-step attachment chain:
 #   per feature (as named in the traces), how many candidates' chains, how many of them the gold head, the step's Δ,
 #   and how many took leftovers (a nonzero total correction) with their mean total.
+# singlenoleft=N (with singletons): up to N singleton chains that took no leftover (one per feature): the sentence,
+#   the step, why the chain stopped (second-step candidates) and why no leftover was taken (their fates).
 # singletrace=text (with singletons): for the first 2 singleton chains whose feature contains `text`, the sentence and
 #   every possible second step -- its records (chosen / not), its change in log odds, supported and reaching tau or not.
 # prodprops=head_xpos,head_dir,head_dist: only these head properties' terms in the product (as ceiling.jl).
@@ -56,6 +58,7 @@ DEFAULTS["singletons"] = "false"
 DEFAULTS["propdetail"] = "true"
 DEFAULTS["subsetdelta"] = "false"
 DEFAULTS["singletrace"] = ""
+DEFAULTS["singlenoleft"] = 0
 DEFAULTS["headconf"] = 1.0
 DEFAULTS["domains"] = "off"
 DEFAULTS["domeps"] = 1e-3
@@ -584,6 +587,8 @@ if cfg["singletons"] == "true"
   goldof = Dict{Tuple{Doc,UnitRange{Int}},UnitRange{Int}}()
   curdoc = Ref{Doc}(first(s.devdocs)[2])
   traced = Ref(0)
+  noleftshown, noleftfeats = Ref(0), Set{String}()   # (singlenoleft) examples shown, and their features
+  curdisc, lastdisc = Any[], Any[]
   singles = Any[]                                     # (doc, token span, candidate span, feature, gold?) per singleton chain
   ncand = Dict{Tuple{Doc,UnitRange{Int}},Int}()       # token -> its attachment candidates
   outcome = Dict{Tuple{Doc,UnitRange{Int}},Tuple{UnitRange{Int},Bool,Bool}}()   # token -> (predicted head span, head ok, label ok)
@@ -604,8 +609,10 @@ if cfg["singletons"] == "true"
     v[1] += 1; v[2] += isgold; v[3] += log(ch.odds[end]) - log(ch.odds[1])
     lc = lo - log(ch.odds[end])                       # the leftovers' total correction
     abs(lc) > 1e-9 && (v[4] += 1; v[5] += lc)
-    if !isempty(cfg["singletrace"]) && occursin(cfg["singletrace"], nm) && traced[] < 2
-      traced[] += 1
+    noleft = abs(lc) <= 1e-9 && cfg["singlenoleft"] > 0 && noleftshown[] < cfg["singlenoleft"] && !(nm in noleftfeats)
+    noleft && (noleftshown[] += 1; push!(noleftfeats, nm))
+    if noleft || (!isempty(cfg["singletrace"]) && occursin(cfg["singletrace"], nm) && traced[] < 2)
+      noleft || (traced[] += 1)
       toks = st.layers[:token]
       words(u) = u == NONE ? "ROOT" : S.tokstr(st, Int(u))
       gs = g === nothing ? "?" : isempty(g) ? "ROOT" : String(curdoc[].text[g])
@@ -627,7 +634,20 @@ if cfg["singletons"] == "true"
       for r in sort(rows; by = r -> (r[4] ? 0 : 1, isnan(r[3]) ? 0.0 : -abs(r[3]), -(r[2][1] + r[2][2])))[1:min(15, end)]
         println("     ", rpad(r[1], 52), "records ", rpad("$(Int(r[2][1]))/$(Int(r[2][2]))", 12), r[4] ? "Δ $(round(r[3]; digits = 3))" : "unsupported")
       end
+      if !isempty(lastdisc)                          # (singlenoleft) why no leftover was taken: the leftovers' fates
+        println("   leftovers not used:")
+        for (kind, label_) in ((:pool, "pooled (redundant to the chain)"), (:weak, "dropped as weak"), (:irrelevant, "dropped as irrelevant"),
+                               (:struck, "struck out"), (:struck_pooled, "struck out, pooled"), (:untaken, "never taken (no supported context)"))
+          sxs = unique([sx for (kk, sx) in lastdisc if kk == kind])
+          isempty(sxs) || println("     ", label_, " (", length(sxs), "): ", join([slotdesc(st, t, c, sx) for sx in sxs], ", "))
+        end
+      end
     end
+    empty!(lastdisc)
+  end
+  if cfg["singlenoleft"] > 0                         # (the leftovers' fates per candidate: CHAIN_TRACE on so the candidate is known)
+    S.DISCARD_TRACE[] = (kind, sxs) -> append!(curdisc, [(kind, sx) for sx in sxs])
+    S.CHAIN_TRACE[] = (ev, data) -> ev == :final ? (empty!(lastdisc); append!(lastdisc, curdisc); empty!(curdisc); nothing) : nothing
   end
   r = CeilingRecorder(m, first(s.devdocs)[2], false, cfg["headconf"]; domains, domeps)
   t0 = time()
@@ -635,7 +655,7 @@ if cfg["singletons"] == "true"
     curdoc[] = d; r.doc = d
     process(d, specs, OracleModel(), s.lex; observer = r)
   end
-  S.SINGLE_HOOK[] = nothing; TOKEN_HOOK[] = nothing
+  S.SINGLE_HOOK[] = nothing; TOKEN_HOOK[] = nothing; S.DISCARD_TRACE[] = nothing; S.CHAIN_TRACE[] = nothing
   # each singleton chain against its token's outcome: was the token's head / label right, and was this candidate picked?
   kind(nm) = startswith(nm, "cand.upos=PUNCT") ? "PUNCT" : occursin("neighbor", nm) ? "neighbour form" : "own form / tag"
   grp = Dict{String,Vector{Int}}()                   # kind -> [chains, token head wrong, token label wrong (head right), gold & picked, gold & missed, not gold & picked]

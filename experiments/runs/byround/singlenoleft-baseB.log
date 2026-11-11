@@ -1,0 +1,370 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 237.4 s
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=odds;leftsmooth=evidence;ctxmode=accum;ctxattach=false;cidrop=0.0;ciorder=off;telescope=false;branches=1;combine=avg;accumwin=0;accumreset=false;driftsigma=0.0;drifttau=0.0;driftstep=0.0;distback=false;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective;headtrank]  [domains=product domeps=0.0]
+
+== singleton cand.form=for: token 'our' -> candidate 'for' (gold head 'lives')
+   sentence: We would run for our lives and look for a new place to live with just monkeys around .
+   step 1: cand.form=for  records 0/21383  log odds -4.23 -> -9.97;  final with leftovers -9.97
+   second-step candidates: 27 admitted; 26 supported (>= mincount 5 records), 0 of them move the odds by tau (0.1)
+     cand.len=3                                          records 0/21383     Δ 0.0
+     cand.xpos=IN                                        records 0/21383     Δ 0.0
+     cand.basepos=0                                      records 0/21383     Δ 0.0
+     cand.number=0                                       records 0/21383     Δ 0.0
+     cand.person=0                                       records 0/21383     Δ 0.0
+     cand.tense=0                                        records 0/21383     Δ 0.0
+     cand.caps=4                                         records 0/19981     Δ 0.0
+     cand.upos=ADP                                       records 0/19679     Δ 0.0
+     direction=left                                      records 0/10128     Δ 0.0
+     dep.basepos=0                                       records 0/10021     Δ 0.0
+     dep.right_neighbor.upos=NOUN                        records 0/3815      Δ 0.0
+     cand.right_neighbor.upos=PRON                       records 0/3719      Δ 0.0
+     dep.len=3                                           records 0/3493      Δ 0.0
+     cand.left_neighbor.upos=VERB                        records 0/3148      Δ 0.0
+     dep.left_neighbor.xpos=IN                           records 0/2488      Δ 0.0
+   leftovers not used:
+     pooled (redundant to the chain) (13): distance=1 word (bucket 1), direction=left, cand.len=3, cand.left_neighbor.form=run, cand.right_neighbor.form=our, cand.upos=ADP, cand.xpos=IN, cand.basepos=0, cand.number=0, cand.person=0, cand.tense=0, cand.left_neighbor.upos=VERB, cand.left_neighbor.xpos=VB
+     dropped as weak (13): dep.form=our, cand.caps=4, dep.len=3, dep.left_neighbor.form=for, dep.upos=PRON, dep.xpos=PRP$, dep.basepos=0, dep.left_neighbor.upos=ADP, dep.right_neighbor.upos=NOUN, cand.right_neighbor.upos=PRON, dep.left_neighbor.xpos=IN, dep.right_neighbor.xpos=NNS, cand.right_neighbor.xpos=PRP$
+     dropped as irrelevant (1): dep.right_neighbor.form=lives
+
+== singleton cand.upos=PUNCT: token 'look' -> candidate '.' (gold head 'run')
+   sentence: We would run for our lives and look for a new place to live with just monkeys around .
+   step 1: cand.upos=PUNCT  records 0/395815  log odds -4.23 -> -12.89;  final with leftovers -12.89
+   second-step candidates: 27 admitted; 27 supported (>= mincount 5 records), 0 of them move the odds by tau (0.1)
+     cand.caps=4                                         records 0/395815    Δ 0.0
+     cand.basepos=0                                      records 0/395815    Δ 0.0
+     cand.number=0                                       records 0/395815    Δ 0.0
+     cand.person=0                                       records 0/395815    Δ 0.0
+     cand.tense=0                                        records 0/395815    Δ 0.0
+     cand.len=1                                          records 0/392655    Δ 0.0
+     direction=right                                     records 0/209047    Δ 0.0
+     cand.xpos=.                                         records 0/157084    Δ 0.0
+     distance=11 words (bucket 11+)                      records 0/153050    Δ 0.0
+     cand.form=.                                         records 0/141938    Δ 0.0
+     dep.basepos=V                                       records 0/59838     Δ 0.0
+     dep.len=4                                           records 0/59413     Δ 0.0
+     dep.upos=VERB                                       records 0/41904     Δ 0.0
+     dep.right_neighbor.xpos=IN                          records 0/38437     Δ 0.0
+     cand.right_neighbor.xpos=DT                         records 0/36534     Δ 0.0
+   leftovers not used:
+     pooled (redundant to the chain) (13): distance=11 words (bucket 11+), direction=right, cand.form=., cand.len=1, cand.left_neighbor.form=around, cand.right_neighbor.form=a, cand.xpos=., cand.basepos=0, cand.number=0, cand.person=0, cand.tense=0, cand.left_neighbor.upos=ADV, cand.left_neighbor.xpos=RB
+     dropped as weak (14): dep.form=look, cand.caps=4, dep.len=4, dep.left_neighbor.form=and, dep.right_neighbor.form=for, dep.upos=VERB, dep.xpos=VB, dep.basepos=V, dep.left_neighbor.upos=CCONJ, dep.right_neighbor.upos=ADP, cand.right_neighbor.upos=DET, dep.left_neighbor.xpos=CC, dep.right_neighbor.xpos=IN, cand.right_neighbor.xpos=DT
+
+== singleton cand.form=with: token 'just' -> candidate 'with' (gold head 'monkeys')
+   sentence: We would run for our lives and look for a new place to live with just monkeys around .
+   step 1: cand.form=with  records 2/13948  log odds -4.23 -> -8.44;  final with leftovers -8.44
+   second-step candidates: 26 admitted; 24 supported (>= mincount 5 records), 0 of them move the odds by tau (0.1)
+     cand.len=4                                          records 2/13948     Δ 0.0
+     cand.xpos=IN                                        records 2/13948     Δ 0.0
+     cand.basepos=0                                      records 2/13948     Δ 0.0
+     cand.number=0                                       records 2/13948     Δ 0.0
+     cand.person=0                                       records 2/13948     Δ 0.0
+     cand.tense=0                                        records 2/13948     Δ 0.0
+     cand.upos=ADP                                       records 2/13483     Δ 0.0
+     direction=left                                      records 2/6732      Δ 0.0
+     cand.left_neighbor.upos=VERB                        records 0/3654      Δ 0.0
+     dep.right_neighbor.upos=NOUN                        records 0/2463      Δ 0.0
+     dep.len=4                                           records 0/2183      Δ 0.0
+     dep.left_neighbor.xpos=IN                           records 1/1644      Δ 0.0
+     dep.left_neighbor.upos=ADP                          records 1/1392      Δ 0.0
+     cand.left_neighbor.xpos=VB                          records 0/1344      Δ 0.0
+     dep.basepos=R                                       records 0/793       Δ 0.0
+   leftovers not used:
+     pooled (redundant to the chain) (14): distance=1 word (bucket 1), direction=left, cand.len=4, cand.left_neighbor.form=live, cand.upos=ADP, cand.xpos=IN, cand.basepos=0, cand.number=0, cand.person=0, cand.tense=0, cand.left_neighbor.upos=VERB, cand.right_neighbor.upos=ADV, cand.left_neighbor.xpos=VB, cand.right_neighbor.xpos=RB
+     dropped as weak (10): dep.form=just, dep.len=4, dep.left_neighbor.form=with, dep.upos=ADV, dep.xpos=RB, dep.basepos=R, dep.left_neighbor.upos=ADP, dep.right_neighbor.upos=NOUN, dep.left_neighbor.xpos=IN, dep.right_neighbor.xpos=NNS
+     dropped as irrelevant (1): dep.right_neighbor.form=monkeys
+
+== singleton cand.form='re: token 'You' -> candidate ''re' (gold head 'going')
+   sentence: You 're not going tomorrow either .
+   step 1: cand.form='re  records 0/2186  log odds -4.23 -> -7.69;  final with leftovers -7.69
+   second-step candidates: 23 admitted; 23 supported (>= mincount 5 records), 0 of them move the odds by tau (0.1)
+     cand.len=3                                          records 0/2186      Δ 0.0
+     cand.upos=AUX                                       records 0/2186      Δ 0.0
+     cand.xpos=VBP                                       records 0/2186      Δ 0.0
+     cand.basepos=V                                      records 0/2186      Δ 0.0
+     cand.number=plural                                  records 0/2186      Δ 0.0
+     cand.person=0                                       records 0/2186      Δ 0.0
+     cand.tense=0                                        records 0/2186      Δ 0.0
+     cand.left_neighbor.upos=PRON                        records 0/2186      Δ 0.0
+     cand.left_neighbor.xpos=PRP                         records 0/2186      Δ 0.0
+     cand.left_neighbor.form=you                         records 0/1376      Δ 0.0
+     direction=right                                     records 0/1230      Δ 0.0
+     cand.right_neighbor.xpos=RB                         records 0/548       Δ 0.0
+     dep.len=3                                           records 0/465       Δ 0.0
+     dep.upos=PRON                                       records 0/375       Δ 0.0
+     dep.xpos=PRP                                        records 0/250       Δ 0.0
+   leftovers not used:
+     pooled (redundant to the chain) (15): distance=1 word (bucket 1), direction=right, cand.len=3, cand.left_neighbor.form=you, cand.right_neighbor.form=not, cand.upos=AUX, cand.xpos=VBP, cand.basepos=V, cand.number=plural, cand.person=0, cand.tense=0, cand.left_neighbor.upos=PRON, cand.right_neighbor.upos=PART, cand.left_neighbor.xpos=PRP, cand.right_neighbor.xpos=RB
+     dropped as weak (8): dep.form=you, dep.len=3, dep.left_neighbor.form=., dep.right_neighbor.form='re, dep.upos=PRON, dep.xpos=PRP, dep.right_neighbor.upos=AUX, dep.right_neighbor.xpos=VBP
+
+== singleton cand.right_neighbor.form='re: token ''re' -> candidate 'You' (gold head 'going')
+   sentence: You 're not going tomorrow either .
+   step 1: cand.right_neighbor.form='re  records 0/2197  log odds -4.23 -> -7.69;  final with leftovers -7.69
+   second-step candidates: 28 admitted; 28 supported (>= mincount 5 records), 0 of them move the odds by tau (0.1)
+     cand.upos=PRON                                      records 0/2197      Δ 0.0
+     cand.xpos=PRP                                       records 0/2197      Δ 0.0
+     cand.basepos=0                                      records 0/2197      Δ 0.0
+     cand.number=0                                       records 0/2197      Δ 0.0
+     cand.tense=0                                        records 0/2197      Δ 0.0
+     cand.right_neighbor.upos=AUX                        records 0/2197      Δ 0.0
+     cand.right_neighbor.xpos=VBP                        records 0/2197      Δ 0.0
+     dep.tense=0                                         records 0/1965      Δ 0.0
+     cand.form=you                                       records 0/1386      Δ 0.0
+     cand.len=3                                          records 0/1386      Δ 0.0
+     cand.person=2nd                                     records 0/1386      Δ 0.0
+     direction=left                                      records 0/972       Δ 0.0
+     cand.caps=2                                         records 0/618       Δ 0.0
+     cand.left_neighbor.upos=PUNCT                       records 0/618       Δ 0.0
+     dep.len=3                                           records 0/474       Δ 0.0
+   leftovers not used:
+     pooled (redundant to the chain) (16): distance=1 word (bucket 1), direction=left, cand.form=you, cand.caps=2, cand.len=3, cand.left_neighbor.form=., cand.upos=PRON, cand.xpos=PRP, cand.basepos=0, cand.number=0, cand.person=2nd, cand.tense=0, cand.left_neighbor.upos=PUNCT, cand.right_neighbor.upos=AUX, cand.left_neighbor.xpos=., cand.right_neighbor.xpos=VBP
+     dropped as weak (12): dep.form='re, dep.len=3, dep.left_neighbor.form=you, dep.right_neighbor.form=not, dep.upos=AUX, dep.xpos=VBP, dep.basepos=V, dep.tense=0, dep.left_neighbor.upos=PRON, dep.right_neighbor.upos=PART, dep.left_neighbor.xpos=PRP, dep.right_neighbor.xpos=RB
+
+== singleton cand.form='m: token 'I' -> candidate ''m' (gold head 'going')
+   sentence: I 'm going write on myself .
+   step 1: cand.form='m  records 0/4145  log odds -4.23 -> -8.33;  final with leftovers -8.33
+   second-step candidates: 25 admitted; 25 supported (>= mincount 5 records), 0 of them move the odds by tau (0.1)
+     cand.caps=4                                         records 0/4145      Δ 0.0
+     cand.len=2                                          records 0/4145      Δ 0.0
+     cand.left_neighbor.form=i                           records 0/4145      Δ 0.0
+     cand.upos=AUX                                       records 0/4145      Δ 0.0
+     cand.xpos=VBP                                       records 0/4145      Δ 0.0
+     cand.basepos=V                                      records 0/4145      Δ 0.0
+     cand.number=plural                                  records 0/4145      Δ 0.0
+     cand.person=0                                       records 0/4145      Δ 0.0
+     cand.tense=0                                        records 0/4145      Δ 0.0
+     cand.left_neighbor.upos=PRON                        records 0/4145      Δ 0.0
+     cand.left_neighbor.xpos=PRP                         records 0/4145      Δ 0.0
+     dep.basepos=0                                       records 0/2186      Δ 0.0
+     direction=right                                     records 0/2121      Δ 0.0
+     dep.len=1                                           records 0/976       Δ 0.0
+     cand.right_neighbor.upos=VERB                       records 0/946       Δ 0.0
+   leftovers not used:
+     pooled (redundant to the chain) (15): distance=1 word (bucket 1), direction=right, cand.len=2, cand.left_neighbor.form=i, cand.right_neighbor.form=going, cand.upos=AUX, cand.xpos=VBP, cand.basepos=V, cand.number=plural, cand.person=0, cand.tense=0, cand.left_neighbor.upos=PRON, cand.right_neighbor.upos=VERB, cand.left_neighbor.xpos=PRP, cand.right_neighbor.xpos=VBG
+     dropped as weak (10): dep.form=i, cand.caps=4, dep.len=1, dep.left_neighbor.form=., dep.right_neighbor.form='m, dep.upos=PRON, dep.xpos=PRP, dep.basepos=0, dep.right_neighbor.upos=AUX, dep.right_neighbor.xpos=VBP
+
+== singleton cand.form=n't: token 'do' -> candidate 'n't' (gold head 'wan')
+   sentence: Okay but I do n't wan na do this .
+   step 1: cand.form=n't  records 0/12564  log odds -4.23 -> -9.44;  final with leftovers -9.44
+   second-step candidates: 27 admitted; 27 supported (>= mincount 5 records), 0 of them move the odds by tau (0.1)
+     cand.caps=4                                         records 0/12564     Δ 0.0
+     cand.len=3                                          records 0/12564     Δ 0.0
+     cand.upos=PART                                      records 0/12564     Δ 0.0
+     cand.xpos=RB                                        records 0/12564     Δ 0.0
+     cand.basepos=R                                      records 0/12564     Δ 0.0
+     cand.number=0                                       records 0/12564     Δ 0.0
+     cand.person=0                                       records 0/12564     Δ 0.0
+     cand.tense=0                                        records 0/12564     Δ 0.0
+     cand.left_neighbor.upos=AUX                         records 0/12463     Δ 0.0
+     cand.right_neighbor.upos=VERB                       records 0/9661      Δ 0.0
+     cand.right_neighbor.xpos=VB                         records 0/9608      Δ 0.0
+     direction=right                                     records 0/6419      Δ 0.0
+     cand.left_neighbor.form=do                          records 0/5443      Δ 0.0
+     cand.left_neighbor.xpos=VBP                         records 0/5194      Δ 0.0
+     dep.basepos=V                                       records 0/2463      Δ 0.0
+   leftovers not used:
+     pooled (redundant to the chain) (15): distance=1 word (bucket 1), direction=right, cand.len=3, cand.left_neighbor.form=do, cand.right_neighbor.form=wan, cand.upos=PART, cand.xpos=RB, cand.basepos=R, cand.number=0, cand.person=0, cand.tense=0, cand.left_neighbor.upos=AUX, cand.right_neighbor.upos=VERB, cand.left_neighbor.xpos=VBP, cand.right_neighbor.xpos=VB
+     dropped as weak (12): dep.form=do, cand.caps=4, dep.len=2, dep.left_neighbor.form=i, dep.right_neighbor.form=n't, dep.upos=AUX, dep.xpos=VBP, dep.basepos=V, dep.left_neighbor.upos=PRON, dep.right_neighbor.upos=PART, dep.left_neighbor.xpos=PRP, dep.right_neighbor.xpos=RB
+
+== singleton cand.form=just: token 'Adam' -> candidate 'just' (gold head 'look')
+   sentence: Adam just look .
+   step 1: cand.form=just  records 0/5856  log odds -4.23 -> -8.68;  final with leftovers -8.68
+   second-step candidates: 26 admitted; 23 supported (>= mincount 5 records), 0 of them move the odds by tau (0.1)
+     cand.len=4                                          records 0/5856      Δ 0.0
+     cand.upos=ADV                                       records 0/5856      Δ 0.0
+     cand.xpos=RB                                        records 0/5856      Δ 0.0
+     cand.basepos=R                                      records 0/5856      Δ 0.0
+     cand.number=0                                       records 0/5856      Δ 0.0
+     cand.person=0                                       records 0/5856      Δ 0.0
+     cand.tense=0                                        records 0/5856      Δ 0.0
+     cand.caps=4                                         records 0/5485      Δ 0.0
+     direction=right                                     records 0/3012      Δ 0.0
+     cand.right_neighbor.upos=VERB                       records 0/2603      Δ 0.0
+     dep.basepos=N                                       records 0/1137      Δ 0.0
+     dep.len=4                                           records 0/1010      Δ 0.0
+     cand.right_neighbor.xpos=VB                         records 0/963       Δ 0.0
+     dep.left_neighbor.upos=PUNCT                        records 0/770       Δ 0.0
+     dep.right_neighbor.xpos=RB                          records 0/476       Δ 0.0
+   leftovers not used:
+     pooled (redundant to the chain) (13): distance=1 word (bucket 1), direction=right, cand.len=4, cand.upos=ADV, cand.xpos=RB, cand.basepos=R, cand.number=0, cand.person=0, cand.tense=0, cand.left_neighbor.upos=PROPN, cand.right_neighbor.upos=VERB, cand.left_neighbor.xpos=NNP, cand.right_neighbor.xpos=VB
+     dropped as weak (10): cand.caps=4, dep.len=4, dep.right_neighbor.form=just, dep.upos=PROPN, dep.xpos=NNP, dep.basepos=N, dep.left_neighbor.upos=PUNCT, dep.right_neighbor.upos=ADV, dep.left_neighbor.xpos=., dep.right_neighbor.xpos=RB
+     dropped as irrelevant (1): dep.form=adam
+
+== singleton cand.form=we: token 'what' -> candidate 'we' (gold head 'eat')
+   sentence: And then think about what we really wanna eat .
+   step 1: cand.form=we  records 3/10966  log odds -4.23 -> -7.92;  final with leftovers -7.92
+   second-step candidates: 26 admitted; 26 supported (>= mincount 5 records), 0 of them move the odds by tau (0.1)
+     cand.len=2                                          records 3/10966     Δ 0.0
+     cand.upos=PRON                                      records 3/10966     Δ 0.0
+     cand.xpos=PRP                                       records 3/10966     Δ 0.0
+     cand.basepos=0                                      records 3/10966     Δ 0.0
+     cand.number=0                                       records 3/10966     Δ 0.0
+     cand.person=1st                                     records 3/10966     Δ 0.0
+     cand.tense=0                                        records 3/10966     Δ 0.0
+     cand.caps=4                                         records 2/7839      Δ 0.0
+     direction=right                                     records 2/5466      Δ 0.0
+     dep.basepos=0                                       records 1/5390      Δ 0.0
+     dep.len=4                                           records 1/1747      Δ 0.0
+     dep.right_neighbor.upos=PRON                        records 1/1188      Δ 0.0
+     dep.left_neighbor.xpos=IN                           records 0/1089      Δ 0.0
+     dep.upos=PRON                                       records 0/1030      Δ 0.0
+     dep.right_neighbor.xpos=PRP                         records 1/794       Δ 0.0
+   leftovers not used:
+     pooled (redundant to the chain) (15): distance=1 word (bucket 1), direction=right, cand.len=2, cand.left_neighbor.form=what, cand.right_neighbor.form=really, cand.upos=PRON, cand.xpos=PRP, cand.basepos=0, cand.number=0, cand.person=1st, cand.tense=0, cand.left_neighbor.upos=PRON, cand.right_neighbor.upos=ADV, cand.left_neighbor.xpos=WP, cand.right_neighbor.xpos=RB
+     dropped as weak (11): dep.form=what, cand.caps=4, dep.len=4, dep.right_neighbor.form=we, dep.upos=PRON, dep.xpos=WP, dep.basepos=0, dep.left_neighbor.upos=SCONJ, dep.right_neighbor.upos=PRON, dep.left_neighbor.xpos=IN, dep.right_neighbor.xpos=PRP
+
+== singleton cand.form=very: token ''m' -> candidate 'very' (gold head 'worried')
+   sentence: so I 'm very worried about maybe he think to play good person or try to be good for adult .
+   step 1: cand.form=very  records 0/4876  log odds -4.23 -> -8.49;  final with leftovers -8.49
+   second-step candidates: 27 admitted; 26 supported (>= mincount 5 records), 0 of them move the odds by tau (0.1)
+     cand.len=4                                          records 0/4876      Δ 0.0
+     cand.number=0                                       records 0/4876      Δ 0.0
+     cand.person=0                                       records 0/4876      Δ 0.0
+     cand.tense=0                                        records 0/4876      Δ 0.0
+     cand.upos=ADV                                       records 0/4722      Δ 0.0
+     cand.xpos=RB                                        records 0/4722      Δ 0.0
+     cand.basepos=R                                      records 0/4722      Δ 0.0
+     cand.caps=4                                         records 0/4631      Δ 0.0
+     cand.right_neighbor.upos=ADJ                        records 0/3331      Δ 0.0
+     cand.right_neighbor.xpos=JJ                         records 0/3331      Δ 0.0
+     direction=right                                     records 0/2449      Δ 0.0
+     cand.left_neighbor.upos=AUX                         records 0/1825      Δ 0.0
+     dep.len=2                                           records 0/846       Δ 0.0
+     dep.basepos=V                                       records 0/777       Δ 0.0
+     dep.left_neighbor.upos=PRON                         records 0/570       Δ 0.0
+   leftovers not used:
+     pooled (redundant to the chain) (14): distance=1 word (bucket 1), direction=right, cand.len=4, cand.left_neighbor.form='m, cand.upos=ADV, cand.xpos=RB, cand.basepos=R, cand.number=0, cand.person=0, cand.tense=0, cand.left_neighbor.upos=AUX, cand.right_neighbor.upos=ADJ, cand.left_neighbor.xpos=VBP, cand.right_neighbor.xpos=JJ
+     dropped as weak (12): dep.form='m, cand.caps=4, dep.len=2, dep.left_neighbor.form=i, dep.right_neighbor.form=very, dep.upos=AUX, dep.xpos=VBP, dep.basepos=V, dep.left_neighbor.upos=PRON, dep.right_neighbor.upos=ADV, dep.left_neighbor.xpos=PRP, dep.right_neighbor.xpos=RB
+     dropped as irrelevant (1): cand.right_neighbor.form=worried
+
+== singleton cand.form=could: token 'I' -> candidate 'could' (gold head 'come')
+   sentence: And I just forgot about , you know , giving you the phone that I could n't come .
+   step 1: cand.form=could  records 0/2519  log odds -4.23 -> -7.83;  final with leftovers -7.83
+   second-step candidates: 25 admitted; 25 supported (>= mincount 5 records), 0 of them move the odds by tau (0.1)
+     cand.caps=4                                         records 0/2519      Δ 0.0
+     cand.len=5                                          records 0/2519      Δ 0.0
+     cand.upos=AUX                                       records 0/2519      Δ 0.0
+     cand.xpos=MD                                        records 0/2519      Δ 0.0
+     cand.basepos=0                                      records 0/2519      Δ 0.0
+     cand.number=0                                       records 0/2519      Δ 0.0
+     cand.person=0                                       records 0/2519      Δ 0.0
+     cand.tense=0                                        records 0/2519      Δ 0.0
+     cand.left_neighbor.upos=PRON                        records 0/1341      Δ 0.0
+     direction=right                                     records 0/1311      Δ 0.0
+     cand.left_neighbor.xpos=PRP                         records 0/1218      Δ 0.0
+     dep.basepos=0                                       records 0/1199      Δ 0.0
+     cand.right_neighbor.xpos=RB                         records 0/966       Δ 0.0
+     cand.right_neighbor.upos=PART                       records 0/803       Δ 0.0
+     cand.right_neighbor.form=n't                        records 0/511       Δ 0.0
+   leftovers not used:
+     pooled (redundant to the chain) (15): distance=1 word (bucket 1), direction=right, cand.len=5, cand.left_neighbor.form=i, cand.right_neighbor.form=n't, cand.upos=AUX, cand.xpos=MD, cand.basepos=0, cand.number=0, cand.person=0, cand.tense=0, cand.left_neighbor.upos=PRON, cand.right_neighbor.upos=PART, cand.left_neighbor.xpos=PRP, cand.right_neighbor.xpos=RB
+     dropped as weak (10): dep.form=i, cand.caps=4, dep.len=1, dep.left_neighbor.form=that, dep.right_neighbor.form=could, dep.upos=PRON, dep.xpos=PRP, dep.basepos=0, dep.right_neighbor.upos=AUX, dep.right_neighbor.xpos=MD
+
+== singleton cand.form=his: token 'with' -> candidate 'his' (gold head 'girlfriend')
+   sentence: last weekend my best friend in Tokyo came to Osaka with his girlfriend to go to Universal Studios in Japan .
+   step 1: cand.form=his  records 0/6981  log odds -4.23 -> -8.85;  final with leftovers -8.85
+   second-step candidates: 26 admitted; 25 supported (>= mincount 5 records), 0 of them move the odds by tau (0.1)
+     cand.len=3                                          records 0/6981      Δ 0.0
+     cand.upos=PRON                                      records 0/6981      Δ 0.0
+     cand.xpos=PRP$                                      records 0/6981      Δ 0.0
+     cand.basepos=0                                      records 0/6981      Δ 0.0
+     cand.number=0                                       records 0/6981      Δ 0.0
+     cand.person=3rd                                     records 0/6981      Δ 0.0
+     cand.tense=0                                        records 0/6981      Δ 0.0
+     cand.caps=4                                         records 0/6131      Δ 0.0
+     cand.right_neighbor.upos=NOUN                       records 0/4954      Δ 0.0
+     cand.right_neighbor.xpos=NN                         records 0/4078      Δ 0.0
+     direction=right                                     records 0/3716      Δ 0.0
+     cand.left_neighbor.xpos=IN                          records 0/3465      Δ 0.0
+     cand.left_neighbor.upos=ADP                         records 0/3363      Δ 0.0
+     dep.basepos=0                                       records 0/3259      Δ 0.0
+     dep.len=4                                           records 0/1077      Δ 0.0
+   leftovers not used:
+     pooled (redundant to the chain) (14): distance=1 word (bucket 1), direction=right, cand.len=3, cand.left_neighbor.form=with, cand.upos=PRON, cand.xpos=PRP$, cand.basepos=0, cand.number=0, cand.person=3rd, cand.tense=0, cand.left_neighbor.upos=ADP, cand.right_neighbor.upos=NOUN, cand.left_neighbor.xpos=IN, cand.right_neighbor.xpos=NN
+     dropped as weak (11): dep.form=with, cand.caps=4, dep.len=4, dep.right_neighbor.form=his, dep.upos=ADP, dep.xpos=IN, dep.basepos=0, dep.left_neighbor.upos=PROPN, dep.right_neighbor.upos=PRON, dep.left_neighbor.xpos=NNP, dep.right_neighbor.xpos=PRP$
+     dropped as irrelevant (1): cand.right_neighbor.form=girlfriend
+tokens with a singleton chain: 998;  candidates per token (median) 3;  singleton candidates per token: 1 -> 866, 2 -> 126, 3+ -> 6;  all candidates singletons: 4;  tokens whose singleton candidates share one feature: 56 of 132 with 2+
+singleton chains vs their tokens' outcomes (tokens scored by the ceiling):
+kind              chains  head wrong  label wrong  gold, picked  gold, missed  not gold, picked
+PUNCT             804     207         93           0             0             0
+own form / tag    199     17          7            8             4             2
+neighbour form    133     29          6            30            10            7
+singleton chains: 1136 one-step attachment chains, 73 distinct features (245.6 s)
+with leftovers (a nonzero total correction): 236
+feature                                           chains  gold head  mean Δ   w/ leftovers  their mean Δ
+cand.upos=PUNCT                                   804     0          -8.66    47            -0.45
+cand.form=for                                     32      0          -5.74    2             1.2
+cand.form=if                                      19      0          -4.72    0             
+cand.form=n't                                     16      0          -5.21    2             -0.24
+cand.form=just                                    16      0          -4.45    6             -1.67
+cand.left_neighbor.form=month                     14      5          -1.64    14            1.91
+cand.form=with                                    13      0          -4.21    2             2.9
+cand.left_neighbor.form=observed                  12      6          -1.91    12            1.98
+cand.right_neighbor.form=case                     11      3          -2.72    11            4.57
+cand.form='re                                     10      0          -3.46    5             -0.36
+cand.right_neighbor.form=been                     10      0          -4.42    8             -0.61
+cand.form=could                                   10      0          -3.6     0             
+cand.form=from                                    9       0          -4.9     4             1.99
+cand.left_neighbor.form=accident                  8       5          -2.14    8             2.52
+cand.form=very                                    7       0          -4.26    3             -1.21
+cand.left_neighbor.form=means                     7       1          -2.29    7             1.18
+cand.form='m                                      7       0          -4.1     0             
+cand.right_neighbor.form=paper                    6       4          -2.18    6             3.01
+cand.left_neighbor.form=whatever                  6       3          -1.98    6             3.58
+cand.right_neighbor.form=taking                   6       2          -2.32    6             3.66
+cand.form=also                                    5       0          -4.08    1             -0.75
+cand.form=by                                      5       0          -5.18    2             3.34
+cand.form=at                                      4       0          -4.16    0             
+cand.right_neighbor.form=structure                4       2          -1.68    4             2.43
+cand.right_neighbor.form=think                    4       0          -3.82    4             -0.71
+cand.left_neighbor.form=going                     4       1          -2.57    4             0.89
+cand.left_neighbor.form=thank                     4       0          -3.14    0             
+cand.right_neighbor.form='re                      4       0          -3.46    2             0.27
+cand.form=actually                                4       0          -2.77    2             -0.32
+cand.form=levels                                  4       2          1.09     4             0.03
+cand.left_neighbor.form=stopped                   4       1          -2.13    4             1.72
+cand.right_neighbor.form=lot                      3       2          -3.28    3             2.76
+cand.form=probably                                3       2          -2.67    3             1.16
+cand.form=already                                 3       1          -2.8     3             -0.8
+cand.form=leads                                   3       2          1.35     3             0.01
+cand.form=receive                                 3       2          1.4      3             -0.72
+cand.right_neighbor.form=john                     3       1          -1.58    3             1.67
+cand.left_neighbor.form=things                    2       0          -2.38    2             3.4
+cand.left_neighbor.form=structure                 2       0          -1.66    2             1.78
+cand.form=else                                    2       0          -1.66    2             0.05
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 23.7 s): 14 of 32 slots always, 280 gate values
+[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (21.6 s)
+cand.right_neighbor.form=generally                2       1          -2.17    2             2.83
+cand.form=owes                                    2       1          1.38     2             1.09
+cand.form=either                                  2       0          -1.91    2             -1.0
+cand.form=overall                                 2       0          -1.8     2             1.85
+cand.form=his                                     2       0          -4.62    0             
+cand.xpos=TO                                      2       0          -5.91    1             -0.75
+cand.left_neighbor.form=continued                 2       0          -1.02    2             1.39
+cand.right_neighbor.form=second                   2       0          -2.76    2             1.29
+cand.right_neighbor.form=testing                  2       0          -1.3     2             1.58
+cand.left_neighbor.form=though                    2       0          -3.24    2             0.5
+cand.left_neighbor.form=classroom                 1       1          -0.91    1             1.79
+cand.form=academic                                1       0          -2.36    1             -2.64
+cand.form=gain                                    1       0          1.48     1             0.36
+cand.left_neighbor.form=pay                       1       1          -1.99    1             0.52
+cand.left_neighbor.form=john                      1       0          -1.58    1             -0.34
+cand.right_neighbor.form=academic                 1       0          -2.35    1             1.71
+cand.form=particularly                            1       0          -1.99    1             0.32
+cand.left_neighbor.form=kinda                     1       1          1.81     1             3.85
+cand.left_neighbor.form=country                   1       0          -3.06    1             -2.32
+cand.right_neighbor.form=found                    1       0          -2.63    1             3.46
+cand.form=maybe                                   1       0          -3.01    1             1.15
+cand.form=away                                    1       0          -1.81    0             
+cand.form=certain                                 1       0          -2.12    0             
+cand.form=an                                      1       0          -5.08    0             
+cand.right_neighbor.form=day                      1       0          -3.19    1             2.45
+cand.form=runs                                    1       1          1.36     1             -0.63
+cand.form=still                                   1       0          -3.33    1             -1.1
+cand.right_neighbor.form=training                 1       0          -1.9     1             -1.58
+cand.form=backing                                 1       1          1.21     1             0.79
+cand.form=we                                      1       0          -3.69    0             
+cand.form=scenario                                1       0          1.43     1             -2.73
+cand.form=followed                                1       0          1.42     1             0.32
+cand.form=crash                                   1       0          1.54     1             1.26
