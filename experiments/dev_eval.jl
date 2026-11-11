@@ -327,6 +327,9 @@
 #   events       how lattice/chain training events are recorded: gold (every decision from the
 #                finished gold state, omnidirectional) | replay (left-to-right gold replay)
 #   train_sents  training sentences per treebank used for counts
+#   corpus       a file listing the training .conllu files (# comments; default CORPUS_LIST); its dev/test files are
+#                the same paths with -ud-dev / -ud-test.  Events for a non-default list are kept apart
+#   devsplit     dev | test: which split is decoded and scored
 #   tune_sents   held-out tuning sentences per treebank: the training sentences right after those
 #                (ceiling.jl on=tune scores them, e.g. to calibrate the leftovers' weight)
 #   leftalpha    weights of the greedy leftovers' corrections per decision type, from this TSV
@@ -350,7 +353,7 @@ const CORPUS_LIST = "/Users/irenelangkildegeary2015/Projects/crystallization/jul
 const RESULTS = joinpath(HERE, "results.csv")
 
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
-  "wmo" => 1e-3, "train_sents" => 500, "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
+  "wmo" => 1e-3, "train_sents" => 500, "corpus" => "", "devsplit" => "dev", "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
   "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "fwdcheck" => "false", "softheads" => "false", "displace" => NaN, "displacecap" => 2, "dfsepshead" => NaN, "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "ciorder" => "off", "telescope" => "false", "smoothd" => 1.0, "smootha" => 0.0, "smoothn" => "set", "accumby" => "odds", "depmeasure" => "yule", "mindevtau" => 0.1, "mindevstop" => "localmin", "explainpool" => "false", "chainshrink" => 0.0, "chainshrinkto" => "prev", "chainsel" => 0.0, "lookw" => "dw", "headsibs" => "", "idxeq" => "false", "kinitems" => "false", "neighbor2" => "false", "oclass" => "false", "fwdsets" => "false", "fcommit" => "false", "attachwait" => "false", "rescoreevery" => 1, "bioes" => "false", "headkin" => "", "lookwsmooth" => 0.0, "lookwback" => 0.0, "stickbreak" => "off", "posnegrestart" => "false", "posnegseed" => "own", "dualchain" => "off", "dualcombine" => "sum", "dualw" => 0.5, "dualleft" => "true", "dualturn" => "both", "posnegafter" => "false", "posnegleftneg" => "false", "posnegonly" => "all", "leftwback" => 0.0, "leftwovl" => "false", "leftwcomb" => "prod", "wselcomb" => "sum", "wselmove" => "weights", "wselweight" => "false", "tuplek" => 0, "tuplemin" => 0.0, "interleave" => "false", "goldtok" => "false", "profdecode" => "false", "devtb" => "", "rescorestats" => "false", "golddec" => "", "accumgreedy" => 0.0, "accumstop" => 0.0, "accumpick" => "abs", "accumfloor" => "false", "ilscore" => "corr", "nchains" => 1, "stepmin" => 0, "forkthin" => 0, "firstnz" => "false", "softtags" => 0, "oclassladder" => "true", "lefttopn" => 0, "relstrikes" => 0, "relpool" => "false", "ctxcache" => 0, "steptopn" => 0, "shapeitems" => "true", "prodnorm" => "off", "candmemo" => "false", "forkcap" => 0, "forkcomb" => "max", "forkleft" => "each", "lookwsoft" => "false", "depweight" => "false", "gatemincount" => -1, "branches" => 1, "combine" => "avg", "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "driftsigma" => 0.0, "distback" => "false", "shrink" => 0.0, "shrinkleft" => 0.0, "leftmin2" => 0, "headwc" => "", "headwcdir" => "/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5", "drifttau" => 0.0, "driftstep" => 0.0, "relbounded" => "false", "relnone" => "false", "treerank" => "false", "headtrank" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
@@ -389,8 +392,10 @@ end
 Hash of the package source and the training files' sizes and modification times, so cached
 events are re-recorded when either the code or the data changes.
 """
-srcstamp() = string(hash(([read(f, String) for f in sort(readdir(joinpath(HERE, "..", "src"); join = true))],
-    [(f, filesize(f), mtime(f)) for f in filter(l -> !startswith(l, '#') && !isempty(strip(l)), readlines(CORPUS_LIST))])); base = 16)
+srcstamp(list = CORPUS_LIST) = string(hash(([read(f, String) for f in sort(readdir(joinpath(HERE, "..", "src"); join = true))],
+    [(f, filesize(f), mtime(f)) for f in filter(l -> !startswith(l, '#') && !isempty(strip(l)), readlines(list))])); base = 16)
+"The corpus list in use: corpus= (a file of training .conllu paths, # comments), else CORPUS_LIST."
+corpuslist(cfg) = isempty(cfg["corpus"]) ? CORPUS_LIST : cfg["corpus"]
 
 "The event files' sizes and modification times: saved counts are only valid for these events."
 eventsig(eventsdir) = string(Tuple((filesize(f), mtime(f)) for f in joinpath.(eventsdir, ("cands.bin", "items.bin"))))
@@ -422,8 +427,9 @@ end
 
 "Load the treebanks and build (or load cached events for) the model.  Also used by ceiling.jl."
 function setup(cfg)
-  trainfiles = filter(l -> !startswith(l, '#') && !isempty(strip(l)), readlines(CORPUS_LIST))
-  devfiles = replace.(trainfiles, "-ud-train" => "-ud-dev")
+  trainfiles = filter(l -> !startswith(l, '#') && !isempty(strip(l)), readlines(corpuslist(cfg)))
+  devfiles = replace.(trainfiles, "-ud-train" => "-ud-" * cfg["devsplit"])   # (devsplit=test: the test files)
+  cfg["devsplit"] in ("dev", "test") || error("devsplit: dev or test")
   tbs = tbname.(trainfiles)
   println("treebanks: ", join(tbs, ", "))
 
@@ -455,6 +461,7 @@ function setup(cfg)
 
   # model
   workdir = joinpath(HERE, "work", "train$(cfg["train_sents"])-" * join(tbs, "+") * "-" * cfg["events"] *
+    (isempty(cfg["corpus"]) ? "" : "-c" * string(hash(cfg["corpus"]); base = 16)[1:8]) *
     (isempty(cfg["wclasses"]) ? "" : "-wc" * basename(rstrip(cfg["wclasses"], '/'))) *
     (isempty(cfg["suffixes"]) ? "" : "-sfx" * replace(cfg["suffixes"], ',' => "")) *
     (cfg["noise"] > 0 ? "-noise$(cfg["noise"])" : "") * (cfg["rootabsent"] == "true" ? "-rootabs" : "") *
@@ -470,14 +477,14 @@ function setup(cfg)
   recipe = nothing
   if cfg["model"] in ("lattice", "chain")
     stampfile, lexfile, eventsdir = joinpath(workdir, "stamp"), joinpath(workdir, "lex.jls"), joinpath(workdir, "events")
-    if isfile(stampfile) && read(stampfile, String) == srcstamp() && isfile(lexfile)
+    if isfile(stampfile) && read(stampfile, String) == srcstamp(corpuslist(cfg)) && isfile(lexfile)
       lex = deserialize(lexfile)
       println("using cached events in $eventsdir")
     else
       lex = Lexicon()
       t = @elapsed record_events(trainsample, specs, lex, eventsdir; mode = Symbol(cfg["events"]))
       serialize(lexfile, lex)
-      write(stampfile, srcstamp())
+      write(stampfile, srcstamp(corpuslist(cfg)))
       println("recorded events in $(round(t; digits = 1)) s")
     end
     if cfg["model"] == "lattice"

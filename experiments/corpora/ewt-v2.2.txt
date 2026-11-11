@@ -1,0 +1,1 @@
+/Users/irenelangkildegeary2015/Projects/data/unidep/ud-2.2/ud-treebanks-v2.2/UD_English-EWT/en_ewt-ud-train.conllu
