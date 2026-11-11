@@ -10,6 +10,8 @@
 # best others, up to `explaintop` in all): the chain (feature = value, odds after each step), the
 # included leftovers with their contexts and corrections, the chain + leftover log odds, the
 # attachment probability, and with domains=product the head-property terms of the product score.
+# propdetail=true (default, with detail): for each head property whose top value isn't the gold head's, both values'
+#   chains and leftovers -- what the property's prediction conditioned on.
 # detail=true: per chain step the feature's prior (marginal) effect, its effect in the chain, and the records behind
 #   each; per leftover (in the order taken, accum) the running estimate and the generalization walk: each context
 #   tried, its odds and records, the leftover's correction there; and positive vs negative evidence summed apart.
@@ -50,6 +52,7 @@ DEFAULTS["prodprops"] = ""
 DEFAULTS["deprel"] = ""
 DEFAULTS["goldfix"] = "true"
 DEFAULTS["singletons"] = "false"
+DEFAULTS["propdetail"] = "true"
 DEFAULTS["singletrace"] = ""
 DEFAULTS["headconf"] = 1.0
 DEFAULTS["domains"] = "off"
@@ -167,6 +170,33 @@ function slotdesc(st, t, c, sl)
 end
 headval(name, v) = v == PENDING ? "?" : S.ALLHEADSETS[name][v]
 
+"""
+Head-property detail (propdetail; user 2026-11-11): for head property decision k of token t (attachment and head
+properties hidden), each value in `vals` with its probability, chain and leftovers -- what the prediction conditioned on.
+"""
+function explain_prop(st, t, k, name, vals, probs)
+  decs = st.layers[:token].spec.decisions
+  key = (:token, k, t)
+  cands = decs[k].candidates(st, t)
+  events = Dict{Any,Any}(c => nothing for c in cands)
+  accum = Dict{Any,Vector{Any}}(c => Any[] for c in cands)
+  S.CHAIN_TRACE[] = (ev, data) -> ev == :final ? (events[data.cand] = data) :
+    ev == :reset ? (empty!(accum[data.cand]); nothing) : nothing
+  S.ACCUM_TRACE[] = (sx, T, tries, kk, corr, hist) -> push!(accum[S.CHAIN_TRACE_CAND[]], (sx = sx, T = T, tries = tries, corr = corr, hist = hist))
+  empty!(m.memo)
+  try
+    decide(m, st, key)
+  finally
+    S.CHAIN_TRACE[] = nothing; S.ACCUM_TRACE[] = nothing
+  end
+  for (v, tag) in vals
+    f = get(events, v, nothing)
+    println("\n      ~~ $name = $(headval(name, v)) ($tag):  P $(round(get(probs, v, 0.0); digits = 3))")
+    f === nothing && (println("       (no chain traced)"); continue)
+    detail(st, t, v, f, decs[k].items(st, t, v), accum[v]; k, label = v)
+  end
+end
+
 "Explain the attachment of t (its attachment and head properties already hidden) with gold head `gold`."
 function explain_attach(st, t, gold, pred)
   toks = st.layers[:token]
@@ -184,6 +214,18 @@ function explain_attach(st, t, gold, pred)
     order = sortperm(lps; rev = true)[1:min(3, end)]
     println("      ", rpad(name, 10), join(["$(headval(name, vals[j])) $(round(exp(lps[j]); digits = 3))" for j in order], ", "),
       "   (gold head: $(headval(name, S.head_value(st, t, gold, name))), predicted head: $(headval(name, S.head_value(st, t, pred, name))))")
+  end
+  # propdetail: for each head property whose top value isn't the gold head's, both values' chains and leftovers
+  if cfg["detail"] == "true" && cfg["propdetail"] == "true"
+    for k in hk
+      name = decs[k].name
+      haskey(props, name) || continue
+      vals, ps = props[name]
+      top, gv = vals[argmax(ps)], S.head_value(st, t, gold, name)
+      (gv == PENDING || top == gv) && continue
+      println("\n    -- head property $name: predicted $(headval(name, top)), gold head's $(headval(name, gv))")
+      explain_prop(st, t, k, name, [(top, "predicted"), (gv, "gold")], Dict(zip(vals, ps)))
+    end
   end
   cands = decs[1].candidates(st, t)
   items = [decs[1].items(st, t, c) for c in cands]
@@ -318,16 +360,19 @@ fmtn(n) = n === nothing ? "-" : "$(round(Int, n[1]))/$(round(Int, n[2]))"
 fmtd(x) = (x >= 0 ? "+" : "") * string(round(x; digits = 2))
 
 "The detailed view of candidate c's score (detail=true): see the header."
-function detail(st, t, c, f, Ic, acc)
-  tk = S.typekey(:token, 1)
+function detail(st, t, c, f, Ic, acc; k = 1, label = UInt32(0))
+  # k: the token decision (1 attachment; a head property's index for its value `label`, whose items are t's context)
+  tk = S.typekey(:token, k)
   base = get(m.typerecs, tk, Int32[])
   p0 = f.odds[1]
-  name(x) = (sl = findfirst(==(x), Ic); sl === nothing ? "?" : slotdesc(st, t, c, sl))
+  ctx = st.layers[:token].spec.context
+  name(x) = (sl = findfirst(==(x), Ic); sl === nothing ? "?" :
+    k == 1 ? slotdesc(st, t, c, sl) : "tok." * ctxname(ctx[sl]) * "=" * ctxval(st, t, ctx[sl]))
   function marginal(x)                              # x alone: its odds from the prior, and its records (chosen / not)
     S0 = S.ChainState(p0, base)
     e = only(S.extend_all(m, S0, 0, [x]))
-    y, ok = S.update_odds(m, e, UInt32(0), p0)
-    (ok ? log(y) - log(p0) : NaN, get(e[2], UInt32(0), (0.0, 0.0)))
+    y, ok = S.update_odds(m, e, label, p0)
+    (ok ? log(y) - log(p0) : NaN, get(e[2], label, (0.0, 0.0)))
   end
   pos, neg = 0.0, 0.0
   println("       prior: log odds $(fmtd(log(p0))) = odds $(round(p0; sigdigits = 3)) = probability $(round(p0 / (1 + p0); sigdigits = 3))")
@@ -341,7 +386,7 @@ function detail(st, t, c, f, Ic, acc)
     e = only(S.extend_all(m, Sc, S.depth(Sc), [x]))
     dl = log(f.odds[j+1]) - log(f.odds[j])
     mΔ, mn = marginal(x)
-    println("       $j. ", rpad(name(x), 40), lpad(fmtd(mΔ), 7), "  n ", rpad(fmtn(mn), 14), lpad(fmtd(dl), 7), "  n ", fmtn(get(e[2], UInt32(0), (0.0, 0.0))),
+    println("       $j. ", rpad(name(x), 40), lpad(fmtd(mΔ), 7), "  n ", rpad(fmtn(mn), 14), lpad(fmtd(dl), 7), "  n ", fmtn(get(e[2], label, (0.0, 0.0))),
       sign(mΔ) != sign(dl) && abs(dl) > 0.2 ? "   <- sign flips" : "")
     dl >= 0 ? (pos += dl) : (neg += dl)
     S.advance!(m, Sc, x, e, f.odds[j+1])
