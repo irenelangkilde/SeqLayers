@@ -330,6 +330,8 @@
 #   corpus       a file listing the training .conllu files (# comments; default CORPUS_LIST); its dev/test files are
 #                the same paths with -ud-dev / -ud-test.  Events for a non-default list are kept apart
 #   devsplit     dev | test: which split is decoded and scored
+#   freshevery   > 0: start new decode worker processes after every N docs each (a long-lived worker slows down;
+#                speed only).  profdecode prints each doc's time, its garbage collection and the worker's heap
 #   conllu_out   path prefix: write the predictions as <prefix>-pred.conllu and the same gold sentences as
 #                <prefix>-gold.conllu, for the CoNLL shared-task scorers (conll17_ud_eval.py / conll18_ud_eval.py)
 #   tune_sents   held-out tuning sentences per treebank: the training sentences right after those
@@ -355,7 +357,7 @@ const CORPUS_LIST = "/Users/irenelangkildegeary2015/Projects/crystallization/jul
 const RESULTS = joinpath(HERE, "results.csv")
 
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
-  "wmo" => 1e-3, "train_sents" => 500, "corpus" => "", "devsplit" => "dev", "conllu_out" => "", "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
+  "wmo" => 1e-3, "train_sents" => 500, "corpus" => "", "devsplit" => "dev", "conllu_out" => "", "freshevery" => 0, "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
   "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "fwdcheck" => "false", "softheads" => "false", "displace" => NaN, "displacecap" => 2, "dfsepshead" => NaN, "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "ciorder" => "off", "telescope" => "false", "smoothd" => 1.0, "smootha" => 0.0, "smoothn" => "set", "accumby" => "odds", "depmeasure" => "yule", "mindevtau" => 0.1, "mindevstop" => "localmin", "explainpool" => "false", "chainshrink" => 0.0, "chainshrinkto" => "prev", "chainsel" => 0.0, "lookw" => "dw", "headsibs" => "", "idxeq" => "false", "kinitems" => "false", "neighbor2" => "false", "oclass" => "false", "fwdsets" => "false", "fcommit" => "false", "attachwait" => "false", "rescoreevery" => 1, "bioes" => "false", "headkin" => "", "lookwsmooth" => 0.0, "lookwback" => 0.0, "stickbreak" => "off", "posnegrestart" => "false", "posnegseed" => "own", "dualchain" => "off", "dualcombine" => "sum", "dualw" => 0.5, "dualleft" => "true", "dualturn" => "both", "posnegafter" => "false", "posnegleftneg" => "false", "posnegonly" => "all", "leftwback" => 0.0, "leftwovl" => "false", "leftwcomb" => "prod", "wselcomb" => "sum", "wselmove" => "weights", "wselweight" => "false", "tuplek" => 0, "tuplemin" => 0.0, "interleave" => "false", "goldtok" => "false", "profdecode" => "false", "devtb" => "", "rescorestats" => "false", "golddec" => "", "accumgreedy" => 0.0, "accumstop" => 0.0, "accumpick" => "abs", "accumfloor" => "false", "ilscore" => "corr", "nchains" => 1, "stepmin" => 0, "forkthin" => 0, "firstnz" => "false", "softtags" => 0, "oclassladder" => "true", "lefttopn" => 0, "relstrikes" => 0, "relpool" => "false", "ctxcache" => 0, "steptopn" => 0, "shapeitems" => "true", "prodnorm" => "off", "candmemo" => "false", "forkcap" => 0, "forkcomb" => "max", "forkleft" => "each", "lookwsoft" => "false", "depweight" => "false", "gatemincount" => -1, "branches" => 1, "combine" => "avg", "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "driftsigma" => 0.0, "distback" => "false", "shrink" => 0.0, "shrinkleft" => 0.0, "leftmin2" => 0, "headwc" => "", "headwcdir" => "/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5", "drifttau" => 0.0, "driftstep" => 0.0, "relbounded" => "false", "relnone" => "false", "treerank" => "false", "headtrank" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
@@ -603,13 +605,15 @@ Start the decoding workers, each holding WSPECS, WLEX and WMODEL.  They rebuild 
 copy of the index without its training-doc table (dev docs aren't in it, so leave-one-out
 never applies to them).  Returns the temp dir to remove afterwards.
 """
-function start_workers(cfg, s)
+function start_workers(cfg, s; rundir = nothing)
   (; idx, workdir, model, lex, recipe) = s
-  rundir = mktempdir(workdir)
-  serialize(joinpath(rundir, "model.jls"), recipe === nothing ? model : recipe)
-  serialize(joinpath(rundir, "lex.jls"), lex)
-  serialize(joinpath(rundir, "idx.jls"), CharIndex(idx.fwd, idx.rev, idx.gap, idx.saL, idx.saR, idx.cumL, idx.cumR,
-    idx.prior, IdDict{Doc,Int}(), idx.maxlen, idx.mincount, idx.beta))
+  if rundir === nothing                              # (freshevery: later restarts reuse the serialized model)
+    rundir = mktempdir(workdir)
+    serialize(joinpath(rundir, "model.jls"), recipe === nothing ? model : recipe)
+    serialize(joinpath(rundir, "lex.jls"), lex)
+    serialize(joinpath(rundir, "idx.jls"), CharIndex(idx.fwd, idx.rev, idx.gap, idx.saL, idx.saR, idx.cumL, idx.cumR,
+      idx.prior, IdDict{Doc,Int}(), idx.maxlen, idx.mincount, idx.beta))
+  end
   addprocs(cfg["workers"]; exeflags = "--project=$HERE")
   Distributed.remotecall_eval(Main, workers(), :(using SeqLayers, Serialization))
   Distributed.remotecall_eval(Main, workers(), quote
@@ -697,10 +701,30 @@ function main(cfg)
   wrap(mm) = (mm = isempty(golds) ? mm : SeqLayers.GoldModel(mm, golds); prof ? SeqLayers.CountingModel(mm) : mm)
   cout = cfg["conllu_out"]                           # (conllu_out: each doc's prediction to a file of its own)
   docfile(d) = cout * "-doc" * string(hash(String(d.text)); base = 16) * ".conllu"
-  counts = pmap(p -> (p[1], (t = time();
+  # (profdecode) per doc: time, of it garbage collection, and the worker's live heap afterwards
+  decode1(p) = (p[1], (t = time(); g0 = Base.gc_time_ns();
     isempty(cout) || (SeqLayers.PRED_HOOK[] = (d, pred) -> open(io -> write_conllu(io, d, pred), docfile(d), "w"));
     c = evaluate_counts([p[2]], WSPECS, wrap(WMODEL), WLEX; search = WSEARCH);
-    prof && println("doc $(p[1]) $(length(p[2].text)) chars: $(round(time() - t; digits = 1)) s"); c)), devdocs[order])
+    prof && println("doc $(p[1]) $(length(p[2].text)) chars: $(round(time() - t; digits = 1)) s (gc $(round((Base.gc_time_ns() - g0) / 1e9; digits = 1)) s, heap $(round(Base.gc_live_bytes() / 2^30; digits = 1)) GB)"); c))
+  # freshevery = N (2026-11-11: docs late in a long-lived worker ran ~3x slower): new worker processes after every N docs
+  # each; the retired workers' statistics are kept (snapshot) for the report
+  snapshot(w) = remotecall_fetch(() -> (rs = copy(something(SeqLayers.RESCORE_STATS[], Dict{Tuple{Symbol,Symbol,Symbol},Int}())),
+    dc = copy(something(SeqLayers.DC_STATS[], Dict{Symbol,Float64}())), ce = SeqLayers.CACHE_EMPTIED[],
+    cf = WMODEL isa SeqLayers.ChainModel ? WMODEL.cached : 0, ds = copy(SeqLayers.DECIDE_STATS)), w)
+  retired = Any[]
+  if cfg["freshevery"] > 0
+    counts = Any[]
+    for (bi, batch) in enumerate(Iterators.partition(devdocs[order], cfg["workers"] * cfg["freshevery"]))
+      if bi > 1
+        append!(retired, [snapshot(w) for w in workers()])
+        rmprocs(workers())
+        start_workers(cfg, s; rundir)
+      end
+      append!(counts, pmap(decode1, collect(batch)))
+    end
+  else
+    counts = pmap(decode1, devdocs[order])
+  end
   if !isempty(cout)                                  # predictions in dev order, and the same gold sentences, for the scorer
     open(cout * "-pred.conllu", "w") do io
       for (_, d) in devdocs
@@ -723,17 +747,17 @@ function main(cfg)
   if cfg["rescorestats"] == "true"
     rs = Dict{Tuple{Symbol,Symbol,Symbol},Int}()
     mm = Dict{Symbol,Float64}()
-    for w in workers()
-      for (k, v) in remotecall_fetch(() -> copy(something(SeqLayers.RESCORE_STATS[], Dict{Tuple{Symbol,Symbol,Symbol},Int}())), w)
+    snaps = [retired; [snapshot(w) for w in workers()]]
+    for sn in snaps
+      for (k, v) in sn.rs
         rs[k] = get(rs, k, 0) + v
       end
-      for (k, v) in remotecall_fetch(() -> copy(something(SeqLayers.DC_STATS[], Dict{Symbol,Float64}())), w)
+      for (k, v) in sn.dc
         (startswith(String(k), "memo_") || startswith(String(k), "cmemo_") || startswith(String(k), "t_") || startswith(String(k), "chain") || startswith(String(k), "ctx_") || startswith(String(k), "pend_")) && (mm[k] = get(mm, k, 0.0) + v)
       end
     end
-    for w in workers()                               # the model-wide record cache: emptied for space how often, and its fill
-      ce, cf = remotecall_fetch(() -> (SeqLayers.CACHE_EMPTIED[], WMODEL isa SeqLayers.ChainModel ? WMODEL.cached : 0), w)
-      println("rescorestats: worker $w cache emptied $ce times, holding $cf record numbers")
+    for (j, sn) in enumerate(snaps)                  # the model-wide record cache: emptied for space how often, and its fill
+      println("rescorestats: worker $j cache emptied $(sn.ce) times, holding $(sn.cf) record numbers")
     end
     println("rescorestats: decision\tchanged row\trescores")
     for (k, v) in sort(collect(rs); by = kv -> -kv[2])[1:min(end, 40)]
@@ -745,7 +769,7 @@ function main(cfg)
   end
   if prof
     tot = Dict{Tuple{Symbol,Symbol},Vector{Float64}}()
-    for w in workers(), (k, v) in remotecall_fetch(() -> copy(SeqLayers.DECIDE_STATS), w)
+    for sn in [retired; [snapshot(w) for w in workers()]], (k, v) in sn.ds
       tot[k] = get(tot, k, zeros(3)) .+ v
     end
     println("profdecode: decision\tcalls\tnot ready\tseconds\tms per call")
