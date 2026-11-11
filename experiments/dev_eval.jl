@@ -330,6 +330,9 @@
 #   corpus       a file listing the training .conllu files (# comments; default CORPUS_LIST); its dev/test files are
 #                the same paths with -ud-dev / -ud-test.  Events for a non-default list are kept apart
 #   devsplit     dev | test: which split is decoded and scored
+#   wc3          lex | clu | lex,clu: 3-way classes (open / closed / punct) looked up from the form -- lex from the
+#                training forms' most frequent UPOS, clu from their 30-class cluster's majority (needs wclasses); as
+#                context features (own, neighbours', head's), attachment items and ladder rungs; events apart
 #   freshevery   > 0: start new decode worker processes after every N docs each (a long-lived worker slows down;
 #                speed only).  profdecode prints each doc's time, its garbage collection and the worker's heap
 #   conllu_out   path prefix: write the predictions as <prefix>-pred.conllu and the same gold sentences as
@@ -357,7 +360,7 @@ const CORPUS_LIST = "/Users/irenelangkildegeary2015/Projects/crystallization/jul
 const RESULTS = joinpath(HERE, "results.csv")
 
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
-  "wmo" => 1e-3, "train_sents" => 500, "corpus" => "", "devsplit" => "dev", "conllu_out" => "", "freshevery" => 0, "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
+  "wmo" => 1e-3, "train_sents" => 500, "corpus" => "", "devsplit" => "dev", "conllu_out" => "", "freshevery" => 0, "wc3" => "", "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
   "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "fwdcheck" => "false", "softheads" => "false", "displace" => NaN, "displacecap" => 2, "dfsepshead" => NaN, "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "ciorder" => "off", "telescope" => "false", "smoothd" => 1.0, "smootha" => 0.0, "smoothn" => "set", "accumby" => "odds", "depmeasure" => "yule", "mindevtau" => 0.1, "mindevstop" => "localmin", "explainpool" => "false", "chainshrink" => 0.0, "chainshrinkto" => "prev", "chainsel" => 0.0, "lookw" => "dw", "headsibs" => "", "idxeq" => "false", "kinitems" => "false", "neighbor2" => "false", "oclass" => "false", "fwdsets" => "false", "fcommit" => "false", "attachwait" => "false", "rescoreevery" => 1, "bioes" => "false", "headkin" => "", "lookwsmooth" => 0.0, "lookwback" => 0.0, "stickbreak" => "off", "posnegrestart" => "false", "posnegseed" => "own", "dualchain" => "off", "dualcombine" => "sum", "dualw" => 0.5, "dualleft" => "true", "dualturn" => "both", "posnegafter" => "false", "posnegleftneg" => "false", "posnegonly" => "all", "leftwback" => 0.0, "leftwovl" => "false", "leftwcomb" => "prod", "wselcomb" => "sum", "wselmove" => "weights", "wselweight" => "false", "tuplek" => 0, "tuplemin" => 0.0, "interleave" => "false", "goldtok" => "false", "profdecode" => "false", "devtb" => "", "rescorestats" => "false", "golddec" => "", "accumgreedy" => 0.0, "accumstop" => 0.0, "accumpick" => "abs", "accumfloor" => "false", "ilscore" => "corr", "nchains" => 1, "stepmin" => 0, "forkthin" => 0, "firstnz" => "false", "softtags" => 0, "oclassladder" => "true", "lefttopn" => 0, "relstrikes" => 0, "relpool" => "false", "ctxcache" => 0, "steptopn" => 0, "shapeitems" => "true", "prodnorm" => "off", "candmemo" => "false", "forkcap" => 0, "forkcomb" => "max", "forkleft" => "each", "lookwsoft" => "false", "depweight" => "false", "gatemincount" => -1, "branches" => 1, "combine" => "avg", "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "driftsigma" => 0.0, "distback" => "false", "shrink" => 0.0, "shrinkleft" => 0.0, "leftmin2" => 0, "headwc" => "", "headwcdir" => "/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5", "drifttau" => 0.0, "driftstep" => 0.0, "relbounded" => "false", "relnone" => "false", "treerank" => "false", "headtrank" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
@@ -398,6 +401,8 @@ events are re-recorded when either the code or the data changes.
 """
 srcstamp(list = CORPUS_LIST) = string(hash(([read(f, String) for f in sort(readdir(joinpath(HERE, "..", "src"); join = true))],
     [(f, filesize(f), mtime(f)) for f in filter(l -> !startswith(l, '#') && !isempty(strip(l)), readlines(list))])); base = 16)
+"wc3= names: lex, clu or lex,clu -> :wc3lex, :wc3clu."
+wc3_names(cfg) = isempty(cfg["wc3"]) ? Symbol[] : [Symbol(:wc3, strip(x)) for x in split(cfg["wc3"], ',')]
 "The corpus list in use: corpus= (a file of training .conllu paths, # comments), else CORPUS_LIST."
 corpuslist(cfg) = isempty(cfg["corpus"]) ? CORPUS_LIST : cfg["corpus"]
 
@@ -446,13 +451,15 @@ function setup(cfg)
   hwl = isempty(cfg["headwc"]) ? Int[] : parse.(Int, split(cfg["headwc"], ','))
   hwc = isempty(hwl) ? nothing : something(wc, load_wordclasses(cfg["headwcdir"]))
   hwc === nothing || foreach(ds -> SeqLayers.add_head_wclass_gold!(ds, hwc, hwl), alltrain)
+  # wc3 (2026-11-11): 3-way classes looked up from the form, from the training sample's gold UPOS (and the clusters)
+  w3 = SeqLayers.wc3_tables(reduce(vcat, [firstsents(ds, cfg["train_sents"]) for ds in alltrain]), wc3_names(cfg), wc)
   specs = default_specs(charindex = idx, wordclasses = wc, suffixes = sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true",
     projective = cfg["projective"] == "true", relations = cfg["relations"] == "true",
     headsdist = cfg["headsdist"] == "true", pptable = pp, pprel = cfg["pprel"] == "true",
     relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true", treerank = cfg["treerank"] == "true", headtrank = cfg["headtrank"] == "true",
     headwc = hwl, headwcclasses = hwc, headsibs = headsib_names(cfg), idxeq = cfg["idxeq"] == "true",
     kinitems = cfg["kinitems"] == "true", headkin = headkin_names(cfg), neighbor2 = cfg["neighbor2"] == "true",
-    oclass = cfg["oclass"] == "true", bioes = cfg["bioes"] == "true", fwdsets = cfg["fwdsets"] == "true", shapeitems = cfg["shapeitems"] != "false")
+    oclass = cfg["oclass"] == "true", bioes = cfg["bioes"] == "true", fwdsets = cfg["fwdsets"] == "true", shapeitems = cfg["shapeitems"] != "false", wc3 = w3)
   # same Doc objects as in the index, so their suffix-array features are leave-one-out
   trainsample = reduce(vcat, [firstsents(ds, cfg["train_sents"]) for ds in alltrain])
   # held-out tuning docs: the training docs right after the sample's
@@ -473,7 +480,8 @@ function setup(cfg)
     (isempty(cfg["pptable"]) ? "" : cfg["pprel"] == "true" ? "-pprel" : "-pp") * (cfg["treerank"] == "true" ? "-trank" : "") * (cfg["headtrank"] == "true" ? "-htrank" : "") * (isempty(cfg["headwc"]) ? "" : "-hwc" * replace(cfg["headwc"], ',' => "")) *
     (isempty(cfg["headsibs"]) ? "" : "-hsib" * replace(cfg["headsibs"], ',' => "")) * (cfg["idxeq"] == "true" ? "-idxeq" : "") * (cfg["kinitems"] == "true" ? "-kin" : "") *
     (isempty(cfg["headkin"]) ? "" : "-hkin" * replace(cfg["headkin"], ',' => "")) * (cfg["neighbor2"] == "true" ? "-nn2" : "") *
-    (cfg["oclass"] == "true" ? "-ocl" : "") * (cfg["bioes"] == "true" ? "-bioes" : "") * (cfg["fwdsets"] == "true" ? "-fs" : "") * (cfg["shapeitems"] == "false" ? "-noshape" : ""))
+    (cfg["oclass"] == "true" ? "-ocl" : "") * (cfg["bioes"] == "true" ? "-bioes" : "") * (cfg["fwdsets"] == "true" ? "-fs" : "") * (cfg["shapeitems"] == "false" ? "-noshape" : "") *
+    (isempty(cfg["wc3"]) ? "" : "-wc3" * replace(cfg["wc3"], ',' => "")))
   mkpath(workdir)
   local model, lex
   modelname = cfg["model"]
@@ -597,7 +605,7 @@ function setup(cfg)
   end
   build_s = time() - t0
   nlambda = model isa LatticeModel ? length(model.lambda) : model isa CountModel ? length(model.chosen) : 0
-  (; tbs, idx, wc, sfx, devdocs, devfiles, tunedocs, trainsample, workdir, model, lex, recipe, modelname, build_s, nlambda)
+  (; tbs, idx, wc, sfx, w3, devdocs, devfiles, tunedocs, trainsample, workdir, model, lex, recipe, modelname, build_s, nlambda)
 end
 
 """
@@ -611,6 +619,7 @@ function start_workers(cfg, s; rundir = nothing)
     rundir = mktempdir(workdir)
     serialize(joinpath(rundir, "model.jls"), recipe === nothing ? model : recipe)
     serialize(joinpath(rundir, "lex.jls"), lex)
+    serialize(joinpath(rundir, "wc3.jls"), s.w3)
     serialize(joinpath(rundir, "idx.jls"), CharIndex(idx.fwd, idx.rev, idx.gap, idx.saL, idx.saR, idx.cumL, idx.cumR,
       idx.prior, IdDict{Doc,Int}(), idx.maxlen, idx.mincount, idx.beta))
   end
@@ -629,7 +638,7 @@ function start_workers(cfg, s; rundir = nothing)
       headwcclasses = $(isempty(cfg["headwc"]) ? nothing : :(load_wordclasses($(isempty(cfg["wclasses"]) ? cfg["headwcdir"] : cfg["wclasses"])))),
       headsibs = $(headsib_names(cfg)), idxeq = $(cfg["idxeq"] == "true"),
       kinitems = $(cfg["kinitems"] == "true"), headkin = $(headkin_names(cfg)), neighbor2 = $(cfg["neighbor2"] == "true"),
-      oclass = $(cfg["oclass"] == "true"), bioes = $(cfg["bioes"] == "true"), fwdsets = $(cfg["fwdsets"] == "true"), shapeitems = $(cfg["shapeitems"] != "false"))
+      oclass = $(cfg["oclass"] == "true"), bioes = $(cfg["bioes"] == "true"), fwdsets = $(cfg["fwdsets"] == "true"), shapeitems = $(cfg["shapeitems"] != "false"), wc3 = deserialize(joinpath($rundir, "wc3.jls")))
     const WLEX = deserialize(joinpath($rundir, "lex.jls"))
     $(cfg["fwdcheck"] == "true") && (SeqLayers.FWDCHECK[] = true)
     $(cfg["fcommit"] == "true") && (SeqLayers.FCOMMIT[] = true)

@@ -302,6 +302,18 @@ end
       mp.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
+    # wc3: 3-way classes from the form -- tables from gold UPOS, a fallback rule, and a model that records and decodes
+    let w3 = SeqLayers.wc3_tables(docs, [:wc3lex])
+      @test !isempty(w3[:wc3lex]) && all(v -> v in UInt32(1):UInt32(3), values(w3[:wc3lex]))
+      @test (SeqLayers.wc3_rule(","), SeqLayers.wc3_rule("1999"), SeqLayers.wc3_rule("dog")) == (3, 2, 1)
+      sp3 = default_specs(wc3 = w3)
+      @test any(p -> p.feat == :wc3lex, sp3[2].context)
+      d3 = record_events(docs, sp3, Lexicon(), mktempdir())
+      m3 = ChainModel(d3; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, ctxmode = :accum)
+      m3.generalize = SeqLayers.generalization_slots(sp3)
+      @test 0 <= eval_scores(evaluate_counts(docs, sp3, m3, Lexicon())).uas <= 1
+      default_specs()
+    end
     # relstrikes: no up-front relevance filter; struck-out leftovers leave (dropped or pooled); every one taken reaches tau
     @test_throws ErrorException ChainModel(dir; select = :maxdev, leftovers = :greedy, ctxmode = :greedy, relstrikes = 2)
     for (ns, pool) in ((1, false), (2, false), (2, true))

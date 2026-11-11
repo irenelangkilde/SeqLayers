@@ -42,6 +42,53 @@ const OCLASS_CODES = UInt32[1, 2]
 const OCLASS_TAG = hash("token.oclass")
 const OPEN_UPOS = ("NOUN", "PROPN", "VERB", "ADJ", "ADV")
 oclass_code(upos::AbstractString) = upos in OPEN_UPOS ? UInt32(1) : UInt32(2)
+
+"""
+3-way classes from the word form (wc3; user's design 2026-11-11): 1 open (NOUN PROPN VERB ADJ ADV INTJ X), 2 closed
+(ADP AUX CCONJ DET NUM PART PRON SCONJ), 3 punct (PUNCT SYM).  wc3lex: a training form's most frequent UPOS; wc3clu:
+its 30-class cluster's majority over the training tokens (forms outside the clusters as wc3lex).  wc3_rule: forms seen
+in neither -- all punctuation 3, all digits 2, else 1.
+"""
+const WC3_OPEN = ("NOUN", "PROPN", "VERB", "ADJ", "ADV", "INTJ", "X")
+wc3_of_upos(u::AbstractString) = u in WC3_OPEN ? UInt32(1) : u in ("PUNCT", "SYM") ? UInt32(3) : UInt32(2)
+wc3_rule(f::AbstractString) = all(c -> ispunct(c) || issymbol(c), f) ? UInt32(3) : all(isdigit, f) ? UInt32(2) : UInt32(1)
+issymbol(c::Char) = Base.Unicode.category_code(c) in (Base.Unicode.UTF8PROC_CATEGORY_SM, Base.Unicode.UTF8PROC_CATEGORY_SC,
+  Base.Unicode.UTF8PROC_CATEGORY_SK, Base.Unicode.UTF8PROC_CATEGORY_SO)
+
+"wc3 tables for `names` (:wc3lex, :wc3clu) from training docs' gold UPOS; :wc3clu needs the word classes `wc`."
+function wc3_tables(docs, names, wc = nothing)
+  out = Dict{Symbol,Dict{String,UInt32}}()
+  isempty(names) && return out
+  cnt = Dict{String,Dict{UInt32,Int}}()              # form -> 3-way class -> training tokens
+  for d in docs, (sp, code) in get(d.gold.tags, :upos, Dict{UnitRange{Int},UInt32}())
+    f = lowercase(String(d.text[sp]))
+    c = wc3_of_upos(TAGSETS.upos[code])
+    h = get!(() -> Dict{UInt32,Int}(), cnt, f)
+    h[c] = get(h, c, 0) + 1
+  end
+  lex = Dict{String,UInt32}(f => argmax(h) for (f, h) in cnt)
+  :wc3lex in names && (out[:wc3lex] = lex)
+  if :wc3clu in names
+    wc === nothing && error("wc3clu needs word classes (wclasses=)")
+    l30 = something(findfirst(==(30), wc.sizes), length(wc.sizes))
+    tally = Dict{UInt32,Dict{UInt32,Int}}()          # cluster -> 3-way class -> training tokens
+    for (f, h) in cnt
+      w = get(wc.index, f, 0)
+      w > 0 || continue
+      t = get!(() -> Dict{UInt32,Int}(), tally, wc.class[w, l30])
+      for (c, n) in h
+        t[c] = get(t, c, 0) + n
+      end
+    end
+    clu = copy(lex)
+    for (f, w) in wc.index
+      t = get(tally, wc.class[w, l30], nothing)
+      t === nothing || (clu[f] = argmax(t))
+    end
+    out[:wc3clu] = clu
+  end
+  out
+end
 tagcode(name::Symbol, s::AbstractString) =
   UInt32(something(findfirst(==(s), TAGSETS[name]), length(TAGSETS[name])))
 const TAG_CODES = map(ls -> UInt32.(1:length(ls)), TAGSETS)
@@ -1510,7 +1557,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
   relbounded::Bool = false, relnone::Bool = false, treerank::Bool = false, headtrank::Bool = false,
   headwc::Vector{Int} = Int[], headwcclasses = nothing, headsibs::Vector{Symbol} = Symbol[], idxeq::Bool = false,
   kinitems::Bool = false, headkin::Vector{Symbol} = Symbol[], neighbor2::Bool = false, oclass::Bool = false, bioes::Bool = false, fwdsets::Bool = false,
-  shapeitems::Bool = true)
+  shapeitems::Bool = true, wc3::Dict{Symbol,Dict{String,UInt32}} = Dict{Symbol,Dict{String,UInt32}}())
   PROJECTIVE[] = projective
   all(n -> haskey(HEADKIN_DIR, n), headkin) || error("headkin: names are $(join(keys(HEADKIN_DIR), ", "))")
   all(n -> haskey(HEADSIB_KIND, n), headsibs) || error("headsibs: names are $(join(keys(HEADSIB_KIND), ", "))")
@@ -1568,6 +1615,15 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
     FeatPath([:head], :oclass)] : FeatPath[]
   oclat = nn2at + length(nn2paths)
   oclass && append!(linkpaths, oclat .+ (1:3))
+  # wc3 (user's design 2026-11-11): 3-way classes looked up from the form (wc3_tables) -- the token's, its neighbours' and
+  # its head's, after oclass in the context; the first three in the attachment features (both sides)
+  w3names = sort!(collect(keys(wc3)))
+  w3paths = FeatPath[p for n in w3names for p in (FeatPath(n), FeatPath([:left_neighbor], n), FeatPath([:right_neighbor], n),
+    FeatPath([:head], n))]
+  w3at = oclat + length(oclpaths)
+  for (j, _) in enumerate(w3names)
+    append!(linkpaths, w3at + 4(j - 1) .+ (1:3))
+  end
   tokens = LayerSpec{TokenLayer}(:token,
     vcat([FeatDef(:form, (st, t) -> intern!(st.lex, :form, lowercase(tokstr(st, t)))),
         FeatDef(:caps, (st, t) -> UInt32(capsclass(tokstr(st, t)))),
@@ -1577,7 +1633,8 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
       # (position and document length together: position alone recurs across short documents, and
       # absolute position does tell something about attachment)
       [FeatDef(:noise, (st, t) -> UInt32(hash((length(st.doc.text), docpos(st, Int(st.layers[:token][:first_char, t])))) % noise + 1))
-        for _ in nnames]),
+        for _ in nnames],
+      [FeatDef(n, (st, t) -> (f = tokstr(st, t); get(wc3[n], lowercase(f), wc3_rule(f)))) for n in w3names]),
     vcat([RelDef(:first_char, :char, false, (st, t) -> PENDING),       # given by :tokenize
       RelDef(:last_char, :char, false, (st, t) -> PENDING),
       RelDef(:left_neighbor, :token, true, (st, t) -> adjacent_token(st, t, -1)),
@@ -1648,10 +1705,11 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
       [FeatPath(n) for n in headsibs],
       [FeatPath(n) for n in headkin],
       nn2paths,
-      oclpaths),
+      oclpaths,
+      w3paths),
     (st, t) -> Int(st.layers[:token][:last_char, t]))
 
-  length(tokens.context) == 22 + extra + length(relpaths) + headsdist + headtrank + length(hwnames) + length(headsibs) + length(headkin) + length(nn2paths) + length(oclpaths) || error("token context paths moved: update linkpaths")
+  length(tokens.context) == 22 + extra + length(relpaths) + headsdist + headtrank + length(hwnames) + length(headsibs) + length(headkin) + length(nn2paths) + length(oclpaths) + length(w3paths) || error("token context paths moved: update linkpaths")
   LINKPATHS[tokens] = linkpaths
   sentences = LayerSpec{SentenceLayer}(:sentence,
     FeatDef[],
