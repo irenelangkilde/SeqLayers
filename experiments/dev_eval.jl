@@ -731,6 +731,10 @@ function main(cfg)
         (startswith(String(k), "memo_") || startswith(String(k), "cmemo_") || startswith(String(k), "t_") || startswith(String(k), "chain") || startswith(String(k), "ctx_") || startswith(String(k), "pend_")) && (mm[k] = get(mm, k, 0.0) + v)
       end
     end
+    for w in workers()                               # the model-wide record cache: emptied for space how often, and its fill
+      ce, cf = remotecall_fetch(() -> (SeqLayers.CACHE_EMPTIED[], WMODEL isa SeqLayers.ChainModel ? WMODEL.cached : 0), w)
+      println("rescorestats: worker $w cache emptied $ce times, holding $cf record numbers")
+    end
     println("rescorestats: decision\tchanged row\trescores")
     for (k, v) in sort(collect(rs); by = kv -> -kv[2])[1:min(end, 40)]
       println("rescorestats: $(k[1]).$(k[2])\t$(k[3])\t$v")
