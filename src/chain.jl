@@ -376,7 +376,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   interleave && (leftovers != :greedy || ctxmode != :accum || select != :maxdev || pairsteps || pickfewest > 0 || target || lockstep != :none || sample > 0 || dualchain != :off) &&
     error("interleave: needs select = :maxdev, leftovers = :greedy, ctxmode = :accum, and no pairsteps, pickfewest, target, lockstep, sample or dualchain")
   accumgreedy > 0 && (leftovers != :greedy || ctxmode != :accum) && error("accumgreedy: needs leftovers = :greedy, ctxmode = :accum")
-  accumpick in (:abs, :signed) || error("unknown accumpick $accumpick (use :abs or :signed)")
+  accumpick in (:abs, :signed, :assoc) || error("unknown accumpick $accumpick (use :abs, :signed or :assoc)")
   ilscore in (:corr, :raw) || error("unknown ilscore $ilscore (use :corr or :raw)")
   nchains >= 1 || error("nchains: at least 1")
   forkthin > 0 && forkcap <= 0 && error("forkthin: needs forkcap > 0")
@@ -3296,6 +3296,8 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
     lt = m.opts.lefttopn > 0 && !isempty(base) ? get(m.ci, m.recs[base[1]].typekey, nothing) : nothing
     scored = lt === nothing || fullround ? nothing : Set(topn_slots(lt, Int[lslots[i][rung[i]] for i in eachindex(ladders) if rung[i] <= length(ladders[i])],
       pending, m.opts.lefttopn))
+    counted_ = m.opts.accumpick == :assoc ? UInt64[mem(); collect(taken)] : UInt64[]   # (assoc) the counted evidence
+    besta, bestq = Inf, false
     tried_ = m.opts.relstrikes > 0 ? Set{Int}() : nothing    # (relstrikes) scored this round, and their scores
     rsc_ = m.opts.relstrikes > 0 ? Dict{Int,Float64}() : nothing
     for (pi_, sx) in enumerate(pending)
@@ -3449,7 +3451,16 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       end
       rsc_ === nothing || (rsc_[sx] = xc)
       rsc_ === nothing || abs(xc) >= m.opts.tau || continue      # (relstrikes: only leftovers reaching tau are taken)
-      (bestX == 0 || (m.opts.accumpick == :signed ? xc > bestc : abs(xc) > abs(bestc))) && ((bestX, bestc, bestk, bestr) = (pi_, xc, xk, xr))
+      if m.opts.accumpick == :assoc
+        # (user's design 2026-11-12) among those reaching tau, the one least associated with the counted evidence --
+        # max over the chain's features and the leftovers taken of |log odds ratio|(X, a) -- first; ties: larger |corr|
+        q_ = abs(xc) >= m.opts.tau
+        a_ = isempty(counted_) ? 0.0 : maximum(a -> depq(m, base, X, a, label, prior; measure = :logor), counted_)
+        better = bestX == 0 || (q_ && !bestq) || (q_ == bestq && (q_ ? (a_ < besta || (a_ == besta && abs(xc) > abs(bestc))) : abs(xc) > abs(bestc)))
+        better && ((bestX, bestc, bestk, bestr, besta, bestq) = (pi_, xc, xk, xr, a_, q_))
+      else
+        (bestX == 0 || (m.opts.accumpick == :signed ? xc > bestc : abs(xc) > abs(bestc))) && ((bestX, bestc, bestk, bestr) = (pi_, xc, xk, xr))
+      end
       if chainon
         # ilscore :raw -- it competes as a chain step would: log o(x | C ∪ X) - log o(x | C) in its context C, with the
         # chain's own smoothing (update_odds); taken, it still adds xc

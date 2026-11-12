@@ -175,6 +175,8 @@
 #                (exact; much faster decoding)
 #   accumpick    ctxmode=accum: each round take the leftover with the largest |correction| (abs) or the largest signed
 #                correction, the biggest raise (signed)
+#                | assoc: among those whose correction reaches tau, the one least associated with the counted evidence
+#                (max over the chain's features and the leftovers taken of |log odds ratio|) first
 #   stepmin      > 0: a chain step needs at least this many records (chosen + not, prefix + feature); thinner features
 #                aren't chain steps but stay leftovers (default 0: only mincount)
 #   forkrule     lower | second (with forkcap): second -- a step's runner-up that the chain's next step doesn't take

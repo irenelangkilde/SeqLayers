@@ -302,6 +302,21 @@ end
       mp.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
+    # accumpick = :assoc: the least-associated leftover reaching tau is taken first; it runs and takes leftovers
+    let ma = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum,
+        accumpick = :assoc)
+      ma.generalize = SeqLayers.generalization_slots(specs)
+      @test ma.opts.accumpick == :assoc
+      taken = Float64[]
+      SeqLayers.ACCUM_TRACE[] = (sx, T, tries, k, corr, hist) -> push!(taken, corr)
+      try
+        @test 0 <= eval_scores(evaluate_counts(docs, specs, ma, lex)).uas <= 1
+      finally
+        SeqLayers.ACCUM_TRACE[] = nothing
+      end
+      @test !isempty(taken)
+    end
+    @test_throws ErrorException ChainModel(dir; select = :maxdev, leftovers = :greedy, ctxmode = :accum, accumpick = :odd)
     # accumby = :mincontrib: the backoff moves the feature adding least given the others; it runs and takes leftovers
     let mc = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum,
         accumby = :mincontrib)
