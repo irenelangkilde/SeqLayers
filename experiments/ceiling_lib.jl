@@ -209,7 +209,9 @@ function domains_attach!(r::CeilingRecorder, st, t, gold::UInt32, hk, old, names
     alive, D = SeqLayers.propagate_domains(st, t, acands, exp.(alps), props; eps = r.domeps)
     priors = SeqLayers.PROD_NORM[] == :prior ?      # (prodnorm=prior) each head property's training prior over its values
       Dict(decs[k].name => SeqLayers.value_priors(r.model, k, props[decs[k].name][1]) for k in hk if haskey(props, decs[k].name)) : nothing
-    choice, nalive = SeqLayers.domain_choice(st, t, acands, exp.(alps), props; eps = r.domeps, mode = r.domains, priors)
+    comps = PRODDUMP[] == "" ? nothing : Any[]
+    choice, nalive = SeqLayers.domain_choice(st, t, acands, exp.(alps), props; eps = r.domeps, mode = r.domains, priors, comps)
+    comps === nothing || dump_prod(comps, gold)
     nalive == 1 && (r.c[:inferred] += 1; r.c[:inferred_ok] += choice == gold)
     r.c[:dom_cands] = get(r.c, :dom_cands, 0) + length(acands)
     r.c[:dom_alive] = get(r.c, :dom_alive, 0) + nalive
@@ -217,6 +219,21 @@ function domains_attach!(r::CeilingRecorder, st, t, gold::UInt32, hk, old, names
   finally
     foreach(((n, v),) -> (toks[n, t] = v), zip(names, old))
     SeqLayers.refresh!(st)
+  end
+end
+
+"(proddump) This worker's file prefix for the product's per-candidate terms; empty: off.  Set by ceiling.jl."
+const PRODDUMP = Ref("")
+const PRODDUMP_N = Ref(0)
+const PRODDUMP_NAMES = [:attach; sort(collect(keys(SeqLayers.ALLHEADSETS)))]
+
+"One attachment's surviving candidates: decision id, is-gold, then each term (unweighted; NaN: not in the product)."
+function dump_prod(comps, gold)
+  PRODDUMP_N[] += 1
+  open(PRODDUMP[] * "-w$(getpid()).tsv", "a") do io
+    for (c, cj) in comps
+      println(io, join([string(PRODDUMP_N[]), c == gold ? "1" : "0", [string(get(cj, n, NaN)) for n in PRODDUMP_NAMES]...], '\t'))
+    end
   end
 end
 

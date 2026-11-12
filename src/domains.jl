@@ -47,12 +47,18 @@ P(attach) over the surviving candidates implying it).  Both renormalized over th
 const PROD_NORM = Ref(:off)
 
 """
+Product scoring (user 2026-11-12): learned weights -- :attach for log P(attach), a head property's name for its term
+(missing: 1).  nothing: the plain product.  Fitted on held-out decisions by experiments/fit_prodw.jl.
+"""
+const PROD_WEIGHTS = Ref{Union{Nothing,Dict{Symbol,Float64}}}(nothing)
+
+"""
 The attachment of t chosen over its domain: `mode` :prune (its own probabilities) or :product
 (times each head property's renormalized probability of the candidate's value, raised to PROD_BETA,
 over the properties in PROD_PROPS, each divided as PROD_NORM says; `priors`: name => the values' training priors, as
 `props` orders them).  Returns (choice, number of surviving candidates).
 """
-function domain_choice(st, t, cands, pa, props; eps = 1e-3, mode = :product, priors = nothing)
+function domain_choice(st, t, cands, pa, props; eps = 1e-3, mode = :product, priors = nothing, comps = nothing)
   alive, D = propagate_domains(st, t, cands, pa, props; eps)
   mode == :prune && return cands[alive[argmax(pa[alive])]], length(alive)
   # (prodnorm :attach) per property, the attachment's own probability of each value, over the surviving candidates
@@ -61,8 +67,11 @@ function domain_choice(st, t, cands, pa, props; eps = 1e-3, mode = :product, pri
     for j in alive; v = head_value(st, t, cands[j], name); v == PENDING || (q[v] = get(q, v, 0.0) + pa[j] / za); end; q)
     for name in keys(props)) : nothing
   score = Float64[]
+  W = PROD_WEIGHTS[]
+  w(n) = W === nothing ? 1.0 : get(W, n, 1.0)
   for j in alive
-    s = log(pa[j])
+    s = w(:attach) * log(pa[j])
+    cj = comps === nothing ? nothing : Dict{Symbol,Float64}(:attach => log(pa[j]))   # (comps: each term, unweighted)
     for (name, (vals, ps)) in props
       PROD_PROPS[] === nothing || name in PROD_PROPS[] || continue
       v = head_value(st, t, cands[j], name)
@@ -77,9 +86,11 @@ function domain_choice(st, t, cands, pa, props; eps = 1e-3, mode = :product, pri
       elseif PROD_NORM[] == :attach
         term -= log(max(qa[name][v], 1e-12))
       end
-      s += PROD_BETA[] * term
+      s += w(name) * PROD_BETA[] * term
+      cj === nothing || (cj[name] = PROD_BETA[] * term)
     end
     push!(score, s)
+    comps === nothing || push!(comps, (cands[j], cj))
   end
   cands[alive[argmax(score)]], length(alive)
 end

@@ -26,6 +26,9 @@
 #   dcstats    true: count possible double counting in accum and greedy leftovers -- per leftover taken, the largest |Yule's Q|
 #              to a counted feature (chain, earlier leftovers) outside its context; prints the share with |Q| >= 0.5
 #              and the |corr|-weighted mean
+#   prodw      domains=product: learned weights, attach=w,head_dist=w,... (missing: 1; experiments/fit_prodw.jl)
+#   proddump   domains=product: write each attachment's surviving candidates' terms (unweighted) to <prefix>-w<worker>.tsv
+#              (decision id per worker, is-gold, attach, then the head properties sorted by name; NaN: not in the product)
 #   on         dev (default) | tune: score the held-out tuning docs instead (dev_eval.jl tune_sents)
 #   calibrate  true: also fit the weight of the greedy leftovers' corrections per decision type
 #              (score = chain + alpha * corrections, maximizing the likelihood of the gold choices
@@ -89,6 +92,15 @@ function ceiling_main(cfg)
   pp === nothing || all(n -> haskey(SeqLayers.ALLHEADSETS, n), pp) || error("prodprops: names are $(join(keys(SeqLayers.ALLHEADSETS), ", "))")
   Distributed.remotecall_eval(Main, workers(), :(SeqLayers.PROD_BETA[] = $(cfg["prodbeta"]); SeqLayers.PROD_PROPS[] = $pp;
     SeqLayers.PROD_NORM[] = $(QuoteNode(Symbol(cfg["prodnorm"])))))
+  if !isempty(cfg["prodw"])                         # learned product weights: attach=1.0,head_dist=0.4,...
+    W = Dict(Symbol(first(split(kv, '='))) => parse(Float64, last(split(kv, '='))) for kv in split(cfg["prodw"], ','))
+    Distributed.remotecall_eval(Main, workers(), :(SeqLayers.PROD_WEIGHTS[] = $W))
+  end
+  if !isempty(cfg["proddump"])                      # per-candidate product terms, one file per worker
+    mkpath(dirname(abspath(cfg["proddump"])))
+    foreach(f -> startswith(f, basename(cfg["proddump"]) * "-w") && rm(joinpath(dirname(abspath(cfg["proddump"])), f)), readdir(dirname(abspath(cfg["proddump"]))))
+    Distributed.remotecall_eval(Main, workers(), :(PRODDUMP[] = $(abspath(cfg["proddump"]))))
+  end
   cfg["dcstats"] == "true" && Distributed.remotecall_eval(Main, workers(), :(SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()))
   t1 = time()
   order = sortperm(devdocs; by = p -> length(p[2].text), rev = true)
@@ -206,6 +218,8 @@ DEFAULTS["domeps"] = 1e-3
 DEFAULTS["prodbeta"] = 1.0
 DEFAULTS["dcstats"] = "false"
 DEFAULTS["prodprops"] = ""
+DEFAULTS["prodw"] = ""
+DEFAULTS["proddump"] = ""
 DEFAULTS["on"] = "dev"
 DEFAULTS["calibrate"] = "false"
 

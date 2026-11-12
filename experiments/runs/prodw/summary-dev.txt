@@ -1,0 +1,8 @@
+=== start Thu Nov 12 14:49:04 MST 2026
+=== prodw attach=1,head_dir=0.891,head_dist=0.701,head_kinleft=1.506,head_kinright=0.81,head_trank=0.333,head_upos=0.874,head_xpos=0.144
+ALL         2899    0.9978  0.8834  0.8368  0.0162  1.0     
+score 531.3 s, run 20261112-150116 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== control (plain product, dev dump)
+ALL         2899    0.9978  0.8865  0.8386  0.0162  1.0     
+score 568.0 s, run 20261112-151338 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Thu Nov 12 15:13:39 MST 2026
