@@ -253,6 +253,7 @@ struct ChainOpts
   lookwsoft::Bool                                 # lookwback: blend by support (w = n / (n + lookwback)) instead of switching
   lookwsmooth::Float64                            # > 0: W's estimates for ΔW / interaction from its likelihood ratio, each rate smoothed by this many records toward W's pooled rate
   chainsel::Float64                               # > 0: selective shrinkage of chain steps toward their generalization, by z = deviation / SE (z0 = this)
+  genred::Symbol                                  # (accum; user 2026-11-12) leftovers redundant with a chain feature whatever the counts, dropped before the rounds: :word -- on the same word (form, upos, xpos, basepos, suffixes, classes); :coarser -- coarser than a chain feature on its word (upos=ADV given xpos=RB), or finer only if a tag (xpos=RB given upos=ADV; not form given upos); :off
 end
 
 const LabelCounts = Dict{UInt32,Tuple{Float64,Float64}}   # label -> (chosen, not chosen); estimates when sampled
@@ -363,7 +364,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0, accumstop = 0.0, forkcap = 0, forkcomb = :max, forkleft = :each, accumpick = :abs, accumfloor = false, ilscore = :corr, nchains = 1, stepmin = 0, forkthin = 0, firstnz = false, lefttopn = 0, steptopn = 0, relstrikes = 0, relpool = false, forkrule = :lower, candmemo = false)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0, accumstop = 0.0, forkcap = 0, forkcomb = :max, forkleft = :each, accumpick = :abs, accumfloor = false, ilscore = :corr, nchains = 1, stepmin = 0, forkthin = 0, firstnz = false, lefttopn = 0, steptopn = 0, relstrikes = 0, relpool = false, forkrule = :lower, candmemo = false, genred = :off)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms, :maxpos, :maxabsscore, :maxposneg) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
@@ -381,6 +382,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   nchains >= 1 || error("nchains: at least 1")
   forkthin > 0 && forkcap <= 0 && error("forkthin: needs forkcap > 0")
   relstrikes > 0 && (ctxmode != :accum || interleave) && error("relstrikes: ctxmode :accum, no interleave")
+  genred in (:off, :word, :coarser) || error("unknown genred $genred (use :off, :word or :coarser)")
   forkrule in (:lower, :second) || error("unknown forkrule $forkrule (use :lower or :second)")
   nchains > 1 && (ctxmode != :accum || leftovers != :greedy || interleave) && error("nchains > 1: ctxmode :accum, leftovers :greedy, no interleave")
   forkcomb in (:max, :avg) || error("unknown forkcomb $forkcomb (use :max or :avg)")
@@ -459,7 +461,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, candmemo, accumpick, accumfloor, ilscore, nchains, stepmin, forkthin, firstnz, lefttopn, steptopn, relstrikes, relpool, forkrule, forkcap, forkcomb, forkleft, accumstop, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, candmemo, accumpick, accumfloor, ilscore, nchains, stepmin, forkthin, firstnz, lefttopn, steptopn, relstrikes, relpool, forkrule, forkcap, forkcomb, forkleft, accumstop, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel, genred),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -3903,6 +3905,30 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
     rel = Int[s for s in remaining if Ic[s] != ABSENT &&   # (relstrikes: no up-front filter -- strikes in the rounds)
       (m.opts.relevance <= 0 || m.opts.relstrikes > 0 || leftover_relevance(m, st, Ic[s], label, prior, base) >= m.opts.relevance)]
     DISCARD_TRACE[] === nothing || DISCARD_TRACE[](:irrelevant, [s for s in remaining if Ic[s] != ABSENT && !(s in rel)])
+    if m.opts.genred != :off                         # (user 2026-11-12) redundant with a chain feature on its word
+      chs = Int[s for s in (findfirst(==(w), Ic) for w in st.members) if s !== nothing]
+      gr = if m.opts.genred == :word                 # the same word
+        fam = Dict{Int,Int}()                        # slot -> its word's form slot
+        for (sf, gs) in G
+          fam[sf] = sf
+          for sg in gs
+            fam[sg] = sf
+          end
+        end
+        chainfam = Set{Int}(fam[s] for s in chs if haskey(fam, s))
+        [s for s in rel if get(fam, s, 0) in chainfam]
+      else                                           # coarser than a chain feature on its word
+        # (and a finer leftover only when it is a tag: xpos=RB given upos=ADV or basepos=R, not form=about given upos=ADP)
+        C = get(COARSER_SLOTS, tk, Dict{Int,Set{Int}}())
+        tagslot = get(TAG_SLOTS, tk, Set{Int}())
+        [s for s in rel if any(c -> c in get(C, s, ()) || (s in tagslot && s in get(C, c, ())), chs)]
+      end
+      if !isempty(gr)
+        DISCARD_TRACE[] === nothing || DISCARD_TRACE[](:genred, gr)
+        (d = DC_STATS[]) === nothing || (d[:genred] = get(d, :genred, 0.0) + length(gr))
+        filter!(s -> !(s in gr), rel)
+      end
+    end
     m.opts.nchains > 1 && return multi_chain_leftovers(m, st, Ic, G, rel, remaining, label, prior, base)
     return accum_leftovers(m, st, Ic, G, rel, label, prior, base)
   end

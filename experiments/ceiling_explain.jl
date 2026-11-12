@@ -436,7 +436,11 @@ function detail(st, t, c, f, Ic, acc; k = 1, label = UInt32(0), disc = Any[])
   println("       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.")
   println("        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the")
   println("        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.\n" *
-    "        'by round': the leftover's corr in each greedy round before it was taken, in that round's context.)")
+    "        'by round': the leftover's corr in each greedy round before it was taken, in that round's context.\n" *
+    "        Struck out, per round: T = the running estimate before the round, T + corr = it with the leftover taken;\n" *
+    "        'log odds' there is the context's own log o(x | context), not T.\n" *
+    "        The log odds with X ('with X: ... log odds', 'with it ..., log odds'): log o(x | context, X) as smoothed,\n" *
+    "        = the context's log odds + corr.)")
   println("       CHAIN", " "^41, "Δ alone (vs prior)       Δ in the chain (vs prefix)")
   Sc = S.ChainState(p0, base)
   for (j, x) in enumerate(f.members)
@@ -480,6 +484,13 @@ function detail(st, t, c, f, Ic, acc; k = 1, label = UInt32(0), disc = Any[])
     X = Ic[a.sx]
     mΔ, mn = marginal(X)
     println("\n       LEFTOVER $r: ", name(X), "   Δ alone ", fmtd(mΔ), " (n ", fmtn(mn), ");  running estimate before: log odds ", fmtd(a.T))
+    # the end-of-chain redundancy test (redundant_divergence): X given the whole chain -- supported (mincount records)
+    # and moving the odds by less than tau is redundant (pooled); unsupported can't be judged and stays a leftover
+    eR = only(S.extend_all(m, Sc, S.depth(Sc), [X]))
+    yR, okR = S.update_odds(m, eR, label, Sc.odds[end])
+    println("         given the whole chain (redundancy test): n ", fmtn(get(eR[2], label, (0.0, 0.0))),
+      okR ? "  Δ $(fmtd(log(yR) - log(Sc.odds[end])))  -> " * (abs(log(yR) - log(Sc.odds[end])) < m.opts.tau ? "redundant" : "not redundant (|Δ| >= tau)") :
+      "  -> unsupported (< mincount $(m.opts.mincount) records): can't be judged")
     prev = nothing
     taken = false
     for (i, tr) in enumerate(a.tries)
@@ -508,7 +519,7 @@ function detail(st, t, c, f, Ic, acc; k = 1, label = UInt32(0), disc = Any[])
         moves = prev === nothing ? "context: " * join(ctxn, ", ") :
           "[" * join([["-" * x for x in setdiff(prev, ctxn)]; ["+" * x for x in setdiff(ctxn, prev)]], ", ") * "]"
         println("           round ", rpad(h.round, 3), " estimate ", lpad(fmtd(h.T), 6), "  context log odds ", lpad(fmtd(log(h.odds)), 6),
-          "  with X: n ", rpad(fmtn(h.nX), 10), "  corr ", lpad(fc(h.corr), 6), h.corr === nothing || h.score ≈ h.corr ? "" : "  (weighted " * fmtd(h.score) * ")", "   ", moves)
+          "  with X: n ", rpad(fmtn(h.nX), 10), "  log odds ", lpad(h.corr === nothing ? "-" : fmtd(log(h.odds) + h.corr), 6), "  corr ", lpad(fc(h.corr), 6), h.corr === nothing || h.score ≈ h.corr ? "" : "  (weighted " * fmtd(h.score) * ")", "   ", moves)
         prev = ctxn
       end
     end
@@ -521,7 +532,7 @@ function detail(st, t, c, f, Ic, acc; k = 1, label = UInt32(0), disc = Any[])
   gated = [sx for sx in eachindex(Ic) if Ic[sx] != S.ABSENT && !(Ic[sx] in used) && !(sx in S.admitted(m, tk, Ic))]
   groups = [("not admitted (relevance gates)", gated)]
   for (kind, label_) in ((:pool, "pooled (redundant to the chain)"), (:weak, "dropped as weak (redundant and weak alone)"),
-                         (:irrelevant, "dropped as irrelevant (up-front relevance filter)"), (:struck, "struck out (relstrikes)"),
+                         (:irrelevant, "dropped as irrelevant (up-front relevance filter)"), (:struck, "struck out (relstrikes)"), (:genred, "same word as a chain feature (genred)"),
                          (:struck_pooled, "struck out, pooled (relstrikes, relpool)"), (:untaken, "never taken (no supported context)"))
     push!(groups, (label_, unique([sx for (kk, sx, _) in disc if kk == kind && !(Ic[sx] in used)])))
   end
@@ -535,8 +546,9 @@ function detail(st, t, c, f, Ic, acc; k = 1, label = UInt32(0), disc = Any[])
         hs = [hh for (kk, x, hh) in disc if x == sx && hh !== nothing]
         h = isempty(hs) ? nothing : first(hs)
         h === nothing || isempty(h) || for r in h      # (struck out) its correction in each round's context
-          println("             round ", r.round, ": corr ", r.corr === nothing ? "unsupported" : fmtd(r.corr), " in context (",
-            length(r.ctx), " features, log odds ", fmtd(log(r.odds)), ", with it n ", fmtn(r.nX), "): ", join([name(x) for x in r.ctx], ", "))
+          println("             round ", r.round, ": T ", fmtd(r.T), "  corr ", r.corr === nothing ? "unsupported" : fmtd(r.corr),
+            r.corr === nothing ? "" : string("  T + corr ", fmtd(r.T + r.corr)), " in context (",
+            length(r.ctx), " features, log odds ", fmtd(log(r.odds)), ", with it n ", fmtn(r.nX), r.corr === nothing ? "" : string(", log odds ", fmtd(log(r.odds) + r.corr)), "): ", join([name(x) for x in r.ctx], ", "))
         end
       end
     end

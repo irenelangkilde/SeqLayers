@@ -1,0 +1,1251 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 330.9 s
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=odds;leftsmooth=evidence;relstrikes=2;relpool=false;genred=true;ctxmode=accum;ctxattach=false;cidrop=0.0;ciorder=off;telescope=false;branches=1;combine=avg;accumwin=0;accumreset=false;driftsigma=0.0;drifttau=0.0;driftstep=0.0;distback=false;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective;headtrank;kinitems;headkin=left,right;neighbor2]  [domains=product domeps=0.0]
+
+================ "How about right here ?"
+  How           gold -> ROOT        ok
+  about         gold -> here        WRONG: predicted -> right
+  right         gold -> here        ok
+  here          gold -> How         ok
+  ?             gold -> How         ok
+
+  ---- 'about': gold head 'here', predicted 'right'
+    head properties predicted (with the attachment and all of them hidden; values are probabilities):
+      head_upos      ADV 0.703, PRON 0.187, VERB 0.104   (gold head 'here': ADV, predicted attachment 'right': ADV)
+      head_xpos      WRB 0.517, RB 0.452, NNS 0.01   (gold head 'here': RB, predicted attachment 'right': RB)
+      head_dir       right 0.996, left 0.004, root 0.0   (gold head 'here': right, predicted attachment 'right': right)
+      head_dist      1 0.983, 2 0.017, 3-5 0.0   (gold head 'here': 2, predicted attachment 'right': 1)
+      head_trank     1 1.0, 2 0.0, 3 0.0   (gold head 'here': 2, predicted attachment 'right': 1)
+      head_kinleft   grandparent 0.868, other_ancestor 0.047, none 0.029   (gold head 'here': grandparent, predicted attachment 'right': other_ancestor)
+      head_kinright  parent 0.935, niece/nephew 0.062, sibling 0.002   (gold head 'here': sibling, predicted attachment 'right': parent)
+
+    -- head property head_xpos: predicted WRB, gold head's RB
+
+      ~~ head_xpos = WRB (predicted):  P 0.517
+       prior: log odds -6.64 = odds 0.00131 = probability 0.00131
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.
+        'by round': the leftover's corr in each greedy round before it was taken, in that round's context.
+        Struck out, per round: T = the running estimate before the round, T + corr = it with the leftover taken;
+        'log odds' there is the context's own log o(x | context), not T.
+        The log odds with X ('with X: ... log odds', 'with it ..., log odds'): log o(x | context, X) as smoothed,
+        = the context's log odds + corr.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. tok.left_neighbor.xpos=WRB                +2.45  n 4/198           +2.45  n 4/198
+       2. tok.left_neighbor.left_neighbor.upos=PUNCT  -0.34  n 4/5366          +0.82  n 3/58   <- sign flips
+       3. tok.right_neighbor.right_neighbor.head_dir=left  -0.02  n 19/15564        +0.53  n 2/17   <- sign flips
+       4. tok.person=0                              +0.25  n 53/30830        +0.75  n 2/8
+       5. tok.left_neighbor.left_neighbor.form=.     +0.0  n 2/1767          +0.98  n 2/3   <- sign flips
+       chain: log odds -1.1 = odds 0.333
+
+       LEFTOVER 1: tok.form=about   Δ alone +2.11 (n 2/92);  running estimate before: log odds -1.1
+         given the whole chain (redundancy test): n 0/1  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds   -1.1  n 2/3          with X: n 0/1         corr unsupported
+                 context: tok.left_neighbor.xpos=WRB, tok.left_neighbor.left_neighbor.upos=PUNCT, tok.right_neighbor.right_neighbor.head_dir=left, tok.person=0, tok.left_neighbor.left_neighbor.form=.
+         ctx 2: context log odds   -1.1  n 2/3          with X: n 0/1         corr unsupported   [-tok.left_neighbor.left_neighbor.upos=PUNCT]
+         ctx 3: context log odds  -2.08  n 2/8          with X: n 0/2         corr unsupported   [-tok.left_neighbor.left_neighbor.form=., +tok.left_neighbor.left_neighbor.upos=PUNCT]
+         ctx 4: context log odds  -2.83  n 2/17         with X: n 0/2         corr unsupported   [-tok.person=0]
+         ctx 5: context log odds  -3.37  n 3/58         with X: n 0/3         corr unsupported   [-tok.right_neighbor.right_neighbor.head_dir=left]
+         ctx 6: context log odds  -4.19  n 4/198        with X: n 0/3         corr unsupported   [-tok.left_neighbor.left_neighbor.upos=PUNCT]
+         ctx 7: context log odds  -6.64  n -            with X: n 2/92        corr +2.11  <= TAKEN   [-tok.left_neighbor.xpos=WRB]
+
+       LEFTOVER 2: tok.right_neighbor.upos=ADV   Δ alone +1.35 (n 12/2177);  running estimate before: log odds +1.01
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -4.52  n 2/92         with X: n 2/5         corr +2.34  <= TAKEN
+                 context: tok.form=about
+         by round: [+1.35, +2.34]
+           round 1   estimate   -1.1  context log odds  -6.64  with X: n 12/2177     log odds  -5.29  corr  +1.35   context: 
+           round 2   estimate  +1.01  context log odds  -4.52  with X: n 2/5         log odds  -2.19  corr  +2.34   [+tok.form=about]
+
+       NOT USED (Δ alone vs prior, records chosen / not)
+         pooled (redundant to the chain): 2
+           tok.left_neighbor.upos=ADV (+0.89, n 8/2188)
+           tok.left_neighbor.left_neighbor.head_dir=left (+0.21, n 25/14885)
+         dropped as weak (redundant and weak alone): 1
+           tok.caps=4 (+0.09, n 56/38426)
+         struck out (relstrikes): 10
+           tok.len=5 (+0.0, n 5/3709)
+             round 1: T -1.1  corr +0.0  T + corr -1.1 in context (2 features, log odds -3.37, with it n 0/6, log odds -3.37): tok.left_neighbor.xpos=WRB, tok.left_neighbor.left_neighbor.upos=PUNCT
+             round 2: T +1.01  corr +0.0  T + corr +1.01 in context (1 features, log odds -4.52, with it n 2/92, log odds -4.52): tok.form=about
+           tok.right_neighbor.form=right (+0.0, n 0/26)
+             round 1: T -1.1  corr +0.0  T + corr -1.1 in context (0 features, log odds -6.64, with it n 0/26, log odds -6.64): 
+             round 2: T +1.01  corr +0.0  T + corr +1.01 in context (1 features, log odds -6.95, with it n 0/11, log odds -6.95): tok.basepos=0
+           tok.xpos=IN (+0.0, n 7/4644)
+             round 1: T -1.1  corr +0.0  T + corr -1.1 in context (0 features, log odds -6.64, with it n 7/4644, log odds -6.64): 
+             round 2: T +1.01  corr +0.0  T + corr +1.01 in context (1 features, log odds -4.52, with it n 2/78, log odds -4.52): tok.form=about
+           tok.right_neighbor.right_neighbor.upos=ADV (+0.0, n 3/2179)
+             round 1: T -1.1  corr +0.0  T + corr -1.1 in context (1 features, log odds -4.19, with it n 0/12, log odds -4.19): tok.left_neighbor.xpos=WRB
+             round 2: T +1.01  corr +0.0  T + corr +1.01 in context (1 features, log odds -6.49, with it n 0/76, log odds -6.49): tok.upos=ADP
+           tok.right_neighbor.right_neighbor.form=here (+0.0, n 0/43)
+             round 1: T -1.1  corr +0.0  T + corr -1.1 in context (0 features, log odds -6.64, with it n 0/43, log odds -6.64): 
+             round 2: T +1.01  corr +0.0  T + corr +1.01 in context (1 features, log odds -6.95, with it n 0/14, log odds -6.95): tok.basepos=0
+           tok.right_neighbor.xpos=RB (-0.4, n 1/2277)
+             round 1: T -1.1  corr +0.0  T + corr -1.1 in context (2 features, log odds -3.37, with it n 0/6, log odds -3.37): tok.left_neighbor.xpos=WRB, tok.left_neighbor.left_neighbor.upos=PUNCT
+             round 2: T +1.01  corr +0.0  T + corr +1.01 in context (1 features, log odds -4.52, with it n 0/5, log odds -4.52): tok.form=about
+           tok.tense=0 (-0.3, n 38/40068)
+             round 1: T -1.1  corr -0.69  T + corr -1.79 in context (4 features, log odds -2.08, with it n 0/6, log odds -2.77): tok.left_neighbor.xpos=WRB, tok.right_neighbor.right_neighbor.head_dir=left, tok.person=0, tok.left_neighbor.left_neighbor.upos=PUNCT
+             round 2: T +1.01  corr +0.0  T + corr +1.01 in context (1 features, log odds -4.52, with it n 2/92, log odds -4.52): tok.form=about
+             round 3: T +3.35  corr +0.0  T + corr +3.35 in context (2 features, log odds -1.61, with it n 2/5, log odds -1.61): tok.form=about, tok.right_neighbor.upos=ADV
+           tok.upos=ADP (+0.14, n 7/3968)
+             round 1: T -1.1  corr +0.14  T + corr -0.96 in context (0 features, log odds -6.64, with it n 7/3968, log odds -6.49): 
+             round 2: T +1.01  corr +0.0  T + corr +1.01 in context (1 features, log odds -4.52, with it n 2/67, log odds -4.52): tok.form=about
+             round 3: T +3.35  corr +0.0  T + corr +3.35 in context (2 features, log odds -2.6, with it n 6/67, log odds -2.6): tok.upos=ADP, tok.right_neighbor.upos=ADV
+           tok.basepos=0 (-0.31, n 19/20863)
+             round 1: T -1.1  corr -0.41  T + corr -1.5 in context (3 features, log odds -2.83, with it n 0/9, log odds -3.24): tok.left_neighbor.xpos=WRB, tok.right_neighbor.right_neighbor.head_dir=left, tok.left_neighbor.left_neighbor.upos=PUNCT
+             round 2: T +1.01  corr +0.0  T + corr +1.01 in context (1 features, log odds -4.52, with it n 2/78, log odds -4.52): tok.form=about
+             round 3: T +3.35  corr +0.0  T + corr +3.35 in context (2 features, log odds -2.6, with it n 6/67, log odds -2.6): tok.upos=ADP, tok.right_neighbor.upos=ADV
+           tok.number=0 (+0.0, n 40/30419)
+             round 1: T -1.1  corr -0.18  T + corr -1.28 in context (4 features, log odds -2.08, with it n 1/7, log odds -2.26): tok.left_neighbor.xpos=WRB, tok.right_neighbor.right_neighbor.head_dir=left, tok.person=0, tok.left_neighbor.left_neighbor.upos=PUNCT
+             round 2: T +1.01  corr +0.0  T + corr +1.01 in context (1 features, log odds -4.52, with it n 2/92, log odds -4.52): tok.form=about
+             round 3: T +3.35  corr +0.0  T + corr +3.35 in context (2 features, log odds -1.61, with it n 2/5, log odds -1.61): tok.form=about, tok.right_neighbor.upos=ADV
+         same word as a chain feature (genred): 1
+           tok.left_neighbor.form=how (+0.0, n 0/61)
+
+       evidence (sums of Δ log odds): positive +9.99, negative +0.0;  final log odds +3.35 = odds 28.5
+
+      ~~ head_xpos = RB (gold):  P 0.452
+       prior: log odds -4.32 = odds 0.0133 = probability 0.0132
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.
+        'by round': the leftover's corr in each greedy round before it was taken, in that round's context.
+        Struck out, per round: T = the running estimate before the round, T + corr = it with the leftover taken;
+        'log odds' there is the context's own log o(x | context), not T.
+        The log odds with X ('with X: ... log odds', 'with it ..., log odds'): log o(x | context, X) as smoothed,
+        = the context's log odds + corr.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. tok.right_neighbor.right_neighbor.form=here  +2.31  n 6/37            +2.31  n 6/37
+       2. tok.right_neighbor.xpos=RB                +2.05  n 215/2063         +2.0  n 4/3
+       3. tok.person=0                              +0.21  n 501/30382       +0.29  n 4/2
+       chain: log odds +0.29 = odds 1.33
+
+       LEFTOVER 1: tok.form=about   Δ alone +0.5 (n 3/91);  running estimate before: log odds +0.29
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  +0.29  n 4/2          with X: n 0/0         corr unsupported
+                 context: tok.right_neighbor.right_neighbor.form=here, tok.right_neighbor.xpos=RB, tok.person=0
+         ctx 2: context log odds   +0.0  n 4/3          with X: n 0/0         corr unsupported   [-tok.person=0]
+         ctx 3: context log odds  -1.97  n 31/216       with X: n 0/0         corr unsupported   [-tok.right_neighbor.right_neighbor.form=here, +tok.right_neighbor.right_neighbor.upos=ADV]
+         ctx 4: context log odds  -2.27  n 215/2063     with X: n 3/2         corr +1.86  <= TAKEN   [-tok.right_neighbor.right_neighbor.upos=ADV]
+
+       LEFTOVER 2: tok.left_neighbor.upos=ADV   Δ alone +2.23 (n 244/1952);  running estimate before: log odds +2.15
+         given the whole chain (redundancy test): n 0/1  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds   +0.0  n 3/2          with X: n 0/0         corr unsupported
+                 context: tok.right_neighbor.xpos=RB, tok.form=about
+         ctx 2: context log odds  -0.97  n 17/42        with X: n 1/0         corr unsupported   [-tok.form=about, +tok.upos=ADP]
+         ctx 3: context log odds  -1.19  n 21/66        with X: n 1/2         corr unsupported   [-tok.upos=ADP, +tok.xpos=IN]
+         ctx 4: context log odds   -2.5  n 76/935       with X: n 21/45       corr +1.69  <= TAKEN   [-tok.xpos=IN, +tok.basepos=0]
+         by round: [+1.29, +1.69]
+           round 1   estimate  +0.29  context log odds  -1.97  with X: n 5/7         log odds  -0.69  corr  +1.29   context: tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.xpos=RB
+           round 2   estimate  +2.15  context log odds   -2.5  with X: n 21/45       log odds  -0.81  corr  +1.69   [-tok.right_neighbor.right_neighbor.upos=ADV, +tok.basepos=0]
+
+       LEFTOVER 3: tok.left_neighbor.left_neighbor.head_dir=left   Δ alone +0.19 (n 237/14673);  running estimate before: log odds +3.84
+         given the whole chain (redundancy test): n 1/1  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -0.81  n 21/45        with X: n 7/23        corr -0.32  <= TAKEN
+                 context: tok.right_neighbor.xpos=RB, tok.basepos=0, tok.left_neighbor.upos=ADV
+         by round: [-0.11, +0.0, -0.32]
+           round 1   estimate  +0.29  context log odds  -1.97  with X: n 9/76        log odds  -2.08  corr  -0.11   context: tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.xpos=RB
+           round 2   estimate  +2.15  context log odds  -0.97  with X: n 4/10        log odds  -0.97  corr   +0.0   [-tok.right_neighbor.right_neighbor.upos=ADV, +tok.upos=ADP]
+           round 3   estimate  +3.84  context log odds  -0.81  with X: n 7/23        log odds  -1.13  corr  -0.32   [-tok.upos=ADP, +tok.basepos=0, +tok.left_neighbor.upos=ADV]
+
+       LEFTOVER 4: tok.xpos=IN   Δ alone -0.38 (n 41/4610);  running estimate before: log odds +3.52
+         given the whole chain (redundancy test): n 1/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -1.06  n 7/23         with X: n 0/0         corr unsupported
+                 context: tok.right_neighbor.xpos=RB, tok.basepos=0, tok.left_neighbor.upos=ADV, tok.left_neighbor.left_neighbor.head_dir=left
+         ctx 2: context log odds  -0.81  n 21/45        with X: n 1/2         corr unsupported   [-tok.left_neighbor.left_neighbor.head_dir=left]
+         ctx 3: context log odds  -1.35  n 27/100       with X: n 1/2         corr unsupported   [-tok.basepos=0]
+         ctx 4: context log odds  -2.08  n 244/1952     with X: n 19/217      corr -0.3  <= TAKEN   [-tok.right_neighbor.xpos=RB]
+         by round: [+1.29, +0.04, -0.3, -0.3]
+           round 1   estimate  +0.29  context log odds  -1.97  with X: n 3/3         log odds  -0.69  corr  +1.29   context: tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.xpos=RB
+           round 2   estimate  +2.15  context log odds  -0.97  with X: n 16/35       log odds  -0.92  corr  +0.04   [-tok.right_neighbor.right_neighbor.upos=ADV, +tok.upos=ADP]
+           round 3   estimate  +3.84  context log odds  -2.08  with X: n 19/217      log odds  -2.39  corr   -0.3   [-tok.right_neighbor.xpos=RB, -tok.upos=ADP, +tok.left_neighbor.upos=ADV]
+           round 4   estimate  +3.52  context log odds  -2.08  with X: n 19/217      log odds  -2.39  corr   -0.3   []
+
+       NOT USED (Δ alone vs prior, records chosen / not)
+         pooled (redundant to the chain): 3
+           tok.number=0 (+0.19, n 483/29976)
+           tok.right_neighbor.upos=ADV (+2.05, n 207/1982)
+           tok.right_neighbor.right_neighbor.upos=ADV (+0.97, n 75/2107)
+         dropped as weak (redundant and weak alone): 1
+           tok.tense=0 (+0.03, n 543/39563)
+         struck out (relstrikes): 9
+           tok.len=5 (+0.0, n 50/3664)
+             round 1: T +0.29  corr +0.0  T + corr +0.29 in context (2 features, log odds -1.97, with it n 2/10, log odds -1.97): tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.xpos=RB
+             round 2: T +2.15  corr +0.0  T + corr +2.15 in context (2 features, log odds +0.0, with it n 3/2, log odds +0.0): tok.right_neighbor.xpos=RB, tok.form=about
+           tok.left_neighbor.form=how (+0.0, n 0/61)
+             round 1: T +0.29  corr +0.0  T + corr +0.29 in context (0 features, log odds -4.32, with it n 0/61, log odds -4.32): 
+             round 2: T +2.15  corr +0.0  T + corr +2.15 in context (0 features, log odds -4.32, with it n 0/61, log odds -4.32): 
+           tok.left_neighbor.xpos=WRB (+0.13, n 4/198)
+             round 1: T +0.29  corr +0.0  T + corr +0.29 in context (1 features, log odds -2.27, with it n 0/10, log odds -2.27): tok.right_neighbor.xpos=RB
+             round 2: T +2.15  corr +0.0  T + corr +2.15 in context (1 features, log odds -2.27, with it n 0/10, log odds -2.27): tok.right_neighbor.xpos=RB
+           tok.basepos=0 (+0.14, n 316/20566)
+             round 1: T +0.29  corr +0.04  T + corr +0.33 in context (2 features, log odds -1.97, with it n 14/89, log odds -1.93): tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.xpos=RB
+             round 2: T +2.15  corr +0.0  T + corr +2.15 in context (2 features, log odds -0.97, with it n 17/42, log odds -0.97): tok.right_neighbor.xpos=RB, tok.upos=ADP
+           tok.caps=4 (+0.05, n 535/37947)
+             round 1: T +0.29  corr +0.0  T + corr +0.29 in context (2 features, log odds +0.0, with it n 3/2, log odds +0.0): tok.right_neighbor.right_neighbor.form=here, tok.right_neighbor.xpos=RB
+             round 2: T +2.15  corr -0.18  T + corr +1.96 in context (2 features, log odds -0.97, with it n 13/42, log odds -1.15): tok.right_neighbor.xpos=RB, tok.upos=ADP
+             round 3: T +3.84  corr +0.0  T + corr +3.84 in context (3 features, log odds -0.81, with it n 21/42, log odds -0.81): tok.right_neighbor.xpos=RB, tok.basepos=0, tok.left_neighbor.upos=ADV
+           tok.left_neighbor.left_neighbor.upos=PUNCT (+0.68, n 139/5231)
+             round 1: T +0.29  corr -0.99  T + corr -0.7 in context (2 features, log odds -1.97, with it n 1/37, log odds -2.96): tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.xpos=RB
+             round 2: T +2.15  corr +0.0  T + corr +2.15 in context (2 features, log odds -1.19, with it n 1/5, log odds -1.19): tok.right_neighbor.xpos=RB, tok.xpos=IN
+             round 3: T +3.84  corr -0.0  T + corr +3.84 in context (3 features, log odds -0.81, with it n 4/8, log odds -0.81): tok.right_neighbor.xpos=RB, tok.basepos=0, tok.left_neighbor.upos=ADV
+           tok.upos=ADP (-0.41, n 34/3941)
+             round 1: T +0.29  corr +1.29  T + corr +1.57 in context (2 features, log odds -1.97, with it n 3/3, log odds -0.69): tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.xpos=RB
+             round 2: T +2.15  corr +0.0  T + corr +2.15 in context (2 features, log odds -0.97, with it n 17/42, log odds -0.97): tok.right_neighbor.xpos=RB, tok.upos=ADP
+             round 3: T +3.84  corr -0.07  T + corr +3.77 in context (1 features, log odds -2.08, with it n 18/163, log odds -2.15): tok.left_neighbor.upos=ADV
+           tok.left_neighbor.left_neighbor.form=. (+1.29, n 83/1686)
+             round 1: T +0.29  corr -0.17  T + corr +0.11 in context (2 features, log odds -1.97, with it n 1/17, log odds -2.15): tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.xpos=RB
+             round 2: T +2.15  corr -0.52  T + corr +1.62 in context (2 features, log odds -2.5, with it n 1/42, log odds -3.02): tok.right_neighbor.xpos=RB, tok.basepos=0
+             round 3: T +3.84  corr +0.0  T + corr +3.84 in context (2 features, log odds -1.35, with it n 1/7, log odds -1.35): tok.right_neighbor.xpos=RB, tok.left_neighbor.upos=ADV
+             round 4: T +3.52  corr +0.0  T + corr +3.52 in context (2 features, log odds -1.35, with it n 1/7, log odds -1.35): tok.right_neighbor.xpos=RB, tok.left_neighbor.upos=ADV
+           tok.right_neighbor.right_neighbor.head_dir=left (-0.07, n 190/15393)
+             round 1: T +0.29  corr +0.54  T + corr +0.83 in context (2 features, log odds -1.97, with it n 18/70, log odds -1.43): tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.xpos=RB
+             round 2: T +2.15  corr +0.87  T + corr +3.02 in context (2 features, log odds -0.97, with it n 13/12, log odds -0.09): tok.right_neighbor.xpos=RB, tok.upos=ADP
+             round 3: T +3.84  corr +0.26  T + corr +4.1 in context (3 features, log odds -0.81, with it n 10/15, log odds -0.55): tok.right_neighbor.xpos=RB, tok.basepos=0, tok.left_neighbor.upos=ADV
+             round 4: T +3.52  corr +0.0  T + corr +3.52 in context (4 features, log odds -1.06, with it n 3/10, log odds -1.06): tok.right_neighbor.xpos=RB, tok.basepos=0, tok.left_neighbor.upos=ADV, tok.left_neighbor.left_neighbor.head_dir=left
+             round 5: T +3.22  corr +0.0  T + corr +3.22 in context (2 features, log odds -2.38, with it n 9/109, log odds -2.38): tok.left_neighbor.upos=ADV, tok.xpos=IN
+         same word as a chain feature (genred): 1
+           tok.right_neighbor.form=right (+1.14, n 2/24)
+
+       evidence (sums of Δ log odds): positive +8.16, negative -0.62;  final log odds +3.22 = odds 24.9
+
+    -- head property head_dist: predicted 1, gold head's 2
+
+      ~~ head_dist = 1 (predicted):  P 0.983
+       prior: log odds -0.54 = odds 0.584 = probability 0.369
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.
+        'by round': the leftover's corr in each greedy round before it was taken, in that round's context.
+        Struck out, per round: T = the running estimate before the round, T + corr = it with the leftover taken;
+        'log odds' there is the context's own log o(x | context), not T.
+        The log odds with X ('with X: ... log odds', 'with it ..., log odds'): log o(x | context, X) as smoothed,
+        = the context's log odds + corr.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. tok.right_neighbor.xpos=RB                -1.17  n 349/1929        -1.17  n 349/1929
+       2. tok.form=about                            -0.05  n 33/61           +1.71  n 3/2   <- sign flips
+       chain: log odds +0.0 = odds 1.0
+
+       LEFTOVER 1: tok.left_neighbor.upos=ADV   Δ alone -0.21 (n 705/1491);  running estimate before: log odds +0.0
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds   +0.0  n 3/2          with X: n 0/0         corr unsupported
+                 context: tok.right_neighbor.xpos=RB, tok.form=about
+         ctx 2: context log odds  -0.58  n 33/61        with X: n 4/1         corr +1.07  <= TAKEN   [-tok.right_neighbor.xpos=RB]
+
+       LEFTOVER 2: tok.left_neighbor.form=how   Δ alone +0.34 (n 28/33);  running estimate before: log odds +1.07
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  +0.69  n 4/1          with X: n 3/0         corr unsupported
+                 context: tok.form=about, tok.left_neighbor.upos=ADV
+         ctx 2: context log odds  -0.58  n 33/61        with X: n 3/0         corr unsupported   [-tok.left_neighbor.upos=ADV]
+         ctx 3: context log odds  -0.53  n 1471/2504    with X: n 2/0         corr unsupported   [-tok.form=about, +tok.upos=ADP]
+         ctx 4: context log odds  -0.71  n 1534/3117    with X: n 3/0         corr unsupported   [-tok.upos=ADP, +tok.xpos=IN]
+         ctx 5: context log odds  -0.22  n 9305/11577   with X: n 19/9        corr +0.81  <= TAKEN   [-tok.xpos=IN, +tok.basepos=0]
+         by round: [+0.81, +0.81]
+           round 1   estimate   +0.0  context log odds  -0.22  with X: n 19/9        log odds  +0.59  corr  +0.81   context: tok.basepos=0
+           round 2   estimate  +1.07  context log odds  -0.22  with X: n 19/9        log odds  +0.59  corr  +0.81   []
+
+       LEFTOVER 3: tok.left_neighbor.left_neighbor.form=.   Δ alone +0.16 (n 722/1047);  running estimate before: log odds +1.87
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  +0.64  n 19/9         with X: n 2/0         corr unsupported
+                 context: tok.basepos=0, tok.left_neighbor.form=how
+         ctx 2: context log odds   +0.5  n 69/41        with X: n 8/2         corr +0.37  <= TAKEN   [-tok.left_neighbor.form=how, +tok.left_neighbor.xpos=WRB]
+         by round: [+0.5, +0.5, +0.37]
+           round 1   estimate   +0.0  context log odds  -0.53  with X: n 27/26       log odds  -0.04  corr   +0.5   context: tok.upos=ADP
+           round 2   estimate  +1.07  context log odds  -0.53  with X: n 27/26       log odds  -0.04  corr   +0.5   []
+           round 3   estimate  +1.87  context log odds   +0.5  with X: n 8/2         log odds  +0.86  corr  +0.37   [-tok.upos=ADP, +tok.basepos=0, +tok.left_neighbor.xpos=WRB]
+
+       LEFTOVER 4: tok.right_neighbor.right_neighbor.head_dir=left   Δ alone -0.01 (n 5721/9862);  running estimate before: log odds +2.24
+         given the whole chain (redundancy test): n 1/1  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  +0.98  n 8/2          with X: n 6/0         corr +0.69  <= TAKEN
+                 context: tok.basepos=0, tok.left_neighbor.xpos=WRB, tok.left_neighbor.left_neighbor.form=.
+         by round: [-0.47, -0.47, +0.32, +0.69]
+           round 1   estimate   +0.0  context log odds  -0.58  with X: n 13/41       log odds  -1.06  corr  -0.47   context: tok.form=about
+           round 2   estimate  +1.07  context log odds  -0.58  with X: n 13/41       log odds  -1.06  corr  -0.47   []
+           round 3   estimate  +1.87  context log odds  +0.64  with X: n 11/3        log odds  +0.96  corr  +0.32   [-tok.form=about, +tok.basepos=0, +tok.left_neighbor.form=how]
+           round 4   estimate  +2.24  context log odds  +0.98  with X: n 6/0         log odds  +1.67  corr  +0.69   [-tok.left_neighbor.form=how, +tok.left_neighbor.xpos=WRB, +tok.left_neighbor.left_neighbor.form=.]
+
+       LEFTOVER 5: tok.right_neighbor.right_neighbor.form=here   Δ alone +0.35 (n 20/23);  running estimate before: log odds +2.93
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  +1.79  n 6/0          with X: n 0/0         corr unsupported
+                 context: tok.basepos=0, tok.left_neighbor.xpos=WRB, tok.left_neighbor.left_neighbor.form=., tok.right_neighbor.right_neighbor.head_dir=left
+         ctx 2: context log odds  +1.79  n 18/2         with X: n 0/0         corr unsupported   [-tok.left_neighbor.xpos=WRB, +tok.left_neighbor.upos=ADV]
+         ctx 3: context log odds  +1.62  n 171/33       with X: n 2/0         corr unsupported   [-tok.left_neighbor.upos=ADV]
+         ctx 4: context log odds  +0.54  n 498/289      with X: n 3/0         corr unsupported   [-tok.left_neighbor.left_neighbor.form=., +tok.left_neighbor.left_neighbor.upos=PUNCT]
+         ctx 5: context log odds  +0.26  n 1402/1079    with X: n 3/0         corr unsupported   [-tok.right_neighbor.right_neighbor.head_dir=left]
+         ctx 6: context log odds  -0.22  n 9305/11577   with X: n 10/4        corr +0.81  <= TAKEN   [-tok.left_neighbor.left_neighbor.upos=PUNCT]
+         by round: [+0.81, +0.81, +0.35, +0.35, +0.81]
+           round 1   estimate   +0.0  context log odds  -0.22  with X: n 10/4        log odds  +0.59  corr  +0.81   context: tok.basepos=0
+           round 2   estimate  +1.07  context log odds  -0.22  with X: n 10/4        log odds  +0.59  corr  +0.81   []
+           round 3   estimate  +1.87  context log odds  -0.54  with X: n 20/23       log odds  -0.19  corr  +0.35   [-tok.basepos=0]
+           round 4   estimate  +2.24  context log odds  -0.54  with X: n 20/23       log odds  -0.19  corr  +0.35   []
+           round 5   estimate  +2.93  context log odds  -0.22  with X: n 10/4        log odds  +0.59  corr  +0.81   [+tok.basepos=0]
+
+       NOT USED (Δ alone vs prior, records chosen / not)
+         pooled (redundant to the chain): 3
+           tok.len=5 (-0.2, n 1202/2512)
+           tok.number=0 (+0.25, n 13071/17388)
+           tok.person=0 (+0.12, n 12286/18597)
+         dropped as weak (redundant and weak alone): 1
+           tok.tense=0 (+0.08, n 15550/24556)
+         struck out (relstrikes): 4
+           tok.caps=4 (+0.0, n 14234/24248)
+             round 1: T +0.0  corr -0.07  T + corr -0.07 in context (1 features, log odds -0.58, with it n 29/60, log odds -0.65): tok.form=about
+             round 2: T +1.07  corr +0.0  T + corr +1.07 in context (2 features, log odds +0.69, with it n 4/1, log odds +0.69): tok.form=about, tok.left_neighbor.upos=ADV
+           tok.left_neighbor.left_neighbor.upos=PUNCT (+0.24, n 2292/3078)
+             round 1: T +0.0  corr +0.0  T + corr +0.0 in context (1 features, log odds -0.58, with it n 3/3, log odds -0.58): tok.form=about
+             round 2: T +1.07  corr +0.0  T + corr +1.07 in context (1 features, log odds -0.58, with it n 3/3, log odds -0.58): tok.form=about
+           tok.right_neighbor.right_neighbor.upos=ADV (-0.26, n 678/1504)
+             round 1: T +0.0  corr +0.74  T + corr +0.74 in context (1 features, log odds -0.53, with it n 43/33, log odds +0.21): tok.upos=ADP
+             round 2: T +1.07  corr +0.74  T + corr +1.81 in context (1 features, log odds -0.53, with it n 43/33, log odds +0.21): tok.upos=ADP
+             round 3: T +1.87  corr +0.0  T + corr +1.87 in context (2 features, log odds +0.5, with it n 5/3, log odds +0.5): tok.basepos=0, tok.left_neighbor.xpos=WRB
+             round 4: T +2.24  corr +0.0  T + corr +2.24 in context (2 features, log odds +0.5, with it n 5/3, log odds +0.5): tok.basepos=0, tok.left_neighbor.xpos=WRB
+           tok.left_neighbor.left_neighbor.head_dir=left (-0.14, n 5013/9897)
+             round 1: T +0.0  corr +0.52  T + corr +0.52 in context (1 features, log odds -0.58, with it n 14/14, log odds -0.07): tok.form=about
+             round 2: T +1.07  corr +0.52  T + corr +1.59 in context (1 features, log odds -0.58, with it n 14/14, log odds -0.07): tok.form=about
+             round 3: T +1.87  corr +0.18  T + corr +2.06 in context (2 features, log odds +0.64, with it n 12/4, log odds +0.82): tok.basepos=0, tok.left_neighbor.form=how
+             round 4: T +2.24  corr +0.0  T + corr +2.24 in context (3 features, log odds +0.98, with it n 8/2, log odds +0.98): tok.basepos=0, tok.left_neighbor.xpos=WRB, tok.left_neighbor.left_neighbor.form=.
+             round 5: T +2.93  corr +0.0  T + corr +2.93 in context (4 features, log odds +1.79, with it n 6/0, log odds +1.79): tok.basepos=0, tok.left_neighbor.xpos=WRB, tok.left_neighbor.left_neighbor.form=., tok.right_neighbor.right_neighbor.head_dir=left
+         same word as a chain feature (genred): 5
+           tok.right_neighbor.form=right (+0.3, n 12/14)
+           tok.upos=ADP (+0.0, n 1471/2504)
+           tok.xpos=IN (-0.17, n 1534/3117)
+           tok.basepos=0 (+0.32, n 9305/11577)
+           tok.right_neighbor.upos=ADV (-0.9, n 419/1770)
+
+       evidence (sums of Δ log odds): positive +5.45, negative -1.17;  final log odds +3.74 = odds 42.0
+
+      ~~ head_dist = 2 (gold):  P 0.017
+       prior: log odds -1.24 = odds 0.289 = probability 0.224
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.
+        'by round': the leftover's corr in each greedy round before it was taken, in that round's context.
+        Struck out, per round: T = the running estimate before the round, T + corr = it with the leftover taken;
+        'log odds' there is the context's own log o(x | context), not T.
+        The log odds with X ('with X: ... log odds', 'with it ..., log odds'): log o(x | context, X) as smoothed,
+        = the context's log odds + corr.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. tok.right_neighbor.right_neighbor.upos=ADV  -0.96  n 217/1965        -0.96  n 217/1965
+       2. tok.right_neighbor.form=right             +0.09  n 7/19            +1.51  n 4/6
+       3. tok.caps=4                                -0.02  n 8504/29978      +0.29  n 3/3   <- sign flips
+       chain: log odds -0.41 = odds 0.667
+
+       LEFTOVER 1: tok.upos=ADP   Δ alone +0.75 (n 1508/2467);  running estimate before: log odds -0.41
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -0.41  n 3/3          with X: n 0/0         corr unsupported
+                 context: tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.form=right, tok.caps=4
+         ctx 2: context log odds  -0.69  n 4/6          with X: n 1/0         corr unsupported   [-tok.caps=4]
+         ctx 3: context log odds  -1.15  n 7/19         with X: n 1/0         corr unsupported   [-tok.right_neighbor.right_neighbor.upos=ADV]
+         ctx 4: context log odds  -0.83  n 664/1525     with X: n 10/63       corr -0.9  <= TAKEN   [-tok.right_neighbor.form=right, +tok.right_neighbor.upos=ADV]
+
+       LEFTOVER 2: tok.left_neighbor.left_neighbor.head_dir=left   Δ alone +0.36 (n 4378/10532);  running estimate before: log odds -1.31
+         given the whole chain (redundancy test): n 1/1  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -1.75  n 10/63        with X: n 4/12        corr +0.5  <= TAKEN
+                 context: tok.right_neighbor.upos=ADV, tok.upos=ADP
+         by round: [+0.0, +0.5]
+           round 1   estimate  -0.41  context log odds  -0.69  with X: n 2/4         log odds  -0.69  corr   +0.0   context: tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.form=right
+           round 2   estimate  -1.31  context log odds  -1.75  with X: n 4/12        log odds  -1.25  corr   +0.5   [-tok.right_neighbor.right_neighbor.upos=ADV, -tok.right_neighbor.form=right, +tok.right_neighbor.upos=ADV, +tok.upos=ADP]
+
+       LEFTOVER 3: tok.left_neighbor.upos=ADV   Δ alone -0.3 (n 385/1811);  running estimate before: log odds -0.81
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -1.39  n 4/12         with X: n 0/1         corr unsupported
+                 context: tok.right_neighbor.upos=ADV, tok.upos=ADP, tok.left_neighbor.left_neighbor.head_dir=left
+         ctx 2: context log odds  -0.56  n 268/469      with X: n 12/37       corr -0.46  <= TAKEN   [-tok.upos=ADP]
+         by round: [-0.16, +0.3, -0.46]
+           round 1   estimate  -0.41  context log odds  -0.83  with X: n 31/87       log odds  -0.99  corr  -0.16   context: tok.right_neighbor.upos=ADV
+           round 2   estimate  -1.31  context log odds  -0.49  with X: n 83/98       log odds  -0.19  corr   +0.3   [-tok.right_neighbor.upos=ADV, +tok.upos=ADP]
+           round 3   estimate  -0.81  context log odds  -0.56  with X: n 12/37       log odds  -1.03  corr  -0.46   [-tok.upos=ADP, +tok.right_neighbor.upos=ADV, +tok.left_neighbor.left_neighbor.head_dir=left]
+
+       LEFTOVER 4: tok.left_neighbor.left_neighbor.form=.   Δ alone -0.24 (n 326/1443);  running estimate before: log odds -1.27
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -1.05  n 12/37        with X: n 4/5         corr +0.55  <= TAKEN
+                 context: tok.right_neighbor.upos=ADV, tok.left_neighbor.left_neighbor.head_dir=left, tok.left_neighbor.upos=ADV
+         by round: [+0.45, -0.35, +0.18, +0.55]
+           round 1   estimate  -0.41  context log odds  -0.83  with X: n 48/68       log odds  -0.38  corr  +0.45   context: tok.right_neighbor.upos=ADV
+           round 2   estimate  -1.31  context log odds  -0.49  with X: n 15/38       log odds  -0.84  corr  -0.35   [-tok.right_neighbor.upos=ADV, +tok.upos=ADP]
+           round 3   estimate  -0.81  context log odds  -0.56  with X: n 48/68       log odds  -0.38  corr  +0.18   [-tok.upos=ADP, +tok.right_neighbor.upos=ADV, +tok.left_neighbor.left_neighbor.head_dir=left]
+           round 4   estimate  -1.27  context log odds  -1.05  with X: n 4/5         log odds   -0.5  corr  +0.55   [+tok.left_neighbor.upos=ADV]
+
+       LEFTOVER 5: tok.left_neighbor.form=how   Δ alone +0.39 (n 19/42);  running estimate before: log odds -0.73
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -0.51  n 4/5          with X: n 0/0         corr unsupported
+                 context: tok.right_neighbor.upos=ADV, tok.left_neighbor.left_neighbor.head_dir=left, tok.left_neighbor.upos=ADV, tok.left_neighbor.left_neighbor.form=.
+         ctx 2: context log odds  -0.51  n 4/5          with X: n 0/0         corr unsupported   [-tok.left_neighbor.left_neighbor.head_dir=left]
+         ctx 3: context log odds  -0.54  n 8/12         with X: n 0/0         corr unsupported   [-tok.left_neighbor.left_neighbor.form=., +tok.left_neighbor.left_neighbor.upos=PUNCT]
+         ctx 4: context log odds   -1.0  n 31/87        with X: n 1/0         corr unsupported   [-tok.left_neighbor.left_neighbor.upos=PUNCT]
+         ctx 5: context log odds  -0.68  n 42/85        with X: n 1/0         corr unsupported   [-tok.right_neighbor.upos=ADV, +tok.right_neighbor.xpos=RB]
+         ctx 6: context log odds  -0.46  n 880/1398     with X: n 1/0         corr unsupported   [-tok.left_neighbor.upos=ADV]
+         ctx 7: context log odds  -1.24  n -            with X: n 19/42       corr +0.39  <= TAKEN   [-tok.right_neighbor.xpos=RB]
+         by round: [+0.39, +0.39, +0.39, +0.39, +0.39]
+           round 1   estimate  -0.41  context log odds  -1.24  with X: n 19/42       log odds  -0.85  corr  +0.39   context: 
+           round 2   estimate  -1.31  context log odds  -1.24  with X: n 19/42       log odds  -0.85  corr  +0.39   []
+           round 3   estimate  -0.81  context log odds  -1.24  with X: n 19/42       log odds  -0.85  corr  +0.39   []
+           round 4   estimate  -1.27  context log odds  -1.24  with X: n 19/42       log odds  -0.85  corr  +0.39   []
+           round 5   estimate  -0.73  context log odds  -1.24  with X: n 19/42       log odds  -0.85  corr  +0.39   []
+
+       NOT USED (Δ alone vs prior, records chosen / not)
+         pooled (redundant to the chain): 3
+           tok.right_neighbor.upos=ADV (+0.41, n 664/1525)
+           tok.right_neighbor.xpos=RB (+0.78, n 880/1398)
+           tok.right_neighbor.right_neighbor.head_dir=left (+0.64, n 5504/10079)
+         dropped as weak (redundant and weak alone): 1
+           tok.tense=0 (-0.02, n 8868/31238)
+         struck out (relstrikes): 8
+           tok.len=5 (-0.02, n 821/2893)
+             round 1: T -0.41  corr +0.0  T + corr -0.4 in context (1 features, log odds -0.83, with it n 49/109, log odds -0.83): tok.right_neighbor.upos=ADV
+             round 2: T -1.31  corr -0.0  T + corr -1.31 in context (2 features, log odds -1.75, with it n 1/6, log odds -1.75): tok.right_neighbor.upos=ADV, tok.upos=ADP
+           tok.person=0 (-0.05, n 6678/24205)
+             round 1: T -0.41  corr +0.0  T + corr -0.41 in context (2 features, log odds -0.69, with it n 2/3, log odds -0.69): tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.form=right
+             round 2: T -1.31  corr +0.0  T + corr -1.31 in context (2 features, log odds -1.75, with it n 10/63, log odds -1.75): tok.right_neighbor.upos=ADV, tok.upos=ADP
+           tok.form=about (+0.83, n 38/56)
+             round 1: T -0.41  corr -0.09  T + corr -0.49 in context (1 features, log odds -0.83, with it n 1/6, log odds -0.92): tok.right_neighbor.upos=ADV
+             round 2: T -1.31  corr +0.23  T + corr -1.07 in context (1 features, log odds -0.49, with it n 31/38, log odds -0.26): tok.upos=ADP
+             round 3: T -0.81  corr -0.09  T + corr -0.9 in context (1 features, log odds -0.83, with it n 1/6, log odds -0.92): tok.right_neighbor.upos=ADV
+           tok.left_neighbor.xpos=WRB (+0.24, n 55/147)
+             round 1: T -0.41  corr +0.0  T + corr -0.41 in context (1 features, log odds -0.46, with it n 3/7, log odds -0.46): tok.right_neighbor.xpos=RB
+             round 2: T -1.31  corr +0.24  T + corr -1.07 in context (0 features, log odds -1.24, with it n 55/147, log odds -1.0): 
+             round 3: T -0.81  corr +0.0  T + corr -0.81 in context (1 features, log odds -0.46, with it n 3/7, log odds -0.46): tok.right_neighbor.xpos=RB
+           tok.xpos=IN (+0.64, n 1645/3006)
+             round 1: T -0.41  corr -0.65  T + corr -1.06 in context (1 features, log odds -0.83, with it n 17/80, log odds -1.48): tok.right_neighbor.upos=ADV
+             round 2: T -1.31  corr +0.0  T + corr -1.31 in context (2 features, log odds -1.75, with it n 9/55, log odds -1.75): tok.right_neighbor.upos=ADV, tok.upos=ADP
+             round 3: T -0.81  corr +0.0  T + corr -0.81 in context (3 features, log odds -1.39, with it n 3/10, log odds -1.39): tok.right_neighbor.upos=ADV, tok.upos=ADP, tok.left_neighbor.left_neighbor.head_dir=left
+           tok.basepos=0 (+0.03, n 4790/16092)
+             round 1: T -0.41  corr -0.17  T + corr -0.58 in context (1 features, log odds -1.15, with it n 2/9, log odds -1.32): tok.right_neighbor.form=right
+             round 2: T -1.31  corr +0.0  T + corr -1.31 in context (2 features, log odds -1.75, with it n 10/63, log odds -1.75): tok.right_neighbor.upos=ADV, tok.upos=ADP
+             round 3: T -0.81  corr +0.0  T + corr -0.81 in context (3 features, log odds -1.39, with it n 4/12, log odds -1.39): tok.right_neighbor.upos=ADV, tok.upos=ADP, tok.left_neighbor.left_neighbor.head_dir=left
+           tok.number=0 (-0.06, n 6520/23939)
+             round 1: T -0.41  corr -0.36  T + corr -0.76 in context (2 features, log odds -0.69, with it n 1/4, log odds -1.05): tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.form=right
+             round 2: T -1.31  corr +0.0  T + corr -1.31 in context (2 features, log odds -1.75, with it n 10/63, log odds -1.75): tok.right_neighbor.upos=ADV, tok.upos=ADP
+             round 3: T -0.81  corr +0.0  T + corr -0.81 in context (3 features, log odds -1.39, with it n 4/12, log odds -1.39): tok.right_neighbor.upos=ADV, tok.upos=ADP, tok.left_neighbor.left_neighbor.head_dir=left
+           tok.left_neighbor.left_neighbor.upos=PUNCT (-0.42, n 856/4514)
+             round 1: T -0.41  corr +0.37  T + corr -0.03 in context (1 features, log odds -0.83, with it n 110/172, log odds -0.46): tok.right_neighbor.upos=ADV
+             round 2: T -1.31  corr -0.19  T + corr -1.5 in context (1 features, log odds -0.49, with it n 89/179, log odds -0.68): tok.upos=ADP
+             round 3: T -0.81  corr +0.1  T + corr -0.71 in context (2 features, log odds -0.56, with it n 78/122, log odds -0.47): tok.right_neighbor.upos=ADV, tok.left_neighbor.left_neighbor.head_dir=left
+             round 4: T -1.27  corr +0.14  T + corr -1.13 in context (3 features, log odds -1.05, with it n 4/8, log odds -0.9): tok.right_neighbor.upos=ADV, tok.left_neighbor.left_neighbor.head_dir=left, tok.left_neighbor.upos=ADV
+             round 5: T -0.73  corr +0.0  T + corr -0.73 in context (4 features, log odds -0.51, with it n 4/5, log odds -0.51): tok.right_neighbor.upos=ADV, tok.left_neighbor.left_neighbor.head_dir=left, tok.left_neighbor.upos=ADV, tok.left_neighbor.left_neighbor.form=.
+         same word as a chain feature (genred): 1
+           tok.right_neighbor.right_neighbor.form=here (-0.26, n 7/36)
+
+       evidence (sums of Δ log odds): positive +3.23, negative -2.32;  final log odds -0.33 = odds 0.716
+
+    -- head property head_trank: predicted 1, gold head's 2
+
+      ~~ head_trank = 1 (predicted):  P 1.0
+       prior: log odds +0.1 = odds 1.11 = probability 0.526
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.
+        'by round': the leftover's corr in each greedy round before it was taken, in that round's context.
+        Struck out, per round: T = the running estimate before the round, T + corr = it with the leftover taken;
+        'log odds' there is the context's own log o(x | context), not T.
+        The log odds with X ('with X: ... log odds', 'with it ..., log odds'): log o(x | context, X) as smoothed,
+        = the context's log odds + corr.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. tok.right_neighbor.xpos=RB                -1.24  n 551/1727        -1.24  n 551/1727
+       2. tok.right_neighbor.form=right             +0.43  n 17/9            +1.36  n 10/7
+       3. tok.person=0                              -0.23  n 14442/16441     -0.92  n 2/6
+       chain: log odds -0.69 = odds 0.5
+
+       LEFTOVER 1: tok.form=about   Δ alone -0.6 (n 35/59);  running estimate before: log odds -0.69
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -0.69  n 2/6          with X: n 0/0         corr unsupported
+                 context: tok.right_neighbor.xpos=RB, tok.right_neighbor.form=right, tok.person=0
+         ctx 2: context log odds  -1.16  n 362/1154     with X: n 3/1         corr unsupported   [-tok.right_neighbor.form=right, +tok.right_neighbor.upos=ADV]
+         ctx 3: context log odds   -0.9  n 534/1316     with X: n 3/1         corr unsupported   [-tok.person=0]
+         ctx 4: context log odds  -0.84  n 660/1529     with X: n 5/2         corr +1.13  <= TAKEN   [-tok.right_neighbor.xpos=RB]
+
+       LEFTOVER 2: tok.right_neighbor.right_neighbor.form=here   Δ alone +0.56 (n 29/14);  running estimate before: log odds +0.44
+         given the whole chain (redundancy test): n 0/3  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  +0.51  n 5/2          with X: n 0/0         corr unsupported
+                 context: tok.right_neighbor.upos=ADV, tok.form=about
+         ctx 2: context log odds   +0.0  n 3/2          with X: n 0/0         corr unsupported   [-tok.right_neighbor.upos=ADV, +tok.right_neighbor.xpos=RB]
+         ctx 3: context log odds  -0.49  n 35/59        with X: n 0/0         corr unsupported   [-tok.right_neighbor.xpos=RB]
+         ctx 4: context log odds   -0.5  n 1504/2471    with X: n 0/1         corr unsupported   [-tok.form=about, +tok.upos=ADP]
+         ctx 5: context log odds  -0.68  n 1565/3086    with X: n 0/1         corr unsupported   [-tok.upos=ADP, +tok.xpos=IN]
+         ctx 6: context log odds  -0.16  n 9591/11291   with X: n 11/3        corr +1.08  <= TAKEN   [-tok.xpos=IN, +tok.basepos=0]
+         by round: [+0.0, +1.08]
+           round 1   estimate  -0.69  context log odds  -1.16  with X: n 2/4         log odds  -1.16  corr   +0.0   context: tok.right_neighbor.xpos=RB, tok.right_neighbor.upos=ADV, tok.person=0
+           round 2   estimate  +0.44  context log odds  -0.16  with X: n 11/3        log odds  +0.92  corr  +1.08   [-tok.right_neighbor.xpos=RB, -tok.right_neighbor.upos=ADV, -tok.person=0, +tok.basepos=0]
+
+       LEFTOVER 3: tok.len=5   Δ alone +0.19 (n 2131/1583);  running estimate before: log odds +1.52
+         given the whole chain (redundancy test): n 0/1  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  +1.01  n 11/3         with X: n 0/0         corr unsupported
+                 context: tok.basepos=0, tok.right_neighbor.right_neighbor.form=here
+         ctx 2: context log odds  +0.66  n 29/14        with X: n 3/0         corr unsupported   [-tok.basepos=0]
+         ctx 3: context log odds  -0.05  n 1064/1118    with X: n 126/67      corr +0.66  <= TAKEN   [-tok.right_neighbor.right_neighbor.form=here, +tok.right_neighbor.right_neighbor.upos=ADV]
+         by round: [+0.83, +0.0, +0.66]
+           round 1   estimate  -0.69  context log odds  -1.16  with X: n 41/55       log odds  -0.33  corr  +0.83   context: tok.right_neighbor.xpos=RB, tok.right_neighbor.upos=ADV, tok.person=0
+           round 2   estimate  +0.44  context log odds  +0.51  with X: n 5/2         log odds  +0.51  corr   +0.0   [-tok.right_neighbor.xpos=RB, -tok.person=0, +tok.form=about]
+           round 3   estimate  +1.52  context log odds  -0.05  with X: n 126/67      log odds  +0.61  corr  +0.66   [-tok.right_neighbor.upos=ADV, -tok.form=about, +tok.right_neighbor.right_neighbor.upos=ADV]
+
+       LEFTOVER 4: tok.right_neighbor.right_neighbor.head_dir=left   Δ alone +0.01 (n 8239/7344);  running estimate before: log odds +2.18
+         given the whole chain (redundancy test): n 2/2  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  +0.62  n 126/67       with X: n 42/3        corr +1.72  <= TAKEN
+                 context: tok.right_neighbor.right_neighbor.upos=ADV, tok.len=5
+         by round: [+0.36, -0.47, +0.51, +1.72]
+           round 1   estimate  -0.69  context log odds  -1.16  with X: n 186/410     log odds  -0.79  corr  +0.36   context: tok.right_neighbor.xpos=RB, tok.right_neighbor.upos=ADV, tok.person=0
+           round 2   estimate  +0.44  context log odds  -0.49  with X: n 14/40       log odds  -0.96  corr  -0.47   [-tok.right_neighbor.xpos=RB, -tok.right_neighbor.upos=ADV, -tok.person=0, +tok.form=about]
+           round 3   estimate  +1.52  context log odds  +1.01  with X: n 10/1        log odds  +1.52  corr  +0.51   [-tok.form=about, +tok.basepos=0, +tok.right_neighbor.right_neighbor.form=here]
+           round 4   estimate  +2.18  context log odds  +0.62  with X: n 42/3        log odds  +2.34  corr  +1.72   [-tok.basepos=0, -tok.right_neighbor.right_neighbor.form=here, +tok.right_neighbor.right_neighbor.upos=ADV, +tok.len=5]
+
+       LEFTOVER 5: tok.upos=ADP   Δ alone -0.6 (n 1504/2471);  running estimate before: log odds +3.9
+         given the whole chain (redundancy test): n 0/1  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  +2.35  n 42/3         with X: n 1/0         corr unsupported
+                 context: tok.right_neighbor.right_neighbor.upos=ADV, tok.len=5, tok.right_neighbor.right_neighbor.head_dir=left
+         ctx 2: context log odds  +1.05  n 369/128      with X: n 23/1        corr +1.35  <= TAKEN   [-tok.len=5]
+         by round: [+0.5, -0.19, +0.42, -0.88, +1.35]
+           round 1   estimate  -0.69  context log odds  -1.16  with X: n 21/38       log odds  -0.66  corr   +0.5   context: tok.right_neighbor.xpos=RB, tok.right_neighbor.upos=ADV, tok.person=0
+           round 2   estimate  +0.44  context log odds  -0.49  with X: n 22/47       log odds  -0.69  corr  -0.19   [-tok.right_neighbor.xpos=RB, -tok.right_neighbor.upos=ADV, -tok.person=0, +tok.form=about]
+           round 3   estimate  +1.52  context log odds  -0.05  with X: n 46/30       log odds  +0.38  corr  +0.42   [-tok.form=about, +tok.right_neighbor.right_neighbor.upos=ADV]
+           round 4   estimate  +2.18  context log odds   +0.3  with X: n 52/96       log odds  -0.59  corr  -0.88   [-tok.right_neighbor.right_neighbor.upos=ADV, +tok.len=5]
+           round 5   estimate   +3.9  context log odds  +1.05  with X: n 23/1        log odds   +2.4  corr  +1.35   [-tok.len=5, +tok.right_neighbor.right_neighbor.upos=ADV, +tok.right_neighbor.right_neighbor.head_dir=left]
+
+       LEFTOVER 6: tok.left_neighbor.form=how   Δ alone +0.16 (n 35/26);  running estimate before: log odds +5.24
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  +2.44  n 23/1         with X: n 0/0         corr unsupported
+                 context: tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.right_neighbor.head_dir=left, tok.upos=ADP
+         ctx 2: context log odds  +1.05  n 369/128      with X: n 0/0         corr unsupported   [-tok.upos=ADP]
+         ctx 3: context log odds  +0.11  n 8239/7344    with X: n 18/6        corr +0.77  <= TAKEN   [-tok.right_neighbor.right_neighbor.upos=ADV]
+         by round: [+0.16, +0.75, +0.16, +0.16, +0.77, +0.77]
+           round 1   estimate  -0.69  context log odds   +0.1  with X: n 35/26       log odds  +0.26  corr  +0.16   context: 
+           round 2   estimate  +0.44  context log odds  -0.16  with X: n 19/9        log odds  +0.59  corr  +0.75   [+tok.basepos=0]
+           round 3   estimate  +1.52  context log odds   +0.1  with X: n 35/26       log odds  +0.26  corr  +0.16   [-tok.basepos=0]
+           round 4   estimate  +2.18  context log odds   +0.1  with X: n 35/26       log odds  +0.26  corr  +0.16   []
+           round 5   estimate   +3.9  context log odds  +0.11  with X: n 18/6        log odds  +0.89  corr  +0.77   [+tok.right_neighbor.right_neighbor.head_dir=left]
+           round 6   estimate  +5.24  context log odds  +0.11  with X: n 18/6        log odds  +0.89  corr  +0.77   []
+
+       NOT USED (Δ alone vs prior, records chosen / not)
+         pooled (redundant to the chain): 3
+           tok.number=0 (-0.15, n 14896/15563)
+           tok.right_neighbor.upos=ADV (-0.94, n 660/1529)
+           tok.right_neighbor.right_neighbor.upos=ADV (-0.15, n 1064/1118)
+         dropped as weak (redundant and weak alone): 1
+           tok.caps=4 (-0.0, n 20222/18260)
+         struck out (relstrikes): 7
+           tok.tense=0 (+0.05, n 21645/18461)
+             round 1: T -0.69  corr +0.06  T + corr -0.63 in context (3 features, log odds -1.16, with it n 302/905, log odds -1.1): tok.right_neighbor.xpos=RB, tok.right_neighbor.upos=ADV, tok.person=0
+             round 2: T +0.44  corr +0.0  T + corr +0.44 in context (2 features, log odds +0.51, with it n 5/2, log odds +0.51): tok.right_neighbor.upos=ADV, tok.form=about
+           tok.xpos=IN (-0.78, n 1565/3086)
+             round 1: T -0.69  corr +0.1  T + corr -0.59 in context (3 features, log odds -1.16, with it n 21/57, log odds -1.06): tok.right_neighbor.xpos=RB, tok.right_neighbor.upos=ADV, tok.person=0
+             round 2: T +0.44  corr -0.16  T + corr +0.27 in context (1 features, log odds -0.49, with it n 26/54, log odds -0.66): tok.form=about
+             round 3: T +1.52  corr +0.05  T + corr +1.57 in context (1 features, log odds -0.05, with it n 46/44, log odds +0.0): tok.right_neighbor.right_neighbor.upos=ADV
+           tok.left_neighbor.xpos=WRB (-0.01, n 105/97)
+             round 1: T -0.69  corr -1.06  T + corr -1.75 in context (1 features, log odds -1.14, with it n 0/10, log odds -2.2): tok.right_neighbor.xpos=RB
+             round 2: T +0.44  corr +0.65  T + corr +1.08 in context (1 features, log odds -0.16, with it n 69/41, log odds +0.48): tok.basepos=0
+             round 3: T +1.52  corr -0.0  T + corr +1.52 in context (1 features, log odds -0.05, with it n 6/6, log odds -0.05): tok.right_neighbor.right_neighbor.upos=ADV
+             round 4: T +2.18  corr +0.0  T + corr +2.18 in context (1 features, log odds +0.3, with it n 8/6, log odds +0.3): tok.len=5
+           tok.left_neighbor.left_neighbor.form=. (-0.39, n 760/1009)
+             round 1: T -0.69  corr -0.72  T + corr -1.41 in context (3 features, log odds -1.16, with it n 9/66, log odds -1.87): tok.right_neighbor.xpos=RB, tok.right_neighbor.upos=ADV, tok.person=0
+             round 2: T +0.44  corr +0.54  T + corr +0.97 in context (1 features, log odds -0.5, with it n 28/25, log odds +0.04): tok.upos=ADP
+             round 3: T +1.52  corr -0.58  T + corr +0.94 in context (1 features, log odds -0.05, with it n 39/76, log odds -0.63): tok.right_neighbor.right_neighbor.upos=ADV
+             round 4: T +2.18  corr -0.0  T + corr +2.18 in context (2 features, log odds +0.62, with it n 4/1, log odds +0.62): tok.right_neighbor.right_neighbor.upos=ADV, tok.len=5
+             round 5: T +3.9  corr +0.0  T + corr +3.9 in context (2 features, log odds +1.05, with it n 24/9, log odds +1.05): tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.right_neighbor.head_dir=left
+           tok.left_neighbor.left_neighbor.upos=PUNCT (-0.19, n 2574/2796)
+             round 1: T -0.69  corr -0.49  T + corr -1.18 in context (3 features, log odds -1.16, with it n 31/167, log odds -1.65): tok.right_neighbor.xpos=RB, tok.right_neighbor.upos=ADV, tok.person=0
+             round 2: T +0.44  corr +0.0  T + corr +0.44 in context (1 features, log odds -0.49, with it n 3/3, log odds -0.49): tok.form=about
+             round 3: T +1.52  corr -0.36  T + corr +1.16 in context (1 features, log odds -0.05, with it n 108/165, log odds -0.41): tok.right_neighbor.right_neighbor.upos=ADV
+             round 4: T +2.18  corr +0.4  T + corr +2.58 in context (2 features, log odds +0.62, with it n 12/3, log odds +1.02): tok.right_neighbor.right_neighbor.upos=ADV, tok.len=5
+             round 5: T +3.9  corr -0.4  T + corr +3.49 in context (2 features, log odds +1.05, with it n 38/21, log odds +0.65): tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.right_neighbor.head_dir=left
+             round 6: T +5.24  corr -0.4  T + corr +4.84 in context (2 features, log odds +1.05, with it n 38/21, log odds +0.65): tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.right_neighbor.head_dir=left
+             round 7: T +6.02  corr +0.0  T + corr +6.02 in context (2 features, log odds +0.32, with it n 11/8, log odds +0.32): tok.right_neighbor.right_neighbor.head_dir=left, tok.left_neighbor.xpos=WRB
+           tok.left_neighbor.left_neighbor.head_dir=left (-0.15, n 7302/7608)
+             round 1: T -0.69  corr -0.17  T + corr -0.86 in context (3 features, log odds -1.16, with it n 103/393, log odds -1.33): tok.right_neighbor.xpos=RB, tok.right_neighbor.upos=ADV, tok.person=0
+             round 2: T +0.44  corr +0.42  T + corr +0.86 in context (1 features, log odds -0.49, with it n 14/14, log odds -0.07): tok.form=about
+             round 3: T +1.52  corr +0.0  T + corr +1.52 in context (2 features, log odds +1.01, with it n 9/2, log odds +1.01): tok.basepos=0, tok.right_neighbor.right_neighbor.form=here
+             round 4: T +2.18  corr +0.13  T + corr +2.31 in context (2 features, log odds +0.62, with it n 43/19, log odds +0.75): tok.right_neighbor.right_neighbor.upos=ADV, tok.len=5
+             round 5: T +3.9  corr +0.38  T + corr +4.28 in context (3 features, log odds +2.35, with it n 16/0, log odds +2.73): tok.right_neighbor.right_neighbor.upos=ADV, tok.len=5, tok.right_neighbor.right_neighbor.head_dir=left
+             round 6: T +5.24  corr -0.2  T + corr +5.04 in context (2 features, log odds +1.05, with it n 111/48, log odds +0.85): tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.right_neighbor.head_dir=left
+             round 7: T +6.02  corr +0.09  T + corr +6.11 in context (2 features, log odds +0.94, with it n 9/2, log odds +1.04): tok.right_neighbor.right_neighbor.head_dir=left, tok.left_neighbor.form=how
+           tok.left_neighbor.upos=ADV (-0.43, n 922/1274)
+             round 1: T -0.69  corr +0.36  T + corr -0.33 in context (3 features, log odds -1.16, with it n 27/57, log odds -0.8): tok.right_neighbor.xpos=RB, tok.right_neighbor.upos=ADV, tok.person=0
+             round 2: T +0.44  corr +0.97  T + corr +1.41 in context (1 features, log odds -0.49, with it n 4/1, log odds +0.48): tok.form=about
+             round 3: T +1.52  corr -0.32  T + corr +1.19 in context (1 features, log odds -0.05, with it n 50/75, log odds -0.37): tok.right_neighbor.right_neighbor.upos=ADV
+             round 4: T +2.18  corr -1.35  T + corr +0.83 in context (2 features, log odds +0.62, with it n 2/7, log odds -0.73): tok.right_neighbor.right_neighbor.upos=ADV, tok.len=5
+             round 5: T +3.9  corr -0.46  T + corr +3.43 in context (2 features, log odds +1.05, with it n 21/13, log odds +0.59): tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.right_neighbor.head_dir=left
+             round 6: T +5.24  corr -0.46  T + corr +4.78 in context (2 features, log odds +1.05, with it n 21/13, log odds +0.59): tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.right_neighbor.head_dir=left
+             round 7: T +6.02  corr +0.0  T + corr +6.02 in context (2 features, log odds +0.94, with it n 17/6, log odds +0.94): tok.right_neighbor.right_neighbor.head_dir=left, tok.left_neighbor.form=how
+             round 8: T +6.02  corr +0.0  T + corr +6.02 in context (2 features, log odds +0.94, with it n 17/6, log odds +0.94): tok.right_neighbor.right_neighbor.head_dir=left, tok.left_neighbor.form=how
+
+       evidence (sums of Δ log odds): positive +8.07, negative -2.16;  final log odds +6.02 = odds 410.0
+
+      ~~ head_trank = 2 (gold):  P 0.0
+       prior: log odds -1.07 = odds 0.344 = probability 0.256
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.
+        'by round': the leftover's corr in each greedy round before it was taken, in that round's context.
+        Struck out, per round: T = the running estimate before the round, T + corr = it with the leftover taken;
+        'log odds' there is the context's own log o(x | context), not T.
+        The log odds with X ('with X: ... log odds', 'with it ..., log odds'): log o(x | context, X) as smoothed,
+        = the context's log odds + corr.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. tok.form=about                            +0.96  n 45/49           +0.96  n 45/49
+       2. tok.right_neighbor.right_neighbor.head_dir=left  +0.46  n 5488/10095      +1.09  n 40/14
+       3. tok.upos=ADP                              +0.73  n 1659/2316       +0.27  n 35/9
+       chain: log odds +1.25 = odds 3.5
+
+       LEFTOVER 1: tok.right_neighbor.right_neighbor.upos=ADV   Δ alone -0.65 (n 330/1852);  running estimate before: log odds +1.25
+         given the whole chain (redundancy test): n 0/1  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  +1.25  n 35/9         with X: n 0/1         corr unsupported
+                 context: tok.form=about, tok.right_neighbor.right_neighbor.head_dir=left, tok.upos=ADP
+         ctx 2: context log odds  +0.98  n 40/14        with X: n 0/1         corr unsupported   [-tok.upos=ADP]
+         ctx 3: context log odds  +0.77  n 1404/652     with X: n 1/23        corr -3.17  <= TAKEN   [-tok.form=about, +tok.upos=ADP]
+
+       LEFTOVER 2: tok.right_neighbor.upos=ADV   Δ alone +0.68 (n 887/1302);  running estimate before: log odds -1.91
+         given the whole chain (redundancy test): n 1/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -2.44  n 1/23         with X: n 0/3         corr unsupported
+                 context: tok.upos=ADP, tok.right_neighbor.right_neighbor.head_dir=left, tok.right_neighbor.right_neighbor.upos=ADV
+         ctx 2: context log odds   -2.3  n 6/70         with X: n 2/4         corr +1.04  <= TAKEN   [-tok.right_neighbor.right_neighbor.head_dir=left]
+         by round: [-1.36, +1.04]
+           round 1   estimate  +1.25  context log odds  +0.77  with X: n 9/19        log odds  -0.59  corr  -1.36   context: tok.upos=ADP, tok.right_neighbor.right_neighbor.head_dir=left
+           round 2   estimate  -1.91  context log odds   -2.3  with X: n 2/4         log odds  -1.26  corr  +1.04   [-tok.right_neighbor.right_neighbor.head_dir=left, +tok.right_neighbor.right_neighbor.upos=ADV]
+
+       LEFTOVER 3: tok.right_neighbor.right_neighbor.form=here   Δ alone -0.29 (n 8/35);  running estimate before: log odds -0.87
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -1.39  n 2/4          with X: n 1/0         corr unsupported
+                 context: tok.upos=ADP, tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.upos=ADV
+         ctx 2: context log odds  -0.61  n 25/48        with X: n 1/0         corr unsupported   [-tok.right_neighbor.right_neighbor.upos=ADV]
+         ctx 3: context log odds  -0.68  n 32/65        with X: n 1/0         corr unsupported   [-tok.upos=ADP, +tok.xpos=IN]
+         ctx 4: context log odds   -0.4  n 1869/2782    with X: n 1/0         corr unsupported   [-tok.right_neighbor.upos=ADV]
+         ctx 5: context log odds   -0.8  n 6492/14390   with X: n 1/13        corr -1.0  <= TAKEN   [-tok.xpos=IN, +tok.basepos=0]
+         by round: [-2.27, -0.12, -1.0]
+           round 1   estimate  +1.25  context log odds  -0.03  with X: n 0/11        log odds   -2.3  corr  -2.27   context: tok.basepos=0, tok.right_neighbor.right_neighbor.head_dir=left
+           round 2   estimate  -1.91  context log odds  -1.67  with X: n 1/13        log odds  -1.79  corr  -0.12   [-tok.right_neighbor.right_neighbor.head_dir=left, +tok.right_neighbor.right_neighbor.upos=ADV]
+           round 3   estimate  -0.87  context log odds   -0.8  with X: n 1/13        log odds  -1.79  corr   -1.0   [-tok.right_neighbor.right_neighbor.upos=ADV]
+
+       LEFTOVER 4: tok.left_neighbor.left_neighbor.upos=PUNCT   Δ alone -0.1 (n 1275/4095);  running estimate before: log odds -1.87
+         given the whole chain (redundancy test): n 1/2  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -1.87  n 1/13         with X: n 0/3         corr unsupported
+                 context: tok.basepos=0, tok.right_neighbor.right_neighbor.form=here
+         ctx 2: context log odds  -1.67  n 147/790      with X: n 6/119       corr -1.15  <= TAKEN   [-tok.right_neighbor.right_neighbor.form=here, +tok.right_neighbor.right_neighbor.upos=ADV]
+         by round: [-0.63, +0.0, -0.44, -1.15]
+           round 1   estimate  +1.25  context log odds  +0.77  with X: n 68/61       log odds  +0.14  corr  -0.63   context: tok.upos=ADP, tok.right_neighbor.right_neighbor.head_dir=left
+           round 2   estimate  -1.91  context log odds  -2.84  with X: n 0/6         log odds  -2.84  corr   +0.0   [-tok.upos=ADP, -tok.right_neighbor.right_neighbor.head_dir=left, +tok.xpos=IN, +tok.right_neighbor.right_neighbor.upos=ADV]
+           round 3   estimate  -0.87  context log odds  -0.68  with X: n 1/7         log odds  -1.11  corr  -0.44   [-tok.right_neighbor.right_neighbor.upos=ADV, +tok.right_neighbor.upos=ADV]
+           round 4   estimate  -1.87  context log odds  -1.67  with X: n 6/119       log odds  -2.83  corr  -1.15   [-tok.xpos=IN, -tok.right_neighbor.upos=ADV, +tok.basepos=0, +tok.right_neighbor.right_neighbor.upos=ADV]
+
+       LEFTOVER 5: tok.right_neighbor.form=right   Δ alone +0.0 (n 6/20);  running estimate before: log odds -3.02
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -2.83  n 6/119        with X: n 0/0         corr unsupported
+                 context: tok.basepos=0, tok.right_neighbor.right_neighbor.upos=ADV, tok.left_neighbor.left_neighbor.upos=PUNCT
+         ctx 2: context log odds  -2.34  n 23/250       with X: n 0/0         corr unsupported   [-tok.basepos=0]
+         ctx 3: context log odds  -1.72  n 330/1852     with X: n 4/6         corr +0.88  <= TAKEN   [-tok.left_neighbor.left_neighbor.upos=PUNCT]
+         by round: [-0.4, +0.88, +0.0, +0.88, +0.88]
+           round 1   estimate  +1.25  context log odds  -0.61  with X: n 3/12        log odds  -1.01  corr   -0.4   context: tok.right_neighbor.right_neighbor.head_dir=left
+           round 2   estimate  -1.91  context log odds  -1.72  with X: n 4/6         log odds  -0.84  corr  +0.88   [-tok.right_neighbor.right_neighbor.head_dir=left, +tok.right_neighbor.right_neighbor.upos=ADV]
+           round 3   estimate  -0.87  context log odds   -0.8  with X: n 3/8         log odds   -0.8  corr   +0.0   [-tok.right_neighbor.right_neighbor.upos=ADV, +tok.basepos=0]
+           round 4   estimate  -1.87  context log odds  -1.72  with X: n 4/6         log odds  -0.84  corr  +0.88   [-tok.basepos=0, +tok.right_neighbor.right_neighbor.upos=ADV]
+           round 5   estimate  -3.02  context log odds  -1.72  with X: n 4/6         log odds  -0.84  corr  +0.88   []
+
+       LEFTOVER 6: tok.left_neighbor.form=how   Δ alone +0.14 (n 18/43);  running estimate before: log odds -2.14
+         given the whole chain (redundancy test): n 0/2  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -0.69  n 4/6          with X: n 0/0         corr unsupported
+                 context: tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.form=right
+         ctx 2: context log odds  -1.07  n 6/20         with X: n 0/0         corr unsupported   [-tok.right_neighbor.right_neighbor.upos=ADV]
+         ctx 3: context log odds  -0.38  n 887/1302     with X: n 1/0         corr unsupported   [-tok.right_neighbor.form=right, +tok.right_neighbor.upos=ADV]
+         ctx 4: context log odds  -0.12  n 1071/1207    with X: n 1/0         corr unsupported   [-tok.right_neighbor.upos=ADV, +tok.right_neighbor.xpos=RB]
+         ctx 5: context log odds  -1.07  n -            with X: n 18/43       corr +0.14  <= TAKEN   [-tok.right_neighbor.xpos=RB]
+         by round: [-0.89, +0.14, -0.5, +0.14, +0.14, +0.14]
+           round 1   estimate  +1.25  context log odds  -0.03  with X: n 3/11        log odds  -0.92  corr  -0.89   context: tok.basepos=0, tok.right_neighbor.right_neighbor.head_dir=left
+           round 2   estimate  -1.91  context log odds  -1.07  with X: n 18/43       log odds  -0.93  corr  +0.14   [-tok.basepos=0, -tok.right_neighbor.right_neighbor.head_dir=left]
+           round 3   estimate  -0.87  context log odds   -0.8  with X: n 5/23        log odds   -1.3  corr   -0.5   [+tok.basepos=0]
+           round 4   estimate  -1.87  context log odds  -1.07  with X: n 18/43       log odds  -0.93  corr  +0.14   [-tok.basepos=0]
+           round 5   estimate  -3.02  context log odds  -1.07  with X: n 18/43       log odds  -0.93  corr  +0.14   []
+           round 6   estimate  -2.14  context log odds  -1.07  with X: n 18/43       log odds  -0.93  corr  +0.14   []
+
+       NOT USED (Δ alone vs prior, records chosen / not)
+         pooled (redundant to the chain): 5
+           tok.len=5 (-0.22, n 801/2913)
+           tok.xpos=IN (+0.67, n 1869/2782)
+           tok.basepos=0 (+0.27, n 6492/14390)
+           tok.number=0 (+0.11, n 8424/22035)
+           tok.person=0 (+0.14, n 8722/22161)
+         dropped as weak (redundant and weak alone): 3
+           tok.caps=4 (+0.02, n 10011/28471)
+           tok.tense=0 (+0.01, n 10313/29793)
+           tok.left_neighbor.left_neighbor.head_dir=left (+0.06, n 3983/10927)
+         struck out (relstrikes): 4
+           tok.left_neighbor.upos=ADV (+0.04, n 580/1616)
+             round 1: T +1.25  corr +0.0  T + corr +1.25 in context (2 features, log odds +0.77, with it n 73/33, log odds +0.77): tok.upos=ADP, tok.right_neighbor.right_neighbor.head_dir=left
+             round 2: T -1.91  corr +0.0  T + corr -1.91 in context (2 features, log odds -2.84, with it n 0/5, log odds -2.84): tok.xpos=IN, tok.right_neighbor.right_neighbor.upos=ADV
+           tok.left_neighbor.xpos=WRB (+0.19, n 60/142)
+             round 1: T +1.25  corr -0.78  T + corr +0.47 in context (2 features, log odds -0.03, with it n 11/28, log odds -0.81): tok.basepos=0, tok.right_neighbor.right_neighbor.head_dir=left
+             round 2: T -1.91  corr +0.0  T + corr -1.91 in context (2 features, log odds -1.67, with it n 2/6, log odds -1.67): tok.basepos=0, tok.right_neighbor.right_neighbor.upos=ADV
+             round 3: T -0.87  corr -0.48  T + corr -1.35 in context (1 features, log odds -0.8, with it n 23/87, log odds -1.28): tok.basepos=0
+             round 4: T -1.87  corr +0.0  T + corr -1.87 in context (2 features, log odds -1.67, with it n 2/6, log odds -1.67): tok.basepos=0, tok.right_neighbor.right_neighbor.upos=ADV
+           tok.right_neighbor.xpos=RB (+0.95, n 1071/1207)
+             round 1: T +1.25  corr -1.52  T + corr -0.27 in context (2 features, log odds +0.77, with it n 7/18, log odds -0.76): tok.upos=ADP, tok.right_neighbor.right_neighbor.head_dir=left
+             round 2: T -1.91  corr +1.04  T + corr -0.87 in context (2 features, log odds -2.3, with it n 2/4, log odds -1.26): tok.upos=ADP, tok.right_neighbor.right_neighbor.upos=ADV
+             round 3: T -0.87  corr +0.0  T + corr -0.87 in context (3 features, log odds -1.39, with it n 2/4, log odds -1.39): tok.upos=ADP, tok.right_neighbor.right_neighbor.upos=ADV, tok.right_neighbor.upos=ADV
+             round 4: T -1.87  corr +0.85  T + corr -1.02 in context (2 features, log odds -1.67, with it n 32/71, log odds -0.83): tok.basepos=0, tok.right_neighbor.right_neighbor.upos=ADV
+             round 5: T -3.02  corr +0.0  T + corr -3.02 in context (3 features, log odds -2.83, with it n 1/12, log odds -2.83): tok.basepos=0, tok.right_neighbor.right_neighbor.upos=ADV, tok.left_neighbor.left_neighbor.upos=PUNCT
+           tok.left_neighbor.left_neighbor.form=. (-0.14, n 405/1364)
+             round 1: T +1.25  corr -0.77  T + corr +0.48 in context (2 features, log odds +0.77, with it n 11/13, log odds -0.0): tok.upos=ADP, tok.right_neighbor.right_neighbor.head_dir=left
+             round 2: T -1.91  corr -0.77  T + corr -2.68 in context (2 features, log odds -1.67, with it n 3/47, log odds -2.44): tok.basepos=0, tok.right_neighbor.right_neighbor.upos=ADV
+             round 3: T -0.87  corr -0.34  T + corr -1.21 in context (1 features, log odds -0.4, with it n 20/45, log odds -0.74): tok.xpos=IN
+             round 4: T -1.87  corr -0.77  T + corr -2.64 in context (2 features, log odds -1.67, with it n 3/47, log odds -2.44): tok.basepos=0, tok.right_neighbor.right_neighbor.upos=ADV
+             round 5: T -3.02  corr +0.0  T + corr -3.02 in context (3 features, log odds -2.83, with it n 3/47, log odds -2.83): tok.basepos=0, tok.right_neighbor.right_neighbor.upos=ADV, tok.left_neighbor.left_neighbor.upos=PUNCT
+             round 6: T -2.14  corr +0.07  T + corr -2.06 in context (1 features, log odds -0.38, with it n 50/66, log odds -0.31): tok.right_neighbor.upos=ADV
+
+       evidence (sums of Δ log odds): positive +4.39, negative -5.31;  final log odds -2.0 = odds 0.136
+
+    -- head property head_kinright: predicted parent, gold head's sibling
+
+      ~~ head_kinright = parent (predicted):  P 0.935
+       prior: log odds -0.89 = odds 0.412 = probability 0.292
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.
+        'by round': the leftover's corr in each greedy round before it was taken, in that round's context.
+        Struck out, per round: T = the running estimate before the round, T + corr = it with the leftover taken;
+        'log odds' there is the context's own log o(x | context), not T.
+        The log odds with X ('with X: ... log odds', 'with it ..., log odds'): log o(x | context, X) as smoothed,
+        = the context's log odds + corr.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. tok.right_neighbor.xpos=RB                -1.55  n 182/2096        -1.55  n 182/2096
+       2. tok.form=about                            +0.14  n 31/63           +2.44  n 3/2
+       chain: log odds +0.0 = odds 1.0
+
+       LEFTOVER 1: tok.left_neighbor.form=how   Δ alone +0.69 (n 28/33);  running estimate before: log odds +0.0
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds   +0.0  n 3/2          with X: n 0/0         corr unsupported
+                 context: tok.right_neighbor.xpos=RB, tok.form=about
+         ctx 2: context log odds  -0.74  n 31/63        with X: n 3/0         corr unsupported   [-tok.right_neighbor.xpos=RB]
+         ctx 3: context log odds  -0.73  n 1293/2682    with X: n 2/0         corr unsupported   [-tok.form=about, +tok.upos=ADP]
+         ctx 4: context log odds  -0.79  n 1454/3197    with X: n 3/0         corr unsupported   [-tok.upos=ADP, +tok.xpos=IN]
+         ctx 5: context log odds  -0.63  n 7240/13642   with X: n 19/9        corr +1.22  <= TAKEN   [-tok.xpos=IN, +tok.basepos=0]
+
+       LEFTOVER 2: tok.right_neighbor.right_neighbor.form=here   Δ alone +0.5 (n 18/25);  running estimate before: log odds +1.22
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  +0.64  n 19/9         with X: n 0/0         corr unsupported
+                 context: tok.basepos=0, tok.left_neighbor.form=how
+         ctx 2: context log odds  +0.42  n 67/43        with X: n 1/0         corr unsupported   [-tok.left_neighbor.form=how, +tok.left_neighbor.xpos=WRB]
+         ctx 3: context log odds  -0.25  n 89/113       with X: n 1/0         corr unsupported   [-tok.basepos=0]
+         ctx 4: context log odds  -1.26  n 486/1710     with X: n 2/1         corr unsupported   [-tok.left_neighbor.xpos=WRB, +tok.left_neighbor.upos=ADV]
+         ctx 5: context log odds  -0.89  n -            with X: n 18/25       corr +0.5  <= TAKEN   [-tok.left_neighbor.upos=ADV]
+         by round: [+0.92, +0.5]
+           round 1   estimate   +0.0  context log odds  -0.63  with X: n 9/5         log odds  +0.29  corr  +0.92   context: tok.basepos=0
+           round 2   estimate  +1.22  context log odds  -0.89  with X: n 18/25       log odds  -0.39  corr   +0.5   [-tok.basepos=0]
+
+       LEFTOVER 3: tok.left_neighbor.xpos=WRB   Δ alone +0.64 (n 89/113);  running estimate before: log odds +1.72
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -0.39  n 18/25        with X: n 1/0         corr unsupported
+                 context: tok.right_neighbor.right_neighbor.form=here
+         ctx 2: context log odds  -1.25  n 486/1696     with X: n 6/6         corr +0.92  <= TAKEN   [-tok.right_neighbor.right_neighbor.form=here, +tok.right_neighbor.right_neighbor.upos=ADV]
+         by round: [+1.04, +0.0, +0.92]
+           round 1   estimate   +0.0  context log odds  -0.63  with X: n 67/43       log odds  +0.41  corr  +1.04   context: tok.basepos=0
+           round 2   estimate  +1.22  context log odds  +0.64  with X: n 19/9        log odds  +0.64  corr   +0.0   [+tok.left_neighbor.form=how]
+           round 3   estimate  +1.72  context log odds  -1.25  with X: n 6/6         log odds  -0.33  corr  +0.92   [-tok.basepos=0, -tok.left_neighbor.form=how, +tok.right_neighbor.right_neighbor.upos=ADV]
+
+       LEFTOVER 4: tok.left_neighbor.left_neighbor.form=.   Δ alone -0.01 (n 511/1258);  running estimate before: log odds +2.64
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -0.18  n 6/6          with X: n 1/0         corr unsupported
+                 context: tok.right_neighbor.right_neighbor.upos=ADV, tok.left_neighbor.xpos=WRB
+         ctx 2: context log odds  -0.25  n 89/113       with X: n 12/20       corr -0.16  <= TAKEN   [-tok.right_neighbor.right_neighbor.upos=ADV]
+         by round: [+0.31, +0.44, +0.0, -0.16]
+           round 1   estimate   +0.0  context log odds  -0.73  with X: n 22/31       log odds  -0.42  corr  +0.31   context: tok.upos=ADP
+           round 2   estimate  +1.22  context log odds  +0.42  with X: n 8/2         log odds  +0.86  corr  +0.44   [-tok.upos=ADP, +tok.basepos=0, +tok.left_neighbor.xpos=WRB]
+           round 3   estimate  +1.72  context log odds  -1.25  with X: n 26/89       log odds  -1.25  corr   +0.0   [-tok.basepos=0, -tok.left_neighbor.xpos=WRB, +tok.right_neighbor.right_neighbor.upos=ADV]
+           round 4   estimate  +2.64  context log odds  -0.25  with X: n 12/20       log odds  -0.41  corr  -0.16   [-tok.right_neighbor.right_neighbor.upos=ADV, +tok.left_neighbor.xpos=WRB]
+
+       LEFTOVER 5: tok.right_neighbor.right_neighbor.head_dir=left   Δ alone +0.04 (n 4666/10917);  running estimate before: log odds +2.48
+         given the whole chain (redundancy test): n 1/1  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -0.43  n 12/20        with X: n 7/5         corr +0.63  <= TAKEN
+                 context: tok.left_neighbor.xpos=WRB, tok.left_neighbor.left_neighbor.form=.
+         by round: [-0.38, +0.32, +0.54, +0.0, +0.63]
+           round 1   estimate   +0.0  context log odds  -0.74  with X: n 13/41       log odds  -1.12  corr  -0.38   context: tok.form=about
+           round 2   estimate  +1.22  context log odds  +0.64  with X: n 11/3        log odds  +0.96  corr  +0.32   [-tok.form=about, +tok.basepos=0, +tok.left_neighbor.form=how]
+           round 3   estimate  +1.72  context log odds  -0.39  with X: n 15/11       log odds  +0.15  corr  +0.54   [-tok.basepos=0, -tok.left_neighbor.form=how, +tok.right_neighbor.right_neighbor.form=here]
+           round 4   estimate  +2.64  context log odds  -0.18  with X: n 3/2         log odds  -0.18  corr   +0.0   [-tok.right_neighbor.right_neighbor.form=here, +tok.right_neighbor.right_neighbor.upos=ADV, +tok.left_neighbor.xpos=WRB]
+           round 5   estimate  +2.48  context log odds  -0.43  with X: n 7/5         log odds   +0.2  corr  +0.63   [-tok.right_neighbor.right_neighbor.upos=ADV, +tok.left_neighbor.left_neighbor.form=.]
+
+       NOT USED (Δ alone vs prior, records chosen / not)
+         pooled (redundant to the chain): 3
+           tok.len=5 (-0.14, n 979/2735)
+           tok.number=0 (+0.24, n 10497/19962)
+           tok.person=0 (+0.14, n 9962/20921)
+         dropped as weak (redundant and weak alone): 1
+           tok.tense=0 (+0.06, n 12212/27894)
+         struck out (relstrikes): 5
+           tok.caps=4 (-0.01, n 11167/27315)
+             round 1: T +0.0  corr -0.07  T + corr -0.07 in context (1 features, log odds -0.74, with it n 27/62, log odds -0.82): tok.form=about
+             round 2: T +1.22  corr +0.0  T + corr +1.22 in context (2 features, log odds +0.64, with it n 18/9, log odds +0.64): tok.basepos=0, tok.left_neighbor.form=how
+           tok.left_neighbor.left_neighbor.upos=PUNCT (+0.02, n 1591/3779)
+             round 1: T +0.0  corr +0.06  T + corr +0.06 in context (1 features, log odds -0.74, with it n 3/3, log odds -0.68): tok.form=about
+             round 2: T +1.22  corr +0.04  T + corr +1.26 in context (2 features, log odds +0.42, with it n 15/8, log odds +0.46): tok.basepos=0, tok.left_neighbor.xpos=WRB
+           tok.right_neighbor.right_neighbor.upos=ADV (-0.36, n 486/1696)
+             round 1: T +0.0  corr +0.52  T + corr +0.52 in context (1 features, log odds -0.73, with it n 35/41, log odds -0.21): tok.upos=ADP
+             round 2: T +1.22  corr +0.0  T + corr +1.22 in context (2 features, log odds +0.42, with it n 5/3, log odds +0.42): tok.basepos=0, tok.left_neighbor.xpos=WRB
+             round 3: T +1.72  corr +0.0  T + corr +1.72 in context (1 features, log odds -0.39, with it n 18/25, log odds -0.39): tok.right_neighbor.right_neighbor.form=here
+           tok.left_neighbor.upos=ADV (-0.37, n 486/1710)
+             round 1: T +0.0  corr +1.16  T + corr +1.16 in context (1 features, log odds -0.74, with it n 4/1, log odds +0.42): tok.form=about
+             round 2: T +1.22  corr +0.0  T + corr +1.22 in context (2 features, log odds +0.64, with it n 18/8, log odds +0.64): tok.basepos=0, tok.left_neighbor.form=how
+             round 3: T +1.72  corr +0.01  T + corr +1.73 in context (1 features, log odds -1.25, with it n 29/96, log odds -1.24): tok.right_neighbor.right_neighbor.upos=ADV
+           tok.left_neighbor.left_neighbor.head_dir=left (+0.01, n 4396/10514)
+             round 1: T +0.0  corr +0.61  T + corr +0.61 in context (1 features, log odds -0.74, with it n 14/14, log odds -0.13): tok.form=about
+             round 2: T +1.22  corr +0.18  T + corr +1.4 in context (2 features, log odds +0.64, with it n 12/4, log odds +0.82): tok.basepos=0, tok.left_neighbor.form=how
+             round 3: T +1.72  corr +0.31  T + corr +2.03 in context (1 features, log odds -0.39, with it n 9/8, log odds -0.08): tok.right_neighbor.right_neighbor.form=here
+             round 4: T +2.64  corr -0.02  T + corr +2.62 in context (2 features, log odds -0.18, with it n 3/4, log odds -0.2): tok.right_neighbor.right_neighbor.upos=ADV, tok.left_neighbor.xpos=WRB
+             round 5: T +2.48  corr +0.0  T + corr +2.48 in context (2 features, log odds -0.43, with it n 12/20, log odds -0.43): tok.left_neighbor.xpos=WRB, tok.left_neighbor.left_neighbor.form=.
+         same word as a chain feature (genred): 5
+           tok.right_neighbor.form=right (+0.0, n 7/19)
+           tok.upos=ADP (+0.16, n 1293/2682)
+           tok.xpos=IN (+0.1, n 1454/3197)
+           tok.basepos=0 (+0.25, n 7240/13642)
+           tok.right_neighbor.upos=ADV (-1.31, n 218/1971)
+
+       evidence (sums of Δ log odds): positive +5.71, negative -1.71;  final log odds +3.11 = odds 22.5
+
+      ~~ head_kinright = sibling (gold):  P 0.002
+       prior: log odds -1.0 = odds 0.367 = probability 0.268
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.
+        'by round': the leftover's corr in each greedy round before it was taken, in that round's context.
+        Struck out, per round: T = the running estimate before the round, T + corr = it with the leftover taken;
+        'log odds' there is the context's own log o(x | context), not T.
+        The log odds with X ('with X: ... log odds', 'with it ..., log odds'): log o(x | context, X) as smoothed,
+        = the context's log odds + corr.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. tok.upos=ADP                              +1.35  n 2332/1643       +1.35  n 2332/1643
+       2. tok.right_neighbor.upos=ADV               +0.71  n 937/1252        -1.02  n 24/49   <- sign flips
+       3. tok.right_neighbor.right_neighbor.upos=ADV  +0.22  n 687/1495        -0.24  n 1/5   <- sign flips
+       4. tok.caps=4                                -0.01  n 10225/28257     -0.69  n 0/5
+       chain: log odds -1.61 = odds 0.2
+
+       LEFTOVER 1: tok.len=5   Δ alone -0.35 (n 764/2950);  running estimate before: log odds -1.61
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -1.61  n 0/5          with X: n 0/0         corr unsupported
+                 context: tok.upos=ADP, tok.right_neighbor.upos=ADV, tok.right_neighbor.right_neighbor.upos=ADV, tok.caps=4
+         ctx 2: context log odds  -0.92  n 55/141       with X: n 1/10        corr -0.59  <= TAKEN   [-tok.upos=ADP]
+
+       LEFTOVER 2: tok.left_neighbor.left_neighbor.upos=PUNCT   Δ alone +0.1 (n 1551/3819);  running estimate before: log odds -2.2
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -1.61  n 1/10         with X: n 0/0         corr unsupported
+                 context: tok.right_neighbor.upos=ADV, tok.right_neighbor.right_neighbor.upos=ADV, tok.caps=4, tok.len=5
+         ctx 2: context log odds  -1.87  n 1/13         with X: n 0/0         corr unsupported   [-tok.caps=4]
+         ctx 3: context log odds  -1.26  n 42/151       with X: n 1/14        corr -0.62  <= TAKEN   [-tok.right_neighbor.upos=ADV]
+         by round: [-0.06, -0.62]
+           round 1   estimate  -1.61  context log odds  -0.92  with X: n 5/17        log odds  -0.99  corr  -0.06   context: tok.right_neighbor.upos=ADV, tok.right_neighbor.right_neighbor.upos=ADV, tok.caps=4
+           round 2   estimate   -2.2  context log odds  -1.26  with X: n 1/14        log odds  -1.88  corr  -0.62   [-tok.right_neighbor.upos=ADV, -tok.caps=4, +tok.len=5]
+
+       LEFTOVER 3: tok.left_neighbor.form=how   Δ alone +0.31 (n 21/40);  running estimate before: log odds -2.82
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -1.95  n 1/14         with X: n 0/0         corr unsupported
+                 context: tok.right_neighbor.right_neighbor.upos=ADV, tok.len=5, tok.left_neighbor.left_neighbor.upos=PUNCT
+         ctx 2: context log odds  -1.28  n 97/345       with X: n 0/3         corr unsupported   [-tok.right_neighbor.right_neighbor.upos=ADV]
+         ctx 3: context log odds  -1.35  n 764/2950     with X: n 1/3         corr unsupported   [-tok.left_neighbor.left_neighbor.upos=PUNCT]
+         ctx 4: context log odds   -1.0  n -            with X: n 21/40       corr +0.31  <= TAKEN   [-tok.len=5]
+         by round: [+0.31, +0.31, +0.31]
+           round 1   estimate  -1.61  context log odds   -1.0  with X: n 21/40       log odds  -0.69  corr  +0.31   context: 
+           round 2   estimate   -2.2  context log odds   -1.0  with X: n 21/40       log odds  -0.69  corr  +0.31   []
+           round 3   estimate  -2.82  context log odds   -1.0  with X: n 21/40       log odds  -0.69  corr  +0.31   []
+
+       LEFTOVER 4: tok.right_neighbor.right_neighbor.head_dir=left   Δ alone +0.15 (n 4663/10920);  running estimate before: log odds -2.51
+         given the whole chain (redundancy test): n 0/3  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -0.69  n 21/40        with X: n 5/19        corr -0.53  <= TAKEN
+                 context: tok.left_neighbor.form=how
+         by round: [-0.14, +0.0, -0.3, -0.53]
+           round 1   estimate  -1.61  context log odds  -0.92  with X: n 23/70       log odds  -1.06  corr  -0.14   context: tok.right_neighbor.upos=ADV, tok.right_neighbor.right_neighbor.upos=ADV, tok.caps=4
+           round 2   estimate   -2.2  context log odds  -1.61  with X: n 1/9         log odds  -1.61  corr   +0.0   [+tok.len=5]
+           round 3   estimate  -2.82  context log odds  -1.28  with X: n 28/139      log odds  -1.58  corr   -0.3   [-tok.right_neighbor.upos=ADV, -tok.right_neighbor.right_neighbor.upos=ADV, -tok.caps=4, +tok.left_neighbor.left_neighbor.upos=PUNCT]
+           round 4   estimate  -2.51  context log odds  -0.69  with X: n 5/19        log odds  -1.22  corr  -0.53   [-tok.len=5, -tok.left_neighbor.left_neighbor.upos=PUNCT, +tok.left_neighbor.form=how]
+
+       NOT USED (Δ alone vs prior, records chosen / not)
+         pooled (redundant to the chain): 4
+           tok.basepos=0 (+0.51, n 7936/12946)
+           tok.number=0 (+0.2, n 9440/21019)
+           tok.person=0 (+0.15, n 9217/21666)
+           tok.right_neighbor.xpos=RB (+1.18, n 1239/1039)
+         dropped as weak (redundant and weak alone): 1
+           tok.tense=0 (+0.03, n 11040/29066)
+         struck out (relstrikes): 4
+           tok.left_neighbor.left_neighbor.head_dir=left (+0.09, n 4283/10627)
+             round 1: T -1.61  corr -0.06  T + corr -1.67 in context (3 features, log odds -0.92, with it n 16/46, log odds -0.98): tok.right_neighbor.upos=ADV, tok.right_neighbor.right_neighbor.upos=ADV, tok.caps=4
+             round 2: T -2.2  corr -0.08  T + corr -2.27 in context (2 features, log odds -1.26, with it n 12/50, log odds -1.33): tok.right_neighbor.right_neighbor.upos=ADV, tok.len=5
+           tok.left_neighbor.xpos=WRB (+0.53, n 78/124)
+             round 1: T -1.61  corr +0.09  T + corr -1.52 in context (1 features, log odds -0.78, with it n 5/7, log odds -0.69): tok.right_neighbor.right_neighbor.upos=ADV
+             round 2: T -2.2  corr +0.05  T + corr -2.14 in context (1 features, log odds -1.35, with it n 4/10, log odds -1.3): tok.len=5
+           tok.left_neighbor.left_neighbor.form=. (+0.3, n 585/1184)
+             round 1: T -1.61  corr -0.38  T + corr -1.99 in context (3 features, log odds -0.92, with it n 2/12, log odds -1.31): tok.right_neighbor.upos=ADV, tok.right_neighbor.right_neighbor.upos=ADV, tok.caps=4
+             round 2: T -2.2  corr -0.14  T + corr -2.33 in context (2 features, log odds -1.26, with it n 0/5, log odds -1.39): tok.right_neighbor.right_neighbor.upos=ADV, tok.len=5
+             round 3: T -2.82  corr +0.0  T + corr -2.82 in context (3 features, log odds -1.95, with it n 0/5, log odds -1.95): tok.right_neighbor.right_neighbor.upos=ADV, tok.len=5, tok.left_neighbor.left_neighbor.upos=PUNCT
+             round 4: T -2.51  corr +0.02  T + corr -2.49 in context (1 features, log odds -0.69, with it n 4/5, log odds -0.67): tok.left_neighbor.form=how
+           tok.left_neighbor.upos=ADV (-0.06, n 565/1631)
+             round 1: T -1.61  corr -0.18  T + corr -1.79 in context (3 features, log odds -0.92, with it n 2/10, log odds -1.11): tok.right_neighbor.upos=ADV, tok.right_neighbor.right_neighbor.upos=ADV, tok.caps=4
+             round 2: T -2.2  corr +0.62  T + corr -1.58 in context (2 features, log odds -1.26, with it n 4/5, log odds -0.64): tok.right_neighbor.right_neighbor.upos=ADV, tok.len=5
+             round 3: T -2.82  corr +0.0  T + corr -2.82 in context (2 features, log odds -1.28, with it n 6/24, log odds -1.28): tok.len=5, tok.left_neighbor.left_neighbor.upos=PUNCT
+             round 4: T -2.51  corr +0.0  T + corr -2.51 in context (1 features, log odds -0.69, with it n 20/39, log odds -0.69): tok.left_neighbor.form=how
+         same word as a chain feature (genred): 4
+           tok.form=about (+1.28, n 54/40)
+           tok.right_neighbor.form=right (+0.0, n 7/19)
+           tok.xpos=IN (+1.33, n 2702/1949)
+           tok.right_neighbor.right_neighbor.form=here (-0.66, n 6/37)
+
+       evidence (sums of Δ log odds): positive +1.66, negative -3.7;  final log odds -3.04 = odds 0.048
+    log margins predicted - gold (log of probability ratios; > 0 favours the predicted head):  attach -4.55;  head_trank +8.01, head_kinright +6.15, head_dist +4.07, head_xpos +0.0, head_dir +0.0, head_upos +0.0, head_kinleft -2.91;  total +10.77
+    candidates: 3   (product score = log P(attach) + Σ log P(head property value): a log probability)
+
+    -- GOLD -> here:  P(attach) 0.0941 (probability), product score -21.97
+       head-property terms (probabilities): head_xpos=RB 0.452, head_dist=2 0.017, head_kinright=sibling 0.002, head_kinleft=grandparent 0.868, head_dir=right 0.996, head_upos=ADV 0.703, head_trank=2 0.0
+       prior: log odds -4.23 = odds 0.0146 = probability 0.0143
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.
+        'by round': the leftover's corr in each greedy round before it was taken, in that round's context.
+        Struck out, per round: T = the running estimate before the round, T + corr = it with the leftover taken;
+        'log odds' there is the context's own log o(x | context), not T.
+        The log odds with X ('with X: ... log odds', 'with it ..., log odds'): log o(x | context, X) as smoothed,
+        = the context's log odds + corr.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. kin.right=sibling                         +3.83  n 11766/17517     +3.83  n 11766/17517
+       2. cand.right_neighbor.xpos=?                +0.32  n 137/6799        +2.01  n 55/10
+       3. dep.xpos=IN                               +0.03  n 4651/311343     +0.59  n 9/0
+       chain: log odds +2.2 = odds 9.0
+
+       LEFTOVER 1: dep.right_neighbor.xpos=RB   Δ alone -0.03 (n 2278/161063);  running estimate before: log odds +2.2
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds   +2.2  n 9/0          with X: n 0/0         corr unsupported
+                 context: kin.right=sibling, cand.right_neighbor.xpos=?, dep.xpos=IN
+         ctx 2: context log odds  +1.61  n 55/10        with X: n 2/1         corr unsupported   [-dep.xpos=IN]
+         ctx 3: context log odds   -0.4  n 11766/17517  with X: n 1239/436    corr +1.44  <= TAKEN   [-cand.right_neighbor.xpos=?]
+
+       LEFTOVER 2: cand.basepos=R   Δ alone -1.35 (n 644/170666);  running estimate before: log odds +3.64
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  +1.04  n 1239/436     with X: n 24/66       corr -2.0  <= TAKEN
+                 context: kin.right=sibling, dep.right_neighbor.xpos=RB
+         by round: [+0.02, -2.0]
+           round 1   estimate   +2.2  context log odds  +1.61  with X: n 6/0         log odds  +1.63  corr  +0.02   context: kin.right=sibling, cand.right_neighbor.xpos=?
+           round 2   estimate  +3.64  context log odds  +1.04  with X: n 24/66       log odds  -0.96  corr   -2.0   [-cand.right_neighbor.xpos=?, +dep.right_neighbor.xpos=RB]
+
+       LEFTOVER 3: dep.right_neighbor.right_neighbor.form=here   Δ alone -0.05 (n 43/3181);  running estimate before: log odds +1.63
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -0.97  n 24/66        with X: n 2/2         corr unsupported
+                 context: kin.right=sibling, dep.right_neighbor.xpos=RB, cand.basepos=R
+         ctx 2: context log odds  +1.04  n 1239/436     with X: n 2/4         corr -1.05  <= TAKEN   [-cand.basepos=R]
+         by round: [-0.75, -1.05, -1.05]
+           round 1   estimate   +2.2  context log odds   -0.4  with X: n 6/23        log odds  -1.15  corr  -0.75   context: kin.right=sibling
+           round 2   estimate  +3.64  context log odds  +1.04  with X: n 2/4         log odds  -0.01  corr  -1.05   [+dep.right_neighbor.xpos=RB]
+           round 3   estimate  +1.63  context log odds  +1.04  with X: n 2/4         log odds  -0.01  corr  -1.05   []
+
+       LEFTOVER 4: dep.len=5   Δ alone -0.0 (n 3714/255488);  running estimate before: log odds +0.59
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -0.29  n 2/4          with X: n 0/1         corr unsupported
+                 context: kin.right=sibling, dep.right_neighbor.xpos=RB, dep.right_neighbor.right_neighbor.form=here
+         ctx 2: context log odds  +0.49  n 111/69       with X: n 1/7         corr -1.6  <= TAKEN   [-dep.right_neighbor.right_neighbor.form=here, +dep.right_neighbor.right_neighbor.upos=ADV]
+         by round: [-0.44, -0.6, -0.03, -1.6]
+           round 1   estimate   +2.2  context log odds  +1.61  with X: n 3/2         log odds  +1.17  corr  -0.44   context: kin.right=sibling, cand.right_neighbor.xpos=?
+           round 2   estimate  +3.64  context log odds  +1.04  with X: n 63/42       log odds  +0.44  corr   -0.6   [-cand.right_neighbor.xpos=?, +dep.right_neighbor.xpos=RB]
+           round 3   estimate  +1.63  context log odds  -0.97  with X: n 2/9         log odds   -1.0  corr  -0.03   [+cand.basepos=R]
+           round 4   estimate  +0.59  context log odds  +0.49  with X: n 1/7         log odds  -1.11  corr   -1.6   [-cand.basepos=R, +dep.right_neighbor.right_neighbor.upos=ADV]
+
+       LEFTOVER 5: dep.left_neighbor.upos=ADV   Δ alone -0.02 (n 2196/154215);  running estimate before: log odds -1.01
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -1.25  n 1/7          with X: n 0/0         corr unsupported
+                 context: kin.right=sibling, dep.right_neighbor.xpos=RB, dep.right_neighbor.right_neighbor.upos=ADV, dep.len=5
+         ctx 2: context log odds  -0.75  n 42/91        with X: n 4/0         corr unsupported   [-dep.right_neighbor.xpos=RB]
+         ctx 3: context log odds  -0.67  n 764/1498     with X: n 31/39       corr +0.39  <= TAKEN   [-dep.right_neighbor.right_neighbor.upos=ADV]
+         by round: [+0.02, -0.32, -0.43, -0.21, +0.39]
+           round 1   estimate   +2.2  context log odds  +1.61  with X: n 6/0         log odds  +1.63  corr  +0.02   context: kin.right=sibling, cand.right_neighbor.xpos=?
+           round 2   estimate  +3.64  context log odds  +1.04  with X: n 53/27       log odds  +0.73  corr  -0.32   [-cand.right_neighbor.xpos=?, +dep.right_neighbor.xpos=RB]
+           round 3   estimate  +1.63  context log odds  -0.97  with X: n 2/13        log odds   -1.4  corr  -0.43   [+cand.basepos=R]
+           round 4   estimate  +0.59  context log odds  +0.49  with X: n 3/4         log odds  +0.28  corr  -0.21   [-cand.basepos=R, +dep.right_neighbor.right_neighbor.upos=ADV]
+           round 5   estimate  -1.01  context log odds  -0.67  with X: n 31/39       log odds  -0.28  corr  +0.39   [-dep.right_neighbor.xpos=RB, -dep.right_neighbor.right_neighbor.upos=ADV, +dep.len=5]
+
+       LEFTOVER 6: dep.right_neighbor.form=right   Δ alone -0.02 (n 26/1887);  running estimate before: log odds -0.62
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -0.26  n 31/39        with X: n 0/0         corr unsupported
+                 context: kin.right=sibling, dep.len=5, dep.left_neighbor.upos=ADV
+         ctx 2: context log odds  -0.67  n 764/1498     with X: n 0/1         corr unsupported   [-dep.left_neighbor.upos=ADV]
+         ctx 3: context log odds   -0.4  n 11766/17517  with X: n 7/16        corr -0.23  <= TAKEN   [-dep.len=5]
+         by round: [-0.23, -1.34, +0.0, -1.19, -0.23, -0.23]
+           round 1   estimate   +2.2  context log odds   -0.4  with X: n 7/16        log odds  -0.63  corr  -0.23   context: kin.right=sibling
+           round 2   estimate  +3.64  context log odds  +1.04  with X: n 5/9         log odds  -0.29  corr  -1.34   [+dep.right_neighbor.xpos=RB]
+           round 3   estimate  +1.63  context log odds  -0.97  with X: n 2/7         log odds  -0.97  corr   +0.0   [+cand.basepos=R]
+           round 4   estimate  +0.59  context log odds  +0.49  with X: n 2/7         log odds   -0.7  corr  -1.19   [-cand.basepos=R, +dep.right_neighbor.right_neighbor.upos=ADV]
+           round 5   estimate  -1.01  context log odds   -0.4  with X: n 7/16        log odds  -0.63  corr  -0.23   [-dep.right_neighbor.xpos=RB, -dep.right_neighbor.right_neighbor.upos=ADV]
+           round 6   estimate  -0.62  context log odds   -0.4  with X: n 7/16        log odds  -0.63  corr  -0.23   []
+
+       NOT USED (Δ alone vs prior, records chosen / not)
+         not admitted (relevance gates): 9
+           dep.caps=4 (-0.0, n 38482/2648306)
+           dep.number=0 (-0.01, n 30459/2104848)
+           dep.person=0 (-0.0, n 30883/2127955)
+           dep.tense=0 (+0.0, n 40106/2750975)
+           dep.left_neighbor.left_neighbor.form=. (-0.08, n 1769/132407)
+           dep.left_neighbor.left_neighbor.upos=PUNCT (-0.04, n 5370/385656)
+           dep.left_neighbor.left_neighbor.head_dir=left (-0.02, n 14910/1046789)
+           cand.right_neighbor.right_neighbor.upos=PRON (+0.07, n 3854/246202)
+           dep.right_neighbor.right_neighbor.head_dir=left (-0.01, n 15583/1077737)
+         pooled (redundant to the chain): 7
+           direction=right (+0.14, n 25682/1539980)
+           cand.len=4 (+0.26, n 8440/444977)
+           cand.right_neighbor.form=? (+0.37, n 410/19443)
+           cand.tense=0 (-0.2, n 32216/2717339)
+           cand.right_neighbor.upos=PUNCT (+0.58, n 10010/386425)
+           cand.left_neighbor.left_neighbor.upos=ADP (+0.17, n 4507/260137)
+           kin.left=grandparent (+2.61, n 6067/30516)
+         dropped as weak (redundant and weak alone): 4
+           cand.caps=4 (-0.02, n 37128/2603223)
+           dep.upos=ADP (+0.03, n 3975/266042)
+           dep.basepos=0 (-0.01, n 20882/1446259)
+           cand.right_neighbor.right_neighbor.head_dir=right (-0.03, n 23941/1701684)
+         struck out (relstrikes): 14
+           cand.number=0 (-0.58, n 17010/2087195)
+             round 1: T +2.2  corr +0.0  T + corr +2.2 in context (2 features, log odds +1.61, with it n 28/5, log odds +1.61): kin.right=sibling, cand.right_neighbor.xpos=?
+             round 2: T +3.64  corr +0.06  T + corr +3.69 in context (2 features, log odds +1.04, with it n 928/308, log odds +1.1): kin.right=sibling, dep.right_neighbor.xpos=RB
+           cand.right_neighbor.right_neighbor.form=i (-0.02, n 564/39497)
+             round 1: T +2.2  corr +0.0  T + corr +2.2 in context (2 features, log odds +1.61, with it n 7/1, log odds +1.61): kin.right=sibling, cand.right_neighbor.xpos=?
+             round 2: T +3.64  corr +0.06  T + corr +3.69 in context (2 features, log odds +1.04, with it n 22/6, log odds +1.1): kin.right=sibling, dep.right_neighbor.xpos=RB
+           dep.left_neighbor.form=how (-0.03, n 61/4385)
+             round 1: T +2.2  corr +0.0  T + corr +2.2 in context (1 features, log odds -0.4, with it n 21/30, log odds -0.4): kin.right=sibling
+             round 2: T +3.64  corr +0.0  T + corr +3.64 in context (1 features, log odds -0.4, with it n 21/30, log odds -0.4): kin.right=sibling
+           cand.form=here (-0.05, n 42/3091)
+             round 1: T +2.2  corr -0.04  T + corr +2.16 in context (1 features, log odds -0.4, with it n 10/18, log odds -0.44): kin.right=sibling
+             round 2: T +3.64  corr -0.64  T + corr +2.99 in context (2 features, log odds +1.04, with it n 2/3, log odds +0.4): kin.right=sibling, dep.right_neighbor.xpos=RB
+             round 3: T +1.63  corr +0.0  T + corr +1.63 in context (3 features, log odds -0.97, with it n 2/3, log odds -0.97): kin.right=sibling, dep.right_neighbor.xpos=RB, cand.basepos=R
+           cand.left_neighbor.form=right (-0.01, n 25/1812)
+             round 1: T +2.2  corr +0.0  T + corr +2.2 in context (1 features, log odds -0.4, with it n 9/12, log odds -0.4): kin.right=sibling
+             round 2: T +3.64  corr -1.89  T + corr +1.74 in context (2 features, log odds +1.04, with it n 2/8, log odds -0.85): kin.right=sibling, dep.right_neighbor.xpos=RB
+             round 3: T +1.63  corr +0.0  T + corr +1.63 in context (3 features, log odds -0.97, with it n 2/7, log odds -0.97): kin.right=sibling, dep.right_neighbor.xpos=RB, cand.basepos=R
+           cand.person=0 (-0.35, n 21586/2106086)
+             round 1: T +2.2  corr +0.13  T + corr +2.33 in context (2 features, log odds +1.61, with it n 29/4, log odds +1.74): kin.right=sibling, cand.right_neighbor.xpos=?
+             round 2: T +3.64  corr +0.0  T + corr +3.64 in context (2 features, log odds +1.04, with it n 1060/372, log odds +1.04): kin.right=sibling, dep.right_neighbor.xpos=RB
+             round 3: T +1.63  corr +0.0  T + corr +1.63 in context (3 features, log odds -0.97, with it n 24/66, log odds -0.97): kin.right=sibling, dep.right_neighbor.xpos=RB, cand.basepos=R
+           cand.upos=ADV (-1.17, n 700/154715)
+             round 1: T +2.2  corr +0.02  T + corr +2.22 in context (2 features, log odds +1.61, with it n 6/0, log odds +1.63): kin.right=sibling, cand.right_neighbor.xpos=?
+             round 2: T +3.64  corr -1.99  T + corr +1.65 in context (2 features, log odds +1.04, with it n 24/65, log odds -0.95): kin.right=sibling, dep.right_neighbor.xpos=RB
+             round 3: T +1.63  corr +0.0  T + corr +1.63 in context (3 features, log odds -0.97, with it n 24/65, log odds -0.97): kin.right=sibling, dep.right_neighbor.xpos=RB, cand.basepos=R
+           cand.left_neighbor.left_neighbor.form=about (+0.28, n 128/6605)
+             round 1: T +2.2  corr +0.31  T + corr +2.51 in context (1 features, log odds -0.4, with it n 45/47, log odds -0.09): kin.right=sibling
+             round 2: T +3.64  corr +0.0  T + corr +3.64 in context (2 features, log odds +1.04, with it n 4/1, log odds +1.04): kin.right=sibling, dep.right_neighbor.xpos=RB
+             round 3: T +1.63  corr +0.0  T + corr +1.63 in context (2 features, log odds +1.04, with it n 4/1, log odds +1.04): kin.right=sibling, dep.right_neighbor.xpos=RB
+           cand.left_neighbor.upos=ADV (+0.42, n 3357/151192)
+             round 1: T +2.2  corr +0.15  T + corr +2.35 in context (1 features, log odds -0.4, with it n 1188/1513, log odds -0.24): kin.right=sibling
+             round 2: T +3.64  corr +0.02  T + corr +3.65 in context (2 features, log odds +1.04, with it n 585/202, log odds +1.06): kin.right=sibling, dep.right_neighbor.xpos=RB
+             round 3: T +1.63  corr +0.0  T + corr +1.63 in context (3 features, log odds -0.97, with it n 20/52, log odds -0.97): kin.right=sibling, dep.right_neighbor.xpos=RB, cand.basepos=R
+           cand.left_neighbor.xpos=RB (+0.68, n 4543/157461)
+             round 1: T +2.2  corr +0.38  T + corr +2.58 in context (1 features, log odds -0.4, with it n 1823/1852, log odds -0.02): kin.right=sibling
+             round 2: T +3.64  corr +0.33  T + corr +3.96 in context (2 features, log odds +1.04, with it n 862/218, log odds +1.37): kin.right=sibling, dep.right_neighbor.xpos=RB
+             round 3: T +1.63  corr +0.08  T + corr +1.71 in context (3 features, log odds -0.97, with it n 22/53, log odds -0.89): kin.right=sibling, dep.right_neighbor.xpos=RB, cand.basepos=R
+             round 4: T +0.59  corr -0.0  T + corr +0.59 in context (3 features, log odds +0.49, with it n 85/54, log odds +0.49): kin.right=sibling, dep.right_neighbor.xpos=RB, dep.right_neighbor.right_neighbor.upos=ADV
+           dep.right_neighbor.upos=ADV (-0.02, n 2189/153788)
+             round 1: T +2.2  corr +0.93  T + corr +3.13 in context (1 features, log odds -0.4, with it n 937/548, log odds +0.53): kin.right=sibling
+             round 2: T +3.64  corr -0.34  T + corr +3.3 in context (2 features, log odds +1.04, with it n 856/423, log odds +0.71): kin.right=sibling, dep.right_neighbor.xpos=RB
+             round 3: T +1.63  corr -0.33  T + corr +1.3 in context (3 features, log odds -0.97, with it n 16/65, log odds -1.3): kin.right=sibling, dep.right_neighbor.xpos=RB, cand.basepos=R
+             round 4: T +0.59  corr +0.0  T + corr +0.59 in context (3 features, log odds -0.29, with it n 2/4, log odds -0.29): kin.right=sibling, dep.right_neighbor.xpos=RB, dep.right_neighbor.right_neighbor.form=here
+             round 5: T -1.01  corr +0.0  T + corr -1.01 in context (4 features, log odds -1.25, with it n 1/7, log odds -1.25): kin.right=sibling, dep.right_neighbor.xpos=RB, dep.right_neighbor.right_neighbor.upos=ADV, dep.len=5
+           distance=2 words (bucket 2) (+1.78, n 8391/97268)
+             round 1: T +2.2  corr +0.0  T + corr +2.2 in context (2 features, log odds +1.61, with it n 33/6, log odds +1.61): kin.right=sibling, cand.right_neighbor.xpos=?
+             round 2: T +3.64  corr +0.26  T + corr +3.89 in context (2 features, log odds +1.04, with it n 696/189, log odds +1.3): kin.right=sibling, dep.right_neighbor.xpos=RB
+             round 3: T +1.63  corr +0.29  T + corr +1.93 in context (3 features, log odds -0.97, with it n 15/29, log odds -0.68): kin.right=sibling, dep.right_neighbor.xpos=RB, cand.basepos=R
+             round 4: T +0.59  corr +0.33  T + corr +0.92 in context (3 features, log odds +0.49, with it n 78/34, log odds +0.82): kin.right=sibling, dep.right_neighbor.xpos=RB, dep.right_neighbor.right_neighbor.upos=ADV
+             round 5: T -1.01  corr +0.0  T + corr -1.01 in context (4 features, log odds -1.25, with it n 1/4, log odds -1.25): kin.right=sibling, dep.right_neighbor.xpos=RB, dep.right_neighbor.right_neighbor.upos=ADV, dep.len=5
+           cand.xpos=RB (-1.41, n 577/162282)
+             round 1: T +2.2  corr +0.02  T + corr +2.22 in context (2 features, log odds +1.61, with it n 6/0, log odds +1.63): kin.right=sibling, cand.right_neighbor.xpos=?
+             round 2: T +3.64  corr -1.82  T + corr +1.82 in context (2 features, log odds +1.04, with it n 23/53, log odds -0.78): kin.right=sibling, dep.right_neighbor.xpos=RB
+             round 3: T +1.63  corr +0.12  T + corr +1.75 in context (3 features, log odds -0.97, with it n 23/53, log odds -0.85): kin.right=sibling, dep.right_neighbor.xpos=RB, cand.basepos=R
+             round 4: T +0.59  corr -0.96  T + corr -0.38 in context (3 features, log odds +0.49, with it n 21/36, log odds -0.47): kin.right=sibling, dep.right_neighbor.xpos=RB, dep.right_neighbor.right_neighbor.upos=ADV
+             round 5: T -1.01  corr +0.0  T + corr -1.01 in context (4 features, log odds -1.25, with it n 1/4, log odds -1.25): kin.right=sibling, dep.right_neighbor.xpos=RB, dep.right_neighbor.right_neighbor.upos=ADV, dep.len=5
+           dep.left_neighbor.xpos=WRB (-0.04, n 202/14563)
+             round 1: T +2.2  corr +0.22  T + corr +2.42 in context (1 features, log odds -0.4, with it n 78/91, log odds -0.18): kin.right=sibling
+             round 2: T +3.64  corr +0.34  T + corr +3.98 in context (2 features, log odds +1.04, with it n 9/1, log odds +1.39): kin.right=sibling, dep.right_neighbor.xpos=RB
+             round 3: T +1.63  corr +0.34  T + corr +1.98 in context (2 features, log odds +1.04, with it n 9/1, log odds +1.39): kin.right=sibling, dep.right_neighbor.xpos=RB
+             round 4: T +0.59  corr +0.34  T + corr +0.93 in context (2 features, log odds +1.04, with it n 9/1, log odds +1.39): kin.right=sibling, dep.right_neighbor.xpos=RB
+             round 5: T -1.01  corr +0.0  T + corr -1.01 in context (2 features, log odds -0.67, with it n 4/6, log odds -0.67): kin.right=sibling, dep.len=5
+             round 6: T -0.62  corr -0.05  T + corr -0.68 in context (3 features, log odds -0.26, with it n 3/6, log odds -0.31): kin.right=sibling, dep.len=5, dep.left_neighbor.upos=ADV
+         same word as a chain feature (genred): 1
+           dep.form=about (-0.04, n 94/6809)
+
+       evidence (sums of Δ log odds): positive +8.25, negative -4.88;  final log odds -0.85 = odds 0.425
+
+    -- PREDICTED -> right:  P(attach) 0.001 (probability), product score -11.2
+       head-property terms (probabilities): head_xpos=RB 0.452, head_dist=1 0.983, head_kinright=parent 0.935, head_kinleft=other_ancestor 0.047, head_dir=right 0.996, head_upos=ADV 0.703, head_trank=1 1.0
+       prior: log odds -4.23 = odds 0.0146 = probability 0.0143
+       (n = training records: chosen / not chosen.  Δ = change in log odds; e^Δ is the factor on the odds.
+        Leftovers: 'context log odds' is log o(x | context); 'with X' counts the context's records that have the
+        leftover; corr = the leftover's Δ log odds in that context, added to the running estimate.
+        'by round': the leftover's corr in each greedy round before it was taken, in that round's context.
+        Struck out, per round: T = the running estimate before the round, T + corr = it with the leftover taken;
+        'log odds' there is the context's own log o(x | context), not T.
+        The log odds with X ('with X: ... log odds', 'with it ..., log odds'): log o(x | context, X) as smoothed,
+        = the context's log odds + corr.)
+       CHAIN                                         Δ alone (vs prior)       Δ in the chain (vs prefix)
+       1. kin.right=parent                          +3.84  n 12793/18898     +3.84  n 12793/18898
+       2. kin.left=other_ancestor                    -1.8  n 141/59141       -3.21  n 97/3594
+       3. dep.left_neighbor.form=how                -0.03  n 61/4385         +2.91  n 3/4   <- sign flips
+       4. cand.tense=0                               -0.2  n 32216/2717339   +0.29  n 3/3   <- sign flips
+       chain: log odds -0.41 = odds 0.667
+
+       LEFTOVER 1: cand.xpos=RB   Δ alone -1.41 (n 577/162282);  running estimate before: log odds -0.41
+         given the whole chain (redundancy test): n 0/1  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -0.41  n 3/3          with X: n 0/1         corr unsupported
+                 context: kin.right=parent, kin.left=other_ancestor, dep.left_neighbor.form=how, cand.tense=0
+         ctx 2: context log odds  -0.36  n 15/23        with X: n 0/1         corr unsupported   [-kin.left=other_ancestor]
+         ctx 3: context log odds  -0.31  n 55/76        with X: n 0/10        corr -1.91  <= TAKEN   [-dep.left_neighbor.form=how, +dep.left_neighbor.xpos=WRB]
+
+       LEFTOVER 2: cand.right_neighbor.right_neighbor.head_dir=left   Δ alone -0.15 (n 12906/1034023);  running estimate before: log odds -2.31
+         given the whole chain (redundancy test): n 1/3  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds   -2.3  n 0/10         with X: n 0/3         corr unsupported
+                 context: kin.right=parent, dep.left_neighbor.xpos=WRB, cand.tense=0, cand.xpos=RB
+         ctx 2: context log odds   -2.3  n 0/10         with X: n 0/3         corr unsupported   [-cand.tense=0]
+         ctx 3: context log odds  -1.18  n 18/62        with X: n 0/24        corr -1.97  <= TAKEN   [-dep.left_neighbor.xpos=WRB, +dep.left_neighbor.upos=ADV]
+         by round: [+0.0, -1.97]
+           round 1   estimate  -0.41  context log odds  -0.36  with X: n 7/11        log odds  -0.36  corr   +0.0   context: kin.right=parent, dep.left_neighbor.form=how, cand.tense=0
+           round 2   estimate  -2.31  context log odds  -1.18  with X: n 0/24        log odds  -3.15  corr  -1.97   [-dep.left_neighbor.form=how, -cand.tense=0, +dep.left_neighbor.upos=ADV, +cand.xpos=RB]
+
+       LEFTOVER 3: cand.len=5   Δ alone +0.46 (n 5768/250048);  running estimate before: log odds -4.28
+         given the whole chain (redundancy test): n 0/1  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -3.18  n 0/24         with X: n 0/3         corr unsupported
+                 context: kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+         ctx 2: context log odds  -4.49  n 35/3199      with X: n 0/403       corr -1.51  <= TAKEN   [-kin.right=parent]
+         by round: [+0.13, +0.46, -1.51]
+           round 1   estimate  -0.41  context log odds  -0.36  with X: n 3/2         log odds  -0.23  corr  +0.13   context: kin.right=parent, dep.left_neighbor.form=how, cand.tense=0
+           round 2   estimate  -2.31  context log odds  -1.18  with X: n 4/6         log odds  -0.72  corr  +0.46   [-dep.left_neighbor.form=how, -cand.tense=0, +dep.left_neighbor.upos=ADV, +cand.xpos=RB]
+           round 3   estimate  -4.28  context log odds  -4.49  with X: n 0/403       log odds   -6.0  corr  -1.51   [-kin.right=parent, +cand.right_neighbor.right_neighbor.head_dir=left]
+
+       LEFTOVER 4: cand.left_neighbor.form=about   Δ alone -0.42 (n 63/6719);  running estimate before: log odds -5.79
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds   -6.0  n 0/403        with X: n 0/0         corr unsupported
+                 context: dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left, cand.len=5
+         ctx 2: context log odds  -6.26  n 11/5314      with X: n 0/0         corr unsupported   [-dep.left_neighbor.upos=ADV]
+         ctx 3: context log odds   -5.4  n 82/17960     with X: n 0/0         corr unsupported   [-cand.right_neighbor.right_neighbor.head_dir=left]
+         ctx 4: context log odds  -5.64  n 577/162282   with X: n 9/328       corr +1.92  <= TAKEN   [-cand.len=5]
+         by round: [+1.15, +1.72, +0.0, +1.92]
+           round 1   estimate  -0.41  context log odds  -0.74  with X: n 4/1         log odds  +0.41  corr  +1.15   context: kin.right=parent, dep.left_neighbor.upos=ADV, cand.tense=0
+           round 2   estimate  -2.31  context log odds  -2.11  with X: n 3/2         log odds  -0.39  corr  +1.72   [-dep.left_neighbor.upos=ADV, -cand.tense=0, +cand.xpos=RB]
+           round 3   estimate  -4.28  context log odds  -4.49  with X: n 0/5         log odds  -4.49  corr   +0.0   [-kin.right=parent, +dep.left_neighbor.upos=ADV, +cand.right_neighbor.right_neighbor.head_dir=left]
+           round 4   estimate  -5.79  context log odds  -5.64  with X: n 9/328       log odds  -3.71  corr  +1.92   [-dep.left_neighbor.upos=ADV, -cand.right_neighbor.right_neighbor.head_dir=left]
+
+       LEFTOVER 5: cand.left_neighbor.xpos=IN   Δ alone -0.51 (n 2718/309689);  running estimate before: log odds -3.86
+         given the whole chain (redundancy test): n 0/0  -> unsupported (< mincount 5 records): can't be judged
+         ctx 1: context log odds  -3.71  n 9/328        with X: n 0/153       corr -1.54  <= TAKEN
+                 context: cand.xpos=RB, cand.left_neighbor.form=about
+         by round: [-0.47, +0.78, -0.37, +0.0, -1.54]
+           round 1   estimate  -0.41  context log odds  -0.74  with X: n 53/181      log odds  -1.21  corr  -0.47   context: kin.right=parent, dep.left_neighbor.upos=ADV, cand.tense=0
+           round 2   estimate  -2.31  context log odds  -2.11  with X: n 19/68       log odds  -1.33  corr  +0.78   [-dep.left_neighbor.upos=ADV, -cand.tense=0, +cand.xpos=RB]
+           round 3   estimate  -4.28  context log odds  -4.49  with X: n 0/130       log odds  -4.86  corr  -0.37   [-kin.right=parent, +dep.left_neighbor.upos=ADV, +cand.right_neighbor.right_neighbor.head_dir=left]
+           round 4   estimate  -5.79  context log odds   -6.0  with X: n 0/18        log odds   -6.0  corr   +0.0   [+cand.len=5]
+           round 5   estimate  -3.86  context log odds  -3.71  with X: n 0/153       log odds  -5.25  corr  -1.54   [-dep.left_neighbor.upos=ADV, -cand.right_neighbor.right_neighbor.head_dir=left, -cand.len=5, +cand.left_neighbor.form=about]
+
+       NOT USED (Δ alone vs prior, records chosen / not)
+         not admitted (relevance gates): 9
+           dep.caps=4 (-0.0, n 38482/2648306)
+           cand.caps=4 (-0.02, n 37128/2603223)
+           dep.number=0 (-0.01, n 30459/2104848)
+           dep.person=0 (-0.0, n 30883/2127955)
+           dep.tense=0 (+0.0, n 40106/2750975)
+           dep.left_neighbor.left_neighbor.form=. (-0.08, n 1769/132407)
+           dep.left_neighbor.left_neighbor.upos=PUNCT (-0.04, n 5370/385656)
+           dep.left_neighbor.left_neighbor.head_dir=left (-0.02, n 14910/1046789)
+           dep.right_neighbor.right_neighbor.head_dir=left (-0.01, n 15583/1077737)
+         pooled (redundant to the chain): 5
+           direction=right (+0.14, n 25682/1539980)
+           dep.left_neighbor.upos=ADV (-0.02, n 2196/154215)
+           dep.left_neighbor.xpos=WRB (-0.04, n 202/14563)
+           cand.left_neighbor.left_neighbor.form=how (-0.12, n 56/4424)
+           cand.left_neighbor.left_neighbor.upos=ADV (-0.13, n 1939/152079)
+         struck out (relstrikes): 23
+           cand.right_neighbor.upos=ADV (-0.27, n 1691/152054)
+             round 1: T -0.41  corr +0.0  T + corr -0.41 in context (3 features, log odds -0.31, with it n 2/3, log odds -0.31): kin.right=parent, dep.left_neighbor.xpos=WRB, cand.tense=0
+             round 2: T -2.31  corr +0.0  T + corr -2.31 in context (3 features, log odds -1.18, with it n 2/5, log odds -1.18): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB
+           cand.left_neighbor.left_neighbor.head_dir=root (-0.46, n 1606/175170)
+             round 1: T -0.41  corr +0.0  T + corr -0.41 in context (3 features, log odds -0.31, with it n 3/2, log odds -0.31): kin.right=parent, dep.left_neighbor.xpos=WRB, cand.tense=0
+             round 2: T -2.31  corr +0.0  T + corr -2.31 in context (2 features, log odds -2.11, with it n 9/78, log odds -2.11): kin.right=parent, cand.xpos=RB
+           dep.right_neighbor.right_neighbor.upos=ADV (-0.02, n 2182/153402)
+             round 1: T -0.41  corr +0.0  T + corr -0.41 in context (3 features, log odds -0.31, with it n 2/3, log odds -0.31): kin.right=parent, dep.left_neighbor.xpos=WRB, cand.tense=0
+             round 2: T -2.31  corr +0.0  T + corr -2.31 in context (3 features, log odds -1.18, with it n 2/5, log odds -1.18): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB
+           cand.right_neighbor.right_neighbor.form=? (-0.36, n 199/19656)
+             round 1: T -0.41  corr -0.0  T + corr -0.41 in context (3 features, log odds -0.74, with it n 1/5, log odds -0.74): kin.right=parent, dep.left_neighbor.upos=ADV, cand.tense=0
+             round 2: T -2.31  corr -0.06  T + corr -2.37 in context (1 features, log odds -0.39, with it n 63/101, log odds -0.45): kin.right=parent
+           distance=1 word (bucket 1) (+3.06, n 10046/32367)
+             round 1: T -0.41  corr +0.01  T + corr -0.4 in context (3 features, log odds -0.36, with it n 11/15, log odds -0.35): kin.right=parent, dep.left_neighbor.form=how, cand.tense=0
+             round 2: T -2.31  corr +0.59  T + corr -1.72 in context (3 features, log odds -1.18, with it n 12/21, log odds -0.59): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB
+             round 3: T -4.28  corr +0.0  T + corr -4.28 in context (4 features, log odds -3.18, with it n 0/11, log odds -3.18): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+           cand.person=0 (-0.35, n 21586/2106086)
+             round 1: T -0.41  corr -0.29  T + corr -0.69 in context (3 features, log odds -0.36, with it n 5/12, log odds -0.65): kin.right=parent, dep.left_neighbor.form=how, cand.tense=0
+             round 2: T -2.31  corr +0.0  T + corr -2.31 in context (4 features, log odds -2.3, with it n 0/10, log odds -2.3): kin.right=parent, dep.left_neighbor.xpos=WRB, cand.tense=0, cand.xpos=RB
+             round 3: T -4.28  corr +0.0  T + corr -4.28 in context (4 features, log odds -3.18, with it n 0/24, log odds -3.18): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+           cand.number=0 (-0.58, n 17010/2087195)
+             round 1: T -0.41  corr -1.9  T + corr -2.3 in context (3 features, log odds -0.36, with it n 1/20, log odds -2.26): kin.right=parent, dep.left_neighbor.form=how, cand.tense=0
+             round 2: T -2.31  corr +0.0  T + corr -2.31 in context (4 features, log odds -2.3, with it n 0/10, log odds -2.3): kin.right=parent, dep.left_neighbor.xpos=WRB, cand.tense=0, cand.xpos=RB
+             round 3: T -4.28  corr +0.0  T + corr -4.28 in context (4 features, log odds -3.18, with it n 0/24, log odds -3.18): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+           dep.basepos=0 (-0.01, n 20882/1446259)
+             round 1: T -0.41  corr +0.07  T + corr -0.34 in context (3 features, log odds -0.36, with it n 6/7, log odds -0.29): kin.right=parent, dep.left_neighbor.form=how, cand.tense=0
+             round 2: T -2.31  corr +0.15  T + corr -2.16 in context (3 features, log odds -1.18, with it n 12/33, log odds -1.03): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB
+             round 3: T -4.28  corr +0.0  T + corr -4.28 in context (4 features, log odds -3.18, with it n 0/12, log odds -3.18): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+           cand.upos=ADV (-1.17, n 700/154715)
+             round 1: T -0.41  corr +0.01  T + corr -0.4 in context (3 features, log odds -0.74, with it n 23/45, log odds -0.73): kin.right=parent, dep.left_neighbor.upos=ADV, cand.tense=0
+             round 2: T -2.31  corr +0.34  T + corr -1.97 in context (3 features, log odds -1.18, with it n 18/41, log odds -0.84): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB
+             round 3: T -4.28  corr +0.0  T + corr -4.28 in context (4 features, log odds -3.18, with it n 0/15, log odds -3.18): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+           cand.basepos=R (-1.35, n 644/170666)
+             round 1: T -0.41  corr -1.91  T + corr -2.31 in context (3 features, log odds -0.31, with it n 0/10, log odds -2.21): [ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 46.9 s): 16 of 46 slots always, 423 gate values
+[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+[ Info: ChainModel: joint tables for 1222 frequent items, 311639 pairs (49.4 s)
+kin.right=parent, dep.left_neighbor.xpos=WRB, cand.tense=0
+             round 2: T -2.31  corr +0.0  T + corr -2.31 in context (4 features, log odds -2.3, with it n 0/10, log odds -2.3): kin.right=parent, dep.left_neighbor.xpos=WRB, cand.tense=0, cand.xpos=RB
+             round 3: T -4.28  corr +0.0  T + corr -4.28 in context (4 features, log odds -3.18, with it n 0/24, log odds -3.18): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+           dep.right_neighbor.right_neighbor.form=here (-0.05, n 43/3181)
+             round 1: T -0.41  corr +0.06  T + corr -0.35 in context (2 features, log odds -0.49, with it n 12/16, log odds -0.44): kin.right=parent, cand.tense=0
+             round 2: T -2.31  corr +0.52  T + corr -1.79 in context (2 features, log odds -2.11, with it n 2/4, log odds -1.6): kin.right=parent, cand.xpos=RB
+             round 3: T -4.28  corr +0.09  T + corr -4.19 in context (2 features, log odds -4.44, with it n 2/77, log odds -4.35): dep.left_neighbor.upos=ADV, cand.right_neighbor.right_neighbor.head_dir=left
+           dep.right_neighbor.xpos=RB (-0.03, n 2278/161063)
+             round 1: T -0.41  corr -1.91  T + corr -2.31 in context (3 features, log odds -0.31, with it n 0/10, log odds -2.21): kin.right=parent, dep.left_neighbor.xpos=WRB, cand.tense=0
+             round 2: T -2.31  corr +0.0  T + corr -2.31 in context (4 features, log odds -2.3, with it n 0/10, log odds -2.3): kin.right=parent, dep.left_neighbor.xpos=WRB, cand.tense=0, cand.xpos=RB
+             round 3: T -4.28  corr +0.0  T + corr -4.28 in context (4 features, log odds -3.18, with it n 0/24, log odds -3.18): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+           dep.right_neighbor.upos=ADV (-0.02, n 2189/153788)
+             round 1: T -0.41  corr +0.01  T + corr -0.4 in context (3 features, log odds -0.74, with it n 23/45, log odds -0.73): kin.right=parent, dep.left_neighbor.upos=ADV, cand.tense=0
+             round 2: T -2.31  corr +0.34  T + corr -1.97 in context (3 features, log odds -1.18, with it n 18/41, log odds -0.84): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB
+             round 3: T -4.28  corr +0.0  T + corr -4.28 in context (4 features, log odds -3.18, with it n 0/15, log odds -3.18): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+           cand.right_neighbor.form=here (+0.22, n 57/3075)
+             round 1: T -0.41  corr +0.06  T + corr -0.35 in context (2 features, log odds -0.49, with it n 12/16, log odds -0.44): kin.right=parent, cand.tense=0
+             round 2: T -2.31  corr +0.52  T + corr -1.79 in context (2 features, log odds -2.11, with it n 2/4, log odds -1.6): kin.right=parent, cand.xpos=RB
+             round 3: T -4.28  corr +0.0  T + corr -4.28 in context (3 features, log odds -4.49, with it n 0/23, log odds -4.49): dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+           dep.form=about (-0.04, n 94/6809)
+             round 1: T -0.41  corr +1.15  T + corr +0.75 in context (3 features, log odds -0.74, with it n 4/1, log odds +0.41): kin.right=parent, dep.left_neighbor.upos=ADV, cand.tense=0
+             round 2: T -2.31  corr +1.72  T + corr -0.59 in context (2 features, log odds -2.11, with it n 3/2, log odds -0.39): kin.right=parent, cand.xpos=RB
+             round 3: T -4.28  corr +0.0  T + corr -4.28 in context (3 features, log odds -4.49, with it n 0/13, log odds -4.49): dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+             round 4: T -5.79  corr +0.0  T + corr -5.79 in context (3 features, log odds -6.26, with it n 0/20, log odds -6.26): cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left, cand.len=5
+           cand.form=right (-0.22, n 21/1879)
+             round 1: T -0.41  corr -0.14  T + corr -0.54 in context (2 features, log odds -0.49, with it n 7/16, log odds -0.63): kin.right=parent, cand.tense=0
+             round 2: T -2.31  corr -0.45  T + corr -2.76 in context (2 features, log odds -2.11, with it n 0/14, log odds -2.57): kin.right=parent, cand.xpos=RB
+             round 3: T -4.28  corr +0.0  T + corr -4.28 in context (3 features, log odds -4.49, with it n 0/40, log odds -4.49): dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+             round 4: T -5.79  corr +0.0  T + corr -5.79 in context (4 features, log odds -6.0, with it n 0/40, log odds -6.0): dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left, cand.len=5
+           dep.upos=ADP (+0.03, n 3975/266042)
+             round 1: T -0.41  corr -0.27  T + corr -0.67 in context (3 features, log odds -0.74, with it n 47/132, log odds -1.01): kin.right=parent, dep.left_neighbor.upos=ADV, cand.tense=0
+             round 2: T -2.31  corr +0.96  T + corr -1.35 in context (2 features, log odds -2.11, with it n 15/44, log odds -1.16): kin.right=parent, cand.xpos=RB
+             round 3: T -4.28  corr +0.0  T + corr -4.28 in context (3 features, log odds -4.49, with it n 3/228, log odds -4.49): dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+             round 4: T -5.79  corr +0.0  T + corr -5.79 in context (4 features, log odds -6.0, with it n 0/32, log odds -6.0): dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left, cand.len=5
+           dep.len=5 (-0.0, n 3714/255488)
+             round 1: T -0.41  corr +0.07  T + corr -0.34 in context (3 features, log odds -0.31, with it n 4/3, log odds -0.24): kin.right=parent, dep.left_neighbor.xpos=WRB, cand.tense=0
+             round 2: T -2.31  corr +0.97  T + corr -1.35 in context (2 features, log odds -2.11, with it n 27/82, log odds -1.15): kin.right=parent, cand.xpos=RB
+             round 3: T -4.28  corr -0.43  T + corr -4.71 in context (3 features, log odds -4.49, with it n 1/275, log odds -4.92): dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+             round 4: T -5.79  corr +0.0  T + corr -5.79 in context (4 features, log odds -6.0, with it n 0/26, log odds -6.0): dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left, cand.len=5
+           cand.right_neighbor.right_neighbor.upos=PUNCT (-0.53, n 3370/392233)
+             round 1: T -0.41  corr +0.13  T + corr -0.27 in context (3 features, log odds -0.36, with it n 3/2, log odds -0.23): kin.right=parent, dep.left_neighbor.form=how, cand.tense=0
+             round 2: T -2.31  corr -0.71  T + corr -3.02 in context (3 features, log odds -1.18, with it n 1/14, log odds -1.89): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB
+             round 3: T -4.28  corr +0.0  T + corr -4.28 in context (4 features, log odds -3.18, with it n 0/10, log odds -3.18): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+             round 4: T -5.79  corr +0.0  T + corr -5.79 in context (4 features, log odds -6.0, with it n 0/125, log odds -6.0): dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left, cand.len=5
+           dep.xpos=IN (+0.03, n 4651/311343)
+             round 1: T -0.41  corr -0.47  T + corr -0.87 in context (3 features, log odds -0.74, with it n 53/181, log odds -1.21): kin.right=parent, dep.left_neighbor.upos=ADV, cand.tense=0
+             round 2: T -2.31  corr +0.78  T + corr -1.53 in context (2 features, log odds -2.11, with it n 19/68, log odds -1.33): kin.right=parent, cand.xpos=RB
+             round 3: T -4.28  corr +0.0  T + corr -4.28 in context (3 features, log odds -4.49, with it n 3/311, log odds -4.49): dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+             round 4: T -5.79  corr +0.0  T + corr -5.79 in context (4 features, log odds -6.0, with it n 0/41, log odds -6.0): dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left, cand.len=5
+           dep.right_neighbor.form=right (-0.02, n 26/1887)
+             round 1: T -0.41  corr -0.14  T + corr -0.54 in context (2 features, log odds -0.49, with it n 7/16, log odds -0.63): kin.right=parent, cand.tense=0
+             round 2: T -2.31  corr -0.45  T + corr -2.76 in context (2 features, log odds -2.11, with it n 0/14, log odds -2.57): kin.right=parent, cand.xpos=RB
+             round 3: T -4.28  corr -0.02  T + corr -4.3 in context (0 features, log odds -4.23, with it n 26/1887, log odds -4.25): 
+             round 4: T -5.79  corr +0.0  T + corr -5.79 in context (3 features, log odds -6.26, with it n 0/12, log odds -6.26): cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left, cand.len=5
+           cand.right_neighbor.xpos=RB (-0.46, n 1474/160163)
+             round 1: T -0.41  corr -0.22  T + corr -0.62 in context (3 features, log odds -0.31, with it n 2/6, log odds -0.52): kin.right=parent, dep.left_neighbor.xpos=WRB, cand.tense=0
+             round 2: T -2.31  corr +0.0  T + corr -2.31 in context (3 features, log odds -1.18, with it n 2/6, log odds -1.18): kin.right=parent, dep.left_neighbor.upos=ADV, cand.xpos=RB
+             round 3: T -4.28  corr +0.96  T + corr -3.32 in context (3 features, log odds -4.49, with it n 18/609, log odds -3.52): dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+             round 4: T -5.79  corr +0.0  T + corr -5.79 in context (4 features, log odds -6.0, with it n 0/95, log odds -6.0): dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left, cand.len=5
+           cand.left_neighbor.upos=ADP (-0.53, n 2268/263622)
+             round 1: T -0.41  corr -0.27  T + corr -0.67 in context (3 features, log odds -0.74, with it n 47/132, log odds -1.01): kin.right=parent, dep.left_neighbor.upos=ADV, cand.tense=0
+             round 2: T -2.31  corr +0.96  T + corr -1.35 in context (2 features, log odds -2.11, with it n 15/44, log odds -1.16): kin.right=parent, cand.xpos=RB
+             round 3: T -4.28  corr -0.1  T + corr -4.38 in context (3 features, log odds -4.49, with it n 0/99, log odds -4.59): dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left
+             round 4: T -5.79  corr +0.0  T + corr -5.79 in context (4 features, log odds -6.0, with it n 0/10, log odds -6.0): dep.left_neighbor.upos=ADV, cand.xpos=RB, cand.right_neighbor.right_neighbor.head_dir=left, cand.len=5
+
+       evidence (sums of Δ log odds): positive +8.96, negative -10.13;  final log odds -5.4 = odds 0.00451

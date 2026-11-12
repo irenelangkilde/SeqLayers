@@ -124,21 +124,53 @@ function generalization_slots(specs)
   ctx = toks.context
   isgen(f) = f in (:upos, :xpos, :basepos) || (f == :oclass && OCLASS_LADDER[]) || iswclass(f) || startswith(String(f), "suffix") ||
     startswith(String(f), "wc3")
-  function group(paths, slotof)
+  function group(paths, slotof, C, T)
     forms, gens = Dict{Vector{Symbol},Int}(), Dict{Vector{Symbol},Vector{Int}}()
+    feat = Dict{Int,Symbol}()
     for (j, k) in enumerate(paths)
       p = ctx[k]
+      feat[slotof(j)] = p.feat
+      p.feat in (:upos, :xpos) && push!(T, slotof(j))
       p.feat == :form && (forms[p.rels] = slotof(j))
       isgen(p.feat) && push!(get!(() -> Int[], gens, p.rels), slotof(j))
+    end
+    for (r, s) in forms                             # (genred=coarser) on each word: slot -> the slots it's coarser than
+      haskey(gens, r) || continue
+      ws = [s; gens[r]]
+      for a in ws, b in ws
+        coarser_feat(feat[a], feat[b]) && push!(get!(() -> Set{Int}(), C, a), b)
+      end
     end
     Dict(s => gens[r] for (r, s) in forms if haskey(gens, r))
   end
   out = Dict{UInt64,Dict{Int,Vector{Int}}}()
   lp = get(LINKPATHS, toks, LINK_PATHS)
   for (k, d) in enumerate(toks.decisions)
-    out[typekey(:token, k)] = k == 1 ? merge(group(lp, j -> 2j + 1), group(lp, j -> 2j + 2)) : group(eachindex(ctx), j -> j)
+    C = COARSER_SLOTS[typekey(:token, k)] = Dict{Int,Set{Int}}()
+    T = TAG_SLOTS[typekey(:token, k)] = Set{Int}()
+    out[typekey(:token, k)] = k == 1 ? merge(group(lp, j -> 2j + 1, C, T), group(lp, j -> 2j + 2, C, T)) : group(eachindex(ctx), j -> j, C, T)
   end
   out
+end
+
+"Per token decision type, slot -> the slots on the same word it is coarser than (set by generalization_slots; genred=coarser)."
+const COARSER_SLOTS = Dict{UInt64,Dict{Int,Set{Int}}}()
+"Per token decision type, the upos and xpos slots (genred=coarser: a finer leftover that is a tag is redundant too)."
+const TAG_SLOTS = Dict{UInt64,Set{Int}}()
+
+"""
+Is word feature f coarser than g -- (nearly) a function of it?  Every generalization is coarser than the form; upos and
+basepos than xpos; a shorter suffix than a longer one; a word-class level with fewer classes than one with more.
+"""
+function coarser_feat(f::Symbol, g::Symbol)
+  f == g && return false
+  g == :form && return true
+  g == :xpos && return f in (:upos, :basepos)
+  sf, sg = String(f), String(g)
+  for pre in ("suffix", "wclass")
+    startswith(sf, pre) && startswith(sg, pre) && return parse(Int, sf[length(pre)+1:end]) < parse(Int, sg[length(pre)+1:end])
+  end
+  false
 end
 
 "Is this a word-class decision?"

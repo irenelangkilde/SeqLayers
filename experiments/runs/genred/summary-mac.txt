@@ -1,0 +1,9 @@
+=== start Thu Nov 12 08:32:41 MST 2026
+=== word
+recorded events in 350.4 s
+ALL         2899    0.9978  0.8848  0.8317  0.0162  1.0     
+score 470.6 s, run 20261112-084926 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== coarser
+ALL         2899    0.9978  0.8875  0.8386  0.0162  1.0     
+score 476.8 s, run 20261112-085953 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== all done Thu Nov 12 08:59:54 MST 2026
