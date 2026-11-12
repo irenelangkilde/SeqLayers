@@ -259,7 +259,7 @@ function explain_attach(st, t, gold, pred)
         end
         ok_ = [r for r in rows if !isnan(r[3])]
         lz = isempty(ok_) ? 0.0 : (mx = maximum(r[3] for r in ok_); mx + log(sum(exp(r[3] - mx) for r in ok_)))
-        for r in sort(rows; by = r -> isnan(r[3]) ? Inf : -r[3])[1:min(8, end)]
+        for r in sort(rows; by = r -> isnan(r[3]) ? Inf : -r[3])
           println("       ", rpad(headval(Symbol(pname), r[1]), 8), " prior ", lpad(fmtd(r[2]), 6), "  steps: ", join(r[4], ", "),
             isnan(r[3]) ? "" : "  -> log odds $(fmtd(r[3])), P $(round(exp(r[3] - lz); digits = 3))")
         end
