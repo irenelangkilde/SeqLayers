@@ -151,6 +151,9 @@ function ceiling_main(cfg)
     n = sum(a[k] for k in ks) / 1000
     println("accum context size: $(round(Int, n)) leftovers taken -- ", join(["$(String(k)[9:end]) $(round(a[k] / 1000 / n; digits = 3))" for k in ks], ", "))
   end
+  if any(k -> startswith(String(k), "cf_") || k == :genred, keys(a))   # confirm / genred: counters as recorded (dcstats scale)
+    println("confirm / genred: ", join(["$(k) $(a[k])" for k in sort([k for k in keys(a) if startswith(String(k), "cf_") || k == :genred])], ", "))
+  end
   if any(k -> startswith(String(k), "bfs_"), keys(a))  # accumby=bfs: at which backoff level W was first supported
     ks = sort([k for k in keys(a) if startswith(String(k), "bfs_")])
     n = sum(a[k] for k in ks) / 1000

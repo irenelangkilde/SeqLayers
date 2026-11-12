@@ -425,6 +425,10 @@ function detail(st, t, c, f, Ic, acc; k = 1, label = UInt32(0), disc = Any[])
   ctx = st.layers[:token].spec.context
   name(x) = (sl = findfirst(==(x), Ic); sl === nothing ? "?" :
     k == 1 ? slotdesc(st, t, c, sl) : "tok." * ctxname(ctx[sl]) * "=" * ctxval(st, t, ctx[sl]))
+  # (confirm) a leftover's confirm test: the feature it was tested against, how that was picked, the corrections
+  cfline(h) = string("confirm test: given ", name(h.feat), " (", h.how == :tag ? "upos / xpos of its word" : "most associated with it",
+    ")", h.alone ? ", unsupported there -- its marginal" : "", ": corr ", h.c2 === nothing ? "unsupported" : fmtd(h.c2),
+    " (was ", fmtd(h.c1), ")", h.c2 === nothing || abs(h.c2) < m.opts.tau ? "  -> dropped (under tau)" : "  -> kept")
   function marginal(x)                              # x alone: its odds from the prior, and its records (chosen / not)
     S0 = S.ChainState(p0, base)
     e = only(S.extend_all(m, S0, 0, [x]))
@@ -486,6 +490,9 @@ function detail(st, t, c, f, Ic, acc; k = 1, label = UInt32(0), disc = Any[])
     println("\n       LEFTOVER $r: ", name(X), "   Δ alone ", fmtd(mΔ), " (n ", fmtn(mn), ");  running estimate before: log odds ", fmtd(a.T))
     # the end-of-chain redundancy test (redundant_divergence): X given the whole chain -- supported (mincount records)
     # and moving the odds by less than tau is redundant (pooled); unsupported can't be judged and stays a leftover
+    for (kk, x, hh) in disc                          # (confirm) the test it passed
+      kk == :confirmed && x == a.sx && hh isa NamedTuple && println("         ", cfline(hh))
+    end
     eR = only(S.extend_all(m, Sc, S.depth(Sc), [X]))
     yR, okR = S.update_odds(m, eR, label, Sc.odds[end])
     println("         given the whole chain (redundancy test): n ", fmtn(get(eR[2], label, (0.0, 0.0))),
@@ -532,7 +539,7 @@ function detail(st, t, c, f, Ic, acc; k = 1, label = UInt32(0), disc = Any[])
   gated = [sx for sx in eachindex(Ic) if Ic[sx] != S.ABSENT && !(Ic[sx] in used) && !(sx in S.admitted(m, tk, Ic))]
   groups = [("not admitted (relevance gates)", gated)]
   for (kind, label_) in ((:pool, "pooled (redundant to the chain)"), (:weak, "dropped as weak (redundant and weak alone)"),
-                         (:irrelevant, "dropped as irrelevant (up-front relevance filter)"), (:struck, "struck out (relstrikes)"), (:genred, "same word as a chain feature (genred)"),
+                         (:irrelevant, "dropped as irrelevant (up-front relevance filter)"), (:struck, "struck out (relstrikes)"), (:genred, "same word as a chain feature (genred)"), (:unconfirmed, "dropped by the confirm step (under tau with its most redundant feature)"),
                          (:struck_pooled, "struck out, pooled (relstrikes, relpool)"), (:untaken, "never taken (no supported context)"))
     push!(groups, (label_, unique([sx for (kk, sx, _) in disc if kk == kind && !(Ic[sx] in used)])))
   end
@@ -545,6 +552,10 @@ function detail(st, t, c, f, Ic, acc; k = 1, label = UInt32(0), disc = Any[])
         println("           ", fmtx(sx))
         hs = [hh for (kk, x, hh) in disc if x == sx && hh !== nothing]
         h = isempty(hs) ? nothing : first(hs)
+        if h isa NamedTuple                            # (confirm) the test that dropped it
+          println("             ", cfline(h))
+          continue
+        end
         h === nothing || isempty(h) || for r in h      # (struck out) its correction in each round's context
           println("             round ", r.round, ": T ", fmtd(r.T), "  corr ", r.corr === nothing ? "unsupported" : fmtd(r.corr),
             r.corr === nothing ? "" : string("  T + corr ", fmtd(r.T + r.corr)), " in context (",

@@ -1,0 +1,8 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 47.7 s): 16 of 46 slots always, 423 gate values
+[ Info: ChainModel: grouped decisions into 3854722 records (798334 grouped, 16 label sets)
+[ Info: ChainModel: joint tables for 1222 frequent items, 311639 pairs (41.1 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-rootabs-htrank-kin-hkinleftright-nn2/events
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=odds;leftsmooth=evidence;relstrikes=2;relpool=false;confirm=new;confirmmin=20;ctxmode=accum;ctxattach=false;cidrop=0.0;ciorder=off;telescope=false;branches=1;combine=avg;accumwin=0;accumreset=false;driftsigma=0.0;drifttau=0.0;driftstep=0.0;distback=false;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective;headtrank;kinitems;headkin=left,right;neighbor2]  [domains=product domeps=0.0]
+no sentence with 1..16 wrong heads and at most 16 words in these docs

@@ -253,6 +253,8 @@ struct ChainOpts
   lookwsoft::Bool                                 # lookwback: blend by support (w = n / (n + lookwback)) instead of switching
   lookwsmooth::Float64                            # > 0: W's estimates for ΔW / interaction from its likelihood ratio, each rate smoothed by this many records toward W's pooled rate
   chainsel::Float64                               # > 0: selective shrinkage of chain steps toward their generalization, by z = deviation / SE (z0 = this)
+  confirmmin::Int                                 # confirm: a test feature needs this many of its records with the leftover and this many without
+  confirm::Symbol                                 # (accum; user 2026-11-12) before a leftover is taken on a context of at most one feature, the context gets the counted feature (chain, pool, taken) most redundant with it; under tau there it's dropped -- :new (taken with the new correction) | :gate (with its first) | :off
   genred::Symbol                                  # (accum; user 2026-11-12) leftovers redundant with a chain feature whatever the counts, dropped before the rounds: :word -- on the same word (form, upos, xpos, basepos, suffixes, classes); :coarser -- coarser than a chain feature on its word (upos=ADV given xpos=RB), or finer only if a tag (xpos=RB given upos=ADV; not form given upos); :off
 end
 
@@ -364,7 +366,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0, accumstop = 0.0, forkcap = 0, forkcomb = :max, forkleft = :each, accumpick = :abs, accumfloor = false, ilscore = :corr, nchains = 1, stepmin = 0, forkthin = 0, firstnz = false, lefttopn = 0, steptopn = 0, relstrikes = 0, relpool = false, forkrule = :lower, candmemo = false, genred = :off)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0, accumstop = 0.0, forkcap = 0, forkcomb = :max, forkleft = :each, accumpick = :abs, accumfloor = false, ilscore = :corr, nchains = 1, stepmin = 0, forkthin = 0, firstnz = false, lefttopn = 0, steptopn = 0, relstrikes = 0, relpool = false, forkrule = :lower, candmemo = false, genred = :off, confirm = :off, confirmmin = 20)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms, :maxpos, :maxabsscore, :maxposneg) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
@@ -382,6 +384,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   nchains >= 1 || error("nchains: at least 1")
   forkthin > 0 && forkcap <= 0 && error("forkthin: needs forkcap > 0")
   relstrikes > 0 && (ctxmode != :accum || interleave) && error("relstrikes: ctxmode :accum, no interleave")
+  confirm in (:off, :new, :gate) || error("unknown confirm $confirm (use :off, :new or :gate)")
   genred in (:off, :word, :coarser) || error("unknown genred $genred (use :off, :word or :coarser)")
   forkrule in (:lower, :second) || error("unknown forkrule $forkrule (use :lower or :second)")
   nchains > 1 && (ctxmode != :accum || leftovers != :greedy || interleave) && error("nchains > 1: ctxmode :accum, leftovers :greedy, no interleave")
@@ -461,7 +464,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, candmemo, accumpick, accumfloor, ilscore, nchains, stepmin, forkthin, firstnz, lefttopn, steptopn, relstrikes, relpool, forkrule, forkcap, forkcomb, forkleft, accumstop, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel, genred),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, candmemo, accumpick, accumfloor, ilscore, nchains, stepmin, forkthin, firstnz, lefttopn, steptopn, relstrikes, relpool, forkrule, forkcap, forkcomb, forkleft, accumstop, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel, confirmmin, confirm, genred),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -1849,6 +1852,23 @@ function topn_slots(D, ctx, xs, n)
   xs[sortperm([pr(x) for x in xs]; rev = true)[1:n]]
 end
 
+"""
+X's correction given exactly the context `xs` (confirm): log o(x | xs, X) - log o(x | xs), as accum's xcorr; nothing if
+unsupported.
+"""
+function corr_given(m::ChainModel, xs, X, label, prior, base)
+  c = build_context(m, xs, label, prior, base)
+  c === nothing && return nothing
+  S, e = c
+  eX = only(extend_all(m, S, depth(S), [X]))
+  if e === nothing
+    yX, okX = update_odds(m, eX, label, prior)
+    return okX && ctxsupported(m, eX, label) ? log(yX) - log(prior) : nothing
+  end
+  y2, ok2 = leftover_update(m, e, eX, label, S.odds[end])
+  ok2 && ctxsupported(m, eX, label) ? log(y2) - log(S.odds[end]) : nothing
+end
+
 "An accum context's (state, final entry), or nothing if unsupported: the features `xs` in order from the prior."
 function build_context(m::ChainModel, xs, label, prior, base)
   S, e = ChainState(prior, base), nothing
@@ -2717,7 +2737,7 @@ paths that start with the 2nd, 3rd, ... best first step (walked as the main path
 `combine` (see combine_contexts), and the context carried forward is their union (each feature's finest rung).
 """
 function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int}, label, prior, base;
-  chainrem = nothing, skip = Set{Int}(), members = nothing, T0 = nothing, firstonly = false)
+  chainrem = nothing, skip = Set{Int}(), members = nothing, T0 = nothing, firstonly = false, pool = UInt64[])
   # (nchains) the context's features and running estimate may be given instead of the chain's; firstonly: return
   # (slot, correction) of the first leftover it would take, or nothing
   mem() = members === nothing ? st.members : members
@@ -3564,6 +3584,54 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
       end
       (d = DC_STATS[]) === nothing || (d[:as_taken] = get(d, :as_taken, 0.0) + 1)
     end
+    # confirm (user's design 2026-11-12): one more step before X is taken on a context of at most one feature -- X is
+    # tested given the counted feature (chain, pool, leftovers taken; not already in its context) it overlaps most: an
+    # upos / xpos of X's own word first, else the one most associated with X across the records (|log odds ratio|, no
+    # label).  Eligible only with confirmmin records of it with X and confirmmin without (else the smoothing or an X in
+    # every record of it gives a spurious 0); none eligible: X is taken untested.  Under tau given it, X is dropped; else
+    # taken with the new correction (:new) or its first (:gate).
+    if m.opts.confirm != :off && !firstonly && length(items(bestr)) <= 1
+      X = Ic[sx]
+      inctx = items(bestr)
+      cands = unique!(UInt64[a for a in [mem(); pool; collect(taken)] if a != X && !(a in inctx) && a != ABSENT])
+      function eligible(a)                          # (records of a with X, without X) both >= confirmmin
+        c = build_context(m, UInt64[a], label, prior, base)
+        c === nothing && return false
+        S, e = c
+        na = sum(get(e[2], label, (0.0, 0.0)))
+        nax = sum(get(only(extend_all(m, S, depth(S), [X]))[2], label, (0.0, 0.0)))
+        nax >= m.opts.confirmmin && na - nax >= m.opts.confirmmin
+      end
+      filter!(eligible, cands)
+      if isempty(cands)
+        (d = DC_STATS[]) === nothing || (d[:cf_untested] = get(d, :cf_untested, 0.0) + 1)
+      else
+        tp = get(TAGPAIR_SLOTS, isempty(base) ? UInt64(0) : m.recs[base[1]].typekey, Set{Tuple{Int,Int}}())
+        ia = findfirst(a -> (sa = findfirst(==(a), Ic); sa !== nothing && (sa, sx) in tp), cands)
+        how = :tag
+        if ia === nothing
+          how = :stat
+          ia = argmax([abs(depq(m, base, X, a, label, prior; measure = :logor)) for a in cands])
+        end
+        a = cands[ia]
+        c2 = corr_given(m, UInt64[a], X, label, prior, base)
+        alone = false
+        (d = DC_STATS[]) === nothing || (k_ = Symbol(:cf_, how); d[k_] = get(d, k_, 0.0) + 1)
+        # (trace) the test: the feature, how it was picked, the first and new corrections
+        cfinfo = (feat = a, how = how, alone = alone, c1 = bestc, c2 = c2)
+        if c2 === nothing || abs(c2) < m.opts.tau
+          (d = DC_STATS[]) === nothing || (d[:cf_dropped] = get(d, :cf_dropped, 0.0) + 1)
+          DISCARD_TRACE[] === nothing || DISCARD_TRACE[](:unconfirmed, [sx]; hists = Dict(sx => cfinfo))
+          deleteat!(pending, bestX)
+          strikeout!()
+          fullround = false
+          isempty(pending) && !chainon && break
+          continue
+        end
+        DISCARD_TRACE[] === nothing || DISCARD_TRACE[](:confirmed, [sx]; hists = Dict(sx => cfinfo))
+        m.opts.confirm == :new && (bestc = c2)
+      end
+    end
     firstonly && return (sx, bestc)
     ACCUM_TRACE[] === nothing || ACCUM_TRACE[](sx, T, tries[sx], bestk, bestc, get(hist, sx, Any[]))
     # (dcstats) the taken leftover's context size: features kept (0: against the prior, its marginal)
@@ -3930,7 +3998,7 @@ function _greedy_leftovers(m::ChainModel, st::ChainState, Ic, label, prior, rema
       end
     end
     m.opts.nchains > 1 && return multi_chain_leftovers(m, st, Ic, G, rel, remaining, label, prior, base)
-    return accum_leftovers(m, st, Ic, G, rel, label, prior, base)
+    return accum_leftovers(m, st, Ic, G, rel, label, prior, base; pool = m.opts.redundant ? UInt64[Ic[s] for s in red] : UInt64[])
   end
   pending = Int[]
   incl = Set{UInt64}()                               # included leftovers (depweight: counted evidence)

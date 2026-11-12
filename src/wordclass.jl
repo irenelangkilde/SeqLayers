@@ -124,7 +124,7 @@ function generalization_slots(specs)
   ctx = toks.context
   isgen(f) = f in (:upos, :xpos, :basepos) || (f == :oclass && OCLASS_LADDER[]) || iswclass(f) || startswith(String(f), "suffix") ||
     startswith(String(f), "wc3")
-  function group(paths, slotof, C, T)
+  function group(paths, slotof, C, T, P)
     forms, gens = Dict{Vector{Symbol},Int}(), Dict{Vector{Symbol},Vector{Int}}()
     feat = Dict{Int,Symbol}()
     for (j, k) in enumerate(paths)
@@ -139,6 +139,7 @@ function generalization_slots(specs)
       ws = [s; gens[r]]
       for a in ws, b in ws
         coarser_feat(feat[a], feat[b]) && push!(get!(() -> Set{Int}(), C, a), b)
+        a != b && feat[a] in (:upos, :xpos) && feat[b] in (:upos, :xpos) && push!(P, (a, b))
       end
     end
     Dict(s => gens[r] for (r, s) in forms if haskey(gens, r))
@@ -148,7 +149,8 @@ function generalization_slots(specs)
   for (k, d) in enumerate(toks.decisions)
     C = COARSER_SLOTS[typekey(:token, k)] = Dict{Int,Set{Int}}()
     T = TAG_SLOTS[typekey(:token, k)] = Set{Int}()
-    out[typekey(:token, k)] = k == 1 ? merge(group(lp, j -> 2j + 1, C, T), group(lp, j -> 2j + 2, C, T)) : group(eachindex(ctx), j -> j, C, T)
+    P = TAGPAIR_SLOTS[typekey(:token, k)] = Set{Tuple{Int,Int}}()
+    out[typekey(:token, k)] = k == 1 ? merge(group(lp, j -> 2j + 1, C, T, P), group(lp, j -> 2j + 2, C, T, P)) : group(eachindex(ctx), j -> j, C, T, P)
   end
   out
 end
@@ -157,6 +159,8 @@ end
 const COARSER_SLOTS = Dict{UInt64,Dict{Int,Set{Int}}}()
 "Per token decision type, the upos and xpos slots (genred=coarser: a finer leftover that is a tag is redundant too)."
 const TAG_SLOTS = Dict{UInt64,Set{Int}}()
+"Per token decision type, the (upos, xpos) and (xpos, upos) slot pairs of the same word (confirm)."
+const TAGPAIR_SLOTS = Dict{UInt64,Set{Tuple{Int,Int}}}()
 
 """
 Is word feature f coarser than g -- (nearly) a function of it?  Every generalization is coarser than the form; upos and
