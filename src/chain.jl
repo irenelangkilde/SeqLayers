@@ -4053,6 +4053,23 @@ function decide(m::ChainModel, st::State, key::AgendaKey)
   # soft head properties: each candidate head also scored by the (uncommitted) head properties' log
   # probabilities of the values it implies -- the product of the ceiling's domains=product
   SOFTHEADS[] && st.infer && d.name == :attach && (scores = scores .+ soft_head_terms(m, st, i, cands))
+  # second opinion (user 2026-11-12): an undecided attachment -- its top two both below odds p/(1-p) -- gets the two
+  # re-scored another way, combined with their first scores
+  if SECOND_OPINION[] !== nothing && d.name == :attach && !STRICT[] && length(cands) >= 2
+    so = SECOND_OPINION[]
+    o2 = sortperm(scores; rev = true)[1:2]
+    if all(j -> scores[j] < so.thr, o2)
+      alt = second_scores(m, st, key, cands[o2], so.mode)
+      if alt !== nothing
+        SOFTHEADS[] && st.infer && (alt = alt .+ soft_head_terms(m, st, i, cands[o2]))
+        scores = copy(scores)
+        for (j, a) in zip(o2, alt)
+          scores[j] = so.comb == :max ? max(scores[j], a) : (scores[j] + a) / 2
+        end
+        (dc = DC_STATS[]) === nothing || (dc[:second] = get(dc, :second, 0.0) + 1)
+      end
+    end
+  end
   wait = d.open ? waitscore(m, st, key) : nothing
   # displacement: a filtered-out head that beats the best allowed one by more than δ is chosen (commit! reopens
   # the arcs in its way)
@@ -4065,6 +4082,35 @@ function decide(m::ChainModel, st::State, key::AgendaKey)
     end
   end
   choose(cands, scores, wait)
+end
+
+"""
+Second opinion (secondop; user's design 2026-11-12): when an attachment's top two candidates both score below odds
+p/(1-p) (raw chain + leftover log odds), the two are re-scored another way and each score becomes the average (or max) of
+its two: :chain -- one shared chain over the two (run_chain, clr_rms: the feature that best separates them, step by
+step); :posneg -- per-candidate chains with posneg steps; :stepmin -- per-candidate chains with stepmin 400.  The rest
+keep their scores.  nothing: off.
+"""
+const SECOND_OPINION = Ref{Any}(nothing)            # (mode, comb, thr = log odds)
+const SECOND_MEMO = Dict{Symbol,Tuple{Dict{UInt64,Vector{Float64}},Dict{Tuple{UInt64,Int},Float64}}}()
+
+"ChainOpts `o` with some fields replaced."
+with_opts(o::ChainOpts; kw...) = ChainOpts((haskey(kw, f) ? kw[f] : getfield(o, f) for f in fieldnames(ChainOpts))...)
+
+"The second opinion's scores for `cands` (see SECOND_OPINION), or nothing; the model's options and memos as they were."
+function second_scores(m::ChainModel, st::State, key::AgendaKey, cands, mode::Symbol)
+  o2 = mode == :chain ? with_opts(m.opts; select = :clr_rms, candmemo = false) :
+       mode == :posneg ? with_opts(m.opts; stepscore = :posneg) :
+       mode == :stepmin ? with_opts(m.opts; stepmin = 400) : error("secondop: chain, posneg or stepmin")
+  memo, cmemo = get!(() -> (Dict{UInt64,Vector{Float64}}(), Dict{Tuple{UInt64,Int},Float64}()), SECOND_MEMO, mode)
+  o, mm, cm = m.opts, m.memo, m.cmemo
+  m.opts, m.memo, m.cmemo = o2, memo, cmemo           # (its own memos: the main ones don't know the options)
+  try
+    r = chain_scores(m, st, key; cands = cands)
+    r === nothing ? nothing : r[2]
+  finally
+    m.opts, m.memo, m.cmemo = o, mm, cm
+  end
 end
 
 """

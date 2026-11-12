@@ -302,6 +302,22 @@ end
       mp.generalize = SeqLayers.generalization_slots(specs)
       @test 0 <= eval_scores(evaluate_counts(docs, specs, mp, lex)).uas <= 1
     end
+    # second opinion: undecided attachments' top two re-scored (shared chain, posneg, stepmin); the model's options restored
+    let m2 = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum)
+      m2.generalize = SeqLayers.generalization_slots(specs)
+      o0 = m2.opts
+      @test SeqLayers.with_opts(o0; stepmin = 7).stepmin == 7 && SeqLayers.with_opts(o0; stepmin = 7).tau == o0.tau
+      for mode in (:chain, :posneg, :stepmin), comb in (:avg, :max)
+        SeqLayers.SECOND_OPINION[] = (mode = mode, comb = comb, thr = 50.0)     # (every attachment is "undecided")
+        SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()
+        try
+          @test 0 <= eval_scores(evaluate_counts(docs, specs, m2, lex)).uas <= 1
+          @test get(SeqLayers.DC_STATS[], :second, 0) > 0 && m2.opts === o0
+        finally
+          SeqLayers.SECOND_OPINION[] = nothing; SeqLayers.DC_STATS[] = nothing
+        end
+      end
+    end
     # accumpick = :assoc: the least-associated leftover reaching tau is taken first; it runs and takes leftovers
     let ma = ChainModel(dir; select = :maxdev, leftovers = :greedy, minctx = 2, mincount = 1, redundant = true, ctxmode = :accum,
         accumpick = :assoc)
