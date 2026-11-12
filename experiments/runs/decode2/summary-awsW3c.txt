@@ -1,0 +1,17 @@
+=== start Wed Nov 11 23:40:04 UTC 2026
+=== wc3clu
+recorded events in 703.5 s
+doc EWT 471 chars: 478.7 s (gc 15.2 s, heap 5.7 GB)
+doc CHILDES 1314 chars: 573.5 s (gc 40.4 s, heap 9.7 GB)
+doc ESLSpok 2239 chars: 2661.8 s (gc 122.6 s, heap 9.0 GB)
+doc GUMReddit 4903 chars: 8346.9 s (gc 362.4 s, heap 8.8 GB)
+doc GUM 4409 chars: 12375.1 s (gc 513.7 s, heap 7.1 GB)
+profdecode: token.attach	59822	5019	23425.7	391.59
+CHILDES     324     1.0     0.8117  0.7284  0.9901  
+ESLSpok     502     0.997   0.7745  0.7385  0.9691  
+EWT         86      0.9655  0.881   0.7976  0.8889  
+GUM         963     0.9922  0.7401  0.7025  0.9388  
+GUMReddit   1024    0.9912  0.7026  0.6349  0.9057  
+ALL         2899    0.9928  0.745   0.6906  0.9503  
+build 722.2 s, decode 12411.7 s, run 20261112-032817 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== all done Thu Nov 12 03:28:18 UTC 2026

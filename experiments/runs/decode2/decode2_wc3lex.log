@@ -1,0 +1,53 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 729.4 s
+      From worker 6:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 202.7 s): 23 of 62 slots always, 474 gate values
+      From worker 6:	[ Info: ChainModel: grouped decisions into 4033958 records (799724 grouped, 770 label sets)
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 202.8 s): 23 of 62 slots always, 474 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 4033958 records (799724 grouped, 770 label sets)
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 203.1 s): 23 of 62 slots always, 474 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 4033958 records (799724 grouped, 770 label sets)
+      From worker 5:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 203.8 s): 23 of 62 slots always, 474 gate values
+      From worker 5:	[ Info: ChainModel: grouped decisions into 4033958 records (799724 grouped, 770 label sets)
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 204.7 s): 23 of 62 slots always, 474 gate values
+      From worker 4:	[ Info: ChainModel: grouped decisions into 4033958 records (799724 grouped, 770 label sets)
+      From worker 2:	[ Info: ChainModel: joint tables for 1896 frequent items, 648259 pairs (441.5 s)
+      From worker 6:	[ Info: ChainModel: joint tables for 1896 frequent items, 648259 pairs (445.3 s)
+      From worker 4:	[ Info: ChainModel: joint tables for 1896 frequent items, 648259 pairs (448.4 s)
+      From worker 5:	[ Info: ChainModel: joint tables for 1896 frequent items, 648259 pairs (458.2 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 1896 frequent items, 648259 pairs (463.9 s)
+      From worker 6:	doc EWT 471 chars: 485.4 s (gc 15.7 s, heap 7.2 GB)
+      From worker 5:	doc CHILDES 1314 chars: 637.6 s (gc 45.6 s, heap 7.7 GB)
+      From worker 4:	doc ESLSpok 2239 chars: 2504.5 s (gc 123.4 s, heap 9.9 GB)
+      From worker 2:	doc GUMReddit 4903 chars: 7610.6 s (gc 326.7 s, heap 8.2 GB)
+      From worker 3:	doc GUM 4409 chars: 10277.3 s (gc 424.2 s, heap 8.9 GB)
+profdecode: decision	calls	not ready	seconds	ms per call
+profdecode: token.attach	59693	4999	20458.7	342.732
+profdecode: token.xpos	26345	0	300.3	11.399
+profdecode: token.upos	24344	0	177.6	7.296
+profdecode: token.deprel	6913	3103	171.5	24.814
+profdecode: char.gap	70960	251	133.2	1.878
+profdecode: token.basepos	19935	0	50.6	2.539
+profdecode: token.number	18851	0	31.8	1.689
+profdecode: token.person	15938	0	29.4	1.843
+profdecode: token.tense	13467	0	26.0	1.931
+profdecode: token.wclass300	5630	0	5.6	0.995
+profdecode: token.wclass30	5557	0	5.2	0.94
+profdecode: token.wclass30000	5718	0	4.7	0.824
+profdecode: token.wclass3000	5706	0	4.5	0.791
+profdecode: token.head_upos	3103	3103	0.1	0.021
+profdecode: token.head_xpos	3103	3103	0.0	0.01
+profdecode: token.head_kinleft	3103	3103	0.0	0.009
+profdecode: token.head_dist	3103	3103	0.0	0.009
+profdecode: token.head_dir	3103	3103	0.0	0.003
+profdecode: token.head_kinright	3103	3103	0.0	0.002
+profdecode: token.head_trank	3103	3103	0.0	0.002
+count cache: 1654677 new feature sets, 1654677 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-wcclasses5-sfx3-rootabs-htrank-kin-hkinleftright-nn2-wc3lex/events
+treebank    words   token_f1  uas     las     sent_f1
+CHILDES     324     1.0     0.7654  0.7037  0.9804  
+ESLSpok     502     0.997   0.7645  0.7265  0.9691  
+EWT         86      0.9655  0.8571  0.8095  0.8889  
+GUM         963     0.9922  0.7401  0.7004  0.9388  
+GUMReddit   1024    0.9912  0.6919  0.6232  0.9057  
+ALL         2899    0.9928  0.7335  0.6812  0.9477  
+build 748.1 s, decode 10315.8 s, run 20261111-234003 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv

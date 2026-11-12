@@ -1,0 +1,53 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 682.7 s
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 148.6 s): 21 of 56 slots always, 452 gate values
+      From worker 4:	[ Info: ChainModel: grouped decisions into 4033958 records (799724 grouped, 770 label sets)
+      From worker 6:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 148.8 s): 21 of 56 slots always, 452 gate values
+      From worker 6:	[ Info: ChainModel: grouped decisions into 4033958 records (799724 grouped, 770 label sets)
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 149.4 s): 21 of 56 slots always, 452 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 4033958 records (799724 grouped, 770 label sets)
+      From worker 5:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 149.5 s): 21 of 56 slots always, 452 gate values
+      From worker 5:	[ Info: ChainModel: grouped decisions into 4033958 records (799724 grouped, 770 label sets)
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 150.4 s): 21 of 56 slots always, 452 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 4033958 records (799724 grouped, 770 label sets)
+      From worker 4:	[ Info: ChainModel: joint tables for 1757 frequent items, 621736 pairs (221.6 s)
+      From worker 6:	[ Info: ChainModel: joint tables for 1757 frequent items, 621736 pairs (221.9 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 1757 frequent items, 621736 pairs (224.8 s)
+      From worker 2:	[ Info: ChainModel: joint tables for 1757 frequent items, 621736 pairs (229.1 s)
+      From worker 5:	[ Info: ChainModel: joint tables for 1757 frequent items, 621736 pairs (231.3 s)
+      From worker 6:	doc EWT 471 chars: 220.2 s (gc 7.9 s, heap 8.3 GB)
+      From worker 5:	doc CHILDES 1314 chars: 330.5 s (gc 26.4 s, heap 13.0 GB)
+      From worker 4:	doc ESLSpok 2239 chars: 1026.7 s (gc 61.4 s, heap 5.5 GB)
+      From worker 2:	doc GUMReddit 4903 chars: 3207.4 s (gc 170.9 s, heap 9.7 GB)
+      From worker 3:	doc GUM 4409 chars: 4018.9 s (gc 212.4 s, heap 5.9 GB)
+profdecode: decision	calls	not ready	seconds	ms per call
+profdecode: token.attach	59315	4986	8134.2	137.135
+profdecode: token.xpos	26760	0	159.7	5.967
+profdecode: char.gap	70768	251	111.9	1.581
+profdecode: token.deprel	6920	3102	110.0	15.891
+profdecode: token.upos	24860	0	84.4	3.395
+profdecode: token.basepos	20163	0	27.1	1.343
+profdecode: token.number	18896	0	18.0	0.955
+profdecode: token.person	15918	0	17.9	1.122
+profdecode: token.tense	13469	0	15.9	1.182
+profdecode: token.wclass30000	5696	0	4.4	0.77
+profdecode: token.wclass300	5619	0	3.2	0.578
+profdecode: token.wclass30	5564	0	3.2	0.567
+profdecode: token.wclass3000	5738	0	2.8	0.49
+profdecode: token.head_upos	3102	3102	0.1	0.017
+profdecode: token.head_xpos	3102	3102	0.0	0.009
+profdecode: token.head_dist	3102	3102	0.0	0.008
+profdecode: token.head_kinleft	3102	3102	0.0	0.007
+profdecode: token.head_dir	3102	3102	0.0	0.003
+profdecode: token.head_kinright	3102	3102	0.0	0.002
+profdecode: token.head_trank	3102	3102	0.0	0.001
+count cache: 1061193 new feature sets, 1061193 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-wcclasses5-sfx3-rootabs-htrank-kin-hkinleftright-nn2/events
+treebank    words   token_f1  uas     las     sent_f1
+CHILDES     324     1.0     0.7994  0.7346  0.9901  
+ESLSpok     502     0.997   0.7824  0.7425  0.9691  
+EWT         86      0.9655  0.8571  0.7976  0.8889  
+GUM         963     0.9922  0.7537  0.7046  0.9583  
+GUMReddit   1024    0.9912  0.6928  0.6232  0.9231  
+ALL         2899    0.9928  0.7453  0.6885  0.9582  
+build 700.9 s, decode 4047.5 s, run 20261111-202339 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv

@@ -1,0 +1,4 @@
+=== Wed Nov 11 18:57:18 UTC 2026 experiments/runs/decode2/run-aws.sh awsW3a wc3ctl suffixes=3,wclasses=/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5,wclevels=30+300+3000,relstrikes=1
+=== Wed Nov 11 20:23:40 UTC 2026 experiments/runs/decode2/run-aws.sh awsW3b wc3lex suffixes=3,wclasses=/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5,wclevels=30+300+3000,relstrikes=1,wc3=lex
+=== Wed Nov 11 23:40:04 UTC 2026 experiments/runs/decode2/run-aws.sh awsW3c wc3clu suffixes=3,wclasses=/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5,wclevels=30+300+3000,relstrikes=1,wc3=clu
+=== all done Thu Nov 12 03:28:18 UTC 2026
