@@ -24,6 +24,8 @@
 # singletons=true: instead, over every dev doc, list the features that are the whole of a one-step attachment chain:
 #   per feature (as named in the traces), how many candidates' chains, how many of them the gold head, the step's Δ,
 #   and how many took leftovers (a nonzero total correction) with their mean total.
+# whatif=prop:feat1,feat2 (with detail): the chain of exactly these features, in this order, for every value of head
+#   property prop (e.g. head_xpos), its distribution over the values (names as in the trace).
 # singlenoleft=N (with singletons): up to N singleton chains that took no leftover (one per feature): the sentence,
 #   the step, why the chain stopped (second-step candidates) and why no leftover was taken (their fates).
 # singletrace=text (with singletons): for the first 2 singleton chains whose feature contains `text`, the sentence and
@@ -59,6 +61,7 @@ DEFAULTS["propdetail"] = "true"
 DEFAULTS["subsetdelta"] = "false"
 DEFAULTS["singletrace"] = ""
 DEFAULTS["singlenoleft"] = 0
+DEFAULTS["whatif"] = ""
 DEFAULTS["headconf"] = 1.0
 DEFAULTS["domains"] = "off"
 DEFAULTS["domeps"] = 1e-3
@@ -221,6 +224,47 @@ function explain_attach(st, t, gold, pred)
     order = sortperm(lps; rev = true)[1:min(3, end)]
     println("      ", rpad(name, 15), join(["$(headval(name, vals[j])) $(round(exp(lps[j]); digits = 3))" for j in order], ", "),
       "   (gold head '$(tokname(st, gold))': $(headval(name, S.head_value(st, t, gold, name))), predicted attachment '$(tokname(st, pred))': $(headval(name, S.head_value(st, t, pred, name))))")
+  end
+  # whatif=prop:feat1,feat2,... (user 2026-11-11): the chain of exactly these features (by their trace names, in this
+  # order) for every value of head property `prop` -- each step's log odds and records, and the values' distribution
+  if !isempty(cfg["whatif"])
+    pname, fl = split(cfg["whatif"], ':'; limit = 2)
+    feats = String.(strip.(split(fl, ',')))
+    kw = findfirst(d -> String(d.name) == pname, decs)
+    if kw !== nothing
+      tkw = S.typekey(:token, kw)
+      basew = get(m.typerecs, tkw, Int32[])
+      ctxw = toks.spec.context
+      vals = decs[kw].candidates(st, t)
+      Icw = decs[kw].items(st, t, first(vals))
+      nmw(sl) = "tok." * ctxname(ctxw[sl]) * "=" * ctxval(st, t, ctxw[sl])
+      slots = [findfirst(sl -> Icw[sl] != S.ABSENT && nmw(sl) == f, eachindex(Icw)) for f in feats]
+      println("\n    -- what-if chain for $pname: ", join(feats, " -> "))
+      if any(isnothing, slots)
+        println("       (not found among the token's features: ", join(feats[isnothing.(slots)], ", "), ")")
+      else
+        rows = map(vals) do v
+          p0 = S.priorodds(m, S.lpriorkey(tkw, v))
+          St = S.ChainState(p0, basew)
+          steps = String[]
+          for sl in slots
+            e = only(S.extend_all(m, St, S.depth(St), [Icw[sl]]))
+            y, ok = S.update_odds(m, e, v, St.odds[end])
+            cc = get(e[2], v, (0.0, 0.0))
+            push!(steps, ok ? "$(fmtd(log(y) - log(St.odds[end]))) (n $(fmtn(cc)))" : "unsupported (n $(fmtn(cc)))")
+            ok || break
+            S.advance!(m, St, Icw[sl], e, y)
+          end
+          (v, log(p0), S.depth(St) == length(slots) ? log(St.odds[end]) : NaN, steps)
+        end
+        ok_ = [r for r in rows if !isnan(r[3])]
+        lz = isempty(ok_) ? 0.0 : (mx = maximum(r[3] for r in ok_); mx + log(sum(exp(r[3] - mx) for r in ok_)))
+        for r in sort(rows; by = r -> isnan(r[3]) ? Inf : -r[3])[1:min(8, end)]
+          println("       ", rpad(headval(Symbol(pname), r[1]), 8), " prior ", lpad(fmtd(r[2]), 6), "  steps: ", join(r[4], ", "),
+            isnan(r[3]) ? "" : "  -> log odds $(fmtd(r[3])), P $(round(exp(r[3] - lz); digits = 3))")
+        end
+      end
+    end
   end
   # propdetail: for each head property whose top value isn't the gold head's, both values' chains and leftovers
   if cfg["detail"] == "true" && cfg["propdetail"] == "true"
