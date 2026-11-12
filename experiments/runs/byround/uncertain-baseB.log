@@ -1,0 +1,12 @@
+[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 24.5 s): 14 of 32 slots always, 280 gate values
+[ Info: ChainModel: grouped decisions into 3767038 records (710650 grouped, 14 label sets)
+[ Info: ChainModel: joint tables for 824 frequent items, 141891 pairs (23.2 s)
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 239.9 s
+chain(select=maxdev;tau=0.1;mincount=5;leftovers=greedy;target=false;maxrestarts=2;restart=immediate;minctx=2;greedyby=odds;leftsmooth=evidence;ctxmode=accum;ctxattach=false;cidrop=0.0;ciorder=off;telescope=false;branches=1;combine=avg;accumwin=0;accumreset=false;driftsigma=0.0;drifttau=0.0;driftstep=0.0;distback=false;relevance=0.25;gate=0.5;redundant=true;poolsigma=0.1;poolmode=whole;poolmarginal=drop;poolkeepgen=true;poolscale=logodds)[events=gold;rootabsent;projective;headtrank]  [domains=product domeps=0.0]
+uncertain attachments (both top-2 raw scores below odds 4.0, p 0.8): 793 of 2644 tokens (30.0%)
+  wrong head: uncertain 245 of 793 (30.9%), confident 177 of 1851 (9.6%)
+  right head, wrong label: uncertain 73, confident 69
+  uncertain with the gold head among the top two: 675 of 793 (85.1%)
+  errors that are uncertain: 245 of 422

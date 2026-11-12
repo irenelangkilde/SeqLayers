@@ -42,6 +42,9 @@ function adopt!(st::State, src::State)
   st
 end
 
+"The last decision `commit_dist` scored: (key, candidates, raw scores -- the wait score last for open decisions)."
+const LAST_SCORES = Ref{Any}(nothing)
+
 "Decision `key`'s candidates and their log probabilities as `choose` sees them (wait not listed)."
 function commit_dist(model, st::State, key::AgendaKey)
   got = Ref{Any}(nothing)
@@ -53,6 +56,7 @@ function commit_dist(model, st::State, key::AgendaKey)
   end
   got[] === nothing && return nothing
   cands, scores = got[]
+  LAST_SCORES[] = (key, cands, scores)             # (diagnostics: the raw scores, wait last if open)
   mx = maximum(scores)
   lz = mx + log(sum(s -> exp(s - mx), scores))
   (cands, [scores[j] - lz for j in eachindex(cands)])

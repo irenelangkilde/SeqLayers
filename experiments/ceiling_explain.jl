@@ -24,6 +24,8 @@
 # singletons=true: instead, over every dev doc, list the features that are the whole of a one-step attachment chain:
 #   per feature (as named in the traces), how many candidates' chains, how many of them the gold head, the step's Δ,
 #   and how many took leftovers (a nonzero total correction) with their mean total.
+# uncertain=p: instead, over every dev doc, the attachments whose top two candidates both score below odds p/(1-p)
+#   (raw chain + leftover log odds) -- how many, how often wrong, and how often the gold head is one of the two.
 # whatif=prop:feat1,feat2 (with detail): the chain of exactly these features, in this order, for every value of head
 #   property prop (e.g. head_xpos), its distribution over the values (names as in the trace).
 # singlenoleft=N (with singletons): up to N singleton chains that took no leftover (one per feature): the sentence,
@@ -62,6 +64,7 @@ DEFAULTS["subsetdelta"] = "false"
 DEFAULTS["singletrace"] = ""
 DEFAULTS["singlenoleft"] = 0
 DEFAULTS["whatif"] = ""
+DEFAULTS["uncertain"] = 0.0
 DEFAULTS["headconf"] = 1.0
 DEFAULTS["domains"] = "off"
 DEFAULTS["domeps"] = 1e-3
@@ -631,6 +634,41 @@ function segment_done!(r::ExplainRec, st)
 end
 
 println(s.modelname, (domains == :off ? "" : "  [domains=$domains domeps=$domeps]"))
+if cfg["uncertain"] > 0
+  # (user 2026-11-12) restart only the undecided attachments? how often both top candidates are below the threshold
+  thr = log(cfg["uncertain"] / (1 - cfg["uncertain"]))
+  curdoc = Ref{Doc}(first(s.devdocs)[2])
+  stats = Dict(k => 0 for k in (:tok, :unc, :unc_wrong, :unc_gold2, :conf_wrong, :unc_lab, :conf_lab))
+  TOKEN_HOOK[] = function (st, t, a, pa, rel, pr)
+    ls = S.LAST_SCORES[]
+    ls === nothing && return
+    key, cands, scores = ls
+    key == (:token, 1, t) || return
+    sc = scores[1:length(cands)]
+    o = sortperm(sc; rev = true)
+    unc = length(o) >= 1 && sc[o[1]] < thr && (length(o) < 2 || sc[o[2]] < thr)
+    stats[:tok] += 1
+    if unc
+      stats[:unc] += 1; stats[:unc_wrong] += pa != a; stats[:unc_lab] += pa == a && pr != rel
+      stats[:unc_gold2] += a in cands[o[1:min(2, end)]]
+    else
+      stats[:conf_wrong] += pa != a; stats[:conf_lab] += pa == a && pr != rel
+    end
+  end
+  r = CeilingRecorder(m, first(s.devdocs)[2], false, cfg["headconf"]; domains, domeps)
+  for (_, d) in s.devdocs
+    curdoc[] = d; r.doc = d
+    process(d, specs, OracleModel(), s.lex; observer = r)
+  end
+  TOKEN_HOOK[] = nothing
+  n, u = stats[:tok], stats[:unc]
+  println("uncertain attachments (both top-2 raw scores below odds $(round(exp(thr); digits = 2)), p $(cfg["uncertain"])): $u of $n tokens ($(round(100u / max(n, 1); digits = 1))%)")
+  println("  wrong head: uncertain $(stats[:unc_wrong]) of $u ($(round(100stats[:unc_wrong] / max(u, 1); digits = 1))%), confident $(stats[:conf_wrong]) of $(n - u) ($(round(100stats[:conf_wrong] / max(n - u, 1); digits = 1))%)")
+  println("  right head, wrong label: uncertain $(stats[:unc_lab]), confident $(stats[:conf_lab])")
+  println("  uncertain with the gold head among the top two: $(stats[:unc_gold2]) of $u ($(round(100stats[:unc_gold2] / max(u, 1); digits = 1))%)")
+  println("  errors that are uncertain: $(stats[:unc_wrong]) of $(stats[:unc_wrong] + stats[:conf_wrong])")
+  exit()
+end
 if cfg["singletons"] == "true"
   # every dev doc through the ceiling; each one-step attachment chain noted by its feature's name (value included)
   single = Dict{String,Vector{Any}}()                 # name -> [chains, gold-head ones, sum of Δ, with leftovers, sum of their Δ]
