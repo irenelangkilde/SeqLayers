@@ -524,6 +524,19 @@ end
           SeqLayers.DC_STATS[] = nothing
         end
       end
+      # forkrule = :second: a runner-up the next step doesn't take starts its own chain; within the cap
+      @test_throws ErrorException ChainModel(dir; base_..., forkcap = 4, forkrule = :third)
+      let ms = ChainModel(dir; base_..., forkcap = 4, forkcomb = :avg, forkrule = :second); ms.generalize = SeqLayers.generalization_slots(specs)
+        @test ms.opts.forkrule == :second
+        SeqLayers.DC_STATS[] = Dict{Symbol,Float64}()
+        try
+          @test 0 <= eval_scores(evaluate_counts(docs, specs, ms, lex)).uas <= 1
+          d = SeqLayers.DC_STATS[]
+          @test get(d, :fk_forks, 0) > 0 && get(d, :fk_leaves, 0) <= 4 * get(d, :fk_cands, 0)
+        finally
+          SeqLayers.DC_STATS[] = nothing
+        end
+      end
       # forkthin: forks on a thin best step (some threshold here), still within the cap; needs forkcap
       @test_throws ErrorException ChainModel(dir; base_..., forkthin = 10)
       forks = 0.0

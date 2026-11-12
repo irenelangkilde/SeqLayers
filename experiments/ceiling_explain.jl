@@ -189,7 +189,7 @@ function explain_prop(st, t, k, name, vals, probs)
   events = Dict{Any,Any}(c => nothing for c in cands)
   accum = Dict{Any,Vector{Any}}(c => Any[] for c in cands)
   disc = Dict{Any,Vector{Any}}(c => Any[] for c in cands)
-  S.DISCARD_TRACE[] = (kind, sxs) -> append!(get!(disc, S.CHAIN_TRACE_CAND[], Any[]), [(kind, sx) for sx in sxs])
+  S.DISCARD_TRACE[] = (kind, sxs; hists = nothing) -> append!(get!(disc, S.CHAIN_TRACE_CAND[], Any[]), [(kind, sx, hists === nothing ? nothing : get(hists, sx, nothing)) for sx in sxs])
   S.CHAIN_TRACE[] = (ev, data) -> ev == :final ? (events[data.cand] = data) :
     ev == :reset ? (empty!(accum[data.cand]); empty!(disc[data.cand]); nothing) : nothing
   S.ACCUM_TRACE[] = (sx, T, tries, kk, corr, hist) -> push!(accum[S.CHAIN_TRACE_CAND[]], (sx = sx, T = T, tries = tries, corr = corr, hist = hist))
@@ -283,7 +283,7 @@ function explain_attach(st, t, gold, pred)
   slotof(c, x) = findfirst(==(x), items[findfirst(==(c), cands)])
   events = Dict{Any,Any}(c => (left = Any[], final = nothing) for c in cands)
   disc = Dict{Any,Vector{Any}}(c => Any[] for c in cands)
-  S.DISCARD_TRACE[] = (kind, sxs) -> append!(get!(disc, S.CHAIN_TRACE_CAND[], Any[]), [(kind, sx) for sx in sxs])
+  S.DISCARD_TRACE[] = (kind, sxs; hists = nothing) -> append!(get!(disc, S.CHAIN_TRACE_CAND[], Any[]), [(kind, sx, hists === nothing ? nothing : get(hists, sx, nothing)) for sx in sxs])
   S.CHAIN_TRACE[] = (ev, data) -> ev == :final ? (events[data.cand] = (left = events[data.cand].left, final = data)) :
     ev == :reset ? (empty!(events[data.cand].left); empty!(accum[data.cand]); empty!(disc[data.cand]); nothing) : nothing
   S.LEFTOVER_TRACE[] = (sl, inc, ctxs, corr) -> push!(events[S.CHAIN_TRACE_CAND[]].left, (sl, inc, ctxs, corr))
@@ -520,7 +520,7 @@ function detail(st, t, c, f, Ic, acc; k = 1, label = UInt32(0), disc = Any[])
   for (kind, label_) in ((:pool, "pooled (redundant to the chain)"), (:weak, "dropped as weak (redundant and weak alone)"),
                          (:irrelevant, "dropped as irrelevant (up-front relevance filter)"), (:struck, "struck out (relstrikes)"),
                          (:struck_pooled, "struck out, pooled (relstrikes, relpool)"), (:untaken, "never taken (no supported context)"))
-    push!(groups, (label_, unique([sx for (kk, sx) in disc if kk == kind && !(Ic[sx] in used)])))
+    push!(groups, (label_, unique([sx for (kk, sx, _) in disc if kk == kind && !(Ic[sx] in used)])))
   end
   if any(g -> !isempty(g[2]), groups)
     println("\n       NOT USED (Δ alone vs prior, records chosen / not)")
@@ -529,6 +529,12 @@ function detail(st, t, c, f, Ic, acc; k = 1, label = UInt32(0), disc = Any[])
       println("         ", label_, ": ", length(sxs))
       for sx in sxs
         println("           ", fmtx(sx))
+        hs = [hh for (kk, x, hh) in disc if x == sx && hh !== nothing]
+        h = isempty(hs) ? nothing : first(hs)
+        h === nothing || isempty(h) || for r in h      # (struck out) its correction in each round's context
+          println("             round ", r.round, ": corr ", r.corr === nothing ? "unsupported" : fmtd(r.corr), " in context (",
+            length(r.ctx), " features, log odds ", fmtd(log(r.odds)), ", with it n ", fmtn(r.nX), "): ", join([name(x) for x in r.ctx], ", "))
+        end
       end
     end
   end
@@ -682,7 +688,7 @@ if cfg["singletons"] == "true"
         println("   leftovers not used:")
         for (kind, label_) in ((:pool, "pooled (redundant to the chain)"), (:weak, "dropped as weak"), (:irrelevant, "dropped as irrelevant"),
                                (:struck, "struck out"), (:struck_pooled, "struck out, pooled"), (:untaken, "never taken (no supported context)"))
-          sxs = unique([sx for (kk, sx) in lastdisc if kk == kind])
+          sxs = unique([sx for (kk, sx, _) in lastdisc if kk == kind])
           isempty(sxs) || println("     ", label_, " (", length(sxs), "): ", join([slotdesc(st, t, c, sx) for sx in sxs], ", "))
         end
       end
@@ -690,7 +696,7 @@ if cfg["singletons"] == "true"
     empty!(lastdisc)
   end
   if cfg["singlenoleft"] > 0                         # (the leftovers' fates per candidate: CHAIN_TRACE on so the candidate is known)
-    S.DISCARD_TRACE[] = (kind, sxs) -> append!(curdisc, [(kind, sx) for sx in sxs])
+    S.DISCARD_TRACE[] = (kind, sxs; hists = nothing) -> append!(curdisc, [(kind, sx, nothing) for sx in sxs])
     S.CHAIN_TRACE[] = (ev, data) -> ev == :final ? (empty!(lastdisc); append!(lastdisc, curdisc); empty!(curdisc); nothing) : nothing
   end
   r = CeilingRecorder(m, first(s.devdocs)[2], false, cfg["headconf"]; domains, domeps)

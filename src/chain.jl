@@ -236,6 +236,7 @@ struct ChainOpts
   steptopn::Int                                   # > 0: after the first step, only the n remaining features that can add most given the chain (min over its features a of D[a, X]) are scored
   relstrikes::Int                                 # > 0 (accum): no up-front relevance filter; a leftover under tau (or unsupported) in a round gets a strike, at relstrikes it leaves (user 2026-11-10)
   relpool::Bool                                   # relstrikes: a struck-out leftover joins the context without a correction (else it's dropped)
+  forkrule::Symbol                                # forkcap: :lower (fork where the largest |step| lowers the odds; forkthin: on a thin step) | :second (a step's runner-up that the next step doesn't take starts a chain of its own from the prior; user 2026-11-11)
   forkcap::Int                                    # > 0 (:maxdev): when the largest |step| lowers the odds and a different feature raises them most (by tau), the chain forks; at most this many chains per candidate (see fork_chains)
   forkcomb::Symbol                                # forkcap: a candidate's score from its chains, :max or :avg
   forkleft::Symbol                                # forkcap: :each (every chain gets its leftovers; compared on chain + leftovers) or :chosen (compared on the chain alone; the best gets leftovers; :max only)
@@ -362,7 +363,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0, accumstop = 0.0, forkcap = 0, forkcomb = :max, forkleft = :each, accumpick = :abs, accumfloor = false, ilscore = :corr, nchains = 1, stepmin = 0, forkthin = 0, firstnz = false, lefttopn = 0, steptopn = 0, relstrikes = 0, relpool = false, candmemo = false)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0, accumstop = 0.0, forkcap = 0, forkcomb = :max, forkleft = :each, accumpick = :abs, accumfloor = false, ilscore = :corr, nchains = 1, stepmin = 0, forkthin = 0, firstnz = false, lefttopn = 0, steptopn = 0, relstrikes = 0, relpool = false, forkrule = :lower, candmemo = false)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms, :maxpos, :maxabsscore, :maxposneg) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
@@ -380,6 +381,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   nchains >= 1 || error("nchains: at least 1")
   forkthin > 0 && forkcap <= 0 && error("forkthin: needs forkcap > 0")
   relstrikes > 0 && (ctxmode != :accum || interleave) && error("relstrikes: ctxmode :accum, no interleave")
+  forkrule in (:lower, :second) || error("unknown forkrule $forkrule (use :lower or :second)")
   nchains > 1 && (ctxmode != :accum || leftovers != :greedy || interleave) && error("nchains > 1: ctxmode :accum, leftovers :greedy, no interleave")
   forkcomb in (:max, :avg) || error("unknown forkcomb $forkcomb (use :max or :avg)")
   forkleft in (:each, :chosen) || error("unknown forkleft $forkleft (use :each or :chosen)")
@@ -457,7 +459,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, candmemo, accumpick, accumfloor, ilscore, nchains, stepmin, forkthin, firstnz, lefttopn, steptopn, relstrikes, relpool, forkcap, forkcomb, forkleft, accumstop, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, candmemo, accumpick, accumfloor, ilscore, nchains, stepmin, forkthin, firstnz, lefttopn, steptopn, relstrikes, relpool, forkrule, forkcap, forkcomb, forkleft, accumstop, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -1372,6 +1374,7 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
   pc = ss in CRIT_STEPS ? prefixcounts(m, st, label) : (0.0, 0.0)   # (association scores) the prefix's counts
   nbest, nbs, nby, nbe = -Inf, 0, x, nothing
   sbest, sbs, sby, sbe = -Inf, 0, x, nothing          # (peek, forkthin) the best step with at least forkthin records
+  best2, b2s = -Inf, 0                               # (peek, forkrule :second) the runner-up step
   nrec(e) = (c_ = get(e[2], label, (0.0, 0.0)); c_[1] + c_[2])
   unsup = Int[]                                     # (peek) the present slots the prefix doesn't support with
   for (s, e) in zip(slots, extend_all(m, st, depth(st), present_items(Ic, slots); cap))
@@ -1395,6 +1398,7 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
       nsc = ss == :posneg ? log(x) - log(y) : ss == :negpos ? log(y) - log(x) : log(st.odds[1]) - log(y)   # below the chain / above it (negpos) / below the prior
       nsc > nbest && ((nbest, nbs, nby, nbe) = (nsc, s, y, e))
     end
+    peek && (sc > best ? ((best2, b2s) = (best, bs)) : sc > best2 && ((best2, b2s) = (sc, s)))
     sc > best && ((best, bs, by, be) = (sc, s, y, e))
     peek && (rs = log(y) - log(x); rs > pbest && ((pbest, pbs, pby, pbe) = (rs, s, y, e)))
     peek && m.opts.forkthin > 0 && sc > sbest && nrec(e) >= m.opts.forkthin && ((sbest, sbs, sby, sbe) = (sc, s, y, e))
@@ -1403,7 +1407,7 @@ function step_single!(m::ChainModel, st::ChainState, Ic, label, remaining; targe
   # peek (interleave): the best step and, for posneg, the fallback step lowering the odds most, without taking either
   peek && return (x = x, best = best, bs = bs, by = by, be = be, nbest = negfall ? nbest : -Inf, nbs = nbs, nby = nby, nbe = nbe,
     unsup = unsup, alts = alts, pbest = pbest, pbs = pbs, pby = pby, pbe = pbe,
-    bn = be === nothing ? 0.0 : nrec(be), sbest = sbest, sbs = sbs, sby = sby, sbe = sbe)
+    bn = be === nothing ? 0.0 : nrec(be), sbest = sbest, sbs = sbs, sby = sby, sbe = sbe, best2 = best2, b2s = b2s)
   pair = nothing                                    # (slot a, slot b, pair entry, odds) if a pair wins
   if usepairs
     fs = [s for s in slots if Ic[s] in m.frequent]
@@ -1769,13 +1773,35 @@ function fork_chains(m::ChainModel, Ic, label, prior, typerecs; tk = nothing)
   end
   branch(s) = ChainState(copy(s.keys), copy(s.views), copy(s.sizes), copy(s.members), copy(s.odds),
     copy(s.alts), copy(s.cnt))
-  live, done_ = Any[(st0, rem0)], Any[]
+  live, done_ = Any[(st0, copy(rem0), 0)], Any[]     # (state, remaining, runner-up of its last step: forkrule :second;
+  # rem0 itself stays whole: a :second chain starts from all the features)
   take!(st, rem, s, e, y) = (advance!(m, st, Ic[s], e, y); deleteat!(rem, findfirst(==(s), rem)))
+  seeds = Set{Int}()                                  # (forkrule :second) features that started a chain
+  second = m.opts.forkrule == :second
   while !isempty(live)
-    st, rem = popfirst!(live)
+    st, rem, r2 = popfirst!(live)
     pk = step_single!(m, st, Ic, label, rem; peek = true)
-    if pk.bs == 0 || pk.best < m.opts.tau
+    stops = pk.bs == 0 || pk.best < m.opts.tau
+    # forkrule :second (user's design 2026-11-11): the last step's runner-up, not taken now, starts its own chain
+    if second && r2 != 0 && (stops || pk.bs != r2) && !(r2 in seeds) && length(live) + length(done_) + 2 <= m.opts.forkcap
+      push!(seeds, r2)
+      stn, remn = ChainState(prior, typerecs), copy(rem0)
+      e = only(extend_all(m, stn, 0, [Ic[r2]]))
+      y, ok = update_odds(m, e, label, prior)
+      if ok
+        take!(stn, remn, r2, e, y)
+        push!(live, (stn, remn, 0))
+        (d = DC_STATS[]) === nothing || (d[:fk_forks] = get(d, :fk_forks, 0.0) + 1)
+      end
+    end
+    if stops
       push!(done_, (st, rem))
+      continue
+    end
+    if second                                         # (no other fork trigger) take the step, note its runner-up
+      depth(st) == 0 && push!(seeds, pk.bs)
+      take!(st, rem, pk.bs, pk.be, pk.by)
+      pushfirst!(live, (st, rem, pk.b2s != 0 && pk.best2 >= m.opts.tau ? pk.b2s : 0))
       continue
     end
     lowers = log(pk.by) < log(pk.x)
@@ -1787,12 +1813,12 @@ function fork_chains(m::ChainModel, Ic, label, prior, typerecs; tk = nothing)
       m.opts.forkthin > 0 ? take!(st2, rem2, pk.sbs, pk.sbe, pk.sby) :   # the supported branch / the raise branch
         take!(st2, rem2, pk.pbs, pk.pbe, pk.pby)          # (after the maxdev one, so that stays first)
       take!(st, rem, pk.bs, pk.be, pk.by)
-      pushfirst!(live, (st2, rem2))
-      pushfirst!(live, (st, rem))
+      pushfirst!(live, (st2, rem2, 0))
+      pushfirst!(live, (st, rem, 0))
       (d = DC_STATS[]) === nothing || (d[:fk_forks] = get(d, :fk_forks, 0.0) + 1)
     else
       take!(st, rem, pk.bs, pk.be, pk.by)
-      pushfirst!(live, (st, rem))
+      pushfirst!(live, (st, rem, 0))
     end
   end
   (d = DC_STATS[]) === nothing || (d[:fk_cands] = get(d, :fk_cands, 0.0) + 1; d[:fk_leaves] = get(d, :fk_leaves, 0.0) + length(done_))
@@ -3495,7 +3521,8 @@ function accum_leftovers(m::ChainModel, st::ChainState, Ic, G, rel::Vector{Int},
         end
         (d = DC_STATS[]) === nothing || (k = m.opts.relpool ? :rs_pooled : :rs_dropped; d[k] = get(d, k, 0.0) + 1)
       end
-      DISCARD_TRACE[] === nothing || isempty(out) || DISCARD_TRACE[](m.opts.relpool ? :struck_pooled : :struck, [x for x in out if x in pending])
+      DISCARD_TRACE[] === nothing || isempty(out) || DISCARD_TRACE[](m.opts.relpool ? :struck_pooled : :struck, [x for x in out if x in pending];
+        hists = hist === nothing ? nothing : Dict(x => get(hist, x, Any[]) for x in out))   # (each one's score per round)
       filter!(s -> !(s in out), pending)
       tried_ = nothing
       length(out)
