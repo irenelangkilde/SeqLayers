@@ -17,6 +17,7 @@
 #   each; per leftover (in the order taken, accum) the running estimate and the generalization walk: each context
 #   tried, its odds and records, the leftover's correction there; and positive vs negative evidence summed apart.
 # sent=text: only sentences containing this text.
+# word=w (with sent): explain every token w in the sentence, whether its head is right or wrong (e.g. after a fix).
 # contrast=accumby:odds,ctxmode:accum: only errors a second model (these chain options overriding this run's) gets
 #   right; each wrong head is then explained under both models.
 # deprel=conj: only errors whose token has this gold deprel (the sentence's other errors are still listed).
@@ -53,6 +54,7 @@ DEFAULTS["chainonly"] = "false"
 DEFAULTS["headblame"] = "false"
 DEFAULTS["detail"] = "false"
 DEFAULTS["sent"] = ""
+DEFAULTS["word"] = ""
 DEFAULTS["contrast"] = ""
 DEFAULTS["nopunct"] = "false"
 DEFAULTS["prodprops"] = ""
@@ -588,7 +590,12 @@ function segment_done!(r::ExplainRec, st)
     wrong = [(t, g, p) for (t, g, p) in res if g != p]
     cfg["nopunct"] == "true" && (wrong = [(t, g, p) for (t, g, p) in wrong if !(ispunct_tok(st, t) || ispunct_tok(st, g) || ispunct_tok(st, p))])
     isempty(cfg["deprel"]) || (wrong = [(t, g, p) for (t, g, p) in wrong if S.DEPRELS[toks[:deprel, t]] == cfg["deprel"]])
-    1 <= length(wrong) <= cfg["maxerr"] || continue
+    if isempty(cfg["word"])
+      1 <= length(wrong) <= cfg["maxerr"] || continue
+    else                                              # word=: explain this word's attachment, right or wrong
+      wrong = [(t, g, p) for (t, g, p) in res if S.tokstr(st, t) == cfg["word"]]
+      isempty(wrong) && continue
+    end
     isempty(cfg["sent"]) || occursin(cfg["sent"], join([S.tokstr(st, t) for t in ts], " ")) || continue
     # only errors the head-property ceiling (gold head properties) gets right
     cfg["goldfix"] == "true" && !all(((t, g, p),) -> first(pipeline_attach!(r.rgold, st, t, g)) == g, wrong) && continue
