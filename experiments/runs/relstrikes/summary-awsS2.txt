@@ -1,0 +1,13 @@
+=== start Thu Nov 12 01:54:30 UTC 2026
+=== second_max
+UNHANDLED TASK ERROR: EOFError: read end of file
+recorded events in 620.3 s
+ALL         2899    0.9986  0.8848  0.8351  0.0162  1.0     
+forkcap: 1445751 forks; 4.26 chains per candidate
+score 2289.6 s, run 20261112-024943 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling.csv, /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/ceiling_breakdown.csv
+=== second_avg
+UNHANDLED TASK ERROR: EOFError: read end of file
+UNHANDLED TASK ERROR: IOError: read: connection reset by peer (ECONNRESET)
+ERROR: LoadError: ProcessExitedException(4)
+recorded events in 621.5 s
+=== all done Thu Nov 12 02:49:55 UTC 2026
