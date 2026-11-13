@@ -107,14 +107,70 @@ Called with each document and its predicted sentences by evaluate_counts when se
 """
 const PRED_HOOK = Ref{Any}(nothing)
 
+"Counts of the repairs conllu_sentences made: :split (extra sentences), :reattached (extra roots), :cycles (broken)."
+const CONLLU_FIXES = Dict{Symbol,Int}(:split => 0, :reattached => 0, :cycles => 0)
+
+"""
+One root per sentence, as the CoNLL shared-task scorers require (2026-11-13): heads (0 = root, else 1-based) and deprels
+-> a list of (index range, heads, deprels), one per output sentence.  A cycle is broken at its first token (made a
+root).  The roots' subtree extents [first, last] are merged where they overlap; each merged block is its own sentence
+(a missed sentence boundary: each root's subtree a contiguous block); within a block, the extra roots attach to the
+root with the largest subtree as parataxis.  A head-0 token's deprel is root.
+"""
+function root_groups(heads::Vector{Int}, deprels::Vector{String})
+  heads, deprels = copy(heads), copy(deprels)
+  n = length(heads)
+  n == 0 && return Tuple{UnitRange{Int},Vector{Int},Vector{String}}[]
+  top(k) = (seen = 0; while heads[k] != 0 && seen <= n; k = heads[k]; seen += 1; end; heads[k] == 0 ? k : 0)
+  for k in 1:n                                       # cycles: a token whose head chain never reaches 0
+    top(k) == 0 || continue
+    c, seen = k, Set{Int}()
+    while !(c in seen); push!(seen, c); c = heads[c]; end   # c is now on the cycle
+    cyc = [c]; x = heads[c]
+    while x != c; push!(cyc, x); x = heads[x]; end
+    heads[minimum(cyc)] = 0
+    CONLLU_FIXES[:cycles] += 1
+  end
+  owner = [top(k) for k in 1:n]
+  roots = findall(==(0), heads)
+  ext = sort!([(minimum(findall(==(r), owner)), maximum(findall(==(r), owner)), r) for r in roots])
+  blocks = Vector{Vector{Tuple{Int,Int,Int}}}()
+  for e in ext                                       # merge overlapping subtree extents
+    if !isempty(blocks) && e[1] <= maximum(x[2] for x in blocks[end])
+      push!(blocks[end], e)
+    else
+      push!(blocks, [e])
+    end
+  end
+  out = Tuple{UnitRange{Int},Vector{Int},Vector{String}}[]
+  for b in blocks
+    rg = minimum(x[1] for x in b):maximum(x[2] for x in b)
+    main = b[argmax([count(==(x[3]), owner) for x in b])][3]
+    for (_, _, r) in b
+      r == main && continue
+      heads[r], deprels[r] = main, "parataxis"
+      CONLLU_FIXES[:reattached] += 1
+    end
+    deprels[main] = "root"
+    push!(out, (rg, [h == 0 ? 0 : h - first(rg) + 1 for h in heads[rg]], deprels[rg]))
+  end
+  CONLLU_FIXES[:split] += length(out) - 1
+  out
+end
+
+"A predicted sentence as the CoNLL-U sentences root_groups makes of it."
+conllu_sentences(ps::ParsedSentence) = [ParsedSentence(first(ps.spans[first(rg)]):last(ps.spans[last(rg)]), ps.tokens[rg], ps.spans[rg],
+  hs, ds, ps.upos[rg], ps.xpos[rg]) for (rg, hs, ds) in root_groups(ps.heads, ps.deprels)]
+
 """
 Write predicted sentences as CoNLL-U (2026-11-10, for the CoNLL shared-task scorers): per sentence `# sent_id` (from
 `first_id` on) and `# text`, then ID, FORM, LEMMA _, UPOS, XPOS, FEATS _, HEAD, DEPREL, DEPS _, MISC (SpaceAfter=No when
-the next token follows with no space).  Returns the next sentence id.
+the next token follows with no space).  Each predicted sentence goes through conllu_sentences first, so every
+sentence has exactly one root and no cycle.  Returns the next sentence id.
 """
 function write_conllu(io::IO, d::Doc, pred::Vector{ParsedSentence}; first_id::Int = 1)
   sid = first_id
-  for ps in pred
+  for ps in Iterators.flatten(conllu_sentences.(pred))   # (one root per sentence: split / reattached)
     println(io, "# sent_id = ", sid)
     println(io, "# text = ", replace(strip(String(d.text[ps.span])), r"\s+" => " "))
     for k in eachindex(ps.tokens)

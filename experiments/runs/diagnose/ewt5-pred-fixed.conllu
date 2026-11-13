@@ -1,0 +1,103 @@
+# sent_id = 1
+# text = From the AP comes this story
+1	From	_	ADP	IN	_	3	case	_	_
+2	the	_	DET	DT	_	3	det	_	_
+3	AP	_	PROPN	NNP	_	4	obl	_	_
+4	comes	_	VERB	VBZ	_	0	root	_	_
+5	this	_	DET	DT	_	6	det	_	_
+6	story	_	NOUN	NN	_	4	obj	_	_
+
+# sent_id = 2
+# text = : President Bush on Tuesday nominated two individuals to replace retiring jurists on federal courts in the Washington area.
+1	:	_	PUNCT	:	_	6	punct	_	_
+2	President	_	PROPN	NNP	_	3	compound	_	_
+3	Bush	_	PROPN	NNP	_	6	nsubj	_	_
+4	on	_	ADP	IN	_	5	case	_	_
+5	Tuesday	_	PROPN	NNP	_	6	obl	_	_
+6	nominated	_	VERB	VBD	_	0	root	_	_
+7	two	_	NUM	CD	_	8	nummod	_	_
+8	individuals	_	NOUN	NNS	_	6	obj	_	_
+9	to	_	PART	TO	_	10	mark	_	_
+10	replace	_	VERB	VB	_	6	xcomp	_	_
+11	retiring	_	VERB	VBG	_	12	amod	_	_
+12	jurists	_	NOUN	NNS	_	10	obj	_	_
+13	on	_	ADP	IN	_	15	case	_	_
+14	federal	_	ADJ	JJ	_	15	amod	_	_
+15	courts	_	NOUN	NNS	_	12	nmod	_	_
+16	in	_	ADP	IN	_	19	case	_	_
+17	the	_	DET	DT	_	19	det	_	_
+18	Washington	_	PROPN	NNP	_	19	compound	_	_
+19	area	_	NOUN	NN	_	10	obl	_	SpaceAfter=No
+20	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 3
+# text = Bush nominated Jennifer M. Anderson for a 15-year term as associate judge of the Superior Court of the District of Columbia, replacing Steffen W. Graae.
+1	Bush	_	PROPN	NNP	_	2	nsubj	_	_
+2	nominated	_	VERB	VBD	_	0	root	_	_
+3	Jennifer	_	PROPN	NNP	_	2	obj	_	_
+4	M	_	PROPN	NNP	_	3	flat	_	SpaceAfter=No
+5	.	_	PUNCT	.	_	4	punct	_	_
+6	Anderson	_	PROPN	NNP	_	4	nmod	_	_
+7	for	_	ADP	IN	_	12	case	_	_
+8	a	_	DET	DT	_	12	det	_	_
+9	15	_	NUM	CD	_	11	nummod	_	SpaceAfter=No
+10	-	_	PUNCT	HYPH	_	9	punct	_	SpaceAfter=No
+11	year	_	NOUN	NN	_	12	compound	_	_
+12	term	_	NOUN	NN	_	2	obj	_	_
+13	as	_	ADP	IN	_	15	case	_	_
+14	associate	_	ADJ	JJ	_	15	amod	_	_
+15	judge	_	NOUN	NN	_	12	nmod	_	_
+16	of	_	ADP	IN	_	19	case	_	_
+17	the	_	DET	DT	_	19	det	_	_
+18	Superior	_	ADJ	JJR	_	19	amod	_	_
+19	Court	_	PROPN	NNP	_	15	nmod	_	_
+20	of	_	ADP	IN	_	22	case	_	_
+21	the	_	DET	DT	_	22	det	_	_
+22	District	_	PROPN	NNP	_	19	nmod	_	_
+23	of	_	ADP	IN	_	24	case	_	_
+24	Columbia	_	PROPN	NNP	_	22	nmod	_	SpaceAfter=No
+25	,	_	PUNCT	,	_	26	punct	_	_
+26	replacing	_	VERB	VBG	_	19	advcl	_	_
+27	Steffen	_	PROPN	NNP	_	26	obj	_	_
+28	W.	_	PROPN	NNP	_	27	flat	_	_
+29	Graae	_	PROPN	NNP	_	27	flat	_	SpaceAfter=No
+30	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 4
+# text = ***
+1	***	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 5
+# text = Bush also nominated A. Noel Anketell Kramer for a 15-year term as associate judge of the District of Columbia Court of Appeals, replacing John Montague Steadman.
+1	Bush	_	PROPN	NNP	_	3	nsubj	_	_
+2	also	_	ADV	RB	_	3	advmod	_	_
+3	nominated	_	VERB	VBD	_	0	root	_	_
+4	A	_	DET	DT	_	3	det	_	SpaceAfter=No
+5	.	_	PUNCT	.	_	3	punct	_	_
+6	Noel	_	PROPN	NNP	_	14	nsubj	_	_
+7	Anketell	_	PROPN	NNP	_	6	flat	_	_
+8	Kramer	_	PROPN	NNP	_	6	flat	_	_
+9	for	_	ADP	IN	_	14	case	_	_
+10	a	_	DET	DT	_	14	det	_	_
+11	15	_	NUM	CD	_	13	nummod	_	SpaceAfter=No
+12	-	_	PUNCT	HYPH	_	11	punct	_	SpaceAfter=No
+13	year	_	NOUN	NN	_	14	compound	_	_
+14	term	_	NOUN	NN	_	3	obj	_	_
+15	as	_	ADP	IN	_	17	case	_	_
+16	associate	_	ADJ	JJ	_	17	amod	_	_
+17	judge	_	NOUN	NN	_	14	nmod	_	_
+18	of	_	ADP	IN	_	20	case	_	_
+19	the	_	DET	DT	_	20	det	_	_
+20	District	_	PROPN	NNP	_	17	nmod	_	_
+21	of	_	ADP	IN	_	23	case	_	_
+22	Columbia	_	PROPN	NNP	_	23	compound	_	_
+23	Court	_	PROPN	NNP	_	20	nmod	_	_
+24	of	_	ADP	IN	_	25	case	_	_
+25	Appeals	_	PROPN	NNP	_	23	nmod	_	SpaceAfter=No
+26	,	_	PUNCT	,	_	27	punct	_	_
+27	replacing	_	VERB	VBG	_	3	advcl	_	_
+28	John	_	PROPN	NNP	_	27	obj	_	_
+29	Montague	_	PROPN	NNP	_	28	flat	_	_
+30	Steadman	_	PROPN	NNP	_	28	flat	_	SpaceAfter=No
+31	.	_	PUNCT	.	_	3	punct	_	_
+
