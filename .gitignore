@@ -6,3 +6,11 @@ backups/
 Claude_*.txt
 *.tmp
 .DS_Store
+
+# generated experiment run-control noise
+experiments/runs/**/autostop.out
+experiments/runs/**/done*
+experiments/runs/**/nohup*.out
+experiments/runs/**/watch*.out
+experiments/runs/**/watch.out
+experiments/runs/**/terms-*.tsv
