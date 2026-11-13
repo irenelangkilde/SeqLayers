@@ -52,7 +52,7 @@ end
 function build_doc(sents)
   text, gap = Char[], UInt32[]
   head, deprel, ends = Dict{UnitRange{Int},UnitRange{Int}}(), Dict{UnitRange{Int},UInt32}(), Set{Int}()
-  tags = Dict(name => Dict{UnitRange{Int},UInt32}() for name in [collect(keys(TAGSETS)); collect(keys(ALLHEADSETS)); :oclass])
+  tags = Dict(name => Dict{UnitRange{Int},UInt32}() for name in [collect(keys(TAGSETS)); collect(keys(ALLHEADSETS)); :oclass; :chunk; :mwe])
   dropped = 0
   for (stext, words, _) in sents
     chars = collect(stext)
@@ -66,6 +66,7 @@ function build_doc(sents)
     append!(text, chars)
     append!(gap, fill(NONE, length(chars)))
     dspans = [s .+ offset for s in spans]
+    chunkl, mwel = span_labels(words, :chunk), span_labels(words, :mwe)   # (chunks / mwe)
     for (wi, (w, s)) in enumerate(zip(words, dspans))
       gap[first(s):last(s)-1] .= GAP_I
       gap[last(s)] = (last(s) == length(text) || isspace(text[last(s)+1])) ? GAP_S : GAP_B
@@ -75,6 +76,7 @@ function build_doc(sents)
         tags[name][s] = code
       end
       tags[:oclass][s] = oclass_code(w.upos)
+      tags[:chunk][s], tags[:mwe][s] = chunkl[wi], mwel[wi]
       for (name, code) in pairs(gold_head(wi, w.head, words))
         tags[name][s] = code
       end

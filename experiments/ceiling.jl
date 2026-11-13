@@ -163,6 +163,9 @@ function ceiling_main(cfg)
     n = sum(a[k] for k in ks) / 1000
     println("accum context size: $(round(Int, n)) leftovers taken -- ", join(["$(String(k)[9:end]) $(round(a[k] / 1000 / n; digits = 3))" for k in ks], ", "))
   end
+  if any(k -> startswith(String(k), "pf_"), keys(a))   # pairfirst: first steps taken as a single, a pair with the best single, another pair
+    println("pairfirst: ", join(["$(k) $(a[k])" for k in sort([k for k in keys(a) if startswith(String(k), "pf_")])], ", "))
+  end
   if any(k -> startswith(String(k), "cf_") || k == :genred, keys(a))   # confirm / genred: counters as recorded (dcstats scale)
     println("confirm / genred: ", join(["$(k) $(a[k])" for k in sort([k for k in keys(a) if startswith(String(k), "cf_") || k == :genred])], ", "))
   end

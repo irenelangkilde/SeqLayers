@@ -43,6 +43,100 @@ const OCLASS_TAG = hash("token.oclass")
 const OPEN_UPOS = ("NOUN", "PROPN", "VERB", "ADJ", "ADV")
 oclass_code(upos::AbstractString) = upos in OPEN_UPOS ? UInt32(1) : UInt32(2)
 
+# Flat span labels as token decisions (default_specs(chunks = true / mwe = true); user's design 2026-11-13), predicted
+# like tags; B 1, I 2, E 3, S 4, O 5.  :chunk -- base phrases: a head with the contiguous tokens whose whole subtree hangs
+# on it by phrase-internal relations (CHUNK_RELS, nmod:poss, advmod under an ADJ / ADV; not case, mark, cc, punct: a
+# preposition is its own chunk), e.g. [the very big dog] [of] [the Superior Court]; a single token S, punctuation O.
+# :mwe -- maximal contiguous runs joined by compound, flat, fixed or goeswith ([New York], [as well as]); the rest O.
+const SPAN_CODES = UInt32[1, 2, 3, 4, 5]
+const SPAN_LABELS = ["B", "I", "E", "S", "O"]
+const SPAN_TAGS = Dict(:chunk => hash("token.chunk"), :mwe => hash("token.mwe"))
+const SPANREL_TAG = hash("token.attach.span")
+const CHUNK_RELS = ("det", "amod", "compound", "flat", "nummod", "aux", "fixed", "goeswith")
+const MWE_RELS = ("compound", "flat", "fixed", "goeswith")
+
+"Gold span labels (codes as SPAN_CODES) of a sentence's words, for kind :chunk or :mwe."
+function span_labels(words, kind::Symbol)
+  n = length(words)
+  base(r) = first(split(r, ':'))
+  inrel(d) = kind == :mwe ? base(words[d].deprel) in MWE_RELS :
+    (base(words[d].deprel) in CHUNK_RELS || words[d].deprel == "nmod:poss" ||
+     (base(words[d].deprel) == "advmod" && words[d].head > 0 && words[words[d].head].upos in ("ADJ", "ADV")))
+  kids = [Int[] for _ in 1:n]
+  for d in 1:n
+    0 < words[d].head <= n && push!(kids[words[d].head], d)
+  end
+  internal = falses(n)                               # d joins its head's span
+  if kind == :mwe
+    for d in 1:n
+      internal[d] = words[d].head > 0 && inrel(d)
+    end
+  else                                               # (chunk: d's whole subtree phrase-internal)
+    seen = falses(n)
+    function chk(d)
+      seen[d] && return internal[d]
+      seen[d] = true
+      ks = [chk(k) for k in kids[d]]
+      internal[d] = words[d].head > 0 && inrel(d) && all(ks)
+    end
+    foreach(chk, 1:n)
+  end
+  function top(x)
+    for _ in 1:n
+      (internal[x] && 0 < words[x].head <= n) || break
+      x = words[x].head
+    end
+    x
+  end
+  groups = Dict{Int,Vector{Int}}()
+  for x in 1:n
+    push!(get!(() -> Int[], groups, top(x)), x)
+  end
+  labels = fill(UInt32(5), n)
+  for ts in values(groups)
+    sort!(ts)
+    runs = Vector{Int}[[ts[1]]]
+    for x in ts[2:end]
+      x == runs[end][end] + 1 ? push!(runs[end], x) : push!(runs, [x])
+    end
+    for r in runs
+      if length(r) == 1
+        labels[r[1]] = kind == :chunk && words[r[1]].upos != "PUNCT" ? UInt32(4) : UInt32(5)
+      else
+        labels[r] .= UInt32(2)
+        labels[r[1]], labels[r[end]] = UInt32(1), UInt32(3)
+      end
+    end
+  end
+  labels
+end
+
+"""
+Span item value for t under candidate c (chunks / mwe): 1 t and c not in one span, 2 in one span with c its first token,
+3 c its last, 4 c inside; 6 c the root; PENDING while a label between them is undecided (spans over 8 tokens: 1).
+"""
+function span_rel(st, t, c, name::Symbol)
+  c == PENDING && return PENDING
+  c == NONE && return UInt32(6)
+  toks, c = st.layers[:token], Int(c)
+  l, r = Int(toks[:first_char, t]) < Int(toks[:first_char, c]) ? (t, c) : (c, t)
+  labs, u = UInt32[toks[name, l]], l
+  for _ in 1:8
+    u == r && break
+    v = adjacent_token(st, u, 1)
+    v == PENDING && return PENDING
+    v == NONE && return UInt32(1)
+    u = Int(v)
+    push!(labs, toks[name, u])
+  end
+  u == r || return UInt32(1)
+  any(==(PENDING), labs) && return PENDING
+  (labs[1] in (1, 2) && labs[end] in (2, 3) && all(==(UInt32(2)), labs[2:end-1])) || return UInt32(1)
+  lc = toks[name, c]
+  lc == 1 ? UInt32(2) : lc == 3 ? UInt32(3) : UInt32(4)
+end
+span_items(st, t, c, names) = UInt64[item(v, (SPANREL_TAG, n, v)) for n in names for v in (span_rel(st, t, c, n),)]
+
 """
 3-way classes from the word form (wc3; user's design 2026-11-11): 1 open (NOUN PROPN VERB ADJ ADV INTJ X), 2 closed
 (ADP AUX CCONJ DET NUM PART PRON SCONJ), 3 punct (PUNCT SYM).  wc3lex: a training form's most frequent UPOS; wc3clu:
@@ -1499,6 +1593,9 @@ function oracle_choice(st, key)
   if name == :oclass
     return haskey(gold.tags, :oclass) ? get(gold.tags[:oclass], span, UInt32(2)) : UInt32(2)
   end
+  if name in (:chunk, :mwe)                         # (chunks / mwe: gold span labels; O if unknown)
+    return haskey(gold.tags, name) ? get(gold.tags[name], span, UInt32(5)) : UInt32(5)
+  end
   if haskey(TAGSETS, name) || haskey(ALLHEADSETS, name)
     fallback = UInt32(length(haskey(TAGSETS, name) ? TAGSETS[name] : ALLHEADSETS[name]))
     return haskey(gold.tags, name) ? get(gold.tags[name], span, fallback) : fallback
@@ -1530,6 +1627,49 @@ function sa_feats(idx::CharIndex, side::Symbol)
 end
 
 """
+Abbreviation features for the gap decisions (abbrev; user 2026-11-13: initials like "M." were split): for char i, the
+whitespace-delimited chunk it lies in -- :chunkshape, its shape (an uppercase letter X, a lowercase run x, or xx when 3+
+long, a digit d, other chars as they are; at most 8), and :abbrev, 1 if a prefix of the chunk ending in '.' (after any
+opening brackets / quotes) is a training token ending in '.' (`abbrevs`: Dr., U.S., Inc., initials), else 2.  A space:
+NONE.  Shape codes are string hashes (the same in every process).
+"""
+function abbrev_feats(abbrevs::Set{String})
+  function chunk(st, i)
+    a, b = i, i
+    while a > 1 && !isspace(segchar(st, a - 1)); a -= 1; end
+    while b < nchars(st) && !isspace(segchar(st, b + 1)); b += 1; end
+    String([segchar(st, j) for j in a:b])
+  end
+  function shape(s)
+    out, cs, k = Char[], collect(s), 1
+    while k <= length(cs) && length(out) < 8
+      c = cs[k]
+      if islowercase(c)
+        r = k
+        while r < length(cs) && islowercase(cs[r+1]); r += 1; end
+        append!(out, r - k + 1 >= 3 ? ['x', 'x'] : ['x'])
+        k = r + 1
+      else
+        push!(out, isuppercase(c) ? 'X' : isdigit(c) ? 'd' : c)
+        k += 1
+      end
+    end
+    String(out)
+  end
+  code(s) = UInt32(hash(s) % 0x7ffffffe) + UInt32(1)
+  function known(s)
+    s = lstrip(s, ['(', '[', '{', '"', '\'', '“', '‘'])
+    any(j -> s[j] == '.' && s[1:j] in abbrevs, eachindex(s))
+  end
+  [FeatDef(:chunkshape, (st, i) -> isspace(segchar(st, i)) ? NONE : code(shape(chunk(st, i)))),
+    FeatDef(:abbrev, (st, i) -> isspace(segchar(st, i)) ? NONE : known(chunk(st, i)) ? UInt32(1) : UInt32(2))]
+end
+
+"The training tokens ending in '.' with a letter in them (abbrev): Dr., U.S., Inc., initials."
+abbrev_set(docs) = Set{String}(t for d in docs if d.gold !== nothing for sp in keys(d.gold.head)
+  for t in (String(d.text[sp]),) if length(t) >= 2 && endswith(t, '.') && any(isletter, t))
+
+"""
 The default char -> token -> sentence layers.  With a `charindex` (built from training docs
 with `CharIndex(docs)`), the char layer also gets long-context features :sa_left and :sa_right
 (and :sa_left_len/:sa_right_len rows, which aren't in the context by default).  With
@@ -1557,16 +1697,19 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
   relbounded::Bool = false, relnone::Bool = false, treerank::Bool = false, headtrank::Bool = false,
   headwc::Vector{Int} = Int[], headwcclasses = nothing, headsibs::Vector{Symbol} = Symbol[], idxeq::Bool = false,
   kinitems::Bool = false, headkin::Vector{Symbol} = Symbol[], neighbor2::Bool = false, oclass::Bool = false, bioes::Bool = false, fwdsets::Bool = false,
-  shapeitems::Bool = true, wc3::Dict{Symbol,Dict{String,UInt32}} = Dict{Symbol,Dict{String,UInt32}}())
+  shapeitems::Bool = true, wc3::Dict{Symbol,Dict{String,UInt32}} = Dict{Symbol,Dict{String,UInt32}}(),
+  abbrevs::Union{Nothing,Set{String}} = nothing, chunks::Bool = false, mwe::Bool = false)
   PROJECTIVE[] = projective
   all(n -> haskey(HEADKIN_DIR, n), headkin) || error("headkin: names are $(join(keys(HEADKIN_DIR), ", "))")
   all(n -> haskey(HEADSIB_KIND, n), headsibs) || error("headsibs: names are $(join(keys(HEADSIB_KIND), ", "))")
   safeats = charindex === nothing ? FeatDef[] : [sa_feats(charindex, :left); sa_feats(charindex, :right)]
   sapaths = charindex === nothing ? FeatPath[] : [FeatPath(:sa_left), FeatPath(:sa_right)]
+  abfeats = abbrevs === nothing ? FeatDef[] : abbrev_feats(abbrevs)            # (abbrev: chunk shape, known abbreviation)
+  abpaths = abbrevs === nothing ? FeatPath[] : [FeatPath(:chunkshape), FeatPath(:abbrev)]
   chars = LayerSpec{CharLayer}(:char,
     vcat([FeatDef(:char, (st, i) -> UInt32(codepoint(segchar(st, i))) + 1),
         FeatDef(:class, (st, i) -> UInt32(charclass(segchar(st, i))))],
-      safeats),
+      safeats, abfeats),
     [RelDef(:left_neighbor, :char, false, (st, i) -> i > 1 ? UInt32(i - 1) : NONE),
       RelDef(:right_neighbor, :char, false, (st, i) -> i < nchars(st) ? UInt32(i + 1) : NONE),
       RelDef(:token_of, :token, false, (st, i) -> isspace(segchar(st, i)) ? NONE : PENDING)],  # set by :tokenize
@@ -1584,7 +1727,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
         FeatPath([:left_neighbor, :left_neighbor], :class), FeatPath([:right_neighbor, :right_neighbor], :class),
         FeatPath([:left_neighbor, :token_of], :form),             # the token just finished, if any
         FeatPath([:left_neighbor, :token_of, :head], :form)],     # ...and its head: parse info reaching chars
-      sapaths),
+      sapaths, abpaths),
     (st, i) -> i)
 
   wc = wordclasses
@@ -1624,6 +1767,15 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
   for (j, _) in enumerate(w3names)
     append!(linkpaths, w3at + 4(j - 1) .+ (1:3))
   end
+  # chunks / mwe (user's design 2026-11-13): the token's, its neighbours' and its head's span label, after wc3 in the
+  # context; the first three in the attachment features (both sides); and a span item per kind (span_rel)
+  spnames = Symbol[n for (n, on) in ((:chunk, chunks), (:mwe, mwe)) if on]
+  sppaths = FeatPath[p for n in spnames for p in (FeatPath(n), FeatPath([:left_neighbor], n), FeatPath([:right_neighbor], n),
+    FeatPath([:head], n))]
+  spat = w3at + length(w3paths)
+  for (j, _) in enumerate(spnames)
+    append!(linkpaths, spat + 4(j - 1) .+ (1:3))
+  end
   tokens = LayerSpec{TokenLayer}(:token,
     vcat([FeatDef(:form, (st, t) -> intern!(st.lex, :form, lowercase(tokstr(st, t)))),
         FeatDef(:caps, (st, t) -> UInt32(capsclass(tokstr(st, t)))),
@@ -1652,6 +1804,7 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
           idxeq ? idxeq_items(st, t, c) : UInt64[],
           kinitems ? (shapeitems ? kin_items(st, t, c) : UInt64[ABSENT, ABSENT]) : UInt64[],
           bioes ? bioes_items(st, t, c) : UInt64[],
+          isempty(spnames) ? UInt64[] : span_items(st, t, c, spnames),
           fwdsets ? fwd_set_items(st, t, c; kin = kinitems, bioes, idxeq) : UInt64[],
           pptable === nothing ? UInt64[] :
             pp_items(pptable, st, t, c; cands = pprel ? attach_candidates(st, t; projective) : nothing)),
@@ -1681,6 +1834,10 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
           candidates = (st, t) -> OCLASS_CODES,
           features = (st, t, c) -> label_features(st, :token, OCLASS_TAG, t, c),
           items = (st, t, c) -> label_items(st, :token, OCLASS_TAG, t)) for _ in 1:oclass],
+      [DecisionDef(n;
+          candidates = (st, t) -> SPAN_CODES,
+          features = (st, t, c) -> label_features(st, :token, SPAN_TAGS[n], t, c),
+          items = (st, t, c) -> label_items(st, :token, SPAN_TAGS[n], t)) for n in spnames],
       [DecisionDef(wnames[l];
           candidates = (st, t) -> wclass_candidates(wc, l, lowercase(tokstr(st, t))),
           features = (st, t, c) -> label_features(st, :token, witemtags[l], t, c),
@@ -1706,10 +1863,11 @@ function default_specs(; charindex::Union{CharIndex,Nothing} = nothing, wordclas
       [FeatPath(n) for n in headkin],
       nn2paths,
       oclpaths,
-      w3paths),
+      w3paths,
+      sppaths),
     (st, t) -> Int(st.layers[:token][:last_char, t]))
 
-  length(tokens.context) == 22 + extra + length(relpaths) + headsdist + headtrank + length(hwnames) + length(headsibs) + length(headkin) + length(nn2paths) + length(oclpaths) + length(w3paths) || error("token context paths moved: update linkpaths")
+  length(tokens.context) == 22 + extra + length(relpaths) + headsdist + headtrank + length(hwnames) + length(headsibs) + length(headkin) + length(nn2paths) + length(oclpaths) + length(w3paths) + length(sppaths) || error("token context paths moved: update linkpaths")
   LINKPATHS[tokens] = linkpaths
   sentences = LayerSpec{SentenceLayer}(:sentence,
     FeatDef[],

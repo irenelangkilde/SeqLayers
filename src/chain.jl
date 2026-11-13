@@ -253,6 +253,7 @@ struct ChainOpts
   lookwsoft::Bool                                 # lookwback: blend by support (w = n / (n + lookwback)) instead of switching
   lookwsmooth::Float64                            # > 0: W's estimates for ΔW / interaction from its likelihood ratio, each rate smoothed by this many records toward W's pooled rate
   chainsel::Float64                               # > 0: selective shrinkage of chain steps toward their generalization, by z = deviation / SE (z0 = this)
+  pairfirst::Int                                  # > 0 (:maxdev): the first step is the best single or pair with this many records together (pair_first_step!; user 2026-11-13)
   confirmmin::Int                                 # confirm: a test feature needs this many of its records with the leftover and this many without
   confirm::Symbol                                 # (accum; user 2026-11-12) before a leftover is taken on a context of at most one feature, the context gets the counted feature (chain, pool, taken) most redundant with it; under tau there it's dropped -- :new (taken with the new correction) | :gate (with its first) | :off
   genred::Symbol                                  # (accum; user 2026-11-12) leftovers redundant with a chain feature whatever the counts, dropped before the rounds: :word -- on the same word (form, upos, xpos, basepos, suffixes, classes); :coarser -- coarser than a chain feature on its word (upos=ADV given xpos=RB), or finer only if a tag (xpos=RB given upos=ADV; not form given upos); :off
@@ -366,7 +367,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
   maxctx = typemax(Int), relevance = 0.0, poolm = 0, poolsample = 20_000, poollam = 0.0, poolgain = 0.1,
   pairscore = :total, pairfilter = true, group = false, gate = 0.0, redundant = false, ctxsize = :min,
   stepscore = :abs, lockstep = :none, contest = false, pickfewest = 0, pairsteps = false, pairsfirst = false, poolsigma = 0.0,
-  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0, accumstop = 0.0, forkcap = 0, forkcomb = :max, forkleft = :each, accumpick = :abs, accumfloor = false, ilscore = :corr, nchains = 1, stepmin = 0, forkthin = 0, firstnz = false, lefttopn = 0, steptopn = 0, relstrikes = 0, relpool = false, forkrule = :lower, candmemo = false, genred = :off, confirm = :off, confirmmin = 20)
+  poolmode = :whole, poolmarginal = :off, poolkeepgen = false, poolscale = :logodds, ctxfromchain = false, ctxsupport = 0, leftsmooth = :odds, ctxmode = :greedy, ctxattach = false, cidrop = 0.0, pairorder = :slot, accumwin = 0, accumreset = false, greedymin = false, greedysel = false, driftsigma = 0.0, drifttau = 0.0, driftstep = 0.0, distback = false, shrink = 0.0, shrinkleft = 0.0, leftmin2 = 0, ciorder = :off, telescope = false, branches = 1, combine = :avg, smoothd = 1.0, smootha = 0.0, smoothn = :set, gatemincount = mincount, accumby = :odds, depweight = false, depmeasure = :yule, mindevtau = 0.1, mindevstop = :localmin, explainpool = false, chainshrink = 0.0, chainshrinkto = :prev, chainsel = 0.0, lookw = :dw, lookwsmooth = 0.0, lookwback = 0.0, lookwsoft = false, stickbreak = :off, posnegrestart = false, posnegseed = :own, dualchain = :off, dualcombine = :sum, dualw = 0.5, dualleft = true, dualturn = :both, posnegafter = false, posnegleftneg = false, posnegonly = :all, leftwback = 0.0, leftwovl = false, leftwcomb = :prod, wselcomb = :sum, wselmove = :weights, wselweight = false, tuplek = 0, tuplemin = 0.0, interleave = false, accumgreedy = 0.0, accumstop = 0.0, forkcap = 0, forkcomb = :max, forkleft = :each, accumpick = :abs, accumfloor = false, ilscore = :corr, nchains = 1, stepmin = 0, forkthin = 0, firstnz = false, lefttopn = 0, steptopn = 0, relstrikes = 0, relpool = false, forkrule = :lower, candmemo = false, genred = :off, confirm = :off, confirmmin = 20, pairfirst = 0)
   select in (:maxdev, :avglogodds, :clr_mean_abs, :clr_rms, :maxpos, :maxabsscore, :maxposneg) || error("unknown select $select")
   leftovers in (:none, :marginal, :backoff, :backoff1, :greedy) || error("unknown leftovers $leftovers")
   greedyby in (:correction, :odds, :dep, :depcorr, :mindev) || error("unknown greedyby $greedyby")
@@ -464,7 +465,7 @@ function ChainModel(dir::AbstractString; select = :clr_rms, tau = 0.1, mincount 
     typerecs, itemcount, itemtype, postings, keepfrac, prior,
     ChainOpts(select, tau, mincount, leftovers, target, maxrestarts, restart, screen, screenby, sample, climbleft,
       minctx, greedyby, maxctx, relevance, poolm, pairscore, pairfilter, gate, redundant, ctxsize == :chain, stepscore,
-      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, candmemo, accumpick, accumfloor, ilscore, nchains, stepmin, forkthin, firstnz, lefttopn, steptopn, relstrikes, relpool, forkrule, forkcap, forkcomb, forkleft, accumstop, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel, confirmmin, confirm, genred),
+      lockstep == :top2, contest, pickfewest, ctxsize == :adaptive, pairsteps, pairsfirst, poolsigma, poolmode, poolmarginal, poolkeepgen, poolscale, ctxfromchain, ctxsupport, leftsmooth, ctxmode, ctxattach, cidrop, pairorder, accumwin, accumreset, greedymin, greedysel, driftsigma, drifttau, driftstep, distback, shrink, shrinkleft, leftmin2, ciorder, telescope, branches, combine, smoothd, smootha, accumby, depweight, smoothn, depmeasure, mindevtau, mindevstop, explainpool, chainshrink, chainshrinkto, lookw, dualchain, dualcombine, dualw, dualturn, dualleft, leftwback, leftwovl, leftwcomb, wselcomb, wselmove, wselweight, tuplek, interleave, candmemo, accumpick, accumfloor, ilscore, nchains, stepmin, forkthin, firstnz, lefttopn, steptopn, relstrikes, relpool, forkrule, forkcap, forkcomb, forkleft, accumstop, accumgreedy, tuplemin, posnegonly, posnegafter, posnegleftneg, posnegseed, posnegrestart, stickbreak, lookwback, lookwsoft, lookwsmooth, chainsel, pairfirst, confirmmin, confirm, genred),
     Dict{UInt64,Tuple{Entry,Int}}(), 0, maxcached, Dict{UInt64,Vector{Float64}}(),
     Set{UInt64}(), Dict{UInt64,LabelCounts}(), Dict{UInt64,LabelCounts}(), Set{UInt64}(),
     Dict{UInt64,Climb}(), Dict{UInt64,Tuple{UInt64,UInt32}}(), zeros(Int32, length(counts)), zeros(Int8, length(counts)),
@@ -1935,6 +1936,7 @@ function run_single(m::ChainModel, Ic, label, prior, typerecs; tk = nothing, see
   end
   order = m.opts.poolm > 0 && tk !== nothing ? get(m.pool, tk, nothing) : nothing
   (m.opts.tuplek > 0 || m.opts.tuplemin > 0) && isempty(seed) && tuple_step!(m, st, Ic, label, remaining, tk)
+  m.opts.pairfirst > 0 && isempty(seed) && pair_first_step!(m, st, Ic, label, remaining, tk)
   if order === nothing
     nosingle = m.opts.pairsteps && m.opts.pairsfirst ? pair_covered(m, Ic, remaining) : NOSINGLE
     interleaves(m, tk) || while step_single!(m, st, Ic, label, remaining; nosingle) end   # (interleave: in chain_logodds)
@@ -1945,6 +1947,53 @@ function run_single(m::ChainModel, Ic, label, prior, typerecs; tk = nothing, see
   (d = DC_STATS[]) === nothing || (d[:t_chains_ms] = get(d, :t_chains_ms, 0.0) + (time_ns() - t0) / 1e6;
     d[:chains_built] = get(d, :chains_built, 0.0) + 1; d[:chain_steps] = get(d, :chain_steps, 0.0) + depth(st))
   st, remaining
+end
+
+"""
+Pair-first step (pairfirst = N; user's design 2026-11-12/13): two-step lookahead for the chain's first step.  Every
+supported single feature and every pair of them with at least N records together (chosen + not) is scored by
+|Δ log odds| from the prior, the pair's odds as the chain would reach them (the larger single effect first, each step
+smoothed toward the last); the best joins the chain -- a pair as two steps, a single as one (then the chain goes on as
+usual).  Singletons always compete, so a pair is taken only when it beats every single.  Returns whether a step was added.
+"""
+function pair_first_step!(m::ChainModel, st::ChainState, Ic, label, remaining, tk)
+  depth(st) == 0 || return false
+  x = st.odds[end]
+  nrec(e) = (c_ = get(e[2], label, (0.0, 0.0)); c_[1] + c_[2])
+  slots = [s for s in remaining if Ic[s] != ABSENT]
+  singles = Tuple{Float64,Int,Any,Float64}[]        # (|Δ|, slot, entry, odds)
+  for (s, e) in zip(slots, extend_all(m, st, 0, present_items(Ic, slots)))
+    y, ok = update_odds(m, e, label, x)
+    ok || continue
+    m.opts.stepmin > 0 && nrec(e) < m.opts.stepmin && continue
+    push!(singles, (abs(log(y) - log(x)), s, e, y))
+  end
+  isempty(singles) && return false
+  sort!(singles; by = p -> (-p[1], p[2]))
+  best, bi, be = singles[1][1], [1], Any[(singles[1][3], singles[1][4])]
+  branch(s) = ChainState(copy(s.keys), copy(s.views), copy(s.sizes), copy(s.members), copy(s.odds),
+    Dict{UInt64,Float64}[], copy(s.cnt))
+  for i in 1:length(singles)-1                       # pairs (i, j > i): the larger single effect (i) first
+    sa = branch(st)
+    advance!(m, sa, Ic[singles[i][2]], singles[i][3], singles[i][4])
+    js = collect(i+1:length(singles))
+    for (j, e) in zip(js, extend_all(m, sa, 1, UInt64[Ic[singles[j][2]] for j in js]))
+      nrec(e) >= m.opts.pairfirst || continue
+      y, ok = update_odds(m, e, label, singles[i][4])
+      ok || continue
+      d = abs(log(y) - log(x))
+      d > best && ((best, bi, be) = (d, [i, j], Any[(singles[i][3], singles[i][4]), (e, y)]))
+    end
+  end
+  for (i, (e, y)) in zip(bi, be)
+    advance!(m, st, Ic[singles[i][2]], e, y)
+    deleteat!(remaining, findfirst(==(singles[i][2]), remaining))
+  end
+  if (d = DC_STATS[]) !== nothing                   # (decision stats) singles vs pairs, and pairs without the best single
+    k_ = length(bi) == 1 ? :pf_single : 1 in bi ? :pf_pair_top : :pf_pair_other
+    d[k_] = get(d, k_, 0.0) + 1
+  end
+  true
 end
 
 """

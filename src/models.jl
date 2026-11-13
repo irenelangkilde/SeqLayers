@@ -168,7 +168,7 @@ struct GoldModel{M<:AbstractModel} <: AbstractModel
 end
 GoldGapsModel(inner) = GoldModel(inner, Set([:gap]))
 "The gold group of a decision name (:gap, :tags, :heads), or nothing."
-goldgroup(name::Symbol) = name == :gap ? :gap : (haskey(TAGSETS, name) || name == :oclass) ? :tags :
+goldgroup(name::Symbol) = name == :gap ? :gap : (haskey(TAGSETS, name) || name in (:oclass, :chunk, :mwe)) ? :tags :
   haskey(ALLHEADSETS, name) ? :heads : nothing
 
 function decide(m::GoldModel, st::State, key::AgendaKey)

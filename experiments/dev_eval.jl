@@ -192,6 +192,8 @@
 #                correction is under tau (or that has no supported context) gets a strike, and at this many it leaves;
 #                only leftovers reaching tau are taken.  relpool: true -- a struck-out leftover joins the context
 #                without a correction; false -- it's dropped
+#   pairfirst    > 0 (select=maxdev): two-step lookahead for the chain's first step -- the best single feature or pair
+#                (with this many records together) by |Δ log odds| from the prior; a pair joins as two steps
 #   confirm      (ctxmode=accum) before a leftover is taken on a context of at most one feature, the context gets the counted feature (chain, pool, leftovers
 #                taken) it overlaps most -- an upos / xpos of its own word first, else the most associated with it across
 #                the records (|log odds ratio|), among those with confirmmin (20) records with it and confirmmin without
@@ -202,6 +204,12 @@
 #                than a chain feature on its word (right_neighbor.upos=ADV given right_neighbor.xpos=RB; upos < xpos <
 #                form, basepos < xpos, shorter suffixes, fewer classes), or finer only if it's upos / xpos (xpos=RB
 #                given upos=ADV; not form=about given upos=ADP); off (default)
+#   chunks       true: base-phrase BIOES labels as a token decision (predicted like tags; prepositions, mark, cc, punct
+#                outside), in the context and attachment features, plus an item: token and candidate in one chunk, and
+#                the candidate's place in it (first, last, inside)
+#   mwe          true: the same for multiword spans joined by compound, flat, fixed or goeswith ([New York], [as well as])
+#   abbrev       true: tokenizer gap features for abbreviations -- the shape of the whitespace chunk a char is in (X. for
+#                an initial, X.X., Xx.) and whether it starts with a training token ending in '.' (Dr., U.S., initials)
 #   lefttopn     > 0 (ctxmode=accum): each round only the n pending leftovers that can add most given the context (min
 #                over its features a of D[a, X], ci_table.jls next to the events: experiments/ci_table.jl) are scored
 #   steptopn     > 0: after the first chain step, only the n remaining features that can add most given the chain are
@@ -361,6 +369,8 @@
 #   leftalpha    weights of the greedy leftovers' corrections per decision type, from this TSV
 #                (written by ceiling.jl calibrate=true); "" = all 1
 #   dev_sents    dev sentences per treebank (0 = all); the first N, so every run sees the same ones
+#   dev_doc_sents
+#                maximum dev sentences grouped into one decoded Doc (default 50; use 1 for short diagnostic docs)
 #   workers      parallel decoding processes
 #   note         free text saved with the results
 #
@@ -379,9 +389,9 @@ const CORPUS_LIST = "/Users/irenelangkildegeary2015/Projects/crystallization/jul
 const RESULTS = joinpath(HERE, "results.csv")
 
 const DEFAULTS = Dict{String,Any}("model" => "lattice", "order" => 3, "minsupport" => 2, "diff" => 3.0,
-  "wmo" => 1e-3, "train_sents" => 500, "corpus" => "", "devsplit" => "dev", "conllu_out" => "", "freshevery" => 0, "wc3" => "", "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "workers" => 8, "note" => "",
+  "wmo" => 1e-3, "train_sents" => 500, "corpus" => "", "devsplit" => "dev", "conllu_out" => "", "freshevery" => 0, "wc3" => "", "tune_sents" => 100, "leftalpha" => "", "dev_sents" => 300, "dev_doc_sents" => 50, "workers" => 8, "note" => "",
   "select" => "clr_rms", "tau" => 0.1, "mincount" => 5, "jointmin" => 0, "sample" => 0.0, "rings" => "", "climb" => "cand", "climbleft" => "deepest", "minctx" => 1, "greedyby" => "correction", "maxctx" => 0, "relevance" => 0.0,
-  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "fwdcheck" => "false", "softheads" => "false", "displace" => NaN, "displacecap" => 2, "dfsepshead" => NaN, "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "ciorder" => "off", "telescope" => "false", "smoothd" => 1.0, "smootha" => 0.0, "smoothn" => "set", "accumby" => "odds", "depmeasure" => "yule", "mindevtau" => 0.1, "mindevstop" => "localmin", "explainpool" => "false", "chainshrink" => 0.0, "chainshrinkto" => "prev", "chainsel" => 0.0, "lookw" => "dw", "headsibs" => "", "idxeq" => "false", "kinitems" => "false", "neighbor2" => "false", "oclass" => "false", "fwdsets" => "false", "fcommit" => "false", "attachwait" => "false", "rescoreevery" => 1, "bioes" => "false", "headkin" => "", "lookwsmooth" => 0.0, "lookwback" => 0.0, "stickbreak" => "off", "posnegrestart" => "false", "posnegseed" => "own", "dualchain" => "off", "dualcombine" => "sum", "dualw" => 0.5, "dualleft" => "true", "dualturn" => "both", "posnegafter" => "false", "posnegleftneg" => "false", "posnegonly" => "all", "leftwback" => 0.0, "leftwovl" => "false", "leftwcomb" => "prod", "wselcomb" => "sum", "wselmove" => "weights", "wselweight" => "false", "tuplek" => 0, "tuplemin" => 0.0, "interleave" => "false", "goldtok" => "false", "profdecode" => "false", "devtb" => "", "rescorestats" => "false", "golddec" => "", "accumgreedy" => 0.0, "accumstop" => 0.0, "accumpick" => "abs", "accumfloor" => "false", "ilscore" => "corr", "nchains" => 1, "stepmin" => 0, "forkthin" => 0, "firstnz" => "false", "softtags" => 0, "oclassladder" => "true", "lefttopn" => 0, "relstrikes" => 0, "genred" => "off", "confirm" => "off", "confirmmin" => 20, "forkrule" => "lower", "secondop" => "", "secondcomb" => "avg", "secondp" => 0.8, "relpool" => "false", "ctxcache" => 0, "steptopn" => 0, "shapeitems" => "true", "prodnorm" => "off", "candmemo" => "false", "forkcap" => 0, "forkcomb" => "max", "forkleft" => "each", "lookwsoft" => "false", "depweight" => "false", "gatemincount" => -1, "branches" => 1, "combine" => "avg", "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "driftsigma" => 0.0, "distback" => "false", "shrink" => 0.0, "shrinkleft" => 0.0, "leftmin2" => 0, "headwc" => "", "headwcdir" => "/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5", "drifttau" => 0.0, "driftstep" => 0.0, "relbounded" => "false", "relnone" => "false", "treerank" => "false", "headtrank" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
+  "poolm" => 0, "poollam" => 0.0, "poolgain" => 0.1, "pairscore" => "total", "pairfilter" => "true", "keepfrac" => 1.0, "maxcached" => 200_000_000, "group" => "true", "countcache" => "true", "countmin" => 10_000, "wclasses" => "", "classleft" => "true", "suffixes" => "", "noise" => 0, "rootabsent" => "false", "projective" => "false", "relations" => "false", "headsdist" => "false", "pptable" => "", "pprel" => "false", "search" => 0, "dfs" => "false", "dfseps" => 0.05, "dfsbudget" => 200, "dfsjump" => "false", "fwdcheck" => "false", "softheads" => "false", "displace" => NaN, "displacecap" => 2, "dfsepshead" => NaN, "dfsorder" => "prob", "ctxfromchain" => "false", "ctxsupport" => 0, "leftsmooth" => "odds", "ctxmode" => "greedy", "ctxattach" => "false", "ctxscope" => "all", "cidrop" => 0.0, "ciorder" => "off", "telescope" => "false", "smoothd" => 1.0, "smootha" => 0.0, "smoothn" => "set", "accumby" => "odds", "depmeasure" => "yule", "mindevtau" => 0.1, "mindevstop" => "localmin", "explainpool" => "false", "chainshrink" => 0.0, "chainshrinkto" => "prev", "chainsel" => 0.0, "lookw" => "dw", "headsibs" => "", "idxeq" => "false", "kinitems" => "false", "neighbor2" => "false", "oclass" => "false", "fwdsets" => "false", "fcommit" => "false", "attachwait" => "false", "rescoreevery" => 1, "bioes" => "false", "headkin" => "", "lookwsmooth" => 0.0, "lookwback" => 0.0, "stickbreak" => "off", "posnegrestart" => "false", "posnegseed" => "own", "dualchain" => "off", "dualcombine" => "sum", "dualw" => 0.5, "dualleft" => "true", "dualturn" => "both", "posnegafter" => "false", "posnegleftneg" => "false", "posnegonly" => "all", "leftwback" => 0.0, "leftwovl" => "false", "leftwcomb" => "prod", "wselcomb" => "sum", "wselmove" => "weights", "wselweight" => "false", "tuplek" => 0, "tuplemin" => 0.0, "interleave" => "false", "goldtok" => "false", "profdecode" => "false", "devtb" => "", "rescorestats" => "false", "golddec" => "", "accumgreedy" => 0.0, "accumstop" => 0.0, "accumpick" => "abs", "accumfloor" => "false", "ilscore" => "corr", "nchains" => 1, "stepmin" => 0, "forkthin" => 0, "firstnz" => "false", "softtags" => 0, "oclassladder" => "true", "lefttopn" => 0, "relstrikes" => 0, "genred" => "off", "abbrev" => "false", "chunks" => "false", "mwe" => "false", "confirm" => "off", "pairfirst" => 0, "confirmmin" => 20, "forkrule" => "lower", "secondop" => "", "secondcomb" => "avg", "secondp" => 0.8, "relpool" => "false", "ctxcache" => 0, "steptopn" => 0, "shapeitems" => "true", "prodnorm" => "off", "candmemo" => "false", "forkcap" => 0, "forkcomb" => "max", "forkleft" => "each", "lookwsoft" => "false", "depweight" => "false", "gatemincount" => -1, "branches" => 1, "combine" => "avg", "pairorder" => "slot", "accumwin" => 0, "accumreset" => "false", "greedymin" => "false", "greedysel" => "false", "driftsigma" => 0.0, "distback" => "false", "shrink" => 0.0, "shrinkleft" => 0.0, "leftmin2" => 0, "headwc" => "", "headwcdir" => "/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5", "drifttau" => 0.0, "driftstep" => 0.0, "relbounded" => "false", "relnone" => "false", "treerank" => "false", "headtrank" => "false", "classchain" => "true", "wclevels" => "", "ldsscore" => "sum", "ldsall" => "false", "gate" => 0.0, "redundant" => "false", "ctxsize" => "min", "poolsigma" => 0.0, "poolmode" => "whole", "poolmarginal" => "false", "poolkeepgen" => "false", "poolscale" => "logodds", "stepscore" => "abs", "lockstep" => "none", "contest" => "false", "pickfewest" => 0, "pairsteps" => "false", "pairsfirst" => "false", "screen" => 0.0, "screenby" => "maxdev", "leftovers" => "backoff", "target" => "false",
   "maxrestarts" => 2, "events" => "gold", "restart" => "immediate")
 
 "The sibling head-property names of the headsibs option (in, out, left, right)."
@@ -455,6 +465,7 @@ end
 
 "Load the treebanks and build (or load cached events for) the model.  Also used by ceiling.jl."
 function setup(cfg)
+  cfg["dev_doc_sents"] > 0 || error("dev_doc_sents must be positive")
   trainfiles = filter(l -> !startswith(l, '#') && !isempty(strip(l)), readlines(corpuslist(cfg)))
   devfiles = replace.(trainfiles, "-ud-train" => "-ud-" * cfg["devsplit"])   # (devsplit=test: the test files)
   cfg["devsplit"] in ("dev", "test") || error("devsplit: dev or test")
@@ -471,6 +482,7 @@ function setup(cfg)
   hwc = isempty(hwl) ? nothing : something(wc, load_wordclasses(cfg["headwcdir"]))
   hwc === nothing || foreach(ds -> SeqLayers.add_head_wclass_gold!(ds, hwc, hwl), alltrain)
   # wc3 (2026-11-11): 3-way classes looked up from the form, from the training sample's gold UPOS (and the clusters)
+  abbr = cfg["abbrev"] == "true" ? SeqLayers.abbrev_set(reduce(vcat, alltrain)) : nothing   # (abbrev: training abbreviations)
   w3 = SeqLayers.wc3_tables(reduce(vcat, [firstsents(ds, cfg["train_sents"]) for ds in alltrain]), wc3_names(cfg), wc)
   specs = default_specs(charindex = idx, wordclasses = wc, suffixes = sfx, noise = cfg["noise"], rootabsent = cfg["rootabsent"] == "true",
     projective = cfg["projective"] == "true", relations = cfg["relations"] == "true",
@@ -478,16 +490,22 @@ function setup(cfg)
     relbounded = cfg["relbounded"] == "true", relnone = cfg["relnone"] == "true", treerank = cfg["treerank"] == "true", headtrank = cfg["headtrank"] == "true",
     headwc = hwl, headwcclasses = hwc, headsibs = headsib_names(cfg), idxeq = cfg["idxeq"] == "true",
     kinitems = cfg["kinitems"] == "true", headkin = headkin_names(cfg), neighbor2 = cfg["neighbor2"] == "true",
-    oclass = cfg["oclass"] == "true", bioes = cfg["bioes"] == "true", fwdsets = cfg["fwdsets"] == "true", shapeitems = cfg["shapeitems"] != "false", wc3 = w3)
+    oclass = cfg["oclass"] == "true", bioes = cfg["bioes"] == "true", fwdsets = cfg["fwdsets"] == "true", shapeitems = cfg["shapeitems"] != "false", wc3 = w3,
+    abbrevs = abbr, chunks = cfg["chunks"] == "true", mwe = cfg["mwe"] == "true")
   # same Doc objects as in the index, so their suffix-array features are leave-one-out
   trainsample = reduce(vcat, [firstsents(ds, cfg["train_sents"]) for ds in alltrain])
   # held-out tuning docs: the training docs right after the sample's
   tunedocs = [(tb, d) for (tb, ds) in zip(tbs, alltrain)
               for d in firstsents(ds[length(firstsents(ds, cfg["train_sents"]))+1:end], cfg["tune_sents"])]
-  devdocs = [(tb, d) for (tb, f) in zip(tbs, devfiles) for d in firstsents(read_conllu(f), cfg["dev_sents"])]
+  devdocs = [(tb, d) for (tb, f) in zip(tbs, devfiles)
+             for d in firstsents(read_conllu(f; sents_per_doc = cfg["dev_doc_sents"]), cfg["dev_sents"])]
   isempty(cfg["devtb"]) || filter!(p -> p[1] in split(cfg["devtb"], ','), devdocs)   # (devtb: only these treebanks' docs)
   hwc === nothing || SeqLayers.add_head_wclass_gold!(last.(devdocs), hwc, hwl)
-  println("train sample: ", sum(nsents, trainsample), " sentences;  dev: ", sum(p -> nsents(p[2]), devdocs), " sentences")
+  devsent = sum(p -> nsents(p[2]), devdocs)
+  maxdocs = isempty(devdocs) ? (0, 0) : (maximum(p -> nsents(p[2]), devdocs), maximum(p -> length(p[2].text), devdocs))
+  println("train sample: ", sum(nsents, trainsample), " sentences;  dev: ", devsent, " sentences")
+  println("dev slice: ", length(devdocs), " docs, max_doc_sents ", maxdocs[1], ", max_doc_chars ", maxdocs[2],
+    ", dev_doc_sents ", cfg["dev_doc_sents"])
 
   # model
   workdir = joinpath(HERE, "work", "train$(cfg["train_sents"])-" * join(tbs, "+") * "-" * cfg["events"] *
@@ -500,7 +518,8 @@ function setup(cfg)
     (isempty(cfg["headsibs"]) ? "" : "-hsib" * replace(cfg["headsibs"], ',' => "")) * (cfg["idxeq"] == "true" ? "-idxeq" : "") * (cfg["kinitems"] == "true" ? "-kin" : "") *
     (isempty(cfg["headkin"]) ? "" : "-hkin" * replace(cfg["headkin"], ',' => "")) * (cfg["neighbor2"] == "true" ? "-nn2" : "") *
     (cfg["oclass"] == "true" ? "-ocl" : "") * (cfg["bioes"] == "true" ? "-bioes" : "") * (cfg["fwdsets"] == "true" ? "-fs" : "") * (cfg["shapeitems"] == "false" ? "-noshape" : "") *
-    (isempty(cfg["wc3"]) ? "" : "-wc3" * replace(cfg["wc3"], ',' => "")))
+    (isempty(cfg["wc3"]) ? "" : "-wc3" * replace(cfg["wc3"], ',' => "")) * (cfg["abbrev"] == "true" ? "-abbr" : "") *
+    (cfg["chunks"] == "true" ? "-chk" : "") * (cfg["mwe"] == "true" ? "-mwe" : ""))
   mkpath(workdir)
   local model, lex
   modelname = cfg["model"]
@@ -560,6 +579,7 @@ function setup(cfg)
       cfg["firstnz"] == "true" && (chainopts = merge(chainopts, (firstnz = true,)))
       cfg["lefttopn"] > 0 && (chainopts = merge(chainopts, (lefttopn = cfg["lefttopn"],)))
       cfg["relstrikes"] > 0 && (chainopts = merge(chainopts, (relstrikes = cfg["relstrikes"], relpool = cfg["relpool"] == "true")))
+      cfg["pairfirst"] > 0 && (chainopts = merge(chainopts, (pairfirst = cfg["pairfirst"],)))
       cfg["confirm"] != "off" && (chainopts = merge(chainopts, (confirm = Symbol(cfg["confirm"]), confirmmin = cfg["confirmmin"])))
       cfg["genred"] != "off" && (chainopts = merge(chainopts, (genred = Symbol(cfg["genred"]),)))
       cfg["steptopn"] > 0 && (chainopts = merge(chainopts, (steptopn = cfg["steptopn"],)))
@@ -615,7 +635,8 @@ function setup(cfg)
       (isempty(cfg["pptable"]) ? "" : cfg["pprel"] == "true" ? ";pptable;pprel" : ";pptable") * (cfg["treerank"] == "true" ? ";treerank" : "") * (cfg["headtrank"] == "true" ? ";headtrank" : "") * (isempty(cfg["headwc"]) ? "" : ";headwc=" * cfg["headwc"]) *
       (isempty(cfg["headsibs"]) ? "" : ";headsibs=" * cfg["headsibs"]) * (cfg["idxeq"] == "true" ? ";idxeq" : "") *
       (cfg["kinitems"] == "true" ? ";kinitems" : "") * (isempty(cfg["headkin"]) ? "" : ";headkin=" * cfg["headkin"]) * (cfg["neighbor2"] == "true" ? ";neighbor2" : "") * (cfg["oclass"] == "true" ? ";oclass" : "") *
-      (cfg["bioes"] == "true" ? ";bioes" : "") * (cfg["fwdsets"] == "true" ? ";fwdsets" : "") *
+      (cfg["bioes"] == "true" ? ";bioes" : "") * (cfg["fwdsets"] == "true" ? ";fwdsets" : "") * (cfg["abbrev"] == "true" ? ";abbrev" : "") *
+      (cfg["chunks"] == "true" ? ";chunks" : "") * (cfg["mwe"] == "true" ? ";mwe" : "") *
       (cfg["fcommit"] == "true" ? ";fcommit" : "") *
       (cfg["attachwait"] == "true" ? ";attachwait" : "") * (cfg["prodnorm"] == "off" ? "" : ";prodnorm=$(cfg["prodnorm"])") * (cfg["softtags"] > 0 ? ";softtags=$(cfg["softtags"])" : "") * (cfg["oclassladder"] == "false" ? ";nooclassladder" : "") * (isempty(cfg["secondop"]) ? "" : ";second=$(cfg["secondop"])-$(cfg["secondcomb"])@$(cfg["secondp"])") * (isnan(cfg["displace"]) ? "" : ";displace=$(cfg["displace"])" * (cfg["displacecap"] == 2 ? "" : "x$(cfg["displacecap"])")) * (cfg["rescoreevery"] > 1 ? ";rescoreevery=$(cfg["rescoreevery"])" : "") * (cfg["goldtok"] == "true" ? ";goldtok" : "") *
       (isempty(cfg["golddec"]) ? "" : ";gold=" * replace(cfg["golddec"], ',' => "+")) * "]"
@@ -627,7 +648,7 @@ function setup(cfg)
   end
   build_s = time() - t0
   nlambda = model isa LatticeModel ? length(model.lambda) : model isa CountModel ? length(model.chosen) : 0
-  (; tbs, idx, wc, sfx, w3, devdocs, devfiles, tunedocs, trainsample, workdir, model, lex, recipe, modelname, build_s, nlambda)
+  (; tbs, idx, wc, sfx, w3, abbr, devdocs, devfiles, tunedocs, trainsample, workdir, model, lex, recipe, modelname, build_s, nlambda)
 end
 
 """
@@ -642,6 +663,7 @@ function start_workers(cfg, s; rundir = nothing)
     serialize(joinpath(rundir, "model.jls"), recipe === nothing ? model : recipe)
     serialize(joinpath(rundir, "lex.jls"), lex)
     serialize(joinpath(rundir, "wc3.jls"), s.w3)
+    serialize(joinpath(rundir, "abbrev.jls"), s.abbr)
     serialize(joinpath(rundir, "idx.jls"), CharIndex(idx.fwd, idx.rev, idx.gap, idx.saL, idx.saR, idx.cumL, idx.cumR,
       idx.prior, IdDict{Doc,Int}(), idx.maxlen, idx.mincount, idx.beta))
   end
@@ -660,7 +682,8 @@ function start_workers(cfg, s; rundir = nothing)
       headwcclasses = $(isempty(cfg["headwc"]) ? nothing : :(load_wordclasses($(isempty(cfg["wclasses"]) ? cfg["headwcdir"] : cfg["wclasses"])))),
       headsibs = $(headsib_names(cfg)), idxeq = $(cfg["idxeq"] == "true"),
       kinitems = $(cfg["kinitems"] == "true"), headkin = $(headkin_names(cfg)), neighbor2 = $(cfg["neighbor2"] == "true"),
-      oclass = $(cfg["oclass"] == "true"), bioes = $(cfg["bioes"] == "true"), fwdsets = $(cfg["fwdsets"] == "true"), shapeitems = $(cfg["shapeitems"] != "false"), wc3 = deserialize(joinpath($rundir, "wc3.jls")))
+      oclass = $(cfg["oclass"] == "true"), bioes = $(cfg["bioes"] == "true"), fwdsets = $(cfg["fwdsets"] == "true"), shapeitems = $(cfg["shapeitems"] != "false"), wc3 = deserialize(joinpath($rundir, "wc3.jls")),
+      abbrevs = deserialize(joinpath($rundir, "abbrev.jls")), chunks = $(cfg["chunks"] == "true"), mwe = $(cfg["mwe"] == "true"))
     const WLEX = deserialize(joinpath($rundir, "lex.jls"))
     $(cfg["fwdcheck"] == "true") && (SeqLayers.FWDCHECK[] = true)
     $(cfg["fcommit"] == "true") && (SeqLayers.FCOMMIT[] = true)
