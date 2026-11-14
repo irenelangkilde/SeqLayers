@@ -1,0 +1,6 @@
+2026-11-13 19:34:12 first: shard 1/2 started
+2026-11-13 19:34:12 second: recording events (prep)
+2026-11-13 21:17:07 second: prep done
+2026-11-13 21:17:09 event sizes first: 2086745632 20736664512  second: 2086745632 20736664512 
+2026-11-13 21:17:48 second: first's count cache copied and re-signed (314M)
+2026-11-13 21:17:49 second: shard 2/2 started
