@@ -1,0 +1,55 @@
+treebanks: CHILDES, ESLSpok, EWT, GUM, GUMReddit
+train sample: 2568 sentences;  dev: 179 sentences
+recorded events in 736.4 s
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 201.3 s): 21 of 63 slots always, 479 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 4077800 records (843566 grouped, 771 label sets)
+      From worker 5:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 203.8 s): 21 of 63 slots always, 479 gate values
+      From worker 5:	[ Info: ChainModel: grouped decisions into 4077800 records (843566 grouped, 771 label sets)
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 205.3 s): 21 of 63 slots always, 479 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 4077800 records (843566 grouped, 771 label sets)
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 204.8 s): 21 of 63 slots always, 479 gate values
+      From worker 4:	[ Info: ChainModel: grouped decisions into 4077800 records (843566 grouped, 771 label sets)
+      From worker 6:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 205.4 s): 21 of 63 slots always, 479 gate values
+      From worker 6:	[ Info: ChainModel: grouped decisions into 4077800 records (843566 grouped, 771 label sets)
+      From worker 2:	[ Info: ChainModel: joint tables for 1881 frequent items, 654001 pairs (403.3 s)
+      From worker 5:	[ Info: ChainModel: joint tables for 1881 frequent items, 654001 pairs (406.9 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 1881 frequent items, 654001 pairs (409.6 s)
+      From worker 4:	[ Info: ChainModel: joint tables for 1881 frequent items, 654001 pairs (414.6 s)
+      From worker 6:	[ Info: ChainModel: joint tables for 1881 frequent items, 654001 pairs (428.5 s)
+      From worker 6:	doc EWT 471 chars: 263.2 s (gc 9.9 s, heap 9.3 GB)
+      From worker 5:	doc CHILDES 1314 chars: 401.1 s (gc 36.9 s, heap 15.4 GB)
+      From worker 4:	doc ESLSpok 2239 chars: 1343.9 s (gc 82.3 s, heap 6.3 GB)
+      From worker 2:	doc GUMReddit 4903 chars: 4047.6 s (gc 221.0 s, heap 10.0 GB)
+      From worker 3:	doc GUM 4409 chars: 5337.1 s (gc 272.6 s, heap 6.9 GB)
+conllu: experiments/runs/decode2/mwe1113-pred.conllu, experiments/runs/decode2/mwe1113-gold.conllu
+profdecode: decision	calls	not ready	seconds	ms per call
+profdecode: token.attach	63537	4991	10479.8	164.94
+profdecode: token.xpos	31134	0	229.4	7.367
+profdecode: token.deprel	6945	3102	151.0	21.741
+profdecode: char.gap	71432	251	126.8	1.775
+profdecode: token.upos	28858	0	121.3	4.205
+profdecode: token.basepos	23391	0	37.6	1.607
+profdecode: token.mwe	19598	0	31.4	1.602
+profdecode: token.number	21866	0	23.1	1.058
+profdecode: token.person	18251	0	21.6	1.183
+profdecode: token.tense	15270	0	17.9	1.171
+profdecode: token.wclass30000	5706	0	6.2	1.092
+profdecode: token.wclass300	5619	0	4.0	0.711
+profdecode: token.wclass3000	5748	0	3.7	0.65
+profdecode: token.wclass30	5535	0	3.7	0.664
+profdecode: token.head_dir	3102	3102	0.0	0.015
+profdecode: token.head_upos	3102	3102	0.0	0.01
+profdecode: token.head_kinright	3102	3102	0.0	0.009
+profdecode: token.head_xpos	3102	3102	0.0	0.008
+profdecode: token.head_kinleft	3102	3102	0.0	0.008
+profdecode: token.head_dist	3102	3102	0.0	0.002
+profdecode: token.head_trank	3102	3102	0.0	0.002
+count cache: 1170091 new feature sets, 1170091 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train500-CHILDES+ESLSpok+EWT+GUM+GUMReddit-gold-wcclasses5-sfx3-rootabs-htrank-kin-hkinleftright-nn2-mwe/events
+treebank    words   token_f1  uas     las     sent_f1
+CHILDES     324     1.0     0.787   0.7099  0.9901  
+ESLSpok     502     0.997   0.7745  0.7305  0.9691  
+EWT         86      0.9655  0.8571  0.7381  0.8889  
+GUM         963     0.9922  0.7411  0.6931  0.9583  
+GUMReddit   1024    0.9912  0.7115  0.6379  0.9231  
+ALL         2899    0.9928  0.745   0.6833  0.9582  
+build 756.3 s, decode 5371.1 s, run 20261113-224856 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv

@@ -111,13 +111,14 @@ const PRED_HOOK = Ref{Any}(nothing)
 const CONLLU_FIXES = Dict{Symbol,Int}(:split => 0, :reattached => 0, :cycles => 0)
 
 """
-One root per sentence, as the CoNLL shared-task scorers require (2026-11-13): heads (0 = root, else 1-based) and deprels
--> a list of (index range, heads, deprels), one per output sentence.  A cycle is broken at its first token (made a
-root).  The roots' subtree extents [first, last] are merged where they overlap; each merged block is its own sentence
-(a missed sentence boundary: each root's subtree a contiguous block); within a block, the extra roots attach to the
-root with the largest subtree as parataxis.  A head-0 token's deprel is root.
+One root per sentence, as the CoNLL shared-task scorers require (2026-11-13): heads (0 = root, else 1-based), deprels
+and UPOS -> a list of (index range, heads, deprels), one per output sentence.  A cycle is broken at its first token
+(made a root).  The extra roots attach as parataxis to the main root: the first VERB / AUX root, else the root with the
+largest subtree.  `split` (off by default): instead, blocks of contiguous root subtrees become sentences of their own --
+on the dev decode every such split was spurious (sentence F1 79.8 vs ~95), and reattaching scored UAS / LAS F1 74.20 /
+68.35 vs 73.99 / 68.39 split.  A head-0 token's deprel is root.
 """
-function root_groups(heads::Vector{Int}, deprels::Vector{String})
+function root_groups(heads::Vector{Int}, deprels::Vector{String}, upos::Vector{String} = fill("_", length(heads)); split = false)
   heads, deprels = copy(heads), copy(deprels)
   n = length(heads)
   n == 0 && return Tuple{UnitRange{Int},Vector{Int},Vector{String}}[]
@@ -135,8 +136,8 @@ function root_groups(heads::Vector{Int}, deprels::Vector{String})
   roots = findall(==(0), heads)
   ext = sort!([(minimum(findall(==(r), owner)), maximum(findall(==(r), owner)), r) for r in roots])
   blocks = Vector{Vector{Tuple{Int,Int,Int}}}()
-  for e in ext                                       # merge overlapping subtree extents
-    if !isempty(blocks) && e[1] <= maximum(x[2] for x in blocks[end])
+  for e in ext                                       # merge overlapping subtree extents (no split: one block)
+    if !isempty(blocks) && (!split || e[1] <= maximum(x[2] for x in blocks[end]))
       push!(blocks[end], e)
     else
       push!(blocks, [e])
@@ -145,7 +146,8 @@ function root_groups(heads::Vector{Int}, deprels::Vector{String})
   out = Tuple{UnitRange{Int},Vector{Int},Vector{String}}[]
   for b in blocks
     rg = minimum(x[1] for x in b):maximum(x[2] for x in b)
-    main = b[argmax([count(==(x[3]), owner) for x in b])][3]
+    vs = [x[3] for x in b if upos[x[3]] in ("VERB", "AUX")]
+    main = isempty(vs) ? b[argmax([count(==(x[3]), owner) for x in b])][3] : minimum(vs)
     for (_, _, r) in b
       r == main && continue
       heads[r], deprels[r] = main, "parataxis"
@@ -158,9 +160,9 @@ function root_groups(heads::Vector{Int}, deprels::Vector{String})
   out
 end
 
-"A predicted sentence as the CoNLL-U sentences root_groups makes of it."
+"A predicted sentence as the CoNLL-U sentence(s) root_groups makes of it."
 conllu_sentences(ps::ParsedSentence) = [ParsedSentence(first(ps.spans[first(rg)]):last(ps.spans[last(rg)]), ps.tokens[rg], ps.spans[rg],
-  hs, ds, ps.upos[rg], ps.xpos[rg]) for (rg, hs, ds) in root_groups(ps.heads, ps.deprels)]
+  hs, ds, ps.upos[rg], ps.xpos[rg]) for (rg, hs, ds) in root_groups(ps.heads, ps.deprels, ps.upos)]
 
 """
 Write predicted sentences as CoNLL-U (2026-11-10, for the CoNLL shared-task scorers): per sentence `# sent_id` (from

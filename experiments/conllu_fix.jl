@@ -1,6 +1,6 @@
 # One root per sentence in an existing CoNLL-U file (2026-11-13), with the same repair write_conllu now makes
-# (SeqLayers.root_groups): a sentence with several roots is split where the roots' subtrees are contiguous blocks,
-# else the extra roots attach to the main root as parataxis; cycles are broken.  For prediction files written before
+# (SeqLayers.root_groups): the extra roots of a sentence attach to its main root (the first VERB / AUX root, else the
+# largest subtree) as parataxis; cycles are broken.  For prediction files written before
 # the fix, so the CoNLL shared-task scorers accept them.
 #
 #   julia --project=experiments experiments/conllu_fix.jl in.conllu out.conllu
@@ -23,7 +23,7 @@ function fix(inpath, outpath)
   sid = 0
   open(outpath, "w") do io
     for s in sents
-      for (rg, hs, ds) in S.root_groups([parse(Int, c[7]) for c in s], [c[8] for c in s])
+      for (rg, hs, ds) in S.root_groups([parse(Int, c[7]) for c in s], [c[8] for c in s], [c[4] for c in s])
         sid += 1
         rows = s[rg]
         text = join([c[2] * (k < length(rows) && !occursin("SpaceAfter=No", c[10]) ? " " : "") for (k, c) in enumerate(rows)])

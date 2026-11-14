@@ -1,0 +1,3 @@
+=== Fri Nov 13 20:55:20 UTC 2026 experiments/runs/decode2/run-aws.sh awsMW mwe1113 suffixes=3,wclasses=/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5,wclevels=30+300+3000,relstrikes=1,mwe=true,conllu_out=experiments/runs/decode2/mwe1113
+=== Fri Nov 13 22:48:57 UTC 2026 experiments/runs/decode2/run-aws.sh awsCM chkmwe1113 suffixes=3,wclasses=/Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/clusters/classes5,wclevels=30+300+3000,relstrikes=1,chunks=true,mwe=true,conllu_out=experiments/runs/decode2/chkmwe1113
+=== all done Sat Nov 14 01:43:19 UTC 2026

@@ -1830,16 +1830,18 @@ end
 
   @testset "one root per CoNLL-U sentence (root_groups)" begin
     rg = SeqLayers.root_groups
-    # two contiguous root subtrees (a missed sentence boundary): split, heads renumbered
-    g = rg([2, 0, 2, 5, 0, 5], ["nsubj", "root", "obj", "nsubj", "root", "punct"])
-    @test [x[1] for x in g] == [1:3, 4:6]
-    @test g[2][2] == [2, 0, 2]
+    # two contiguous root subtrees: by default one sentence, the second root (the verb) kept; split = true splits them
+    up = ["PRON", "NOUN", "PRON", "PRON", "VERB", "PUNCT"]
+    g = rg([2, 0, 2, 5, 0, 5], ["nsubj", "root", "obj", "nsubj", "root", "punct"], up)
+    @test length(g) == 1 && g[1][2] == [2, 5, 2, 5, 0, 5] && g[1][3][2] == "parataxis"
+    g = rg([2, 0, 2, 5, 0, 5], ["nsubj", "root", "obj", "nsubj", "root", "punct"], up; split = true)
+    @test [x[1] for x in g] == [1:3, 4:6] && g[2][2] == [2, 0, 2]
     # interleaved subtrees: one sentence, the smaller root attached to the larger as parataxis
     g = rg([0, 4, 1, 0, 1], ["root", "nsubj", "obj", "root", "punct"])
     @test length(g) == 1 && g[1][2] == [0, 4, 1, 1, 1] && g[1][3][4] == "parataxis"
-    # a cycle (2 <-> 3) after a root: broken at its first token, whose subtree is then its own block
+    # a cycle (2 <-> 3) after a root: broken at its first token; no verbs, so the larger subtree (2, 3) keeps the root
     g = rg([0, 3, 2], ["root", "obj", "obj"])
-    @test g == [(1:1, [0], ["root"]), (2:3, [0, 1], ["root", "obj"])]
+    @test g == [(1:3, [2, 0, 2], ["parataxis", "root", "obj"])]
     # already fine: unchanged
     @test rg([2, 0], ["nsubj", "root"]) == [(1:2, [2, 0], ["nsubj", "root"])]
   end

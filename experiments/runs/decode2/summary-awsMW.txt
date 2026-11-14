@@ -1,0 +1,17 @@
+=== start Fri Nov 13 20:55:20 UTC 2026
+=== mwe1113
+recorded events in 736.4 s
+doc EWT 471 chars: 263.2 s (gc 9.9 s, heap 9.3 GB)
+doc CHILDES 1314 chars: 401.1 s (gc 36.9 s, heap 15.4 GB)
+doc ESLSpok 2239 chars: 1343.9 s (gc 82.3 s, heap 6.3 GB)
+doc GUMReddit 4903 chars: 4047.6 s (gc 221.0 s, heap 10.0 GB)
+doc GUM 4409 chars: 5337.1 s (gc 272.6 s, heap 6.9 GB)
+profdecode: token.attach	63537	4991	10479.8	164.94
+CHILDES     324     1.0     0.787   0.7099  0.9901  
+ESLSpok     502     0.997   0.7745  0.7305  0.9691  
+EWT         86      0.9655  0.8571  0.7381  0.8889  
+GUM         963     0.9922  0.7411  0.6931  0.9583  
+GUMReddit   1024    0.9912  0.7115  0.6379  0.9231  
+ALL         2899    0.9928  0.745   0.6833  0.9582  
+build 756.3 s, decode 5371.1 s, run 20261113-224856 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv
+=== all done Fri Nov 13 22:48:57 UTC 2026

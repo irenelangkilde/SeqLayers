@@ -1,0 +1,3509 @@
+# sent_id = 1
+# text = We would run for our lives and look for a new place to live with just monkeys around.
+1	We	_	PRON	PRP	_	3	nsubj	_	_
+2	would	_	AUX	MD	_	3	aux	_	_
+3	run	_	VERB	VB	_	0	root	_	_
+4	for	_	ADP	IN	_	6	case	_	_
+5	our	_	PRON	PRP$	_	6	nmod	_	_
+6	lives	_	NOUN	NNS	_	3	obl	_	_
+7	and	_	CCONJ	CC	_	8	cc	_	_
+8	look	_	VERB	VB	_	3	conj	_	_
+9	for	_	ADP	IN	_	12	case	_	_
+10	a	_	DET	DT	_	12	det	_	_
+11	new	_	ADJ	JJ	_	12	amod	_	_
+12	place	_	NOUN	NN	_	8	obl	_	_
+13	to	_	PART	TO	_	14	mark	_	_
+14	live	_	VERB	VB	_	12	acl	_	_
+15	with	_	ADP	IN	_	17	case	_	_
+16	just	_	ADV	RB	_	17	advmod	_	_
+17	monkeys	_	NOUN	NN	_	14	obl	_	_
+18	around	_	ADV	RB	_	17	advmod	_	SpaceAfter=No
+19	.	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 2
+# text = A present.
+1	A	_	DET	DT	_	2	det	_	_
+2	present	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+3	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 3
+# text = How about right here?
+1	How	_	ADV	WRB	_	0	root	_	_
+2	about	_	ADP	IN	_	3	case	_	_
+3	right	_	ADV	RB	_	1	obl	_	_
+4	here	_	ADV	RB	_	1	advmod	_	SpaceAfter=No
+5	?	_	PUNCT	?	_	1	punct	_	_
+
+# sent_id = 4
+# text = I got to watch it.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	got	_	VERB	VBD	_	0	root	_	_
+3	to	_	PART	TO	_	4	mark	_	_
+4	watch	_	VERB	VB	_	2	xcomp	_	_
+5	it	_	PRON	PRP	_	4	obj	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 5
+# text = Adam a home.
+1	Adam	_	AUX	VBN	_	3	cop	_	_
+2	a	_	DET	DT	_	3	det	_	_
+3	home	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+4	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 6
+# text = No no don 't play with that.
+1	No	_	INTJ	UH	_	5	discourse	_	_
+2	no	_	PRON	DT	_	5	nsubj	_	_
+3	don	_	AUX	VBP	_	5	aux	_	_
+4	't	_	PART	RB	_	5	advmod	_	_
+5	play	_	VERB	VB	_	0	root	_	_
+6	with	_	ADP	IN	_	7	case	_	_
+7	that	_	PRON	DT	_	5	obl	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 7
+# text = Turn your paddle over.
+1	Turn	_	VERB	VB	_	0	root	_	_
+2	your	_	PRON	PRP$	_	3	nmod	_	_
+3	paddle	_	NOUN	NN	_	1	obj	_	_
+4	over	_	ADP	IN	_	3	nmod	_	SpaceAfter=No
+5	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 8
+# text = A play+ground.
+1	A	_	DET	DT	_	2	det	_	_
+2	play+ground	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+3	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 9
+# text = What else?
+1	What	_	PRON	WP	_	0	root	_	_
+2	else	_	ADV	RB	_	1	advmod	_	SpaceAfter=No
+3	?	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 10
+# text = Once you're better die.
+1	Once	_	ADV	RB	_	4	advmod	_	_
+2	you	_	PRON	PRP	_	4	nsubj	_	SpaceAfter=No
+3	're	_	AUX	VBP	_	4	cop	_	_
+4	better	_	ADJ	JJR	_	0	root	_	_
+5	die	_	PART	RB	_	4	discourse	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 11
+# text = No here.
+1	No	_	ADV	RB	_	0	root	_	_
+2	here	_	ADV	RB	_	1	advmod	_	SpaceAfter=No
+3	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 12
+# text = My silly talk.
+1	My	_	PRON	PRP$	_	3	nmod	_	_
+2	silly	_	ADJ	JJ	_	3	amod	_	_
+3	talk	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+4	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 13
+# text = But Robin and David might not want broken toys.
+1	But	_	CCONJ	CC	_	8	cc	_	_
+2	Robin	_	PROPN	NNP	_	7	dep	_	_
+3	and	_	CCONJ	CC	_	4	cc	_	_
+4	David	_	PROPN	NNP	_	7	nsubj	_	_
+5	might	_	AUX	MD	_	7	aux	_	_
+6	not	_	PART	RB	_	7	advmod	_	_
+7	want	_	VERB	VB	_	8	reparandum	_	_
+8	broken	_	VERB	VBN	_	0	root	_	_
+9	toys	_	NOUN	NN	_	8	obj	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 14
+# text = You throw and throw and.
+1	You	_	PRON	PRP	_	2	nsubj	_	_
+2	throw	_	VERB	VBP	_	0	root	_	_
+3	and	_	CCONJ	CC	_	4	cc	_	_
+4	throw	_	NOUN	NN	_	2	conj	_	_
+5	and	_	CCONJ	CC	_	2	cc	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 15
+# text = You're not going tomorrow either.
+1	You	_	PRON	PRP	_	4	nsubj	_	SpaceAfter=No
+2	're	_	AUX	VBP	_	4	aux	_	_
+3	not	_	PART	RB	_	4	advmod	_	_
+4	going	_	VERB	VBG	_	0	root	_	_
+5	tomorrow	_	NOUN	NN	_	4	obl	_	_
+6	either	_	ADV	RB	_	4	advmod	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 16
+# text = Watch watch it watch it.
+1	Watch	_	VERB	VB	_	0	root	_	_
+2	watch	_	VERB	VB	_	1	advcl	_	_
+3	it	_	PRON	PRP	_	4	obj	_	_
+4	watch	_	VERB	VB	_	2	xcomp	_	_
+5	it	_	PRON	PRP	_	4	obj	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 17
+# text = So it must not be yours huh?
+1	So	_	ADV	RB	_	6	advmod	_	_
+2	it	_	PRON	PRP	_	6	nsubj	_	_
+3	must	_	AUX	MD	_	6	aux	_	_
+4	not	_	PART	RB	_	6	advmod	_	_
+5	be	_	AUX	VB	_	6	cop	_	_
+6	yours	_	ADV	RB	_	7	advmod	_	_
+7	huh	_	INTJ	UH	_	0	root	_	SpaceAfter=No
+8	?	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 18
+# text = Actually the avocado is ripe I think do you want avocado?
+1	Actually	_	ADV	RB	_	5	advmod	_	_
+2	the	_	DET	DT	_	3	det	_	_
+3	avocado	_	NOUN	NN	_	5	nsubj	_	_
+4	is	_	AUX	VBZ	_	5	cop	_	_
+5	ripe	_	ADV	RB	_	10	reparandum	_	_
+6	I	_	PRON	PRP	_	7	nsubj	_	_
+7	think	_	VERB	VBP	_	5	acl	_	_
+8	do	_	AUX	VBP	_	10	aux	_	_
+9	you	_	PRON	PRP	_	10	nsubj	_	_
+10	want	_	VERB	VB	_	0	root	_	_
+11	avocado	_	NOUN	NN	_	10	obj	_	SpaceAfter=No
+12	?	_	PUNCT	.	_	10	punct	_	_
+
+# sent_id = 19
+# text = Mom here here's the paint things.
+1	Mom	_	PROPN	NNP	_	3	nsubj	_	_
+2	here	_	ADV	RB	_	3	advmod	_	_
+3	here	_	ADV	RB	_	0	root	_	SpaceAfter=No
+4	's	_	AUX	VBZ	_	7	cop	_	_
+5	the	_	DET	DT	_	7	det	_	_
+6	paint	_	ADJ	JJ	_	7	amod	_	_
+7	things	_	NOUN	NNS	_	3	obl	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 20
+# text = Mummy more berry.
+1	Mummy	_	VERB	VBP	_	0	root	_	_
+2	more	_	ADV	RBR	_	3	advmod	_	_
+3	berry	_	NOUN	NN	_	1	xcomp	_	SpaceAfter=No
+4	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 21
+# text = Do you remember where you played with them?
+1	Do	_	AUX	VBP	_	3	aux	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	remember	_	VERB	VB	_	0	root	_	_
+4	where	_	ADV	WRB	_	6	advmod	_	_
+5	you	_	PRON	PRP	_	6	nsubj	_	_
+6	played	_	VERB	VBD	_	3	ccomp	_	_
+7	with	_	ADP	IN	_	8	case	_	_
+8	them	_	PRON	PRP	_	6	obl	_	SpaceAfter=No
+9	?	_	PUNCT	?	_	6	punct	_	_
+
+# sent_id = 22
+# text = Wanna go get your cards?
+1	Wan	_	VERB	VB	_	0	root	_	SpaceAfter=No
+2	na	_	PART	TO	_	3	mark	_	_
+3	go	_	VERB	VB	_	1	xcomp	_	_
+4	get	_	VERB	VB	_	3	xcomp	_	_
+5	your	_	PRON	PRP$	_	6	nmod	_	_
+6	cards	_	NOUN	NNS	_	4	obj	_	SpaceAfter=No
+7	?	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 23
+# text = Baby duck.
+1	Baby	_	NOUN	NN	_	2	compound	_	_
+2	duck	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+3	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 24
+# text = Will it get me worms too?
+1	Will	_	AUX	MD	_	3	aux	_	_
+2	it	_	PRON	PRP	_	3	nsubj	_	_
+3	get	_	VERB	VB	_	0	root	_	_
+4	me	_	PRON	PRP	_	3	obj	_	_
+5	worms	_	NOUN	NNS	_	3	obj	_	_
+6	too	_	ADV	RB	_	3	advmod	_	SpaceAfter=No
+7	?	_	PUNCT	?	_	3	punct	_	_
+
+# sent_id = 25
+# text = Did you like the balloon that you blow up?
+1	Did	_	AUX	VBD	_	3	aux	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	like	_	VERB	VB	_	0	root	_	_
+4	the	_	DET	DT	_	5	det	_	_
+5	balloon	_	NOUN	NN	_	3	obj	_	_
+6	that	_	SCONJ	IN	_	8	mark	_	_
+7	you	_	PRON	PRP	_	8	nsubj	_	_
+8	blow	_	VERB	VB	_	3	advcl	_	_
+9	up	_	ADP	RP	_	8	compound	_	SpaceAfter=No
+10	?	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 26
+# text = When we're done breakfast.
+1	When	_	INTJ	WRB	_	4	discourse	_	_
+2	we	_	PRON	PRP	_	4	nsubj	_	SpaceAfter=No
+3	're	_	AUX	VBP	_	4	aux	_	_
+4	done	_	VERB	VBN	_	0	root	_	_
+5	breakfast	_	NOUN	NN	_	4	obj	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 27
+# text = Elephants are bigger.
+1	Elephants	_	NOUN	NNS	_	3	nsubj	_	_
+2	are	_	AUX	VBP	_	3	cop	_	_
+3	bigger	_	ADJ	JJR	_	0	root	_	SpaceAfter=No
+4	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 28
+# text = Mommy did.
+1	Mommy	_	PROPN	NNP	_	2	vocative	_	_
+2	did	_	AUX	VBD	_	0	root	_	SpaceAfter=No
+3	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 29
+# text = I know we need a little saucer or dish to pour some in.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	know	_	VERB	VBP	_	0	root	_	_
+3	we	_	PRON	PRP	_	4	nsubj	_	_
+4	need	_	VERB	VBP	_	2	ccomp	_	_
+5	a	_	DET	DT	_	7	det	_	_
+6	little	_	ADJ	JJ	_	7	amod	_	_
+7	saucer	_	NOUN	NN	_	4	obj	_	_
+8	or	_	CCONJ	CC	_	9	cc	_	_
+9	dish	_	NOUN	NN	_	7	conj	_	_
+10	to	_	PART	TO	_	11	mark	_	_
+11	pour	_	VERB	VB	_	9	acl	_	_
+12	some	_	DET	DT	_	13	det	_	_
+13	in	_	ADP	"	_	11	compound	_	SpaceAfter=No
+14	.	_	PUNCT	.	_	11	punct	_	_
+
+# sent_id = 30
+# text = I'm going write on myself.
+1	I	_	PRON	PRP	_	3	nsubj	_	SpaceAfter=No
+2	'm	_	AUX	VBP	_	3	aux	_	_
+3	going	_	VERB	VBG	_	0	root	_	_
+4	write	_	VERB	VB	_	3	xcomp	_	_
+5	on	_	ADP	IN	_	6	case	_	_
+6	myself	_	PRON	PRP	_	4	obl	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 31
+# text = Little boy 's mitten?
+1	Little	_	ADJ	JJ	_	2	amod	_	_
+2	boy	_	NOUN	NN	_	4	nmod	_	_
+3	's	_	PART	POS	_	2	case	_	_
+4	mitten	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+5	?	_	PUNCT	?	_	4	punct	_	_
+
+# sent_id = 32
+# text = Okay but I don't wanna do this.
+1	Okay	_	INTJ	UH	_	6	discourse	_	_
+2	but	_	CCONJ	CC	_	6	cc	_	_
+3	I	_	PRON	PRP	_	6	nsubj	_	_
+4	do	_	AUX	VBP	_	6	aux	_	SpaceAfter=No
+5	n't	_	PART	RB	_	6	advmod	_	_
+6	wan	_	VERB	VB	_	0	root	_	SpaceAfter=No
+7	na	_	PART	TO	_	8	mark	_	_
+8	do	_	VERB	VB	_	6	xcomp	_	_
+9	this	_	PRON	DT	_	8	obj	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 33
+# text = And I'm trying not to cry.
+1	And	_	CCONJ	CC	_	4	cc	_	_
+2	I	_	PRON	PRP	_	4	nsubj	_	SpaceAfter=No
+3	'm	_	AUX	VBP	_	4	aux	_	_
+4	trying	_	VERB	VBG	_	0	root	_	_
+5	not	_	PART	RB	_	7	advmod	_	_
+6	to	_	PART	TO	_	7	mark	_	_
+7	cry	_	VERB	VB	_	4	xcomp	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 34
+# text = Yes there goes one.
+1	Yes	_	INTJ	UH	_	3	discourse	_	_
+2	there	_	PRON	EX	_	3	expl	_	_
+3	goes	_	VERB	VBZ	_	0	root	_	_
+4	one	_	NUM	CD	_	3	nsubj	_	SpaceAfter=No
+5	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 35
+# text = Where is the record?
+1	Where	_	ADV	WRB	_	4	advmod	_	_
+2	is	_	AUX	VBZ	_	4	cop	_	_
+3	the	_	DET	DT	_	4	det	_	_
+4	record	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+5	?	_	PUNCT	?	_	4	punct	_	_
+
+# sent_id = 36
+# text = Dis is for r r and dis is for p.
+1	Dis	_	PRON	PRP	_	8	nsubj	_	_
+2	is	_	AUX	VBZ	_	8	cop	_	_
+3	for	_	ADP	IN	_	4	case	_	_
+4	r	_	X	:	_	8	orphan	_	_
+5	r	_	X	FW	_	4	goeswith	_	_
+6	and	_	CCONJ	CC	_	7	cc	_	_
+7	dis	_	X	FW	_	5	conj	_	_
+8	is	_	AUX	VBZ	_	10	cop	_	_
+9	for	_	ADP	IN	_	10	case	_	_
+10	p	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+11	.	_	PUNCT	.	_	10	punct	_	_
+
+# sent_id = 37
+# text = Adam just look.
+1	Adam	_	AUX	VB	_	3	aux	_	_
+2	just	_	ADV	RB	_	3	advmod	_	_
+3	look	_	VERB	VB	_	0	root	_	SpaceAfter=No
+4	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 38
+# text = Oh we met some new children there.
+1	Oh	_	INTJ	UH	_	3	discourse	_	_
+2	we	_	PRON	PRP	_	3	nsubj	_	_
+3	met	_	VERB	VBD	_	0	root	_	_
+4	some	_	DET	DT	_	6	det	_	_
+5	new	_	ADJ	JJ	_	6	amod	_	_
+6	children	_	NOUN	NNS	_	7	obl	_	_
+7	there	_	ADV	RB	_	3	csubj	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 39
+# text = Oh is that Shadow Gay?
+1	Oh	_	INTJ	UH	_	5	expl	_	_
+2	is	_	AUX	VBZ	_	5	cop	_	_
+3	that	_	SCONJ	IN	_	5	mark	_	_
+4	Shadow	_	ADJ	NNP	_	5	amod	_	_
+5	Gay	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+6	?	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 40
+# text = Nope he stayed with me.
+1	Nope	_	INTJ	UH	_	3	discourse	_	_
+2	he	_	PRON	PRP	_	3	nsubj	_	_
+3	stayed	_	VERB	VBD	_	0	root	_	_
+4	with	_	ADP	IN	_	5	case	_	_
+5	me	_	PRON	PRP	_	3	obl	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 41
+# text = It make music.
+1	It	_	PRON	PRP	_	2	nsubj	_	_
+2	make	_	VERB	!	_	0	root	_	_
+3	music	_	NOUN	NN	_	2	obj	_	SpaceAfter=No
+4	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 42
+# text = Start at beginning.
+1	Start	_	VERB	VB	_	0	root	_	_
+2	at	_	ADP	IN	_	3	case	_	_
+3	beginning	_	NOUN	NN	_	1	obl	_	SpaceAfter=No
+4	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 43
+# text = How d you know?
+1	How	_	ADV	WRB	_	4	advmod	_	_
+2	d	_	AUX	AFX	_	4	aux	_	_
+3	you	_	PRON	PRP	_	4	nsubj	_	_
+4	know	_	VERB	VB	_	0	root	_	SpaceAfter=No
+5	?	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 44
+# text = It really hurts!
+1	It	_	PRON	PRP	_	3	nsubj	_	_
+2	really	_	ADV	RB	_	3	advmod	_	_
+3	hurts	_	VERB	VBZ	_	0	root	_	SpaceAfter=No
+4	!	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 45
+# text = And your bunny.
+1	And	_	CCONJ	CC	_	3	cc	_	_
+2	your	_	PRON	PRP$	_	3	nmod	_	_
+3	bunny	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+4	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 46
+# text = Go pick those pieces up
+1	Go	_	VERB	VB	_	0	root	_	_
+2	pick	_	VERB	VB	_	1	conj	_	_
+3	those	_	DET	DT	_	4	det	_	_
+4	pieces	_	NOUN	NNS	_	1	obj	_	_
+5	up	_	ADV	RB	_	4	advmod	_	_
+
+# sent_id = 47
+# text = and you may put your cowboy boots on.
+1	and	_	CCONJ	CC	_	4	cc	_	_
+2	you	_	PRON	PRP	_	4	nsubj	_	_
+3	may	_	AUX	MD	_	4	aux	_	_
+4	put	_	VERB	VB	_	0	root	_	_
+5	your	_	PRON	PRP$	_	7	nmod	_	_
+6	cowboy	_	NOUN	NN	_	7	compound	_	_
+7	boots	_	NOUN	NNS	_	4	obj	_	_
+8	on	_	ADV	RB	_	4	advmod	_	SpaceAfter=No
+9	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 48
+# text = A fox didn't eat.
+1	A	_	DET	DT	_	2	det	_	_
+2	fox	_	NOUN	NN	_	5	nsubj	_	_
+3	did	_	AUX	VBD	_	5	aux	_	SpaceAfter=No
+4	n't	_	PART	RB	_	5	advmod	_	_
+5	eat	_	VERB	VB	_	0	root	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 49
+# text = What happened to the children?
+1	What	_	PRON	WP	_	2	nsubj	_	_
+2	happened	_	VERB	VBD	_	0	root	_	_
+3	to	_	ADP	IN	_	5	case	_	_
+4	the	_	DET	DT	_	5	det	_	_
+5	children	_	NOUN	NNS	_	2	obl	_	SpaceAfter=No
+6	?	_	PUNCT	?	_	5	punct	_	_
+
+# sent_id = 50
+# text = You 're so what?
+1	You	_	PRON	PRP	_	4	nsubj	_	_
+2	're	_	AUX	VBP	_	4	cop	_	_
+3	so	_	ADV	RB	_	4	advmod	_	_
+4	what	_	PRON	WP	_	0	root	_	SpaceAfter=No
+5	?	_	PUNCT	?	_	4	punct	_	_
+
+# sent_id = 51
+# text = Go pa pa?
+1	Go	_	VERB	VB	_	0	root	_	_
+2	pa	_	PROPN	NNP	_	1	compound	_	_
+3	pa	_	PROPN	NNP	_	1	obl	_	SpaceAfter=No
+4	?	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 1
+# text = And so this accident became the man on the motorcycle 's fault .
+1	And	_	CCONJ	CC	_	5	cc	_	_
+2	so	_	CCONJ	CC	_	5	cc	_	_
+3	this	_	DET	DT	_	4	det	_	_
+4	accident	_	NOUN	NN	_	5	nsubj	_	_
+5	became	_	VERB	VBZ	_	0	root	_	_
+6	the	_	DET	DT	_	7	det	_	_
+7	man	_	NOUN	NN	_	5	obj	_	_
+8	on	_	ADP	IN	_	10	case	_	_
+9	the	_	DET	DT	_	10	det	_	_
+10	motorcycle	_	NOUN	NN	_	12	nmod	_	_
+11	's	_	PART	POS	_	10	case	_	_
+12	fault	_	NOUN	NN	_	7	nmod	_	_
+13	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 2
+# text = Yes , please .
+1	Yes	_	INTJ	UH	_	0	root	_	_
+2	,	_	PUNCT	,	_	1	punct	_	_
+3	please	_	INTJ	UH	_	1	discourse	_	_
+4	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 3
+# text = And then think about what we really wanna eat .
+1	And	_	CCONJ	CC	_	3	cc	_	_
+2	then	_	ADV	RB	_	3	advmod	_	_
+3	think	_	VERB	VB	_	8	xcomp	_	_
+4	about	_	ADP	IN	_	5	case	_	_
+5	what	_	PRON	WP	_	3	obl	_	_
+6	we	_	PRON	PRP	_	8	nsubj	_	_
+7	really	_	ADV	RB	_	8	advmod	_	_
+8	wan	_	VERB	VBP	_	0	root	_	SpaceAfter=No
+9	na	_	PART	TO	_	10	mark	_	_
+10	eat	_	VERB	VB	_	8	xcomp	_	_
+11	.	_	PUNCT	.	_	10	punct	_	_
+
+# sent_id = 4
+# text = the roads are n't this wide , first of all .
+1	the	_	DET	DT	_	2	det	_	_
+2	roads	_	NOUN	NNS	_	6	nsubj	_	_
+3	are	_	AUX	VBP	_	6	cop	_	_
+4	n't	_	PART	RB	_	6	advmod	_	_
+5	this	_	DET	DT	_	6	det	_	_
+6	wide	_	NOUN	NN	_	0	root	_	_
+7	,	_	PUNCT	,	_	6	punct	_	_
+8	first	_	ADJ	JJ	_	6	advmod	_	_
+9	of	_	ADP	IN	_	10	case	_	_
+10	all	_	DET	DT	_	8	obl	_	_
+11	.	_	PUNCT	.	_	10	punct	_	_
+
+# sent_id = 5
+# text = So yeah , I do n't know about others .
+1	So	_	ADV	RB	_	7	advmod	_	_
+2	yeah	_	INTJ	UH	_	7	discourse	_	_
+3	,	_	PUNCT	,	_	7	punct	_	_
+4	I	_	PRON	PRP	_	7	nsubj	_	_
+5	do	_	AUX	VBP	_	7	aux	_	_
+6	n't	_	PART	RB	_	7	advmod	_	_
+7	know	_	VERB	VB	_	0	root	_	_
+8	about	_	ADP	IN	_	9	case	_	_
+9	others	_	NOUN	NNS	_	7	obl	_	_
+10	.	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 6
+# text = he runs every morning around here I like Tom Cruise .
+1	he	_	PRON	PRP	_	2	nsubj	_	_
+2	runs	_	VERB	VBD	_	0	root	_	_
+3	every	_	DET	DT	_	4	det	_	_
+4	morning	_	NOUN	NN	_	2	obj	_	_
+5	around	_	ADV	RB	_	6	advmod	_	_
+6	here	_	ADV	RB	_	8	advmod	_	_
+7	I	_	PRON	PRP	_	8	nsubj	_	_
+8	like	_	VERB	VBP	_	2	advcl	_	_
+9	Tom	_	PROPN	NNP	_	10	compound	_	_
+10	Cruise	_	NOUN	NN	_	8	obl	_	_
+11	.	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 7
+# text = And she was looking for a nice gift for him .
+1	And	_	CCONJ	CC	_	4	cc	_	_
+2	she	_	PRON	PRP	_	4	nsubj	_	_
+3	was	_	AUX	VBD	_	4	aux	_	_
+4	looking	_	VERB	VBG	_	0	root	_	_
+5	for	_	ADP	IN	_	8	case	_	_
+6	a	_	DET	DT	_	8	det	_	_
+7	nice	_	ADJ	JJ	_	8	amod	_	_
+8	gift	_	NOUN	NN	_	4	obj	_	_
+9	for	_	ADP	IN	_	10	case	_	_
+10	him	_	PRON	PRP	_	8	nmod	_	_
+11	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 8
+# text = One girl is sitting on the chair before the desk .
+1	One	_	NUM	CD	_	2	nummod	_	_
+2	girl	_	NOUN	NN	_	4	nsubj	_	_
+3	is	_	AUX	VBZ	_	4	aux	_	_
+4	sitting	_	VERB	VBG	_	0	root	_	_
+5	on	_	ADP	IN	_	7	case	_	_
+6	the	_	DET	DT	_	7	det	_	_
+7	chair	_	NOUN	NN	_	4	obl	_	_
+8	before	_	ADP	IN	_	10	case	_	_
+9	the	_	DET	DT	_	10	det	_	_
+10	desk	_	NOUN	NN	_	7	nmod	_	_
+11	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 9
+# text = But very interesting .
+1	But	_	CCONJ	CC	_	3	cc	_	_
+2	very	_	ADV	RB	_	3	advmod	_	_
+3	interesting	_	ADJ	JJ	_	0	root	_	_
+4	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 10
+# text = in higher level of English or skills in the area .
+1	in	_	ADP	IN	_	3	case	_	_
+2	higher	_	ADJ	JJR	_	3	amod	_	_
+3	level	_	NOUN	NN	_	0	root	_	_
+4	of	_	ADP	IN	_	5	case	_	_
+5	English	_	PROPN	NNP	_	3	nmod	_	_
+6	or	_	CCONJ	CC	_	7	cc	_	_
+7	skills	_	NOUN	NNS	_	3	conj	_	_
+8	in	_	ADP	IN	_	10	case	_	_
+9	the	_	DET	DT	_	10	det	_	_
+10	area	_	NOUN	NN	_	7	nmod	_	_
+11	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 11
+# text = And ballet is the decide to movement .
+1	And	_	CCONJ	CC	_	2	cc	_	_
+2	ballet	_	NOUN	NN	_	0	root	_	_
+3	is	_	AUX	VBZ	_	5	cop	_	_
+4	the	_	DET	DT	_	5	det	_	_
+5	decide	_	NOUN	NN	_	2	conj	_	_
+6	to	_	ADP	IN	_	7	case	_	_
+7	movement	_	NOUN	NN	_	5	nmod	_	_
+8	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 12
+# text = because life .
+1	because	_	SCONJ	IN	_	2	mark	_	_
+2	life	_	NOUN	NN	_	0	root	_	_
+3	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 13
+# text = My father , my mother , and two sisters .
+1	My	_	PRON	PRP$	_	2	nmod	_	_
+2	father	_	NOUN	NN	_	0	root	_	_
+3	,	_	PUNCT	,	_	2	punct	_	_
+4	my	_	PRON	PRP$	_	5	nmod	_	_
+5	mother	_	NOUN	NN	_	2	conj	_	_
+6	,	_	PUNCT	,	_	9	punct	_	_
+7	and	_	CCONJ	CC	_	9	cc	_	_
+8	two	_	NUM	CD	_	9	nummod	_	_
+9	sisters	_	NOUN	NNS	_	5	conj	_	_
+10	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 14
+# text = yes , yes .
+1	yes	_	INTJ	UH	_	0	root	_	_
+2	,	_	PUNCT	,	_	1	punct	_	_
+3	yes	_	INTJ	UH	_	1	discourse	_	_
+4	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 15
+# text = so I 'm very worried about maybe he think to play good person or try to be good for adult .
+1	so	_	INTJ	UH	_	5	discourse	_	_
+2	I	_	PRON	PRP	_	5	nsubj	_	_
+3	'm	_	AUX	VBP	_	5	cop	_	_
+4	very	_	ADV	RB	_	5	advmod	_	_
+5	worried	_	ADJ	JJ	_	0	root	_	_
+6	about	_	SCONJ	IN	_	9	mark	_	_
+7	maybe	_	ADV	WRB	_	9	advmod	_	_
+8	he	_	PRON	PRP	_	9	nsubj	_	_
+9	think	_	VERB	VBP	_	5	conj	_	_
+10	to	_	PART	TO	_	11	mark	_	_
+11	play	_	VERB	VB	_	9	xcomp	_	_
+12	good	_	ADJ	JJ	_	13	amod	_	_
+13	person	_	NOUN	NN	_	9	ccomp	_	_
+14	or	_	CCONJ	CC	_	15	cc	_	_
+15	try	_	VERB	VB	_	13	conj	_	_
+16	to	_	PART	TO	_	18	mark	_	_
+17	be	_	AUX	VB	_	18	cop	_	_
+18	good	_	ADJ	JJ	_	9	ccomp	_	_
+19	for	_	ADP	IN	_	20	case	_	_
+20	adult	_	NOUN	NN	_	18	obl	_	_
+21	.	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 16
+# text = I hope so .
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	hope	_	VERB	VBP	_	0	root	_	_
+3	so	_	ADV	RB	_	2	advmod	_	_
+4	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 17
+# text = And I just forgot about , you know , giving you the phone that I could n't come .
+1	And	_	CCONJ	CC	_	4	cc	_	_
+2	I	_	PRON	PRP	_	4	nsubj	_	_
+3	just	_	ADV	RB	_	4	advmod	_	_
+4	forgot	_	VERB	VBD	_	18	advcl	_	_
+5	about	_	ADP	IN	_	4	obl	_	_
+6	,	_	PUNCT	,	_	8	punct	_	_
+7	you	_	PRON	PRP	_	8	nsubj	_	_
+8	know	_	VERB	VBP	_	13	parataxis	_	_
+9	,	_	PUNCT	,	_	10	punct	_	_
+10	giving	_	VERB	VBG	_	18	advcl	_	_
+11	you	_	PRON	PRP	_	10	iobj	_	_
+12	the	_	DET	DT	_	13	det	_	_
+13	phone	_	NOUN	NN	_	10	obl	_	_
+14	that	_	SCONJ	IN	_	18	mark	_	_
+15	I	_	PRON	PRP	_	18	nsubj	_	_
+16	could	_	AUX	MD	_	18	aux	_	_
+17	n't	_	PART	RB	_	18	advmod	_	_
+18	come	_	VERB	VB	_	0	root	_	_
+19	.	_	PUNCT	.	_	18	punct	_	_
+
+# sent_id = 18
+# text = last weekend my best friend in Tokyo came to Osaka with his girlfriend to go to Universal Studios in Japan .
+1	last	_	ADJ	JJ	_	2	amod	_	_
+2	weekend	_	NOUN	NN	_	0	root	_	_
+3	my	_	PRON	PRP$	_	5	nmod	_	_
+4	best	_	ADJ	JJS	_	5	amod	_	_
+5	friend	_	NOUN	NN	_	1	conj	_	_
+6	in	_	ADP	IN	_	7	case	_	_
+7	Tokyo	_	PROPN	NNP	_	5	nmod	_	_
+8	came	_	VERB	VBD	_	5	acl	_	_
+9	to	_	ADP	IN	_	10	case	_	_
+10	Osaka	_	PROPN	NNP	_	8	obl	_	_
+11	with	_	ADP	IN	_	13	case	_	_
+12	his	_	PRON	PRP$	_	13	nmod	_	_
+13	girlfriend	_	NOUN	NN	_	8	obl	_	_
+14	to	_	PART	TO	_	15	mark	_	_
+15	go	_	VERB	VB	_	13	acl	_	_
+16	to	_	ADP	IN	_	18	case	_	_
+17	Universal	_	ADJ	JJ	_	18	amod	_	_
+18	Studios	_	NOUN	NNS	_	15	obl	_	_
+19	in	_	ADP	IN	_	20	case	_	_
+20	Japan	_	PROPN	NNP	_	18	obl	_	_
+21	.	_	PUNCT	.	_	15	punct	_	_
+
+# sent_id = 19
+# text = So I just sleep well .
+1	So	_	ADV	RB	_	4	advmod	_	_
+2	I	_	PRON	PRP	_	4	nsubj	_	_
+3	just	_	ADV	RB	_	4	advmod	_	_
+4	sleep	_	VERB	VB	_	0	root	_	_
+5	well	_	ADV	RB	_	4	advmod	_	_
+6	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 20
+# text = But in here , like people are just like wanting to play around a little more .
+1	But	_	CCONJ	CC	_	9	cc	_	_
+2	in	_	ADP	IN	_	3	case	_	_
+3	here	_	ADV	RB	_	5	obl	_	_
+4	,	_	PUNCT	,	_	3	punct	_	_
+5	like	_	ADJ	JJS	_	6	amod	_	_
+6	people	_	NOUN	NNS	_	9	nsubj	_	_
+7	are	_	AUX	VBP	_	9	aux	_	_
+8	just	_	ADV	RB	_	9	advmod	_	_
+9	like	_	VERB	VB	_	10	discourse	_	_
+10	wanting	_	VERB	VBG	_	0	root	_	_
+11	to	_	PART	TO	_	12	mark	_	_
+12	play	_	VERB	VB	_	10	xcomp	_	_
+13	around	_	ADP	IN	_	16	case	_	_
+14	a	_	DET	DT	_	16	det	_	_
+15	little	_	ADJ	JJ	_	16	amod	_	_
+16	more	_	NOUN	NN	_	12	obj	_	_
+17	.	_	PUNCT	.	_	10	punct	_	_
+
+# sent_id = 21
+# text = Osaka City .
+1	Osaka	_	PROPN	NNP	_	2	compound	_	_
+2	City	_	PROPN	NNP	_	0	root	_	_
+3	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 22
+# text = something I ca n't do promise it .
+1	something	_	PRON	NN	_	5	obj	_	_
+2	I	_	PRON	PRP	_	5	nsubj	_	_
+3	ca	_	AUX	MD	_	5	aux	_	_
+4	n't	_	PART	RB	_	5	advmod	_	_
+5	do	_	VERB	VB	_	6	reparandum	_	_
+6	promise	_	VERB	VB	_	0	root	_	_
+7	it	_	PRON	PRP	_	6	obj	_	_
+8	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 23
+# text = And I 'm going on Sunday class because it 's the only available day for me .
+1	And	_	CCONJ	CC	_	4	cc	_	_
+2	I	_	PRON	PRP	_	4	nsubj	_	_
+3	'm	_	AUX	VBP	_	4	aux	_	_
+4	going	_	VERB	VBG	_	0	root	_	_
+5	on	_	ADP	IN	_	7	case	_	_
+6	Sunday	_	PROPN	NNP	_	7	compound	_	_
+7	class	_	NOUN	NN	_	4	obl	_	_
+8	because	_	SCONJ	IN	_	14	mark	_	_
+9	it	_	PRON	PRP	_	14	nsubj	_	_
+10	's	_	AUX	VBZ	_	14	cop	_	_
+11	the	_	DET	DT	_	14	det	_	_
+12	only	_	ADJ	JJ	_	14	amod	_	_
+13	available	_	ADJ	JJ	_	14	amod	_	_
+14	day	_	NOUN	NN	_	4	obl	_	_
+15	for	_	ADP	IN	_	16	case	_	_
+16	me	_	PRON	PRP	_	14	obl	_	_
+17	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 24
+# text = In Japan ?
+1	In	_	ADP	IN	_	2	case	_	_
+2	Japan	_	PROPN	NNP	_	0	root	_	_
+3	?	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 25
+# text = I 'm sorry .
+1	I	_	PRON	PRP	_	3	nsubj	_	_
+2	'm	_	AUX	VBP	_	3	cop	_	_
+3	sorry	_	ADJ	JJ	_	0	root	_	_
+4	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 26
+# text = and after that , I moved to Okinawa in Ishikawa Prefecture to study structure engineering in my university .
+1	and	_	CCONJ	CC	_	2	cc	_	_
+2	after	_	ADP	IN	_	3	case	_	_
+3	that	_	PRON	DT	_	6	obl	_	_
+4	,	_	PUNCT	,	_	3	punct	_	_
+5	I	_	PRON	PRP	_	6	nsubj	_	_
+6	moved	_	VERB	VBD	_	0	root	_	_
+7	to	_	PART	TO	_	8	case	_	_
+8	Okinawa	_	PROPN	NNP	_	6	obl	_	_
+9	in	_	ADP	IN	_	11	case	_	_
+10	Ishikawa	_	PROPN	NNP	_	11	compound	_	_
+11	Prefecture	_	PROPN	NNP	_	8	obl	_	_
+12	to	_	PART	TO	_	13	mark	_	_
+13	study	_	VERB	VB	_	11	acl	_	_
+14	structure	_	NOUN	NN	_	15	nmod	_	_
+15	engineering	_	NOUN	NN	_	13	obj	_	_
+16	in	_	ADP	IN	_	18	case	_	_
+17	my	_	PRON	PRP$	_	18	nmod	_	_
+18	university	_	NOUN	NN	_	15	nmod	_	_
+19	.	_	PUNCT	.	_	13	punct	_	_
+
+# sent_id = 27
+# text = Thank you .
+1	Thank	_	VERB	VBP	_	0	root	_	_
+2	you	_	PRON	PRP	_	1	obj	_	_
+3	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 28
+# text = I do n't know where to stay .
+1	I	_	PRON	PRP	_	4	nsubj	_	_
+2	do	_	AUX	VBP	_	4	aux	_	_
+3	n't	_	PART	RB	_	4	advmod	_	_
+4	know	_	VERB	VB	_	0	root	_	_
+5	where	_	ADV	WRB	_	4	advmod	_	_
+6	to	_	PART	TO	_	7	mark	_	_
+7	stay	_	VERB	VB	_	5	acl	_	_
+8	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 29
+# text = Therefore , I have a bit spare time in the office .
+1	Therefore	_	ADV	RB	_	4	advmod	_	_
+2	,	_	PUNCT	,	_	4	punct	_	_
+3	I	_	PRON	PRP	_	4	nsubj	_	_
+4	have	_	VERB	VBP	_	0	root	_	_
+5	a	_	DET	DT	_	6	det	_	_
+6	bit	_	NOUN	NN	_	4	obl	_	_
+7	spare	_	AUX	VBP	_	4	advcl	_	_
+8	time	_	NOUN	NN	_	7	advcl	_	_
+9	in	_	ADP	IN	_	11	case	_	_
+10	the	_	DET	DT	_	11	det	_	_
+11	office	_	NOUN	NN	_	8	nmod	_	_
+12	.	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 30
+# text = can not it be done earlier than tomorrow ?
+1	can	_	AUX	MD	_	5	aux	_	_
+2	not	_	PART	RB	_	5	advmod	_	_
+3	it	_	PRON	PRP	_	5	nsubj	_	_
+4	be	_	AUX	VB	_	5	aux	_	_
+5	done	_	VERB	VBN	_	0	root	_	_
+6	earlier	_	ADJ	JJR	_	8	amod	_	_
+7	than	_	ADP	IN	_	6	fixed	_	_
+8	tomorrow	_	NOUN	NN	_	5	obl	_	_
+9	?	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 31
+# text = And so on .
+1	And	_	CCONJ	CC	_	3	cc	_	_
+2	so	_	ADV	RB	_	3	advmod	_	_
+3	on	_	ADV	RB	_	0	root	_	_
+4	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 32
+# text = And this Japanese businessman was one of the person who was standing in front of the lines .
+1	And	_	CCONJ	CC	_	4	cc	_	_
+2	this	_	DET	DT	_	4	det	_	_
+3	Japanese	_	ADJ	JJ	_	4	amod	_	_
+4	businessman	_	NOUN	NN	_	6	nsubj	_	_
+5	was	_	AUX	VBD	_	6	cop	_	_
+6	one	_	NUM	CD	_	0	root	_	_
+7	of	_	ADP	IN	_	9	case	_	_
+8	the	_	DET	DT	_	9	det	_	_
+9	person	_	NOUN	NN	_	4	acl	_	_
+10	who	_	PRON	WP	_	12	nsubj	_	_
+11	was	_	AUX	VBD	_	12	aux	_	_
+12	standing	_	VERB	VBG	_	9	acl	_	_
+13	in	_	ADP	IN	_	14	case	_	_
+14	front	_	NOUN	NN	_	12	obl	_	_
+15	of	_	ADP	IN	_	17	case	_	_
+16	the	_	DET	DT	_	17	det	_	_
+17	lines	_	NOUN	NNS	_	14	nmod	_	_
+18	.	_	PUNCT	.	_	12	punct	_	_
+
+# sent_id = 33
+# text = And people are very kind to me , so I have a very good experience .
+1	And	_	CCONJ	CC	_	2	cc	_	_
+2	people	_	NOUN	NNS	_	5	nsubj	_	_
+3	are	_	AUX	VBP	_	5	cop	_	_
+4	very	_	ADV	RB	_	5	advmod	_	_
+5	kind	_	ADV	RBS	_	11	ccomp	_	_
+6	to	_	ADP	IN	_	7	case	_	_
+7	me	_	PRON	PRP	_	5	obl	_	_
+8	,	_	PUNCT	,	_	11	punct	_	_
+9	so	_	ADV	RB	_	11	advmod	_	_
+10	I	_	PRON	PRP	_	11	nsubj	_	_
+11	have	_	VERB	VBP	_	0	root	_	_
+12	a	_	DET	DT	_	15	det	_	_
+13	very	_	ADV	RB	_	14	advmod	_	_
+14	good	_	ADJ	JJ	_	15	amod	_	_
+15	experience	_	NOUN	NN	_	11	obj	_	_
+16	.	_	PUNCT	.	_	11	punct	_	_
+
+# sent_id = 34
+# text = Thank you very much .
+1	Thank	_	VERB	VBP	_	0	root	_	_
+2	you	_	PRON	PRP	_	1	obj	_	_
+3	very	_	ADV	RB	_	4	advmod	_	_
+4	much	_	ADV	RB	_	1	advmod	_	_
+5	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 35
+# text = Thank you very much .
+1	Thank	_	VERB	VBP	_	0	root	_	_
+2	you	_	PRON	PRP	_	1	obj	_	_
+3	very	_	ADV	RB	_	4	advmod	_	_
+4	much	_	ADV	RB	_	1	advmod	_	_
+5	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 36
+# text = We were very fortunate escape the night from storm .
+1	We	_	PRON	PRP	_	4	nsubj	_	_
+2	were	_	AUX	VBD	_	4	cop	_	_
+3	very	_	ADV	RB	_	4	advmod	_	_
+4	fortunate	_	ADJ	JJ	_	5	advmod	_	_
+5	escape	_	VERB	VB	_	0	root	_	_
+6	the	_	DET	DT	_	7	det	_	_
+7	night	_	NOUN	NN	_	5	obj	_	_
+8	from	_	ADP	IN	_	9	case	_	_
+9	storm	_	NOUN	NN	_	7	nmod	_	_
+10	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 37
+# text = Gifu stands for Kyoto .
+1	Gifu	_	PROPN	NNP	_	2	nsubj	_	_
+2	stands	_	VERB	VBZ	_	0	root	_	_
+3	for	_	ADP	IN	_	4	case	_	_
+4	Kyoto	_	PROPN	NNP	_	2	obl	_	_
+5	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 38
+# text = What do he do ?
+1	What	_	PRON	WP	_	4	obj	_	_
+2	do	_	AUX	VBP	_	4	aux	_	_
+3	he	_	PRON	PRP	_	4	nsubj	_	_
+4	do	_	VERB	VB	_	0	root	_	_
+5	?	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 39
+# text = I think it 's a math class .
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	think	_	VERB	VBP	_	0	root	_	_
+3	it	_	PRON	PRP	_	7	nsubj	_	_
+4	's	_	AUX	VBZ	_	7	cop	_	_
+5	a	_	DET	DT	_	7	det	_	_
+6	math	_	NOUN	NN	_	7	compound	_	_
+7	class	_	NOUN	NN	_	2	obl	_	_
+8	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 40
+# text = And I do n't know , but they are really cute , I think .
+1	And	_	CCONJ	CC	_	5	cc	_	_
+2	I	_	PRON	PRP	_	5	nsubj	_	_
+3	do	_	AUX	VBP	_	5	aux	_	_
+4	n't	_	PART	RB	_	5	advmod	_	_
+5	know	_	VERB	VB	_	11	parataxis	_	_
+6	,	_	PUNCT	,	_	5	punct	_	_
+7	but	_	CCONJ	CC	_	11	cc	_	_
+8	they	_	PRON	PRP	_	11	nsubj	_	_
+9	are	_	AUX	VBP	_	11	cop	_	_
+10	really	_	ADV	RB	_	11	advmod	_	_
+11	cute	_	ADJ	JJ	_	0	root	_	_
+12	,	_	PUNCT	,	_	14	punct	_	_
+13	I	_	PRON	PRP	_	14	nsubj	_	_
+14	think	_	VERB	VBP	_	11	parataxis	_	_
+15	.	_	PUNCT	.	_	14	punct	_	_
+
+# sent_id = 41
+# text = So I 'm going to find one shouchu for my father .
+1	So	_	ADV	RB	_	4	advmod	_	_
+2	I	_	PRON	PRP	_	4	nsubj	_	_
+3	'm	_	AUX	VBP	_	4	aux	_	_
+4	going	_	VERB	VBG	_	0	root	_	_
+5	to	_	PART	TO	_	6	mark	_	_
+6	find	_	VERB	VB	_	4	xcomp	_	_
+7	one	_	NUM	CD	_	8	nummod	_	_
+8	shouchu	_	NOUN	NN	_	6	obj	_	_
+9	for	_	ADP	IN	_	11	case	_	_
+10	my	_	PRON	PRP$	_	11	nmod	_	_
+11	father	_	NOUN	NN	_	6	obl	_	_
+12	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 42
+# text = I think she loves her computer .
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	think	_	VERB	VBP	_	0	root	_	_
+3	she	_	PRON	PRP	_	4	nsubj	_	_
+4	loves	_	VERB	VBZ	_	2	ccomp	_	_
+5	her	_	PRON	PRP$	_	6	nmod	_	_
+6	computer	_	NOUN	NN	_	4	obj	_	_
+7	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 43
+# text = And there , I copy . that 's a point , but you know , actually our favorites is almost same reading books , sing , and part - time job .
+1	And	_	CCONJ	CC	_	5	cc	_	_
+2	there	_	ADV	RB	_	5	advmod	_	_
+3	,	_	PUNCT	,	_	5	punct	_	_
+4	I	_	PRON	PRP	_	5	nsubj	_	_
+5	copy	_	VERB	VBP	_	0	root	_	_
+6	.	_	PUNCT	.	_	5	punct	_	_
+7	that	_	PRON	DT	_	10	nsubj	_	_
+8	's	_	AUX	VBZ	_	10	cop	_	_
+9	a	_	DET	DT	_	10	det	_	_
+10	point	_	NOUN	NN	_	5	conj	_	_
+11	,	_	PUNCT	,	_	14	punct	_	_
+12	but	_	CCONJ	CC	_	14	cc	_	_
+13	you	_	PRON	PRP	_	14	nsubj	_	_
+14	know	_	VERB	VBP	_	25	parataxis	_	_
+15	,	_	PUNCT	,	_	14	punct	_	_
+16	actually	_	ADV	RB	_	18	advmod	_	_
+17	our	_	PRON	PRP$	_	18	nmod	_	_
+18	favorites	_	NOUN	NNS	_	10	nmod	_	_
+19	is	_	AUX	VBZ	_	21	cop	_	_
+20	almost	_	ADV	RB	_	21	advmod	_	_
+21	same	_	ADJ	JJ	_	23	amod	_	_
+22	reading	_	NOUN	NN	_	23	compound	_	_
+23	books	_	NOUN	NNS	_	18	conj	_	_
+24	,	_	PUNCT	,	_	25	punct	_	_
+25	sing	_	VERB	VB	_	18	conj	_	_
+26	,	_	PUNCT	,	_	31	punct	_	_
+27	and	_	CCONJ	CC	_	31	cc	_	_
+28	part	_	NOUN	NN	_	30	compound	_	_
+29	-	_	PUNCT	HYPH	_	28	punct	_	_
+30	time	_	NOUN	NN	_	31	compound	_	_
+31	job	_	NOUN	NN	_	25	obl	_	_
+32	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 44
+# text = whatever happens to he or she , who are from Japan , just smile ,
+1	whatever	_	ADV	RB	_	2	advmod	_	_
+2	happens	_	VERB	VBZ	_	0	root	_	_
+3	to	_	ADP	IN	_	4	case	_	_
+4	he	_	PRON	PRP	_	2	obl	_	_
+5	or	_	CCONJ	CC	_	6	cc	_	_
+6	she	_	PRON	PRP	_	4	conj	_	_
+7	,	_	PUNCT	,	_	4	punct	_	_
+8	who	_	PRON	WP	_	4	conj	_	_
+9	are	_	AUX	VBP	_	11	cop	_	_
+10	from	_	ADP	IN	_	11	case	_	_
+11	Japan	_	PROPN	NNP	_	8	xcomp	_	_
+12	,	_	PUNCT	,	_	14	punct	_	_
+13	just	_	ADV	RB	_	14	advmod	_	_
+14	smile	_	VERB	WP$	_	2	parataxis	_	_
+15	,	_	PUNCT	,	_	14	punct	_	_
+
+# sent_id = 45
+# text = do not complain , do not protest ,
+1	do	_	AUX	VB	_	3	aux	_	_
+2	not	_	PART	RB	_	3	advmod	_	_
+3	complain	_	VERB	VB	_	0	root	_	_
+4	,	_	PUNCT	,	_	7	punct	_	_
+5	do	_	AUX	VBP	_	7	aux	_	_
+6	not	_	PART	RB	_	7	advmod	_	_
+7	protest	_	VERB	VB	_	3	advcl	_	_
+8	,	_	PUNCT	,	_	7	punct	_	_
+
+# sent_id = 46
+# text = just smile and say
+1	just	_	ADV	RB	_	2	advmod	_	_
+2	smile	_	VERB	VB	_	0	root	_	_
+3	and	_	CCONJ	CC	_	4	cc	_	_
+4	say	_	VERB	VBP	_	2	conj	_	_
+
+# sent_id = 47
+# text = , " It 's OK , OK . " .
+1	,	_	PUNCT	,	_	5	punct	_	_
+2	"	_	PUNCT	``	_	5	punct	_	_
+3	It	_	PRON	PRP	_	5	nsubj	_	_
+4	's	_	AUX	VBZ	_	5	cop	_	_
+5	OK	_	ADJ	JJ	_	0	root	_	_
+6	,	_	PUNCT	,	_	5	punct	_	_
+7	OK	_	INTJ	UH	_	5	discourse	_	_
+8	.	_	PUNCT	.	_	5	punct	_	_
+9	"	_	PUNCT	''	_	5	discourse	_	_
+10	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 48
+# text = And unfortunately , the motorcyclist dropped the cell phone .
+1	And	_	CCONJ	CC	_	2	cc	_	_
+2	unfortunately	_	ADV	RB	_	6	advmod	_	_
+3	,	_	PUNCT	,	_	2	punct	_	_
+4	the	_	DET	DT	_	5	det	_	_
+5	motorcyclist	_	NOUN	NN	_	6	nsubj	_	_
+6	dropped	_	VERB	VBD	_	0	root	_	_
+7	the	_	DET	DT	_	9	det	_	_
+8	cell	_	NOUN	NN	_	9	compound	_	_
+9	phone	_	NOUN	NN	_	6	obl	_	_
+10	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 49
+# text = there are lot of old people .
+1	there	_	PRON	EX	_	2	expl	_	_
+2	are	_	VERB	VBP	_	0	root	_	_
+3	lot	_	NOUN	NN	_	2	nsubj	_	_
+4	of	_	ADP	IN	_	6	case	_	_
+5	old	_	ADJ	JJ	_	6	amod	_	_
+6	people	_	NOUN	NNS	_	3	nmod	_	_
+7	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 50
+# text = up of this floor , perhaps there are my two friend
+1	up	_	ADP	RP	_	8	nsubj	_	_
+2	of	_	ADP	IN	_	4	case	_	_
+3	this	_	DET	DT	_	4	det	_	_
+4	floor	_	NOUN	NN	_	1	obl	_	_
+5	,	_	PUNCT	,	_	8	punct	_	_
+6	perhaps	_	ADV	RB	_	8	advmod	_	_
+7	there	_	PRON	EX	_	8	expl	_	_
+8	are	_	VERB	VBP	_	0	root	_	_
+9	my	_	PRON	PRP$	_	11	nmod	_	_
+10	two	_	NUM	CD	_	11	nummod	_	_
+11	friend	_	NOUN	NN	_	8	obl	_	_
+
+# sent_id = 1
+# text = From the AP comes this story
+1	From	_	ADP	IN	_	3	case	_	_
+2	the	_	DET	DT	_	3	det	_	_
+3	AP	_	PROPN	NNP	_	4	nsubj	_	_
+4	comes	_	VERB	VBZ	_	0	root	_	_
+5	this	_	DET	DT	_	6	det	_	_
+6	story	_	NOUN	NN	_	4	obj	_	_
+
+# sent_id = 2
+# text = : President Bush on Tuesday nominated two individuals to replace retiring jurists on federal courts in the Washington area.
+1	:	_	PUNCT	:	_	6	punct	_	_
+2	President	_	PROPN	NNP	_	3	compound	_	_
+3	Bush	_	PROPN	NNP	_	6	nsubj	_	_
+4	on	_	ADP	IN	_	5	case	_	_
+5	Tuesday	_	PROPN	NNP	_	6	obl	_	_
+6	nominated	_	VERB	VBD	_	0	root	_	_
+7	two	_	NUM	CD	_	8	nummod	_	_
+8	individuals	_	NOUN	NNS	_	6	obj	_	_
+9	to	_	PART	TO	_	10	mark	_	_
+10	replace	_	VERB	VB	_	6	xcomp	_	_
+11	retiring	_	VERB	VBG	_	12	amod	_	_
+12	jurists	_	NOUN	NNS	_	10	obj	_	_
+13	on	_	ADP	IN	_	15	case	_	_
+14	federal	_	ADJ	JJ	_	15	amod	_	_
+15	courts	_	NOUN	NNS	_	12	nmod	_	_
+16	in	_	ADP	IN	_	19	case	_	_
+17	the	_	DET	DT	_	19	det	_	_
+18	Washington	_	PROPN	NNP	_	19	compound	_	_
+19	area	_	NOUN	NN	_	15	nmod	_	SpaceAfter=No
+20	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 3
+# text = Bush nominated Jennifer M. Anderson for a 15-year term as associate judge of the Superior Court of the District of Columbia, replacing Steffen W. Graae.
+1	Bush	_	PROPN	NNP	_	2	nsubj	_	_
+2	nominated	_	VERB	VBD	_	0	root	_	_
+3	Jennifer	_	PROPN	NNP	_	2	parataxis	_	_
+4	M	_	PUNCT	-RRB-	_	3	punct	_	SpaceAfter=No
+5	.	_	PUNCT	.	_	3	punct	_	_
+6	Anderson	_	PROPN	NNP	_	3	conj	_	_
+7	for	_	ADP	IN	_	12	case	_	_
+8	a	_	DET	DT	_	12	det	_	_
+9	15	_	NUM	CD	_	11	nummod	_	SpaceAfter=No
+10	-	_	PUNCT	HYPH	_	9	punct	_	SpaceAfter=No
+11	year	_	NOUN	NN	_	12	compound	_	_
+12	term	_	NOUN	NN	_	2	obj	_	_
+13	as	_	ADP	IN	_	15	case	_	_
+14	associate	_	ADJ	JJ	_	15	amod	_	_
+15	judge	_	NOUN	NN	_	12	nmod	_	_
+16	of	_	ADP	IN	_	19	case	_	_
+17	the	_	DET	DT	_	19	det	_	_
+18	Superior	_	ADJ	JJR	_	19	amod	_	_
+19	Court	_	PROPN	NNP	_	15	nmod	_	_
+20	of	_	ADP	IN	_	22	case	_	_
+21	the	_	DET	DT	_	22	det	_	_
+22	District	_	PROPN	NNP	_	19	nmod	_	_
+23	of	_	ADP	IN	_	24	case	_	_
+24	Columbia	_	PROPN	NNP	_	22	nmod	_	SpaceAfter=No
+25	,	_	PUNCT	,	_	26	punct	_	_
+26	replacing	_	VERB	VBG	_	19	advcl	_	_
+27	Steffen	_	PROPN	NNP	_	26	obj	_	_
+28	W.	_	PROPN	NNP	_	27	flat	_	_
+29	Graae	_	PROPN	NNP	_	27	conj	_	SpaceAfter=No
+30	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 4
+# text = ***
+1	***	_	X	LS	_	0	root	_	_
+
+# sent_id = 5
+# text = Bush also nominated A. Noel Anketell Kramer for a 15-year term as associate judge of the District of Columbia Court of Appeals, replacing John Montague Steadman.
+1	Bush	_	PROPN	NNP	_	3	nsubj	_	_
+2	also	_	ADV	RB	_	3	advmod	_	_
+3	nominated	_	VERB	VBD	_	0	root	_	_
+4	A	_	DET	DT	_	3	det	_	SpaceAfter=No
+5	.	_	PUNCT	.	_	3	punct	_	_
+6	Noel	_	PROPN	NNP	_	27	nsubj	_	_
+7	Anketell	_	PROPN	NNP	_	6	flat	_	_
+8	Kramer	_	PROPN	NNP	_	6	flat	_	_
+9	for	_	ADP	IN	_	14	case	_	_
+10	a	_	DET	DT	_	14	det	_	_
+11	15	_	NUM	CD	_	13	nummod	_	SpaceAfter=No
+12	-	_	PUNCT	HYPH	_	11	punct	_	SpaceAfter=No
+13	year	_	NOUN	NN	_	14	compound	_	_
+14	term	_	NOUN	NN	_	8	conj	_	_
+15	as	_	ADP	IN	_	17	case	_	_
+16	associate	_	ADJ	JJ	_	17	amod	_	_
+17	judge	_	NOUN	NN	_	14	nmod	_	_
+18	of	_	ADP	IN	_	20	case	_	_
+19	the	_	DET	DT	_	20	det	_	_
+20	District	_	PROPN	NNP	_	17	nmod	_	_
+21	of	_	ADP	IN	_	23	case	_	_
+22	Columbia	_	PROPN	NNP	_	23	compound	_	_
+23	Court	_	PROPN	NNP	_	20	nmod	_	_
+24	of	_	ADP	IN	_	25	case	_	_
+25	Appeals	_	PROPN	NNP	_	23	nmod	_	SpaceAfter=No
+26	,	_	PUNCT	,	_	27	punct	_	_
+27	replacing	_	VERB	VBG	_	3	advcl	_	_
+28	John	_	PROPN	NNP	_	27	nsubj	_	_
+29	Montague	_	PROPN	NNP	_	30	compound	_	_
+30	Steadman	_	PROPN	NNP	_	28	vocative	_	SpaceAfter=No
+31	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 1
+# text = Introduction
+1	Introduction	_	NOUN	NN	_	0	root	_	_
+
+# sent_id = 2
+# text = Research on adult-learned second language (L2) has provided considerable insight into the neurocognitive mechanisms underlying the learning and processing of L2 grammar [1]–[11].
+1	Research	_	NOUN	NN	_	12	nsubj	_	_
+2	on	_	ADP	IN	_	3	case	_	_
+3	adult	_	NOUN	NN	_	5	compound	_	SpaceAfter=No
+4	-	_	PUNCT	HYPH	_	3	punct	_	SpaceAfter=No
+5	learned	_	VERB	VBN	_	1	amod	_	_
+6	second	_	ADJ	JJ	_	7	amod	_	_
+7	language	_	NOUN	NN	_	5	obl	_	_
+8	(	_	PUNCT	-LRB-	_	9	punct	_	SpaceAfter=No
+9	L2	_	PROPN	NNP	_	7	appos	_	SpaceAfter=No
+10	)	_	PUNCT	-RRB-	_	9	punct	_	_
+11	has	_	AUX	VBZ	_	12	aux	_	_
+12	provided	_	VERB	VBN	_	0	root	_	_
+13	considerable	_	ADJ	JJ	_	14	amod	_	_
+14	insight	_	NOUN	NN	_	12	obj	_	_
+15	into	_	ADP	IN	_	18	case	_	_
+16	the	_	DET	DT	_	18	det	_	_
+17	neurocognitive	_	ADJ	JJ	_	18	amod	_	_
+18	mechanisms	_	NOUN	NN	_	12	obl	_	_
+19	underlying	_	DET	PDT	_	21	det	_	_
+20	the	_	DET	DT	_	21	det	_	_
+21	learning	_	NOUN	NN	_	18	nmod	_	_
+22	and	_	CCONJ	CC	_	23	cc	_	_
+23	processing	_	NOUN	NN	_	21	conj	_	_
+24	of	_	ADP	IN	_	26	case	_	_
+25	L2	_	NOUN	NN	_	26	compound	_	_
+26	grammar	_	NOUN	NN	_	23	nmod	_	_
+27	[	_	PUNCT	-LRB-	_	28	punct	_	SpaceAfter=No
+28	1	_	NUM	CD	_	12	parataxis	_	SpaceAfter=No
+29	]	_	PUNCT	-RRB-	_	28	punct	_	SpaceAfter=No
+30	–	_	PUNCT	:	_	32	punct	_	SpaceAfter=No
+31	[	_	PUNCT	-LRB-	_	32	punct	_	SpaceAfter=No
+32	11	_	NUM	CD	_	28	conj	_	SpaceAfter=No
+33	]	_	PUNCT	-RRB-	_	32	punct	_	SpaceAfter=No
+34	.	_	PUNCT	.	_	12	punct	_	_
+
+# sent_id = 3
+# text = Of interest here, studies suggest that, despite the difficulties in acquiring L2 grammar, adult learners can approximate native-like levels of use and neurocognitive processing [12]–[15].
+1	Of	_	ADP	IN	_	2	case	_	_
+2	interest	_	NOUN	NN	_	3	nmod	_	_
+3	here	_	ADV	RB	_	6	advmod	_	SpaceAfter=No
+4	,	_	PUNCT	,	_	3	punct	_	_
+5	studies	_	NOUN	NNS	_	6	nsubj	_	_
+6	suggest	_	VERB	VBP	_	0	root	_	_
+7	that	_	SCONJ	IN	_	6	mark	_	SpaceAfter=No
+8	,	_	PUNCT	,	_	11	punct	_	_
+9	despite	_	ADP	IN	_	11	case	_	_
+10	the	_	DET	DT	_	11	det	_	_
+11	difficulties	_	NOUN	NNS	_	6	obl	_	_
+12	in	_	SCONJ	IN	_	13	mark	_	_
+13	acquiring	_	VERB	VBG	_	11	acl	_	_
+14	L2	_	NOUN	NN	_	15	compound	_	_
+15	grammar	_	NOUN	NN	_	13	obj	_	SpaceAfter=No
+16	,	_	PUNCT	,	_	18	punct	_	_
+17	adult	_	NOUN	NN	_	18	compound	_	_
+18	learners	_	NOUN	NNS	_	15	nmod	_	_
+19	can	_	AUX	MD	_	20	aux	_	_
+20	approximate	_	ADJ	JJ	_	24	amod	_	_
+21	native	_	ADJ	JJ	_	23	amod	_	SpaceAfter=No
+22	-	_	PUNCT	HYPH	_	21	punct	_	SpaceAfter=No
+23	like	_	ADJ	JJ	_	24	amod	_	_
+24	levels	_	NOUN	NNS	_	6	obl	_	_
+25	of	_	ADP	IN	_	26	case	_	_
+26	use	_	NOUN	NN	_	24	nmod	_	_
+27	and	_	CCONJ	CC	_	29	cc	_	_
+28	neurocognitive	_	ADJ	JJ	_	29	amod	_	_
+29	processing	_	NOUN	NN	_	26	conj	_	_
+30	[	_	PUNCT	-LRB-	_	31	punct	_	SpaceAfter=No
+31	1	_	NUM	-LRB-	_	32	punct	_	SpaceAfter=No
+32	2	_	NUM	CD	_	29	conj	_	SpaceAfter=No
+33	]	_	PUNCT	-RRB-	_	32	punct	_	SpaceAfter=No
+34	–	_	PUNCT	:	_	36	punct	_	SpaceAfter=No
+35	[	_	PUNCT	-LRB-	_	36	punct	_	SpaceAfter=No
+36	15	_	NUM	CD	_	32	conj	_	SpaceAfter=No
+37	]	_	PUNCT	-RRB-	_	36	punct	_	SpaceAfter=No
+38	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 4
+# text = However, it is not enough to have attained such native-like levels.
+1	However	_	ADV	RB	_	6	advmod	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+3	it	_	PRON	PRP	_	6	expl	_	_
+4	is	_	AUX	VBZ	_	6	cop	_	_
+5	not	_	PART	RB	_	6	advmod	_	_
+6	enough	_	ADJ	JJ	_	0	root	_	_
+7	to	_	PART	TO	_	9	mark	_	_
+8	have	_	AUX	VB	_	9	aux	_	_
+9	attained	_	VERB	VBN	_	6	acl	_	_
+10	such	_	ADJ	JJ	_	14	amod	_	_
+11	native	_	ADJ	JJ	_	13	amod	_	SpaceAfter=No
+12	-	_	PUNCT	HYPH	_	11	punct	_	SpaceAfter=No
+13	like	_	ADJ	JJ	_	14	amod	_	_
+14	levels	_	NOUN	NNS	_	9	obl	_	SpaceAfter=No
+15	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 5
+# text = Crucially, it is also desirable to retain them, even in the absence of continued practice or exposure to the L2.
+1	Crucially	_	ADV	RB	_	6	advmod	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+3	it	_	PRON	PRP	_	6	expl	_	_
+4	is	_	AUX	VBZ	_	6	cop	_	_
+5	also	_	ADV	RB	_	6	advmod	_	_
+6	desirable	_	ADJ	JJ	_	0	root	_	_
+7	to	_	PART	TO	_	8	mark	_	_
+8	retain	_	VERB	VB	_	6	advcl	_	_
+9	them	_	PRON	PRP	_	8	obl	_	SpaceAfter=No
+10	,	_	PUNCT	,	_	14	punct	_	_
+11	even	_	ADV	RB	_	14	advmod	_	_
+12	in	_	ADP	IN	_	14	case	_	_
+13	the	_	DET	DT	_	14	det	_	_
+14	absence	_	NOUN	NN	_	8	obl	_	_
+15	of	_	ADP	IN	_	17	case	_	_
+16	continued	_	VERB	VBN	_	17	amod	_	_
+17	practice	_	NOUN	NN	_	14	nmod	_	_
+18	or	_	CCONJ	CC	_	19	cc	_	_
+19	exposure	_	NOUN	NN	_	17	conj	_	_
+20	to	_	ADP	IN	_	22	case	_	_
+21	the	_	DET	DT	_	22	det	_	_
+22	L2	_	NOUN	NN	_	19	nmod	_	SpaceAfter=No
+23	.	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 6
+# text = In fact, substantial periods (months to years) of limited or no exposure following L2 training are not uncommon, and may even be the norm [16].
+1	In	_	ADP	IN	_	2	case	_	_
+2	fact	_	NOUN	NN	_	5	obl	_	SpaceAfter=No
+3	,	_	PUNCT	,	_	2	punct	_	_
+4	substantial	_	ADJ	JJ	_	5	amod	_	_
+5	periods	_	NOUN	NNS	_	21	obl	_	_
+6	(	_	PUNCT	-LRB-	_	7	punct	_	SpaceAfter=No
+7	months	_	NOUN	NNS	_	5	appos	_	_
+8	to	_	ADP	IN	_	9	case	_	_
+9	years	_	NOUN	NNS	_	7	nmod	_	SpaceAfter=No
+10	)	_	PUNCT	-RRB-	_	7	punct	_	_
+11	of	_	ADP	IN	_	12	case	_	_
+12	limited	_	VERB	VBN	_	5	amod	_	_
+13	or	_	CCONJ	CC	_	15	cc	_	_
+14	no	_	DET	DT	_	15	det	_	_
+15	exposure	_	NOUN	NN	_	12	obl	_	_
+16	following	_	VERB	VBG	_	18	case	_	_
+17	L2	_	NOUN	NN	_	18	compound	_	_
+18	training	_	NOUN	NN	_	15	nmod	_	_
+19	are	_	AUX	VBP	_	21	cop	_	_
+20	not	_	PART	RB	_	21	advmod	_	_
+21	uncommon	_	ADJ	JJ	_	0	root	_	SpaceAfter=No
+22	,	_	PUNCT	,	_	28	punct	_	_
+23	and	_	CCONJ	CC	_	28	cc	_	_
+24	may	_	AUX	MD	_	28	aux	_	_
+25	even	_	ADV	RB	_	28	advmod	_	_
+26	be	_	AUX	VB	_	28	cop	_	_
+27	the	_	DET	DT	_	28	det	_	_
+28	norm	_	NOUN	NN	_	21	xcomp	_	_
+29	[	_	PUNCT	-LRB-	_	30	punct	_	SpaceAfter=No
+30	16	_	NUM	CD	_	21	parataxis	_	SpaceAfter=No
+31	]	_	PUNCT	-RRB-	_	30	punct	_	SpaceAfter=No
+32	.	_	PUNCT	.	_	21	punct	_	_
+
+# sent_id = 7
+# text = Such a scenario may be found in different situations, including when one studies a language in a classroom
+1	Such	_	DET	PDT	_	3	det	_	_
+2	a	_	DET	DT	_	3	det	_	_
+3	scenario	_	NOUN	NN	_	6	nsubj	_	_
+4	may	_	AUX	MD	_	6	aux	_	_
+5	be	_	AUX	VB	_	6	aux	_	_
+6	found	_	VERB	VBN	_	0	root	_	_
+7	in	_	ADP	IN	_	9	case	_	_
+8	different	_	ADJ	JJ	_	9	amod	_	_
+9	situations	_	NOUN	NNS	_	6	obl	_	SpaceAfter=No
+10	,	_	PUNCT	,	_	14	punct	_	_
+11	including	_	VERB	VBG	_	14	case	_	_
+12	when	_	ADV	WRB	_	13	advmod	_	_
+13	one	_	NUM	CD	_	14	nummod	_	_
+14	studies	_	NOUN	NNS	_	6	obl	_	_
+15	a	_	DET	DT	_	16	det	_	_
+16	language	_	NOUN	NN	_	14	nmod	_	_
+17	in	_	ADP	IN	_	19	case	_	_
+18	a	_	DET	DT	_	19	det	_	_
+19	classroom	_	NOUN	NN	_	16	nmod	_	_
+
+# sent_id = 8
+# text = and then stops taking classes [17], [18] and when one is immersed in a foreign language setting
+1	and	_	CCONJ	CC	_	3	cc	_	_
+2	then	_	ADV	RB	_	3	advmod	_	_
+3	stops	_	VERB	VBZ	_	0	root	_	_
+4	taking	_	VERB	VBG	_	3	xcomp	_	_
+5	classes	_	NOUN	NNS	_	4	obj	_	_
+6	[	_	PUNCT	-LRB-	_	7	punct	_	SpaceAfter=No
+7	17	_	NUM	CD	_	4	parataxis	_	SpaceAfter=No
+8	]	_	PUNCT	-RRB-	_	7	punct	_	SpaceAfter=No
+9	,	_	PUNCT	,	_	11	punct	_	_
+10	[	_	PUNCT	-LRB-	_	11	punct	_	SpaceAfter=No
+11	18	_	NUM	CD	_	7	conj	_	SpaceAfter=No
+12	]	_	PUNCT	-RRB-	_	11	punct	_	_
+13	and	_	CCONJ	CC	_	17	cc	_	_
+14	when	_	ADV	WRB	_	17	advmod	_	_
+15	one	_	PRON	PRP	_	17	nsubj	_	_
+16	is	_	AUX	VBZ	_	17	aux	_	_
+17	immersed	_	VERB	VBN	_	3	advcl	_	_
+18	in	_	ADP	IN	_	21	case	_	_
+19	a	_	DET	DT	_	21	det	_	_
+20	foreign	_	ADJ	JJ	_	21	amod	_	_
+21	language	_	NOUN	NN	_	22	compound	_	_
+22	setting	_	NOUN	NN	_	17	obl	_	_
+
+# sent_id = 9
+# text = and then moves away [19].
+1	and	_	CCONJ	CC	_	3	cc	_	_
+2	then	_	ADV	RB	_	3	advmod	_	_
+3	moves	_	VERB	VBZ	_	0	root	_	_
+4	away	_	ADV	RB	_	3	advmod	_	_
+5	[	_	PUNCT	-LRB-	_	6	punct	_	SpaceAfter=No
+6	19	_	NUM	CD	_	3	parataxis	_	SpaceAfter=No
+7	]	_	PUNCT	-RRB-	_	6	punct	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 10
+# text = In the present study, we examine the outcomes of such a period of no exposure on the neurocognition of L2 grammar: that is, whether a substantial period of no exposure
+1	In	_	ADP	IN	_	4	case	_	_
+2	the	_	DET	DT	_	4	det	_	_
+3	present	_	ADJ	JJ	_	4	amod	_	_
+4	study	_	NOUN	NN	_	7	obl	_	SpaceAfter=No
+5	,	_	PUNCT	,	_	4	punct	_	_
+6	we	_	PRON	PRP	_	7	nsubj	_	_
+7	examine	_	VERB	VBP	_	0	root	_	_
+8	the	_	DET	DT	_	9	det	_	_
+9	outcomes	_	NOUN	NNS	_	7	obj	_	_
+10	of	_	ADP	IN	_	13	case	_	_
+11	such	_	DET	PDT	_	13	det	_	_
+12	a	_	DET	DT	_	13	det	_	_
+13	period	_	NOUN	NN	_	9	nmod	_	_
+14	of	_	ADP	IN	_	16	case	_	_
+15	no	_	DET	DT	_	16	det	_	_
+16	exposure	_	NOUN	NN	_	13	nmod	_	_
+17	on	_	ADP	IN	_	19	case	_	_
+18	the	_	DET	DT	_	19	det	_	_
+19	neurocognition	_	NOUN	NN	_	16	nmod	_	_
+20	of	_	ADP	IN	_	22	case	_	_
+21	L2	_	NOUN	NN	_	22	compound	_	_
+22	grammar	_	NOUN	NN	_	19	nmod	_	SpaceAfter=No
+23	:	_	PUNCT	:	_	7	punct	_	_
+24	that	_	PRON	DT	_	27	nmod	_	_
+25	is	_	AUX	VBZ	_	24	cop	_	SpaceAfter=No
+26	,	_	PUNCT	,	_	25	punct	_	_
+27	whether	_	SCONJ	IN	_	30	mark	_	_
+28	a	_	DET	DT	_	30	det	_	_
+29	substantial	_	ADJ	JJ	_	30	amod	_	_
+30	period	_	NOUN	NN	_	7	obl	_	_
+31	of	_	ADP	IN	_	33	case	_	_
+32	no	_	DET	DT	_	33	det	_	_
+33	exposure	_	NOUN	NN	_	30	nmod	_	_
+
+# sent_id = 11
+# text = leads to decreased proficiency and/or less native-like neural processes (“use it or lose it” [20]), no such changes, or perhaps whether even higher proficiency and/or more native-like processing may be observed.
+1	leads	_	VERB	VBD	_	0	root	_	_
+2	to	_	PART	TO	_	3	mark	_	_
+3	decreased	_	VERB	VB	_	1	xcomp	_	_
+4	proficiency	_	NOUN	NN	_	3	obj	_	_
+5	and	_	CCONJ	CC	_	6	cc	_	SpaceAfter=No
+6	/	_	SYM	SYM	_	7	punct	_	SpaceAfter=No
+7	or	_	CCONJ	CC	_	40	cc	_	_
+8	less	_	ADV	RBR	_	9	advmod	_	_
+9	native	_	ADJ	JJ	_	11	amod	_	SpaceAfter=No
+10	-	_	PUNCT	HYPH	_	9	punct	_	SpaceAfter=No
+11	like	_	ADJ	JJ	_	36	amod	_	_
+12	neural	_	ADJ	JJ	_	13	amod	_	_
+13	processes	_	NOUN	NNS	_	4	nmod	_	_
+14	(	_	PUNCT	-LRB-	_	16	punct	_	SpaceAfter=No
+15	“	_	PUNCT	``	_	16	punct	_	SpaceAfter=No
+16	use	_	VERB	VB	_	13	acl	_	_
+17	it	_	PRON	PRP	_	16	obj	_	_
+18	or	_	CCONJ	CC	_	19	cc	_	_
+19	lose	_	VERB	VB	_	16	conj	_	_
+20	it	_	PRON	PRP	_	19	obj	_	SpaceAfter=No
+21	”	_	PUNCT	''	_	19	punct	_	_
+22	[	_	PUNCT	-LRB-	_	23	punct	_	SpaceAfter=No
+23	20	_	NUM	CD	_	16	parataxis	_	SpaceAfter=No
+24	]	_	PUNCT	-RRB-	_	23	punct	_	SpaceAfter=No
+25	)	_	PUNCT	-RRB-	_	23	punct	_	SpaceAfter=No
+26	,	_	PUNCT	,	_	32	punct	_	_
+27	no	_	DET	DT	_	29	det	_	_
+28	such	_	ADJ	JJ	_	29	amod	_	_
+29	changes	_	NOUN	NNS	_	26	nmod	_	SpaceAfter=No
+30	,	_	PUNCT	,	_	32	punct	_	_
+31	or	_	CCONJ	CC	_	32	cc	_	_
+32	perhaps	_	ADV	RB	_	16	advmod	_	_
+33	whether	_	SCONJ	IN	_	36	mark	_	_
+34	even	_	ADV	RB	_	35	advmod	_	_
+35	higher	_	ADJ	JJR	_	36	amod	_	_
+36	proficiency	_	NOUN	NN	_	13	conj	_	_
+37	and	_	CCONJ	CC	_	38	cc	_	SpaceAfter=No
+38	/	_	SYM	SYM	_	39	cc	_	SpaceAfter=No
+39	or	_	CCONJ	CC	_	8	cc	_	_
+40	more	_	ADV	RBR	_	43	advmod	_	_
+41	native	_	ADJ	JJ	_	43	amod	_	SpaceAfter=No
+42	-	_	PUNCT	HYPH	_	41	punct	_	SpaceAfter=No
+43	like	_	ADJ	JJ	_	44	amod	_	_
+44	processing	_	NOUN	NN	_	47	nsubj	_	_
+45	may	_	AUX	MD	_	47	aux	_	_
+46	be	_	AUX	VB	_	47	aux	_	_
+47	observed	_	VERB	VBN	_	4	conj	_	SpaceAfter=No
+48	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 12
+# text = Additionally, we test whether any such outcomes might vary as a function of the type of L2 training, in particular between classroom-like and immersion-like contexts.
+1	Additionally	_	ADV	RB	_	4	advmod	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+3	we	_	PRON	PRP	_	4	nsubj	_	_
+4	test	_	VERB	VBP	_	0	root	_	_
+5	whether	_	SCONJ	IN	_	8	mark	_	_
+6	any	_	DET	DT	_	8	det	_	_
+7	such	_	ADJ	JJ	_	8	amod	_	_
+8	outcomes	_	NOUN	NNS	_	4	obl	_	_
+9	might	_	AUX	MD	_	10	aux	_	_
+10	vary	_	VERB	VB	_	8	acl	_	_
+11	as	_	ADP	IN	_	13	case	_	_
+12	a	_	DET	DT	_	13	det	_	_
+13	function	_	NOUN	NN	_	10	obl	_	_
+14	of	_	ADP	IN	_	16	case	_	_
+15	the	_	DET	DT	_	16	det	_	_
+16	type	_	NOUN	NN	_	13	nmod	_	_
+17	of	_	ADP	IN	_	19	case	_	_
+18	L2	_	NOUN	NN	_	19	compound	_	_
+19	training	_	NOUN	NN	_	16	nmod	_	SpaceAfter=No
+20	,	_	PUNCT	,	_	28	punct	_	_
+21	in	_	ADP	IN	_	22	case	_	_
+22	particular	_	ADJ	JJ	_	28	obl	_	_
+23	between	_	ADP	IN	_	24	case	_	_
+24	classroom	_	NOUN	NN	_	26	compound	_	SpaceAfter=No
+25	-	_	PUNCT	HYPH	_	24	punct	_	SpaceAfter=No
+26	like	_	ADJ	JJ	_	28	amod	_	_
+27	and	_	CCONJ	CC	_	28	cc	_	_
+28	immersion	_	NOUN	NN	_	30	compound	_	SpaceAfter=No
+29	-	_	PUNCT	HYPH	_	28	punct	_	SpaceAfter=No
+30	like	_	ADJ	JJ	_	31	amod	_	_
+31	contexts	_	NOUN	NNS	_	10	obl	_	SpaceAfter=No
+32	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 13
+# text = Previous Research We are aware of six studies designed to investigate the effects of a substantial period of limited exposure following adult L2 training [17], [18], [21]–[24], all of which were restricted to the examination of behavioral (performance) outcomes.
+1	Previous	_	ADJ	JJ	_	2	amod	_	_
+2	Research	_	NOUN	NN	_	0	root	_	_
+3	We	_	PRON	PRP	_	5	nsubj	_	_
+4	are	_	AUX	VBP	_	5	aux	_	_
+5	aware	_	VERB	VBP	_	2	acl	_	_
+6	of	_	ADP	IN	_	8	case	_	_
+7	six	_	NUM	CD	_	8	nummod	_	_
+8	studies	_	NOUN	NNS	_	5	nmod	_	_
+9	designed	_	VERB	VBN	_	8	acl	_	_
+10	to	_	PART	TO	_	11	mark	_	_
+11	investigate	_	VERB	VB	_	9	advcl	_	_
+12	the	_	DET	DT	_	13	det	_	_
+13	effects	_	NOUN	NNS	_	11	obj	_	_
+14	of	_	ADP	IN	_	17	case	_	_
+15	a	_	DET	DT	_	17	det	_	_
+16	substantial	_	ADJ	JJ	_	17	amod	_	_
+17	period	_	NOUN	NN	_	11	obl	_	_
+18	of	_	ADP	IN	_	20	case	_	_
+19	limited	_	VERB	VBN	_	20	amod	_	_
+20	exposure	_	NOUN	NN	_	17	nmod	_	_
+21	following	_	VERB	VBG	_	20	acl	_	_
+22	adult	_	ADJ	JJ	_	24	amod	_	_
+23	L2	_	NOUN	NN	_	24	compound	_	_
+24	training	_	NOUN	NN	_	21	obj	_	_
+25	[	_	PUNCT	-LRB-	_	26	punct	_	SpaceAfter=No
+26	1	_	NUM	CD	_	31	compound	_	SpaceAfter=No
+27	7	_	NUM	CD	_	26	conj	_	SpaceAfter=No
+28	]	_	PUNCT	-RRB-	_	27	punct	_	SpaceAfter=No
+29	,	_	PUNCT	,	_	31	punct	_	_
+30	[	_	PUNCT	-LRB-	_	31	punct	_	SpaceAfter=No
+31	18	_	NUM	CD	_	5	parataxis	_	SpaceAfter=No
+32	]	_	PUNCT	-RRB-	_	31	punct	_	SpaceAfter=No
+33	,	_	PUNCT	,	_	35	punct	_	_
+34	[	_	PUNCT	-LRB-	_	35	punct	_	SpaceAfter=No
+35	21	_	NUM	CD	_	31	conj	_	SpaceAfter=No
+36	]	_	PUNCT	-RRB-	_	35	punct	_	SpaceAfter=No
+37	–	_	PUNCT	:	_	39	punct	_	SpaceAfter=No
+38	[	_	PUNCT	-LRB-	_	39	punct	_	SpaceAfter=No
+39	24	_	NUM	CD	_	31	conj	_	SpaceAfter=No
+40	]	_	PUNCT	-RRB-	_	39	punct	_	SpaceAfter=No
+41	,	_	PUNCT	,	_	42	punct	_	_
+42	all	_	DET	DT	_	5	advmod	_	_
+43	of	_	ADP	IN	_	44	case	_	_
+44	which	_	PRON	WDT	_	42	nmod	_	_
+45	were	_	AUX	VBD	_	46	aux	_	_
+46	restricted	_	VERB	VBN	_	42	acl	_	_
+47	to	_	ADP	IN	_	49	case	_	_
+48	the	_	DET	DT	_	49	det	_	_
+49	examination	_	NOUN	NN	_	46	obl	_	_
+50	of	_	ADP	IN	_	51	case	_	_
+51	behavioral	_	ADJ	JJ	_	49	nmod	_	_
+52	(	_	PUNCT	-LRB-	_	53	punct	_	SpaceAfter=No
+53	performance	_	NOUN	NN	_	51	appos	_	SpaceAfter=No
+54	)	_	PUNCT	-RRB-	_	53	punct	_	_
+55	outcomes	_	NOUN	NNS	_	49	nmod	_	SpaceAfter=No
+56	.	_	PUNCT	.	_	46	punct	_	_
+
+# sent_id = 14
+# text = (Note that we do not consider case studies, purely observational data, or research
+1	(	_	PUNCT	-LRB-	_	2	punct	_	SpaceAfter=No
+2	Note	_	NOUN	NN	_	7	nsubj	_	_
+3	that	_	SCONJ	IN	_	7	mark	_	_
+4	we	_	PRON	PRP	_	7	nsubj	_	_
+5	do	_	AUX	VBP	_	7	aux	_	_
+6	not	_	PART	RB	_	7	advmod	_	_
+7	consider	_	VERB	VB	_	0	root	_	_
+8	case	_	NOUN	NN	_	9	compound	_	_
+9	studies	_	NOUN	NNS	_	7	obj	_	SpaceAfter=No
+10	,	_	PUNCT	,	_	13	punct	_	_
+11	purely	_	ADV	RB	_	12	advmod	_	_
+12	observational	_	ADJ	JJ	_	13	amod	_	_
+13	data	_	NOUN	NN	_	9	conj	_	SpaceAfter=No
+14	,	_	PUNCT	,	_	16	punct	_	_
+15	or	_	CCONJ	CC	_	16	cc	_	_
+16	research	_	NOUN	NN	_	13	conj	_	_
+
+# sent_id = 15
+# text = on L2s acquired by children; for a comprehensive review, see [16]).
+1	on	_	ADP	IN	_	2	case	_	_
+2	L2	_	PRON	PRP	_	4	obl	_	SpaceAfter=No
+3	s	_	AUX	VBZ	_	4	aux	_	_
+4	acquired	_	VERB	VBN	_	0	root	_	_
+5	by	_	ADP	IN	_	6	case	_	_
+6	children	_	NOUN	NNS	_	4	obl	_	SpaceAfter=No
+7	;	_	PUNCT	:	_	11	punct	_	_
+8	for	_	ADP	IN	_	11	case	_	_
+9	a	_	DET	DT	_	11	det	_	_
+10	comprehensive	_	ADJ	JJ	_	11	amod	_	_
+11	review	_	NOUN	NN	_	4	obl	_	SpaceAfter=No
+12	,	_	PUNCT	,	_	13	punct	_	_
+13	see	_	VERB	VB	_	11	acl	_	_
+14	[	_	PUNCT	-LRB-	_	15	punct	_	SpaceAfter=No
+15	16	_	NUM	CD	_	4	parataxis	_	SpaceAfter=No
+16	]	_	PUNCT	-RRB-	_	15	punct	_	SpaceAfter=No
+17	)	_	PUNCT	-RRB-	_	4	punct	_	SpaceAfter=No
+18	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 16
+# text = The six studies tested L2 learners after periods of 1 month to 50 years of limited L2 exposure, mainly on general language skills [17], [18], [21], [23], [24], though also on more specific paradigms meant to target aspects of grammatical abilities [17], [18] or lexical abilities [22], [23].
+1	The	_	DET	DT	_	3	det	_	_
+2	six	_	NUM	CD	_	3	nummod	_	_
+3	studies	_	NOUN	NNS	_	0	root	_	_
+4	tested	_	VERB	VBN	_	3	case	_	_
+5	L2	_	NOUN	NN	_	6	compound	_	_
+6	learners	_	NOUN	NNS	_	4	obl	_	_
+7	after	_	ADP	IN	_	8	case	_	_
+8	periods	_	NOUN	NNS	_	3	obl	_	_
+9	of	_	ADP	IN	_	11	case	_	_
+10	1	_	NUM	CD	_	11	nummod	_	_
+11	month	_	NOUN	NNS	_	8	nmod	_	_
+12	to	_	ADP	IN	_	14	case	_	_
+13	50	_	NUM	CD	_	14	nummod	_	_
+14	years	_	NOUN	NNS	_	11	nmod	_	_
+15	of	_	ADP	IN	_	18	case	_	_
+16	limited	_	ADJ	JJ	_	18	amod	_	_
+17	L2	_	NOUN	NN	_	18	compound	_	_
+18	exposure	_	NOUN	NN	_	14	nmod	_	SpaceAfter=No
+19	,	_	PUNCT	,	_	24	punct	_	_
+20	mainly	_	ADV	RB	_	24	advmod	_	_
+21	on	_	ADP	IN	_	24	case	_	_
+22	general	_	ADJ	JJ	_	23	amod	_	_
+23	language	_	NOUN	NN	_	24	compound	_	_
+24	skills	_	NOUN	NNS	_	18	nmod	_	_
+25	[	_	PUNCT	-LRB-	_	26	punct	_	SpaceAfter=No
+26	17	_	NUM	CD	_	11	parataxis	_	SpaceAfter=No
+27	]	_	PUNCT	-RRB-	_	26	punct	_	SpaceAfter=No
+28	,	_	PUNCT	,	_	30	punct	_	_
+29	[	_	PUNCT	-LRB-	_	30	punct	_	SpaceAfter=No
+30	18	_	NUM	CD	_	26	conj	_	SpaceAfter=No
+31	]	_	PUNCT	-RRB-	_	30	punct	_	SpaceAfter=No
+32	,	_	PUNCT	,	_	34	punct	_	_
+33	[	_	PUNCT	-LRB-	_	34	punct	_	SpaceAfter=No
+34	21	_	NUM	CD	_	30	conj	_	SpaceAfter=No
+35	]	_	PUNCT	-RRB-	_	34	punct	_	SpaceAfter=No
+36	,	_	PUNCT	,	_	38	punct	_	_
+37	[	_	PUNCT	-LRB-	_	38	punct	_	SpaceAfter=No
+38	23	_	NUM	CD	_	34	conj	_	SpaceAfter=No
+39	]	_	PUNCT	-RRB-	_	38	punct	_	SpaceAfter=No
+40	,	_	PUNCT	,	_	42	punct	_	_
+41	[	_	PUNCT	-LRB-	_	42	punct	_	SpaceAfter=No
+42	24	_	NUM	CD	_	38	conj	_	SpaceAfter=No
+43	]	_	PUNCT	-RRB-	_	42	punct	_	SpaceAfter=No
+44	,	_	PUNCT	,	_	30	punct	_	_
+45	though	_	SCONJ	IN	_	46	mark	_	_
+46	also	_	ADV	RB	_	26	advmod	_	_
+47	on	_	ADP	IN	_	50	case	_	_
+48	more	_	ADV	RBR	_	49	advmod	_	_
+49	specific	_	ADJ	JJ	_	50	amod	_	_
+50	paradigms	_	NOUN	NNS	_	8	nmod	_	_
+51	meant	_	VERB	VBG	_	50	acl	_	_
+52	to	_	PART	TO	_	53	mark	_	_
+53	target	_	VERB	VB	_	51	xcomp	_	_
+54	aspects	_	NOUN	NNS	_	53	obj	_	_
+55	of	_	ADP	IN	_	57	case	_	_
+56	grammatical	_	ADJ	JJ	_	57	amod	_	_
+57	abilities	_	NOUN	NNS	_	54	nmod	_	_
+58	[	_	PUNCT	-LRB-	_	59	punct	_	SpaceAfter=No
+59	17	_	NUM	CD	_	57	parataxis	_	SpaceAfter=No
+60	]	_	PUNCT	-RRB-	_	59	punct	_	SpaceAfter=No
+61	,	_	PUNCT	,	_	63	punct	_	_
+62	[	_	PUNCT	-LRB-	_	63	punct	_	SpaceAfter=No
+63	18	_	NUM	CD	_	59	conj	_	SpaceAfter=No
+64	]	_	PUNCT	-RRB-	_	63	punct	_	_
+65	or	_	CCONJ	CC	_	67	cc	_	_
+66	lexical	_	ADJ	JJ	_	67	amod	_	_
+67	abilities	_	NOUN	NNS	_	57	conj	_	_
+68	[	_	PUNCT	-LRB-	_	69	punct	_	SpaceAfter=No
+69	22	_	NUM	CD	_	51	parataxis	_	SpaceAfter=No
+70	]	_	PUNCT	-RRB-	_	69	punct	_	SpaceAfter=No
+71	,	_	PUNCT	,	_	73	punct	_	_
+72	[	_	PUNCT	-LRB-	_	73	punct	_	SpaceAfter=No
+73	23	_	NUM	CD	_	69	conj	_	SpaceAfter=No
+74	]	_	PUNCT	-RRB-	_	73	punct	_	SpaceAfter=No
+75	.	_	PUNCT	.	_	51	punct	_	_
+
+# sent_id = 17
+# text = These language measures were compared in most studies to the same measures in a different set of subjects who had not experienced a period of limited exposure [17], [18], [22], [23], or to retrospective ratings of the same subjects [21], with only one longitudinal study testing the same subjects before and after a period of limited exposure [24].
+1	These	_	DET	DT	_	3	det	_	_
+2	language	_	NOUN	NNS	_	3	compound	_	_
+3	measures	_	NOUN	NNS	_	5	nsubj	_	_
+4	were	_	AUX	VBD	_	5	aux	_	_
+5	compared	_	VERB	VBN	_	0	root	_	_
+6	in	_	ADP	IN	_	8	case	_	_
+7	most	_	ADJ	JJS	_	8	amod	_	_
+8	studies	_	NOUN	NNS	_	5	obl	_	_
+9	to	_	ADP	IN	_	12	case	_	_
+10	the	_	DET	DT	_	12	det	_	_
+11	same	_	ADJ	JJ	_	12	amod	_	_
+12	measures	_	NOUN	NNS	_	8	nmod	_	_
+13	in	_	ADP	IN	_	16	case	_	_
+14	a	_	DET	DT	_	16	det	_	_
+15	different	_	ADJ	JJ	_	16	amod	_	_
+16	set	_	NOUN	NN	_	12	nmod	_	_
+17	of	_	ADP	IN	_	18	case	_	_
+18	subjects	_	NOUN	NNS	_	16	nmod	_	_
+19	who	_	PRON	WP	_	22	nsubj	_	_
+20	had	_	AUX	VBD	_	22	aux	_	_
+21	not	_	PART	RB	_	22	advmod	_	_
+22	experienced	_	VERB	VBN	_	16	acl	_	_
+23	a	_	DET	DT	_	24	det	_	_
+24	period	_	NOUN	NN	_	22	obl	_	_
+25	of	_	ADP	IN	_	27	case	_	_
+26	limited	_	ADJ	JJ	_	27	amod	_	_
+27	exposure	_	NOUN	NN	_	24	nmod	_	_
+28	[	_	PUNCT	-LRB-	_	29	punct	_	SpaceAfter=No
+29	17	_	NUM	CD	_	22	parataxis	_	SpaceAfter=No
+30	]	_	PUNCT	-RRB-	_	29	punct	_	SpaceAfter=No
+31	,	_	PUNCT	,	_	33	punct	_	_
+32	[	_	PUNCT	-LRB-	_	33	punct	_	SpaceAfter=No
+33	18	_	NUM	CD	_	29	conj	_	SpaceAfter=No
+34	]	_	PUNCT	-RRB-	_	33	punct	_	SpaceAfter=No
+35	,	_	PUNCT	,	_	37	punct	_	_
+36	[	_	PUNCT	-LRB-	_	37	punct	_	SpaceAfter=No
+37	22	_	NUM	CD	_	33	conj	_	SpaceAfter=No
+38	]	_	PUNCT	-RRB-	_	37	punct	_	SpaceAfter=No
+39	,	_	PUNCT	,	_	41	punct	_	_
+40	[	_	PUNCT	-LRB-	_	41	punct	_	SpaceAfter=No
+41	23	_	NUM	CD	_	37	conj	_	SpaceAfter=No
+42	]	_	PUNCT	-RRB-	_	41	punct	_	SpaceAfter=No
+43	,	_	PUNCT	,	_	44	punct	_	_
+44	or	_	CCONJ	CC	_	51	cc	_	_
+45	to	_	ADP	IN	_	47	case	_	_
+46	retrospective	_	ADJ	JJ	_	47	amod	_	_
+47	ratings	_	NOUN	NNS	_	44	nmod	_	_
+48	of	_	ADP	IN	_	51	case	_	_
+49	the	_	DET	DT	_	51	det	_	_
+50	same	_	ADJ	JJ	_	51	amod	_	_
+51	subjects	_	NOUN	NNS	_	5	obl	_	_
+52	[	_	PUNCT	-LRB-	_	53	punct	_	SpaceAfter=No
+53	21	_	NUM	CD	_	61	parataxis	_	SpaceAfter=No
+54	]	_	PUNCT	-RRB-	_	53	punct	_	SpaceAfter=No
+55	,	_	PUNCT	,	_	60	punct	_	_
+56	with	_	ADP	IN	_	60	case	_	_
+57	only	_	ADJ	JJS	_	60	amod	_	_
+58	one	_	NUM	CD	_	60	nummod	_	_
+59	longitudinal	_	ADJ	JJ	_	60	amod	_	_
+60	study	_	NOUN	NN	_	61	nsubj	_	_
+61	testing	_	VERB	VBG	_	51	acl	_	_
+62	the	_	DET	DT	_	64	det	_	_
+63	same	_	ADJ	JJ	_	64	amod	_	_
+64	subjects	_	NOUN	NNS	_	61	obj	_	_
+65	before	_	ADP	IN	_	69	case	_	_
+66	and	_	CCONJ	CC	_	67	cc	_	_
+67	after	_	ADP	IN	_	65	conj	_	_
+68	a	_	DET	DT	_	69	det	_	_
+69	period	_	NOUN	NN	_	61	obl	_	_
+70	of	_	ADP	IN	_	72	case	_	_
+71	limited	_	ADJ	JJ	_	72	amod	_	_
+72	exposure	_	NOUN	NN	_	69	nmod	_	_
+73	[	_	PUNCT	-LRB-	_	74	punct	_	SpaceAfter=No
+74	24	_	NUM	CD	_	61	parataxis	_	SpaceAfter=No
+75	]	_	PUNCT	-RRB-	_	74	punct	_	SpaceAfter=No
+76	.	_	PUNCT	.	_	61	punct	_	_
+
+# sent_id = 18
+# text = Across the studies, the periods of limited exposure followed either classroom training [17], [18], [22], [24] or mixed classroom and immersion training [21], [23], [24].
+1	Across	_	ADP	IN	_	3	case	_	_
+2	the	_	DET	DT	_	3	det	_	_
+3	studies	_	NOUN	NNS	_	10	obl	_	SpaceAfter=No
+4	,	_	PUNCT	,	_	6	punct	_	_
+5	the	_	DET	DT	_	6	det	_	_
+6	periods	_	NOUN	NNS	_	3	conj	_	_
+7	of	_	ADP	IN	_	9	case	_	_
+8	limited	_	ADJ	JJ	_	9	amod	_	_
+9	exposure	_	NOUN	NN	_	6	nmod	_	_
+10	followed	_	VERB	VBN	_	0	root	_	_
+11	either	_	DET	DT	_	13	det	_	_
+12	classroom	_	NOUN	NN	_	13	compound	_	_
+13	training	_	NOUN	NN	_	3	nmod	_	_
+14	[	_	PUNCT	-LRB-	_	15	punct	_	SpaceAfter=No
+15	1	_	NUM	CD	_	13	parataxis	_	SpaceAfter=No
+16	7	_	NUM	CD	_	15	conj	_	SpaceAfter=No
+17	]	_	PUNCT	-RRB-	_	16	punct	_	SpaceAfter=No
+18	,	_	PUNCT	,	_	20	punct	_	_
+19	[	_	PUNCT	-LRB-	_	20	punct	_	SpaceAfter=No
+20	18	_	NUM	CD	_	16	conj	_	SpaceAfter=No
+21	]	_	PUNCT	-RRB-	_	20	punct	_	SpaceAfter=No
+22	,	_	PUNCT	,	_	24	punct	_	_
+23	[	_	PUNCT	-LRB-	_	24	punct	_	SpaceAfter=No
+24	22	_	NUM	CD	_	20	conj	_	SpaceAfter=No
+25	]	_	PUNCT	-RRB-	_	24	punct	_	SpaceAfter=No
+26	,	_	PUNCT	,	_	28	punct	_	_
+27	[	_	PUNCT	-LRB-	_	28	punct	_	SpaceAfter=No
+28	24	_	NUM	CD	_	24	conj	_	SpaceAfter=No
+29	]	_	PUNCT	-RRB-	_	28	punct	_	_
+30	or	_	CCONJ	CC	_	31	cc	_	_
+31	mixed	_	VERB	VB	_	28	conj	_	_
+32	classroom	_	NOUN	NN	_	31	obj	_	_
+33	and	_	CCONJ	CC	_	35	cc	_	_
+34	immersion	_	NOUN	NN	_	35	compound	_	_
+35	training	_	NOUN	NN	_	32	conj	_	_
+36	[	_	PUNCT	-LRB-	_	37	punct	_	SpaceAfter=No
+37	21	_	NUM	CD	_	16	parataxis	_	SpaceAfter=No
+38	]	_	PUNCT	-RRB-	_	37	punct	_	SpaceAfter=No
+39	,	_	PUNCT	,	_	41	punct	_	_
+40	[	_	PUNCT	-LRB-	_	41	punct	_	SpaceAfter=No
+41	23	_	NUM	CD	_	37	conj	_	SpaceAfter=No
+42	]	_	PUNCT	-RRB-	_	41	punct	_	SpaceAfter=No
+43	,	_	PUNCT	,	_	45	punct	_	_
+44	[	_	PUNCT	-LRB-	_	45	punct	_	SpaceAfter=No
+45	24	_	NUM	CD	_	41	conj	_	SpaceAfter=No
+46	]	_	PUNCT	-RRB-	_	45	punct	_	SpaceAfter=No
+47	.	_	PUNCT	.	_	13	punct	_	_
+
+# sent_id = 19
+# text = The training lasted varying lengths of time, apparently usually in the range of a few years, and resulted in seemingly varying proficiency levels (though not directly measured, except by [24]) prior to the period of limited exposure.
+1	The	_	DET	DT	_	2	det	_	_
+2	training	_	NOUN	NN	_	30	nsubj	_	_
+3	lasted	_	VERB	VBN	_	2	acl	_	_
+4	varying	_	ADJ	JJ	_	5	amod	_	_
+5	lengths	_	NOUN	NNS	_	3	obj	_	_
+6	of	_	ADP	IN	_	7	case	_	_
+7	time	_	NOUN	NN	_	5	nmod	_	SpaceAfter=No
+8	,	_	PUNCT	,	_	3	punct	_	_
+9	apparently	_	ADV	RB	_	3	advmod	_	_
+10	usually	_	ADV	RB	_	20	advmod	_	_
+11	in	_	ADP	IN	_	13	case	_	_
+12	the	_	DET	DT	_	13	det	_	_
+13	range	_	NOUN	NN	_	10	obl	_	_
+14	of	_	ADP	IN	_	17	case	_	_
+15	a	_	DET	DT	_	17	det	_	_
+16	few	_	ADJ	JJ	_	17	amod	_	_
+17	years	_	NOUN	NNS	_	13	nmod	_	SpaceAfter=No
+18	,	_	PUNCT	,	_	20	punct	_	_
+19	and	_	CCONJ	CC	_	20	cc	_	_
+20	resulted	_	VERB	VBN	_	3	conj	_	_
+21	in	_	ADP	IN	_	25	case	_	_
+22	seemingly	_	ADV	RB	_	23	advmod	_	_
+23	varying	_	ADJ	JJ	_	25	amod	_	_
+24	proficiency	_	NOUN	NN	_	25	compound	_	_
+25	levels	_	NOUN	NNS	_	20	obl	_	_
+26	(	_	PUNCT	-LRB-	_	30	punct	_	SpaceAfter=No
+27	though	_	SCONJ	IN	_	30	mark	_	_
+28	not	_	PART	RB	_	30	advmod	_	_
+29	directly	_	ADV	RB	_	30	advmod	_	_
+30	measured	_	VERB	VBN	_	0	root	_	SpaceAfter=No
+31	,	_	PUNCT	,	_	32	punct	_	_
+32	except	_	NOUN	NN	_	30	obj	_	_
+33	by	_	SCONJ	IN	_	35	mark	_	_
+34	[	_	PUNCT	-LRB-	_	35	punct	_	SpaceAfter=No
+35	24	_	NUM	CD	_	30	parataxis	_	SpaceAfter=No
+36	]	_	PUNCT	-RRB-	_	35	punct	_	SpaceAfter=No
+37	)	_	PUNCT	-RRB-	_	35	punct	_	_
+38	prior	_	SCONJ	IN	_	41	mark	_	_
+39	to	_	ADP	IN	_	41	case	_	_
+40	the	_	DET	DT	_	41	det	_	_
+41	period	_	NOUN	NN	_	30	obl	_	_
+42	of	_	ADP	IN	_	44	case	_	_
+43	limited	_	ADJ	JJ	_	44	amod	_	_
+44	exposure	_	NOUN	NN	_	41	nmod	_	SpaceAfter=No
+45	.	_	PUNCT	.	_	30	punct	_	_
+
+# sent_id = 20
+# text = Overall, the results of the six studies have been taken to suggest the following.
+1	Overall	_	ADV	RBR	_	4	advmod	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+3	the	_	DET	DT	_	4	det	_	_
+4	results	_	NOUN	NNS	_	11	orphan	_	_
+5	of	_	ADP	IN	_	8	case	_	_
+6	the	_	DET	DT	_	8	det	_	_
+7	six	_	NUM	CD	_	8	nummod	_	_
+8	studies	_	NOUN	NNS	_	11	nsubj	_	_
+9	have	_	AUX	VBP	_	11	aux	_	_
+10	been	_	AUX	VBN	_	11	aux	_	_
+11	taken	_	VERB	VBN	_	0	root	_	_
+12	to	_	PART	TO	_	13	mark	_	_
+13	suggest	_	VERB	VB	_	11	xcomp	_	_
+14	the	_	DET	DT	_	15	det	_	_
+15	following	_	VERB	VBG	_	13	ccomp	_	SpaceAfter=No
+16	.	_	PUNCT	.	_	11	punct	_	_
+
+# sent_id = 21
+# text = A period of limited exposure generally leads to attrition (loss) of L2 performance or knowledge [17], [18], [21], [23].
+1	A	_	DET	DT	_	2	det	_	_
+2	period	_	NOUN	NN	_	7	nsubj	_	_
+3	of	_	ADP	IN	_	5	case	_	_
+4	limited	_	ADJ	JJ	_	5	amod	_	_
+5	exposure	_	NOUN	NN	_	2	nmod	_	_
+6	generally	_	ADV	RB	_	7	advmod	_	_
+7	leads	_	VERB	VBP	_	0	root	_	_
+8	to	_	ADP	IN	_	9	case	_	_
+9	attrition	_	NOUN	NN	_	7	obl	_	_
+10	(	_	PUNCT	-LRB-	_	11	punct	_	SpaceAfter=No
+11	loss	_	NOUN	NN	_	9	appos	_	SpaceAfter=No
+12	)	_	PUNCT	-RRB-	_	11	punct	_	_
+13	of	_	ADP	IN	_	15	case	_	_
+14	L2	_	PROPN	NNP	_	15	nmod	_	_
+15	performance	_	NOUN	NN	_	11	nmod	_	_
+16	or	_	CCONJ	CC	_	17	cc	_	_
+17	knowledge	_	NOUN	NN	_	15	nmod	_	_
+18	[	_	PUNCT	-LRB-	_	19	punct	_	SpaceAfter=No
+19	17	_	NUM	CD	_	11	parataxis	_	SpaceAfter=No
+20	]	_	PUNCT	-RRB-	_	19	punct	_	SpaceAfter=No
+21	,	_	PUNCT	,	_	23	punct	_	_
+22	[	_	PUNCT	-LRB-	_	23	punct	_	SpaceAfter=No
+23	18	_	NUM	CD	_	19	conj	_	SpaceAfter=No
+24	]	_	PUNCT	-RRB-	_	23	punct	_	SpaceAfter=No
+25	,	_	PUNCT	,	_	27	punct	_	_
+26	[	_	PUNCT	-LRB-	_	27	punct	_	SpaceAfter=No
+27	21	_	NUM	CD	_	23	conj	_	SpaceAfter=No
+28	]	_	PUNCT	-RRB-	_	27	punct	_	SpaceAfter=No
+29	,	_	PUNCT	,	_	31	punct	_	_
+30	[	_	PUNCT	-LRB-	_	31	punct	_	SpaceAfter=No
+31	23	_	NUM	CD	_	27	conj	_	SpaceAfter=No
+32	]	_	PUNCT	-RRB-	_	31	punct	_	SpaceAfter=No
+33	.	_	PUNCT	.	_	19	punct	_	_
+
+# sent_id = 22
+# text = Such loss has been observed after as little as a few months of limited exposure, e.g., after a 1-7 month [23] or 6 month delay [21], as well as after 2 years [18], though in one case it was observed only by 3-5 years, and not earlier [17].
+1	Such	_	ADJ	JJ	_	2	amod	_	_
+2	loss	_	NOUN	NN	_	5	nsubj	_	_
+3	has	_	AUX	VBZ	_	5	aux	_	_
+4	been	_	AUX	VBN	_	5	aux	_	_
+5	observed	_	VERB	VBN	_	0	root	_	_
+6	after	_	SCONJ	IN	_	8	mark	_	_
+7	as	_	ADV	RB	_	8	advmod	_	_
+8	little	_	ADJ	JJ	_	5	advcl	_	_
+9	as	_	ADP	IN	_	12	case	_	_
+10	a	_	DET	DT	_	12	det	_	_
+11	few	_	ADJ	JJ	_	12	amod	_	_
+12	months	_	NOUN	NNS	_	8	obl	_	_
+13	of	_	ADP	IN	_	15	case	_	_
+14	limited	_	ADJ	JJ	_	15	amod	_	_
+15	exposure	_	NOUN	NN	_	12	nmod	_	SpaceAfter=No
+16	,	_	PUNCT	,	_	24	punct	_	_
+17	e.g.	_	ADV	FW	_	24	advmod	_	SpaceAfter=No
+18	,	_	PUNCT	,	_	17	punct	_	_
+19	after	_	ADP	IN	_	24	case	_	_
+20	a	_	DET	DT	_	31	det	_	_
+21	1	_	NUM	CD	_	20	nummod	_	SpaceAfter=No
+22	-	_	PUNCT	HYPH	_	23	punct	_	SpaceAfter=No
+23	7	_	NUM	CD	_	21	nmod	_	_
+24	month	_	NOUN	NNS	_	23	nmod	_	_
+25	[	_	PUNCT	-LRB-	_	26	punct	_	SpaceAfter=No
+26	23	_	NUM	CD	_	5	parataxis	_	SpaceAfter=No
+27	]	_	PUNCT	-RRB-	_	26	punct	_	_
+28	or	_	CCONJ	CC	_	33	cc	_	_
+29	6	_	NUM	CD	_	33	nummod	_	_
+30	month	_	NOUN	NN	_	31	compound	_	_
+31	delay	_	NOUN	NN	_	29	nmod	_	_
+32	[	_	PUNCT	-LRB-	_	33	punct	_	SpaceAfter=No
+33	21	_	NUM	CD	_	5	parataxis	_	SpaceAfter=No
+34	]	_	PUNCT	-RRB-	_	33	punct	_	SpaceAfter=No
+35	,	_	PUNCT	,	_	41	punct	_	_
+36	as	_	ADV	RB	_	41	cc	_	_
+37	well	_	ADV	RB	_	36	fixed	_	_
+38	as	_	ADP	IN	_	36	fixed	_	_
+39	after	_	ADP	IN	_	41	case	_	_
+40	2	_	NUM	CD	_	41	nummod	_	_
+41	years	_	NOUN	NNS	_	33	nmod	_	_
+42	[	_	PUNCT	-LRB-	_	43	punct	_	SpaceAfter=No
+43	18	_	NUM	CD	_	33	conj	_	SpaceAfter=No
+44	]	_	PUNCT	-RRB-	_	43	punct	_	SpaceAfter=No
+45	,	_	PUNCT	,	_	52	punct	_	_
+46	though	_	SCONJ	IN	_	52	mark	_	_
+47	in	_	ADP	IN	_	49	case	_	_
+48	one	_	NUM	CD	_	49	nummod	_	_
+49	case	_	NOUN	NN	_	52	obl	_	_
+50	it	_	PRON	PRP	_	52	nsubj	_	_
+51	was	_	AUX	VBD	_	52	aux	_	_
+52	observed	_	VERB	VBN	_	64	advcl	_	_
+53	only	_	ADJ	JJ	_	52	xcomp	_	_
+54	by	_	ADP	IN	_	58	case	_	_
+55	3	_	NUM	CD	_	58	nummod	_	SpaceAfter=No
+56	-	_	SYM	SYM	_	57	punct	_	SpaceAfter=No
+57	5	_	NUM	CD	_	55	nmod	_	_
+58	years	_	NOUN	NNS	_	52	obl	_	SpaceAfter=No
+59	,	_	PUNCT	,	_	62	punct	_	_
+60	and	_	CCONJ	CC	_	62	cc	_	_
+61	not	_	PART	RB	_	62	advmod	_	_
+62	earlier	_	ADJ	JJ	_	58	conj	_	_
+63	[	_	PUNCT	-LRB-	_	64	punct	_	SpaceAfter=No
+64	17	_	NUM	CD	_	33	conj	_	SpaceAfter=No
+65	]	_	PUNCT	-RRB-	_	64	punct	_	SpaceAfter=No
+66	.	_	PUNCT	.	_	33	punct	_	_
+
+# sent_id = 23
+# text = Although attrition may take place within the first few years, some studies suggest that it then appears to level off, with no further losses occurring [17], [18].
+1	Although	_	SCONJ	IN	_	4	mark	_	_
+2	attrition	_	NOUN	NN	_	4	nsubj	_	_
+3	may	_	AUX	MD	_	4	aux	_	_
+4	take	_	VERB	VB	_	14	ccomp	_	_
+5	place	_	NOUN	NN	_	4	obj	_	_
+6	within	_	ADP	IN	_	10	case	_	_
+7	the	_	DET	DT	_	10	det	_	_
+8	first	_	ADJ	JJ	_	10	amod	_	_
+9	few	_	NUM	CD	_	10	nummod	_	_
+10	years	_	NOUN	NNS	_	14	obl	_	SpaceAfter=No
+11	,	_	PUNCT	,	_	10	punct	_	_
+12	some	_	DET	DT	_	13	det	_	_
+13	studies	_	NOUN	NNS	_	14	nsubj	_	_
+14	suggest	_	VERB	VBP	_	0	root	_	_
+15	that	_	SCONJ	IN	_	18	mark	_	_
+16	it	_	PRON	PRP	_	18	nsubj	_	_
+17	then	_	ADV	RB	_	18	advmod	_	_
+18	appears	_	VERB	VBZ	_	14	ccomp	_	_
+19	to	_	PART	TO	_	20	mark	_	_
+20	level	_	VERB	VB	_	18	xcomp	_	_
+21	off	_	ADP	RP	_	20	compound	_	SpaceAfter=No
+22	,	_	PUNCT	,	_	26	punct	_	_
+23	with	_	ADP	IN	_	26	case	_	_
+24	no	_	DET	DT	_	26	det	_	_
+25	further	_	ADJ	JJ	_	26	amod	_	_
+26	losses	_	NOUN	NNS	_	18	obj	_	_
+27	occurring	_	VERB	VBG	_	26	acl	_	_
+28	[	_	PUNCT	-LRB-	_	29	punct	_	SpaceAfter=No
+29	1	_	NUM	LS	_	30	discourse	_	SpaceAfter=No
+30	7	_	NUM	CD	_	26	parataxis	_	SpaceAfter=No
+31	]	_	PUNCT	-RRB-	_	30	punct	_	SpaceAfter=No
+32	,	_	PUNCT	,	_	34	punct	_	_
+33	[	_	PUNCT	-LRB-	_	34	punct	_	SpaceAfter=No
+34	18	_	NUM	CD	_	30	conj	_	SpaceAfter=No
+35	]	_	PUNCT	-RRB-	_	34	punct	_	SpaceAfter=No
+36	.	_	PUNCT	.	_	18	punct	_	_
+
+# sent_id = 24
+# text = Higher levels of proficiency (or exposure) may be associated with less attrition [17], [18], [21], [23] or even with no observed losses [21].
+1	Higher	_	ADJ	JJR	_	2	amod	_	_
+2	levels	_	NOUN	NNS	_	0	root	_	_
+3	of	_	ADP	IN	_	4	case	_	_
+4	proficiency	_	NOUN	NN	_	2	nmod	_	_
+5	(	_	PUNCT	-LRB-	_	7	punct	_	SpaceAfter=No
+6	or	_	CCONJ	CC	_	7	cc	_	_
+7	exposure	_	NOUN	NN	_	4	conj	_	SpaceAfter=No
+8	)	_	PUNCT	-RRB-	_	7	punct	_	_
+9	may	_	AUX	MD	_	11	aux	_	_
+10	be	_	AUX	VB	_	11	aux	_	_
+11	associated	_	VERB	VBN	_	7	acl	_	_
+12	with	_	ADP	IN	_	14	case	_	_
+13	less	_	ADV	RBR	_	14	advmod	_	_
+14	attrition	_	NOUN	NN	_	11	obl	_	_
+15	[	_	PUNCT	-LRB-	_	16	punct	_	SpaceAfter=No
+16	17	_	NUM	CD	_	11	parataxis	_	SpaceAfter=No
+17	]	_	PUNCT	-RRB-	_	16	punct	_	SpaceAfter=No
+18	,	_	PUNCT	,	_	20	punct	_	_
+19	[	_	PUNCT	-LRB-	_	20	punct	_	SpaceAfter=No
+20	18	_	NUM	CD	_	16	conj	_	SpaceAfter=No
+21	]	_	PUNCT	-RRB-	_	20	punct	_	SpaceAfter=No
+22	,	_	PUNCT	,	_	24	punct	_	_
+23	[	_	PUNCT	-LRB-	_	24	punct	_	SpaceAfter=No
+24	21	_	NUM	CD	_	20	conj	_	SpaceAfter=No
+25	]	_	PUNCT	-RRB-	_	24	punct	_	SpaceAfter=No
+26	,	_	PUNCT	,	_	28	punct	_	_
+27	[	_	PUNCT	-LRB-	_	28	punct	_	SpaceAfter=No
+28	23	_	NUM	CD	_	24	conj	_	SpaceAfter=No
+29	]	_	PUNCT	-RRB-	_	28	punct	_	_
+30	or	_	CCONJ	CC	_	35	cc	_	_
+31	even	_	ADV	RB	_	35	advmod	_	_
+32	with	_	ADP	IN	_	35	case	_	_
+33	no	_	DET	DT	_	35	det	_	_
+34	observed	_	ADJ	JJ	_	35	amod	_	_
+35	losses	_	NOUN	NNS	_	11	obj	_	_
+36	[	_	PUNCT	-LRB-	_	37	punct	_	SpaceAfter=No
+37	21	_	NUM	CD	_	11	parataxis	_	SpaceAfter=No
+38	]	_	PUNCT	-RRB-	_	37	punct	_	SpaceAfter=No
+39	.	_	PUNCT	.	_	11	punct	_	_
+
+# sent_id = 25
+# text = Moreover, one study found no changes at all in performance, across proficiency levels, after either 2 or 4 years of limited exposure [22].
+1	Moreover	_	ADV	RB	_	5	advmod	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+3	one	_	NUM	CD	_	4	nummod	_	_
+4	study	_	NOUN	NN	_	5	nsubj	_	_
+5	found	_	VERB	VBD	_	0	root	_	_
+6	no	_	DET	DT	_	7	det	_	_
+7	changes	_	NOUN	NNS	_	5	obj	_	_
+8	at	_	ADP	IN	_	9	case	_	_
+9	all	_	DET	DT	_	7	nmod	_	_
+10	in	_	ADP	IN	_	11	case	_	_
+11	performance	_	NOUN	NN	_	9	nmod	_	SpaceAfter=No
+12	,	_	PUNCT	,	_	15	punct	_	_
+13	across	_	ADP	IN	_	15	case	_	_
+14	proficiency	_	NOUN	NN	_	15	compound	_	_
+15	levels	_	NOUN	NNS	_	7	nmod	_	SpaceAfter=No
+16	,	_	PUNCT	,	_	17	punct	_	_
+17	after	_	ADP	IN	_	15	conj	_	_
+18	either	_	DET	DT	_	19	det	_	_
+19	2	_	NUM	CD	_	15	nmod	_	_
+20	or	_	CCONJ	CC	_	21	cc	_	_
+21	4	_	NUM	CD	_	19	conj	_	_
+22	years	_	NOUN	NNS	_	18	conj	_	_
+23	of	_	ADP	IN	_	25	case	_	_
+24	limited	_	ADJ	JJ	_	25	amod	_	_
+25	exposure	_	NOUN	NN	_	22	nmod	_	_
+26	[	_	PUNCT	-LRB-	_	27	punct	_	SpaceAfter=No
+27	22	_	NUM	CD	_	5	parataxis	_	SpaceAfter=No
+28	]	_	PUNCT	-RRB-	_	27	punct	_	SpaceAfter=No
+29	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 26
+# text = Finally, in some cases a gain in performance has been observed: after 1.5 years of limited exposure in one study, particularly for L2 learners with immersion as well as classroom training [24], and in another study after 2 years, though only for some abilities, such as listening and reading comprehension [18].
+1	Finally	_	ADV	RB	_	7	advmod	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+3	in	_	ADP	IN	_	5	case	_	_
+4	some	_	DET	DT	_	5	det	_	_
+5	cases	_	NOUN	NNS	_	7	obl	_	_
+6	a	_	DET	DT	_	7	det	_	_
+7	gain	_	VERB	VBN	_	0	root	_	_
+8	in	_	ADP	IN	_	9	case	_	_
+9	performance	_	NOUN	NN	_	7	nmod	_	_
+10	has	_	AUX	VBZ	_	12	aux	_	_
+11	been	_	AUX	VBN	_	12	aux	_	_
+12	observed	_	VERB	VBN	_	7	advcl	_	SpaceAfter=No
+13	:	_	PUNCT	:	_	12	punct	_	_
+14	after	_	ADP	IN	_	16	case	_	_
+15	1.5	_	NUM	CD	_	16	nummod	_	_
+16	years	_	NOUN	NNS	_	12	obl	_	_
+17	of	_	ADP	IN	_	19	case	_	_
+18	limited	_	ADJ	JJ	_	19	amod	_	_
+19	exposure	_	NOUN	NN	_	16	nmod	_	_
+20	in	_	ADP	IN	_	22	case	_	_
+21	one	_	NUM	CD	_	22	nummod	_	_
+22	study	_	NOUN	NN	_	12	obl	_	SpaceAfter=No
+23	,	_	PUNCT	,	_	27	punct	_	_
+24	particularly	_	ADV	RB	_	26	advmod	_	_
+25	for	_	ADP	IN	_	26	case	_	_
+26	L2	_	NOUN	NN	_	27	compound	_	_
+27	learners	_	NOUN	NNS	_	22	nmod	_	_
+28	with	_	ADP	IN	_	29	case	_	_
+29	immersion	_	NOUN	NN	_	27	nmod	_	_
+30	as	_	ADV	RB	_	34	cc	_	_
+31	well	_	ADV	RB	_	30	fixed	_	_
+32	as	_	ADP	IN	_	34	case	_	_
+33	classroom	_	NOUN	NN	_	34	compound	_	_
+34	training	_	NOUN	NN	_	29	nmod	_	_
+35	[	_	PUNCT	-LRB-	_	36	punct	_	SpaceAfter=No
+36	24	_	NUM	CD	_	22	parataxis	_	SpaceAfter=No
+37	]	_	PUNCT	-RRB-	_	36	punct	_	SpaceAfter=No
+38	,	_	PUNCT	,	_	39	punct	_	_
+39	and	_	CCONJ	CC	_	42	cc	_	_
+40	in	_	ADP	IN	_	42	case	_	_
+41	another	_	DET	DT	_	42	det	_	_
+42	study	_	NOUN	NN	_	12	obl	_	_
+43	after	_	ADP	IN	_	45	case	_	_
+44	2	_	NUM	CD	_	45	nummod	_	_
+45	years	_	NOUN	NNS	_	7	obl	_	SpaceAfter=No
+46	,	_	PUNCT	,	_	51	punct	_	_
+47	though	_	ADV	RB	_	51	cc	_	_
+48	only	_	ADV	RB	_	51	advmod	_	_
+49	for	_	ADP	IN	_	51	case	_	_
+50	some	_	DET	DT	_	51	det	_	_
+51	abilities	_	NOUN	NNS	_	45	nmod	_	SpaceAfter=No
+52	,	_	PUNCT	,	_	55	punct	_	_
+53	such	_	ADJ	JJ	_	55	case	_	_
+54	as	_	ADP	IN	_	53	fixed	_	_
+55	listening	_	NOUN	NN	_	51	nmod	_	_
+56	and	_	CCONJ	CC	_	58	cc	_	_
+57	reading	_	NOUN	NN	_	58	compound	_	_
+58	comprehension	_	NOUN	NN	_	55	conj	_	_
+59	[	_	PUNCT	-LRB-	_	60	punct	_	SpaceAfter=No
+60	18	_	NUM	CD	_	45	parataxis	_	SpaceAfter=No
+61	]	_	PUNCT	-RRB-	_	60	punct	_	SpaceAfter=No
+62	.	_	PUNCT	.	_	45	punct	_	_
+
+# sent_id = 27
+# text = It remains unclear what might explain such gains
+1	It	_	PRON	PRP	_	2	nsubj	_	_
+2	remains	_	VERB	VBZ	_	0	root	_	_
+3	unclear	_	ADJ	JJ	_	2	xcomp	_	_
+4	what	_	PRON	WP	_	6	nsubj	_	_
+5	might	_	AUX	MD	_	6	aux	_	_
+6	explain	_	VERB	VB	_	3	csubj	_	_
+7	such	_	ADJ	JJ	_	8	amod	_	_
+8	gains	_	NOUN	NNS	_	6	obj	_	_
+
+# sent_id = 28
+# text = , which have been attributed to motivation and to L2 experience during the period of ostensibly limited exposure [24], or to factors related to general maturation, cognitive development, or continued academic training [18].
+1	,	_	PUNCT	,	_	5	punct	_	_
+2	which	_	PRON	WDT	_	5	nsubj	_	_
+3	have	_	AUX	VBP	_	5	aux	_	_
+4	been	_	AUX	VBN	_	5	aux	_	_
+5	attributed	_	VERB	VBN	_	0	root	_	_
+6	to	_	ADP	IN	_	7	case	_	_
+7	motivation	_	NOUN	NN	_	5	obl	_	_
+8	and	_	CCONJ	CC	_	11	cc	_	_
+9	to	_	ADP	IN	_	11	case	_	_
+10	L2	_	NOUN	NN	_	11	compound	_	_
+11	experience	_	NOUN	NN	_	7	nmod	_	_
+12	during	_	ADP	IN	_	14	case	_	_
+13	the	_	DET	DT	_	14	det	_	_
+14	period	_	NOUN	NN	_	7	nmod	_	_
+15	of	_	ADP	IN	_	18	case	_	_
+16	ostensibly	_	ADV	RB	_	17	advmod	_	_
+17	limited	_	ADJ	JJ	_	18	amod	_	_
+18	exposure	_	NOUN	NN	_	14	nmod	_	_
+19	[	_	PUNCT	-LRB-	_	20	punct	_	SpaceAfter=No
+20	24	_	NUM	CD	_	5	parataxis	_	SpaceAfter=No
+21	]	_	PUNCT	-RRB-	_	20	punct	_	SpaceAfter=No
+22	,	_	PUNCT	,	_	23	punct	_	_
+23	or	_	CCONJ	CC	_	25	cc	_	_
+24	to	_	ADP	IN	_	25	case	_	_
+25	factors	_	NOUN	NNS	_	5	conj	_	_
+26	related	_	ADJ	JJ	_	25	acl	_	_
+27	to	_	ADP	IN	_	29	case	_	_
+28	general	_	ADJ	JJ	_	29	amod	_	_
+29	maturation	_	NOUN	NN	_	25	nmod	_	SpaceAfter=No
+30	,	_	PUNCT	,	_	32	punct	_	_
+31	cognitive	_	ADJ	JJ	_	32	amod	_	_
+32	development	_	NOUN	NN	_	29	conj	_	SpaceAfter=No
+33	,	_	PUNCT	,	_	35	punct	_	_
+34	or	_	CCONJ	CC	_	35	cc	_	_
+35	continued	_	VERB	VBD	_	29	conj	_	_
+36	academic	_	ADJ	JJ	_	37	amod	_	_
+37	training	_	NOUN	NN	_	35	obj	_	_
+38	[	_	PUNCT	-LRB-	_	39	punct	_	SpaceAfter=No
+39	18	_	NUM	CD	_	29	parataxis	_	SpaceAfter=No
+40	]	_	PUNCT	-RRB-	_	39	punct	_	SpaceAfter=No
+41	.	_	PUNCT	.	_	29	punct	_	_
+
+# sent_id = 1
+# text = ELI5: If every major country is in billions (if not trillions) of debt, where are they borrowing from?
+1	EL	_	NOUN	NN	_	2	reparandum	_	SpaceAfter=No
+2	I5	_	ADP	IN	_	17	dep	_	SpaceAfter=No
+3	:	_	PUNCT	:	_	2	punct	_	_
+4	If	_	SCONJ	IN	_	7	mark	_	_
+5	every	_	DET	DT	_	7	det	_	_
+6	major	_	ADJ	JJ	_	7	amod	_	_
+7	country	_	NOUN	NN	_	1	nmod	_	_
+8	is	_	AUX	VBZ	_	10	cop	_	_
+9	in	_	ADP	IN	_	10	case	_	_
+10	billions	_	NOUN	NNS	_	7	conj	_	_
+11	(	_	PUNCT	-LRB-	_	22	punct	_	SpaceAfter=No
+12	if	_	SCONJ	IN	_	22	mark	_	_
+13	not	_	PART	RB	_	14	advmod	_	_
+14	trillions	_	NOUN	NNS	_	12	nsubj	_	SpaceAfter=No
+15	)	_	PUNCT	-RRB-	_	14	punct	_	_
+16	of	_	ADP	IN	_	17	case	_	_
+17	debt	_	NOUN	NN	_	14	nmod	_	SpaceAfter=No
+18	,	_	PUNCT	,	_	22	punct	_	_
+19	where	_	ADV	WRB	_	22	advmod	_	_
+20	are	_	AUX	VBP	_	22	aux	_	_
+21	they	_	PRON	PRP	_	22	nsubj	_	_
+22	borrowing	_	VERB	VBG	_	0	root	_	_
+23	from	_	ADP	RP	_	22	compound	_	SpaceAfter=No
+24	?	_	PUNCT	?	_	22	punct	_	_
+
+# sent_id = 2
+# text = You can borrow from your own people.
+1	You	_	PRON	PRP	_	3	nsubj	_	_
+2	can	_	AUX	MD	_	3	aux	_	_
+3	borrow	_	VERB	VB	_	0	root	_	_
+4	from	_	ADP	IN	_	7	case	_	_
+5	your	_	PRON	PRP$	_	7	nmod	_	_
+6	own	_	ADJ	JJ	_	7	amod	_	_
+7	people	_	NOUN	NNS	_	3	ccomp	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 3
+# text = The money that is printed is FEDERAL RESERVE (thanks for the corrections) notes -- it's technically a debt that the Reserve owes the bearer of the note (but printing money does not technically increase the debt supply --
+1	The	_	DET	DT	_	2	det	_	_
+2	money	_	NOUN	NN	_	8	nsubj	_	_
+3	that	_	PRON	WDT	_	5	nsubj	_	_
+4	is	_	AUX	VBZ	_	5	aux	_	_
+5	printed	_	VERB	VBN	_	2	acl	_	_
+6	is	_	AUX	VBZ	_	8	cop	_	_
+7	FEDERAL	_	ADJ	JJ	_	8	amod	_	_
+8	RESERVE	_	NOUN	NN	_	0	root	_	_
+9	(	_	PUNCT	-LRB-	_	10	punct	_	SpaceAfter=No
+10	thanks	_	NOUN	NNS	_	8	appos	_	_
+11	for	_	ADP	IN	_	13	case	_	_
+12	the	_	DET	DT	_	13	det	_	_
+13	corrections	_	NOUN	NNS	_	10	nmod	_	SpaceAfter=No
+14	)	_	PUNCT	-RRB-	_	13	punct	_	_
+15	notes	_	NOUN	NNS	_	13	conj	_	_
+16	--	_	PUNCT	,	_	13	punct	_	_
+17	it	_	PRON	PRP	_	41	nsubj	_	SpaceAfter=No
+18	's	_	AUX	VBZ	_	41	cop	_	_
+19	technically	_	ADV	RB	_	41	advmod	_	_
+20	a	_	DET	DT	_	21	det	_	_
+21	debt	_	NOUN	NN	_	15	nmod	_	_
+22	that	_	SCONJ	IN	_	25	mark	_	_
+23	the	_	DET	DT	_	24	det	_	_
+24	Reserve	_	PROPN	NNPS	_	25	nsubj	_	_
+25	owes	_	VERB	VBD	_	21	acl	_	_
+26	the	_	DET	DT	_	27	det	_	_
+27	bearer	_	NOUN	NN	_	25	obj	_	_
+28	of	_	ADP	IN	_	30	case	_	_
+29	the	_	DET	DT	_	30	det	_	_
+30	note	_	NOUN	NN	_	27	nmod	_	_
+31	(	_	PUNCT	-LRB-	_	33	punct	_	SpaceAfter=No
+32	but	_	CCONJ	CC	_	33	cc	_	_
+33	printing	_	VERB	VBG	_	30	conj	_	_
+34	money	_	NOUN	NN	_	33	obj	_	_
+35	does	_	AUX	VBZ	_	38	aux	_	_
+36	not	_	PART	RB	_	38	advmod	_	_
+37	technically	_	ADV	RB	_	38	advmod	_	_
+38	increase	_	VERB	VB	_	33	advcl	_	_
+39	the	_	DET	DT	_	41	det	_	_
+40	debt	_	NOUN	NN	_	41	compound	_	_
+41	supply	_	NOUN	NN	_	38	obj	_	_
+42	--	_	PUNCT	,	_	8	punct	_	_
+
+# sent_id = 4
+# text = the role of money has changed since fiat currency).
+1	the	_	DET	DT	_	2	det	_	_
+2	role	_	NOUN	NN	_	6	nsubj	_	_
+3	of	_	ADP	IN	_	4	case	_	_
+4	money	_	NOUN	NN	_	2	nmod	_	_
+5	has	_	AUX	VBZ	_	6	aux	_	_
+6	changed	_	VERB	VBN	_	0	root	_	_
+7	since	_	ADP	IN	_	9	case	_	_
+8	fiat	_	NOUN	NN	_	9	nmod	_	_
+9	currency	_	NOUN	NN	_	6	obl	_	SpaceAfter=No
+10	)	_	PUNCT	-RRB-	_	9	punct	_	SpaceAfter=No
+11	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 5
+# text = When you print more money, you are devaluing the rest of the currency that is already in circulation.
+1	When	_	ADV	WRB	_	3	advmod	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	print	_	VERB	VBP	_	9	advcl	_	_
+4	more	_	ADJ	JJR	_	5	amod	_	_
+5	money	_	NOUN	NN	_	3	obj	_	SpaceAfter=No
+6	,	_	PUNCT	,	_	5	punct	_	_
+7	you	_	PRON	PRP	_	9	nsubj	_	_
+8	are	_	AUX	VBP	_	9	aux	_	_
+9	devaluing	_	VERB	VBG	_	0	root	_	_
+10	the	_	DET	DT	_	11	det	_	_
+11	rest	_	NOUN	NN	_	9	obj	_	_
+12	of	_	ADP	IN	_	14	case	_	_
+13	the	_	DET	DT	_	14	det	_	_
+14	currency	_	NOUN	NN	_	11	nmod	_	_
+15	that	_	PRON	WDT	_	19	nsubj	_	_
+16	is	_	AUX	VBZ	_	19	cop	_	_
+17	already	_	ADV	RB	_	19	advmod	_	_
+18	in	_	ADP	IN	_	19	case	_	_
+19	circulation	_	NOUN	NN	_	14	nmod	_	SpaceAfter=No
+20	.	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 6
+# text = This means that
+1	This	_	PRON	DT	_	2	nsubj	_	_
+2	means	_	VERB	VBZ	_	0	root	_	_
+3	that	_	SCONJ	IN	_	2	mark	_	_
+
+# sent_id = 7
+# text = if the govt decided to print $ 100,000,000,000,000,000 (1 quadrillion dollars) in the span of a week
+1	if	_	SCONJ	IN	_	4	mark	_	_
+2	the	_	DET	DT	_	3	det	_	_
+3	govt	_	PROPN	NNP	_	4	nsubj	_	_
+4	decided	_	VERB	VBD	_	0	root	_	_
+5	to	_	PART	TO	_	6	mark	_	_
+6	print	_	NOUN	NN	_	4	obl	_	_
+7	$	_	PUNCT	-LRB-	_	8	punct	_	_
+8	100,000	_	NUM	CD	_	16	nummod	_	SpaceAfter=No
+9	,000	_	NUM	CD	_	3	nummod	_	SpaceAfter=No
+10	,000	_	NUM	CD	_	9	nummod	_	SpaceAfter=No
+11	,000	_	NUM	CD	_	10	conj	_	SpaceAfter=No
+12	,000	_	NUM	CD	_	10	nummod	_	_
+13	(	_	PUNCT	-LRB-	_	14	punct	_	SpaceAfter=No
+14	1	_	NUM	CD	_	12	conj	_	_
+15	quadrillion	_	NOUN	NN	_	16	compound	_	_
+16	dollars	_	NOUN	NNS	_	9	conj	_	SpaceAfter=No
+17	)	_	PUNCT	-RRB-	_	16	punct	_	_
+18	in	_	ADP	IN	_	20	case	_	_
+19	the	_	DET	DT	_	20	det	_	_
+20	span	_	NOUN	NN	_	6	obl	_	_
+21	of	_	ADP	IN	_	23	case	_	_
+22	a	_	DET	DT	_	23	det	_	_
+23	week	_	NOUN	NN	_	20	nmod	_	_
+
+# sent_id = 8
+# text = , the value of the dollar would probably crash pretty hard (probably ...).
+1	,	_	PUNCT	,	_	6	punct	_	_
+2	the	_	DET	DT	_	3	det	_	_
+3	value	_	NOUN	NN	_	9	nsubj	_	_
+4	of	_	ADP	IN	_	6	case	_	_
+5	the	_	DET	DT	_	6	det	_	_
+6	dollar	_	NOUN	NN	_	3	nmod	_	_
+7	would	_	AUX	MD	_	9	aux	_	_
+8	probably	_	ADV	RB	_	9	advmod	_	_
+9	crash	_	VERB	VB	_	0	root	_	_
+10	pretty	_	ADV	RB	_	11	advmod	_	_
+11	hard	_	ADJ	JJ	_	9	obj	_	_
+12	(	_	PUNCT	-LRB-	_	13	punct	_	SpaceAfter=No
+13	probably	_	ADV	RB	_	11	advmod	_	_
+14	...	_	PUNCT	.	_	9	punct	_	SpaceAfter=No
+15	)	_	PUNCT	-RRB-	_	9	punct	_	SpaceAfter=No
+16	.	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 9
+# text = This is related because people use money to buy US debt -- we're loaning the US govt the very money it prints.
+1	This	_	PRON	DT	_	3	nsubj	_	_
+2	is	_	AUX	VBZ	_	3	cop	_	_
+3	related	_	ADJ	JJ	_	0	root	_	_
+4	because	_	SCONJ	IN	_	6	mark	_	_
+5	people	_	NOUN	NNS	_	6	nsubj	_	_
+6	use	_	VERB	VBP	_	3	advcl	_	_
+7	money	_	NOUN	NN	_	6	obj	_	_
+8	to	_	PART	TO	_	9	mark	_	_
+9	buy	_	VERB	VB	_	7	xcomp	_	_
+10	US	_	PROPN	NNP	_	11	compound	_	_
+11	debt	_	NOUN	NN	_	9	obj	_	_
+12	--	_	PUNCT	,	_	9	punct	_	_
+13	we	_	PRON	PRP	_	15	nsubj	_	SpaceAfter=No
+14	're	_	AUX	VBP	_	15	aux	_	_
+15	loaning	_	VERB	VBG	_	21	csubj	_	_
+16	the	_	DET	DT	_	17	det	_	_
+17	US	_	PROPN	NNP	_	15	obl	_	_
+18	govt	_	PROPN	NN	_	21	obl	_	_
+19	the	_	DET	DT	_	21	det	_	_
+20	very	_	ADJ	JJ	_	21	amod	_	_
+21	money	_	NOUN	NN	_	6	obl	_	_
+22	it	_	PRON	PRP	_	23	nmod	_	_
+23	prints	_	NOUN	NNS	_	21	nmod	_	SpaceAfter=No
+24	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 10
+# text = The only reason that this results in anything favorable is because people all over the world value USD and that paper currency represents potential labor, new assets, etc.
+1	The	_	DET	DT	_	3	det	_	_
+2	only	_	ADJ	JJ	_	3	amod	_	_
+3	reason	_	NOUN	NN	_	23	nsubj	_	_
+4	that	_	SCONJ	IN	_	23	mark	_	_
+5	this	_	DET	DT	_	6	det	_	_
+6	results	_	NOUN	NNS	_	9	nsubj	_	_
+7	in	_	ADP	IN	_	8	case	_	_
+8	anything	_	PRON	NN	_	6	nmod	_	_
+9	favorable	_	ADJ	JJ	_	10	expl	_	_
+10	is	_	AUX	VBZ	_	23	cop	_	_
+11	because	_	SCONJ	IN	_	23	mark	_	_
+12	people	_	NOUN	NNS	_	23	nsubj	_	_
+13	all	_	ADV	RB	_	16	advmod	_	_
+14	over	_	ADP	IN	_	16	case	_	_
+15	the	_	DET	DT	_	16	det	_	_
+16	world	_	NOUN	NN	_	12	nmod	_	_
+17	value	_	NOUN	NN	_	18	nmod	_	_
+18	USD	_	NOUN	NNS	_	16	nmod	_	_
+19	and	_	CCONJ	CC	_	23	cc	_	_
+20	that	_	SCONJ	IN	_	23	mark	_	_
+21	paper	_	NOUN	NN	_	22	compound	_	_
+22	currency	_	NOUN	NN	_	23	nsubj	_	_
+23	represents	_	VERB	VBZ	_	0	root	_	_
+24	potential	_	ADJ	JJ	_	25	amod	_	_
+25	labor	_	NOUN	NN	_	23	obj	_	SpaceAfter=No
+26	,	_	PUNCT	,	_	28	punct	_	_
+27	new	_	ADJ	JJ	_	28	amod	_	_
+28	assets	_	NOUN	NNS	_	23	obj	_	SpaceAfter=No
+29	,	_	PUNCT	,	_	28	punct	_	_
+30	etc	_	ADV	FW	_	28	advmod	_	SpaceAfter=No
+31	.	_	PUNCT	.	_	30	punct	_	_
+
+# sent_id = 11
+# text = If you own a baseball card of Sammy Sosa, there is a chance it could be worth a lot of money.
+1	If	_	SCONJ	IN	_	3	mark	_	_
+2	you	_	PRON	PRP$	_	3	nmod	_	_
+3	own	_	ADJ	JJ	_	6	amod	_	_
+4	a	_	DET	DT	_	6	det	_	_
+5	baseball	_	ADJ	JJ	_	6	amod	_	_
+6	card	_	NOUN	NN	_	18	obj	_	_
+7	of	_	ADP	IN	_	8	case	_	_
+8	Sammy	_	PROPN	NNP	_	6	nmod	_	_
+9	Sosa	_	PROPN	NNP	_	8	flat	_	SpaceAfter=No
+10	,	_	PUNCT	,	_	12	punct	_	_
+11	there	_	PRON	EX	_	12	expl	_	_
+12	is	_	VERB	VBZ	_	8	parataxis	_	_
+13	a	_	DET	DT	_	14	det	_	_
+14	chance	_	NOUN	NN	_	12	nsubj	_	_
+15	it	_	PRON	PRP	_	18	nsubj	_	_
+16	could	_	AUX	MD	_	18	aux	_	_
+17	be	_	AUX	VB	_	18	aux	_	_
+18	worth	_	VERB	VBN	_	0	root	_	_
+19	a	_	DET	DT	_	20	det	_	_
+20	lot	_	NOUN	NN	_	18	nsubj	_	_
+21	of	_	ADP	IN	_	22	case	_	_
+22	money	_	NOUN	NNS	_	20	nmod	_	SpaceAfter=No
+23	.	_	PUNCT	.	_	18	punct	_	_
+
+# sent_id = 12
+# text = Now imagine if the card company just mails a Sammy Sosa card to every family in America.
+1	Now	_	ADV	RB	_	2	advmod	_	_
+2	imagine	_	VERB	VB	_	0	root	_	_
+3	if	_	SCONJ	IN	_	6	mark	_	_
+4	the	_	DET	DT	_	6	det	_	_
+5	card	_	NOUN	NN	_	6	compound	_	_
+6	company	_	NOUN	NN	_	2	obl	_	_
+7	just	_	ADV	RB	_	12	advmod	_	_
+8	mails	_	NOUN	NNS	_	12	nsubj	_	_
+9	a	_	DET	DT	_	12	det	_	_
+10	Sammy	_	PROPN	NNP	_	12	compound	_	_
+11	Sosa	_	PROPN	NNP	_	10	compound	_	_
+12	card	_	NOUN	NN	_	6	nmod	_	_
+13	to	_	ADP	IN	_	15	case	_	_
+14	every	_	DET	DT	_	15	det	_	_
+15	family	_	NOUN	NN	_	12	nmod	_	_
+16	in	_	ADP	IN	_	17	case	_	_
+17	America	_	PROPN	NNP	_	15	nmod	_	SpaceAfter=No
+18	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 13
+# text = Your Sammy Sosa card isn't worth anything anymore because there are so many of them and everyone has it now.
+1	Your	_	PRON	PRP$	_	2	nmod	_	_
+2	Sammy	_	PROPN	NNP	_	4	vocative	_	_
+3	Sosa	_	PROPN	NNP	_	2	compound	_	_
+4	card	_	NOUN	NN	_	7	nsubj	_	_
+5	is	_	AUX	VBZ	_	7	cop	_	SpaceAfter=No
+6	n't	_	PART	RB	_	7	advmod	_	_
+7	worth	_	VERB	VB	_	0	root	_	_
+8	anything	_	PRON	NN	_	7	obj	_	_
+9	any	_	DET	DT	_	10	advmod	_	SpaceAfter=No
+10	more	_	ADJ	JJR	_	7	obj	_	_
+11	because	_	SCONJ	IN	_	13	mark	_	_
+12	there	_	PRON	EX	_	13	expl	_	_
+13	are	_	VERB	VBP	_	7	advcl	_	_
+14	so	_	ADV	RB	_	15	advmod	_	_
+15	many	_	ADJ	JJ	_	13	nsubj	_	_
+16	of	_	ADP	IN	_	17	case	_	_
+17	them	_	PRON	PRP	_	15	nmod	_	_
+18	and	_	CCONJ	CC	_	20	cc	_	_
+19	everyone	_	PRON	NN	_	20	nsubj	_	_
+20	has	_	VERB	VBZ	_	13	conj	_	_
+21	it	_	PRON	PRP	_	20	obj	_	_
+22	now	_	ADV	RB	_	20	advmod	_	SpaceAfter=No
+23	.	_	PUNCT	.	_	20	punct	_	_
+
+# sent_id = 14
+# text = Now imagine
+1	Now	_	ADV	RB	_	2	advmod	_	_
+2	imagine	_	VERB	VB	_	0	root	_	_
+
+# sent_id = 15
+# text = if they mailed another 5 to everyone -- the value crashes even harder because there are SO many of them now.
+1	if	_	SCONJ	IN	_	3	mark	_	_
+2	they	_	PRON	PRP	_	3	nsubj	_	_
+3	mailed	_	VERB	VBD	_	0	root	_	_
+4	another	_	DET	DT	_	5	det	_	_
+5	5	_	NUM	CD	_	3	obj	_	_
+6	to	_	ADP	IN	_	7	case	_	_
+7	everyone	_	PRON	NN	_	3	obl	_	_
+8	--	_	PUNCT	,	_	11	punct	_	_
+9	the	_	DET	DT	_	11	det	_	_
+10	value	_	NOUN	NN	_	11	compound	_	_
+11	crashes	_	NOUN	NNS	_	3	obj	_	_
+12	even	_	ADV	RB	_	13	advmod	_	_
+13	harder	_	ADV	RB	_	3	advmod	_	_
+14	because	_	SCONJ	IN	_	16	mark	_	_
+15	there	_	PRON	EX	_	16	expl	_	_
+16	are	_	VERB	VBP	_	3	advcl	_	_
+17	SO	_	ADV	RB	_	18	advmod	_	_
+18	many	_	ADJ	JJ	_	16	nsubj	_	_
+19	of	_	ADP	IN	_	20	case	_	_
+20	them	_	PRON	PRP	_	18	nmod	_	_
+21	now	_	ADV	RP	_	16	advmod	_	SpaceAfter=No
+22	.	_	PUNCT	.	_	16	punct	_	_
+
+# sent_id = 16
+# text = That's the same idea with money.
+1	That	_	PRON	DT	_	5	nsubj	_	SpaceAfter=No
+2	's	_	AUX	VBZ	_	5	cop	_	_
+3	the	_	DET	DT	_	5	det	_	_
+4	same	_	ADJ	JJ	_	5	amod	_	_
+5	idea	_	NOUN	NN	_	0	root	_	_
+6	with	_	ADP	IN	_	7	case	_	_
+7	money	_	NOUN	NN	_	5	nmod	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 17
+# text = You can't keep printing more money or else the value of it will deteriorate.
+1	You	_	PRON	PRP	_	4	nsubj	_	_
+2	ca	_	AUX	MD	_	4	aux	_	SpaceAfter=No
+3	n't	_	PART	RB	_	4	advmod	_	_
+4	keep	_	VERB	VB	_	0	root	_	_
+5	printing	_	VERB	VBG	_	4	advcl	_	_
+6	more	_	ADJ	JJR	_	7	amod	_	_
+7	money	_	NOUN	NN	_	5	obj	_	_
+8	or	_	CCONJ	CC	_	11	cc	_	_
+9	else	_	ADV	RB	_	11	advmod	_	_
+10	the	_	DET	DT	_	11	det	_	_
+11	value	_	NOUN	NN	_	4	obl	_	_
+12	of	_	ADP	IN	_	13	case	_	_
+13	it	_	PRON	PRP	_	15	obl	_	_
+14	will	_	AUX	MD	_	15	aux	_	_
+15	deteriorate	_	VERB	VB	_	4	xcomp	_	SpaceAfter=No
+16	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 18
+# text = But the gov't keeps issuing more debt and we still look
+1	But	_	CCONJ	CC	_	11	cc	_	_
+2	the	_	DET	DT	_	3	det	_	_
+3	gov't	_	NOUN	NNS	_	4	nsubj	_	_
+4	keeps	_	VERB	VBN	_	11	advcl	_	_
+5	issuing	_	VERB	VBG	_	4	xcomp	_	_
+6	more	_	ADJ	JJR	_	7	amod	_	_
+7	debt	_	NOUN	NN	_	4	obj	_	_
+8	and	_	CCONJ	CC	_	11	cc	_	_
+9	we	_	PRON	PRP	_	11	nsubj	_	_
+10	still	_	ADV	RB	_	11	advmod	_	_
+11	look	_	VERB	VBP	_	0	root	_	_
+
+# sent_id = 19
+# text = at $ 20 like it's $ 20, right?
+1	at	_	ADP	IN	_	3	case	_	_
+2	$	_	PUNCT	-LRB-	_	3	punct	_	_
+3	20	_	NUM	CD	_	4	nsubj	_	_
+4	like	_	VERB	VBP	_	0	root	_	_
+5	it	_	PRON	PRP	_	6	expl	_	SpaceAfter=No
+6	's	_	AUX	VBZ	_	4	ccomp	_	_
+7	$	_	PUNCT	-LRB-	_	8	punct	_	_
+8	20	_	NUM	CD	_	4	parataxis	_	SpaceAfter=No
+9	,	_	PUNCT	,	_	10	punct	_	_
+10	right	_	ADV	RB	_	8	conj	_	SpaceAfter=No
+11	?	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 20
+# text = Eventually, there could come a time
+1	Eventually	_	ADV	RB	_	5	advmod	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+3	there	_	PRON	EX	_	5	expl	_	_
+4	could	_	AUX	MD	_	5	aux	_	_
+5	come	_	VERB	VB	_	0	root	_	_
+6	a	_	DET	DT	_	7	det	_	_
+7	time	_	NOUN	NN	_	5	obl	_	_
+
+# sent_id = 21
+# text = when we look at a $ 20 bill and it means nothing to us.
+1	when	_	ADV	WRB	_	3	advmod	_	_
+2	we	_	PRON	PRP	_	3	nsubj	_	_
+3	look	_	VERB	VBD	_	0	root	_	_
+4	at	_	ADP	IN	_	8	case	_	_
+5	a	_	DET	DT	_	8	det	_	_
+6	$	_	PUNCT	-LRB-	_	7	punct	_	_
+7	20	_	NUM	CD	_	8	nummod	_	_
+8	bill	_	NOUN	NNS	_	3	obl	_	_
+9	and	_	CCONJ	CC	_	11	cc	_	_
+10	it	_	PRON	PRP	_	11	nsubj	_	_
+11	means	_	VERB	VBZ	_	3	conj	_	_
+12	nothing	_	PRON	NN	_	11	obj	_	_
+13	to	_	ADP	IN	_	14	case	_	_
+14	us	_	PRON	PRP	_	11	obl	_	SpaceAfter=No
+15	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 22
+# text = This is what happened in Zimbabwe where a billion dollar transaction might happen for a loaf of bread.
+1	This	_	PRON	DT	_	4	nsubj	_	_
+2	is	_	AUX	VBZ	_	4	aux	_	_
+3	what	_	PRON	WP	_	4	nsubj	_	_
+4	happened	_	VERB	VBN	_	0	root	_	_
+5	in	_	ADP	IN	_	6	case	_	_
+6	Zimbabwe	_	PROPN	NNP	_	4	obl	_	_
+7	where	_	ADV	WRB	_	10	advmod	_	_
+8	a	_	DET	DT	_	9	det	_	_
+9	billion	_	NOUN	NN	_	10	compound	_	_
+10	dollar	_	NOUN	NN	_	11	compound	_	_
+11	transaction	_	NOUN	NN	_	13	nsubj	_	_
+12	might	_	AUX	MD	_	13	aux	_	_
+13	happen	_	VERB	VB	_	6	acl	_	_
+14	for	_	ADP	IN	_	16	case	_	_
+15	a	_	DET	DT	_	16	det	_	_
+16	loaf	_	NOUN	NN	_	13	obl	_	_
+17	of	_	ADP	IN	_	18	case	_	_
+18	bread	_	NOUN	NN	_	16	nmod	_	SpaceAfter=No
+19	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 23
+# text = They printed so much money (without proper secure backing by the gov't) that it just became worthless.
+1	They	_	PRON	PRP	_	2	nsubj	_	_
+2	printed	_	VERB	VBD	_	0	root	_	_
+3	so	_	ADV	RB	_	4	advmod	_	_
+4	much	_	ADJ	JJ	_	5	amod	_	_
+5	money	_	NOUN	NN	_	2	ccomp	_	_
+6	(	_	PUNCT	-LRB-	_	9	punct	_	SpaceAfter=No
+7	without	_	ADP	IN	_	9	case	_	_
+8	proper	_	ADJ	JJ	_	9	amod	_	_
+9	secure	_	NOUN	NN	_	2	obl	_	_
+10	backing	_	VERB	VBG	_	9	acl	_	_
+11	by	_	ADP	IN	_	13	case	_	_
+12	the	_	DET	DT	_	13	det	_	_
+13	gov't	_	NOUN	NN	_	10	obl	_	SpaceAfter=No
+14	)	_	PUNCT	-RRB-	_	9	punct	_	_
+15	that	_	SCONJ	IN	_	18	mark	_	_
+16	it	_	PRON	PRP	_	18	nsubj	_	_
+17	just	_	ADV	RB	_	18	advmod	_	_
+18	became	_	VERB	VBD	_	2	parataxis	_	_
+19	worthless	_	ADV	RBR	_	18	xcomp	_	SpaceAfter=No
+20	.	_	PUNCT	.	_	18	punct	_	_
+
+# sent_id = 24
+# text = So they started to just increase the numbers on their currency so you can actually pay for something.
+1	So	_	ADV	RB	_	3	advmod	_	_
+2	they	_	PRON	PRP	_	3	nsubj	_	_
+3	started	_	VERB	VBD	_	0	root	_	_
+4	to	_	PART	TO	_	6	mark	_	_
+5	just	_	ADV	RB	_	6	advmod	_	_
+6	increase	_	VERB	VB	_	3	xcomp	_	_
+7	the	_	DET	DT	_	8	det	_	_
+8	numbers	_	NOUN	NNS	_	6	obj	_	_
+9	on	_	ADP	IN	_	11	case	_	_
+10	their	_	PRON	PRP$	_	11	nmod	_	_
+11	currency	_	NOUN	NN	_	6	obl	_	_
+12	so	_	SCONJ	IN	_	16	mark	_	_
+13	you	_	PRON	PRP	_	16	nsubj	_	_
+14	can	_	AUX	MD	_	16	aux	_	_
+15	actually	_	ADV	RB	_	16	advmod	_	_
+16	pay	_	VERB	VB	_	6	parataxis	_	_
+17	for	_	ADP	IN	_	18	case	_	_
+18	something	_	PRON	NN	_	16	obl	_	SpaceAfter=No
+19	.	_	PUNCT	.	_	16	punct	_	_
+
+# sent_id = 25
+# text = Because the gov't theoretically owes its population money, they issue paper as a certificate of this.
+1	Because	_	SCONJ	IN	_	5	mark	_	_
+2	the	_	DET	DT	_	3	det	_	_
+3	gov't	_	NOUN	NNS	_	5	nsubj	_	_
+4	theoretically	_	ADV	RB	_	5	advmod	_	_
+5	owes	_	VERB	VBD	_	11	advcl	_	_
+6	its	_	PRON	PRP$	_	8	nmod	_	_
+7	population	_	NOUN	NN	_	8	compound	_	_
+8	money	_	NOUN	NN	_	5	obl	_	SpaceAfter=No
+9	,	_	PUNCT	,	_	11	punct	_	_
+10	they	_	PRON	PRP	_	11	nsubj	_	_
+11	issue	_	VERB	VBP	_	0	root	_	_
+12	paper	_	NOUN	NN	_	11	obj	_	_
+13	as	_	ADP	IN	_	15	case	_	_
+14	a	_	DET	DT	_	15	det	_	_
+15	certificate	_	NOUN	NN	_	11	obl	_	_
+16	of	_	ADP	IN	_	17	case	_	_
+17	this	_	PRON	DT	_	15	nmod	_	SpaceAfter=No
+18	.	_	PUNCT	.	_	11	punct	_	_
+
+# sent_id = 26
+# text = You might not have physically went to the bank and traded something in return for paper but you did something that warranted the earning of that dollar.
+1	You	_	PRON	PRP	_	4	nsubj	_	_
+2	might	_	AUX	MD	_	4	aux	_	_
+3	not	_	PART	RB	_	4	advmod	_	_
+4	have	_	VERB	VB	_	0	root	_	_
+5	physically	_	ADV	RB	_	6	advmod	_	_
+6	went	_	VERB	VBD	_	4	conj	_	_
+7	to	_	PART	TO	_	9	case	_	_
+8	the	_	DET	DT	_	9	det	_	_
+9	bank	_	NOUN	NN	_	6	obl	_	_
+10	and	_	CCONJ	CC	_	11	cc	_	_
+11	traded	_	VERB	VBD	_	6	conj	_	_
+12	something	_	PRON	NN	_	11	obj	_	_
+13	in	_	ADP	IN	_	14	case	_	_
+14	return	_	NOUN	NN	_	6	obl	_	_
+15	for	_	ADP	IN	_	16	case	_	_
+16	paper	_	NOUN	NN	_	14	nmod	_	_
+17	but	_	CCONJ	CC	_	19	cc	_	_
+18	you	_	PRON	PRP	_	19	nsubj	_	_
+19	did	_	VERB	VBD	_	6	conj	_	_
+20	something	_	PRON	NN	_	19	obj	_	_
+21	that	_	PRON	WDT	_	22	nsubj	_	_
+22	warranted	_	VERB	VBD	_	19	advcl	_	_
+23	the	_	DET	DT	_	24	det	_	_
+24	earning	_	NOUN	NN	_	22	obj	_	_
+25	of	_	ADP	IN	_	27	case	_	_
+26	that	_	DET	DT	_	27	det	_	_
+27	dollar	_	NOUN	NN	_	24	nmod	_	SpaceAfter=No
+28	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 27
+# text = If you work for a company, they pay you that money because it has value and you can buy things with it.
+1	If	_	SCONJ	IN	_	3	mark	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	work	_	VERB	VBP	_	9	advcl	_	_
+4	for	_	ADP	IN	_	6	case	_	_
+5	a	_	DET	DT	_	6	det	_	_
+6	company	_	NOUN	NN	_	3	obl	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	6	punct	_	_
+8	they	_	PRON	PRP	_	9	nsubj	_	_
+9	pay	_	VERB	VBP	_	0	root	_	_
+10	you	_	PRON	PRP	_	9	obj	_	_
+11	that	_	DET	DT	_	12	det	_	_
+12	money	_	NOUN	NN	_	9	obj	_	_
+13	because	_	SCONJ	IN	_	15	mark	_	_
+14	it	_	PRON	PRP	_	15	nsubj	_	_
+15	has	_	VERB	VBZ	_	12	acl	_	_
+16	value	_	NOUN	NN	_	15	obj	_	_
+17	and	_	CCONJ	CC	_	20	cc	_	_
+18	you	_	PRON	PRP	_	20	nsubj	_	_
+19	can	_	AUX	MD	_	20	aux	_	_
+20	buy	_	VERB	VB	_	9	advcl	_	_
+21	things	_	NOUN	NNS	_	20	obj	_	_
+22	with	_	ADP	IN	_	23	case	_	_
+23	it	_	PRON	PRP	_	20	obl	_	SpaceAfter=No
+24	.	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 28
+# text = The only reason it has value is because the US gov't says it does.
+1	The	_	DET	DT	_	3	det	_	_
+2	only	_	ADJ	JJ	_	3	amod	_	_
+3	reason	_	NOUN	NN	_	12	obl	_	_
+4	it	_	PRON	PRP	_	5	nsubj	_	_
+5	has	_	AUX	VBZ	_	6	reparandum	_	_
+6	value	_	NOUN	NN	_	3	nmod	_	_
+7	is	_	AUX	VBZ	_	12	ccomp	_	_
+8	because	_	SCONJ	IN	_	12	mark	_	_
+9	the	_	DET	DT	_	10	det	_	_
+10	US	_	PROPN	NNP	_	11	nsubj	_	_
+11	gov't	_	PROPN	NNP	_	12	nsubj	_	_
+12	says	_	VERB	VBZ	_	0	root	_	_
+13	it	_	PRON	PRP	_	14	nsubj	_	_
+14	does	_	VERB	VBZ	_	12	ccomp	_	SpaceAfter=No
+15	.	_	PUNCT	.	_	12	punct	_	_
+
+# sent_id = 29
+# text = You can pay gov't-related fees and bills with the money they issue and because the gov't is well-secured, people accept it.
+1	You	_	PRON	PRP	_	3	nsubj	_	_
+2	can	_	AUX	MD	_	3	aux	_	_
+3	pay	_	VERB	VB	_	25	ccomp	_	_
+4	gov't	_	NUM	CD	_	6	dep	_	SpaceAfter=No
+5	-	_	PUNCT	HYPH	_	4	punct	_	SpaceAfter=No
+6	related	_	ADJ	JJ	_	7	amod	_	_
+7	fees	_	NOUN	NN	_	3	obl	_	_
+8	and	_	CCONJ	CC	_	9	cc	_	_
+9	bills	_	NOUN	NNS	_	7	conj	_	_
+10	with	_	ADP	IN	_	12	case	_	_
+11	the	_	DET	DT	_	12	det	_	_
+12	money	_	NOUN	NN	_	9	nmod	_	_
+13	they	_	PRON	PRP	_	14	nsubj	_	_
+14	issue	_	VERB	VBP	_	12	acl	_	_
+15	and	_	CCONJ	CC	_	25	cc	_	_
+16	because	_	SCONJ	IN	_	22	mark	_	_
+17	the	_	DET	DT	_	18	det	_	_
+18	gov't	_	NOUN	NN	_	22	nsubj	_	_
+19	is	_	AUX	VBZ	_	22	aux	_	_
+20	well	_	ADV	RB	_	22	advmod	_	SpaceAfter=No
+21	-	_	PUNCT	HYPH	_	20	punct	_	SpaceAfter=No
+22	secured	_	VERB	VBN	_	25	dislocated	_	SpaceAfter=No
+23	,	_	PUNCT	,	_	22	punct	_	_
+24	people	_	NOUN	NNS	_	25	nsubj	_	_
+25	accept	_	VERB	VBP	_	0	root	_	_
+26	it	_	PRON	PRP	_	25	obj	_	SpaceAfter=No
+27	.	_	PUNCT	.	_	25	punct	_	_
+
+# sent_id = 30
+# text = If our gov't was unstable,
+1	If	_	SCONJ	IN	_	5	mark	_	_
+2	our	_	PRON	PRP$	_	3	nmod	_	_
+3	gov't	_	NOUN	NN	_	5	nsubj	_	_
+4	was	_	AUX	VBD	_	5	cop	_	_
+5	unstable	_	ADJ	JJ	_	0	root	_	SpaceAfter=No
+6	,	_	PUNCT	,	_	5	punct	_	_
+
+# sent_id = 31
+# text = no one would trust the dollars they slept under for warmth because the gov't could just come out and say, 'Sorry we're not paying you guys back'.
+1	no	_	DET	DT	_	2	det	_	_
+2	one	_	PRON	NN	_	4	nsubj	_	_
+3	would	_	AUX	MD	_	4	aux	_	_
+4	trust	_	VERB	VB	_	17	advcl	_	_
+5	the	_	DET	DT	_	6	det	_	_
+6	dollars	_	NOUN	NNS	_	4	obj	_	_
+7	they	_	PRON	PRP	_	8	nsubj	_	_
+8	slept	_	VERB	VBD	_	6	acl	_	_
+9	under	_	ADP	IN	_	11	mark	_	_
+10	for	_	ADP	IN	_	11	case	_	_
+11	warmth	_	NOUN	NNS	_	8	obl	_	_
+12	because	_	SCONJ	IN	_	17	mark	_	_
+13	the	_	DET	DT	_	14	det	_	_
+14	gov't	_	NOUN	NN	_	17	nsubj	_	_
+15	could	_	AUX	MD	_	17	aux	_	_
+16	just	_	ADV	RB	_	17	advmod	_	_
+17	come	_	VERB	VB	_	0	root	_	_
+18	out	_	ADP	RP	_	17	compound	_	_
+19	and	_	CCONJ	CC	_	20	cc	_	_
+20	say	_	VERB	VBP	_	17	conj	_	SpaceAfter=No
+21	,	_	PUNCT	,	_	20	punct	_	_
+22	'	_	PUNCT	''	_	23	punct	_	SpaceAfter=No
+23	Sorry	_	ADJ	JJ	_	27	discourse	_	_
+24	we	_	PRON	PRP	_	27	nsubj	_	SpaceAfter=No
+25	're	_	AUX	VBP	_	27	aux	_	_
+26	not	_	PART	RB	_	27	advmod	_	_
+27	paying	_	VERB	VB	_	17	ccomp	_	_
+28	you	_	PRON	PRP	_	29	dep	_	_
+29	guys	_	NOUN	NNS	_	27	obj	_	_
+30	back	_	ADV	RB	_	29	advmod	_	SpaceAfter=No
+31	'	_	PUNCT	''	_	17	punct	_	SpaceAfter=No
+32	.	_	PUNCT	.	_	17	punct	_	_
+
+# sent_id = 32
+# text = Well what would they be paying back?
+1	Well	_	INTJ	UH	_	6	discourse	_	_
+2	what	_	PRON	WP	_	6	nsubj	_	_
+3	would	_	AUX	MD	_	6	aux	_	_
+4	they	_	PRON	PRP	_	6	nsubj	_	_
+5	be	_	AUX	VB	_	6	aux	_	_
+6	paying	_	VERB	VBG	_	0	root	_	_
+7	back	_	ADV	RB	_	6	advmod	_	SpaceAfter=No
+8	?	_	PUNCT	?	_	6	punct	_	_
+
+# sent_id = 33
+# text = To whom are they paying back to?
+1	To	_	INTJ	UH	_	2	vocative	_	_
+2	whom	_	PRON	WP	_	5	xcomp	_	_
+3	are	_	AUX	VBP	_	5	aux	_	_
+4	they	_	PRON	PRP	_	5	nsubj	_	_
+5	paying	_	VERB	VB	_	0	root	_	_
+6	back	_	ADV	RB	_	5	advmod	_	_
+7	to	_	PART	TO	_	5	advcl	_	SpaceAfter=No
+8	?	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 34
+# text = It used to be gold.
+1	It	_	PRON	PRP	_	2	nsubj	_	_
+2	used	_	VERB	VBD	_	0	root	_	_
+3	to	_	PART	TO	_	5	mark	_	_
+4	be	_	AUX	VB	_	5	cop	_	_
+5	gold	_	ADJ	JJ	_	2	xcomp	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 35
+# text = But as we grew as a planet, we ran out of gold to back every dollar with and it just became a nightmare to handle.
+1	But	_	CCONJ	CC	_	4	cc	_	_
+2	as	_	SCONJ	IN	_	4	mark	_	_
+3	we	_	PRON	PRP	_	4	nsubj	_	_
+4	grew	_	VERB	VBD	_	0	root	_	_
+5	as	_	ADP	IN	_	7	case	_	_
+6	a	_	DET	DT	_	7	det	_	_
+7	planet	_	NOUN	NN	_	4	obl	_	SpaceAfter=No
+8	,	_	PUNCT	,	_	7	punct	_	_
+9	we	_	PRON	PRP	_	10	nsubj	_	_
+10	ran	_	VERB	VBD	_	4	conj	_	_
+11	out	_	ADP	IN	_	13	case	_	_
+12	of	_	ADP	IN	_	13	case	_	_
+13	gold	_	NOUN	NN	_	10	obl	_	_
+14	to	_	PART	TO	_	15	mark	_	_
+15	back	_	VERB	VB	_	10	advcl	_	_
+16	every	_	DET	DT	_	17	det	_	_
+17	dollar	_	NOUN	NN	_	15	obj	_	_
+18	with	_	ADP	IN	_	22	case	_	_
+19	and	_	CCONJ	CC	_	22	cc	_	_
+20	it	_	PRON	PRP	_	22	nsubj	_	_
+21	just	_	ADV	RB	_	22	advmod	_	_
+22	became	_	VERB	VBD	_	15	conj	_	_
+23	a	_	DET	DT	_	24	det	_	_
+24	nightmare	_	NOUN	NN	_	22	obj	_	_
+25	to	_	PART	TO	_	26	mark	_	_
+26	handle	_	VERB	VB	_	24	acl	_	SpaceAfter=No
+27	.	_	PUNCT	.	_	26	punct	_	_
+
+# sent_id = 36
+# text = Enter, fiat currency, a piece of paper that means nothing except what the gov't says it means.
+1	Enter	_	VERB	VB	_	0	root	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	4	punct	_	_
+3	fiat	_	NOUN	NN	_	4	compound	_	_
+4	currency	_	NOUN	NN	_	1	obl	_	SpaceAfter=No
+5	,	_	PUNCT	,	_	7	punct	_	_
+6	a	_	DET	DT	_	7	det	_	_
+7	piece	_	NOUN	NN	_	1	obl	_	_
+8	of	_	ADP	IN	_	9	case	_	_
+9	paper	_	NOUN	NN	_	7	nmod	_	_
+10	that	_	PRON	WDT	_	11	nsubj	_	_
+11	means	_	VERB	VBZ	_	9	acl	_	_
+12	nothing	_	PRON	NN	_	11	obj	_	_
+13	except	_	SCONJ	IN	_	14	mark	_	_
+14	what	_	PRON	WP	_	12	acl	_	_
+15	the	_	DET	DT	_	16	det	_	_
+16	gov't	_	NOUN	NN	_	17	nsubj	_	_
+17	says	_	VERB	VBZ	_	11	advcl	_	_
+18	it	_	PRON	PRP	_	19	nsubj	_	_
+19	means	_	VERB	VBZ	_	17	ccomp	_	SpaceAfter=No
+20	.	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 37
+# text = People used to go to banks with gold and receive 'money' for it.
+1	People	_	NOUN	NNS	_	2	nsubj	_	_
+2	used	_	VERB	VBD	_	0	root	_	_
+3	to	_	PART	TO	_	4	mark	_	_
+4	go	_	VERB	VB	_	2	xcomp	_	_
+5	to	_	ADP	IN	_	6	case	_	_
+6	banks	_	NOUN	NNS	_	4	obl	_	_
+7	with	_	ADP	IN	_	8	case	_	_
+8	gold	_	NOUN	NN	_	6	nmod	_	_
+9	and	_	CCONJ	CC	_	10	cc	_	_
+10	receive	_	VERB	VBG	_	2	conj	_	_
+11	'	_	PUNCT	``	_	12	punct	_	SpaceAfter=No
+12	money	_	NOUN	NN	_	10	xcomp	_	SpaceAfter=No
+13	'	_	PUNCT	''	_	12	punct	_	_
+14	for	_	ADP	IN	_	15	case	_	_
+15	it	_	PRON	PRP	_	10	obl	_	SpaceAfter=No
+16	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 38
+# text = The banks would literally hold their gold and give them an certificate that says they own a claim of gold in their vaults.
+1	The	_	DET	DT	_	2	det	_	_
+2	banks	_	NOUN	NNS	_	5	nsubj	_	_
+3	would	_	AUX	MD	_	5	aux	_	_
+4	literally	_	ADV	RB	_	5	advmod	_	_
+5	hold	_	VERB	VB	_	0	root	_	_
+6	their	_	PRON	PRP$	_	7	nmod	_	_
+7	gold	_	NOUN	NN	_	5	obj	_	_
+8	and	_	CCONJ	CC	_	9	cc	_	_
+9	give	_	VERB	VB	_	5	conj	_	_
+10	them	_	PRON	PRP	_	9	iobj	_	_
+11	an	_	DET	DT	_	12	det	_	_
+12	certificate	_	NOUN	NN	_	9	obl	_	_
+13	that	_	PRON	WDT	_	14	nsubj	_	_
+14	says	_	VERB	VBZ	_	12	acl	_	_
+15	they	_	PRON	PRP	_	18	nsubj	_	_
+16	own	_	ADJ	JJ	_	18	amod	_	_
+17	a	_	DET	DT	_	18	det	_	_
+18	claim	_	NOUN	NN	_	14	obj	_	_
+19	of	_	ADP	IN	_	20	case	_	_
+20	gold	_	NOUN	NN	_	18	nmod	_	_
+21	in	_	ADP	IN	_	23	case	_	_
+22	their	_	PRON	PRP$	_	23	nmod	_	_
+23	vaults	_	NOUN	NNS	_	20	nmod	_	SpaceAfter=No
+24	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 39
+# text = If ANYONE brought that certificate to the bank, they could expect to receive gold for it.
+1	If	_	SCONJ	IN	_	3	mark	_	_
+2	ANYONE	_	PRON	PRP	_	3	nsubj	_	_
+3	brought	_	VERB	VBD	_	12	advcl	_	_
+4	that	_	DET	DT	_	5	det	_	_
+5	certificate	_	NOUN	NN	_	3	obl	_	_
+6	to	_	ADP	IN	_	8	case	_	_
+7	the	_	DET	DT	_	8	det	_	_
+8	bank	_	NOUN	NN	_	5	nmod	_	SpaceAfter=No
+9	,	_	PUNCT	,	_	12	punct	_	_
+10	they	_	PRON	PRP	_	12	nsubj	_	_
+11	could	_	AUX	MD	_	12	aux	_	_
+12	expect	_	VERB	VB	_	0	root	_	_
+13	to	_	PART	TO	_	14	mark	_	_
+14	receive	_	VERB	VB	_	12	xcomp	_	_
+15	gold	_	ADJ	JJ	_	14	obj	_	_
+16	for	_	ADP	IN	_	17	case	_	_
+17	it	_	PRON	PRP	_	15	obl	_	SpaceAfter=No
+18	.	_	PUNCT	.	_	14	punct	_	_
+
+# sent_id = 40
+# text = That's what gave it value.
+1	That	_	PRON	DT	_	4	nsubj	_	SpaceAfter=No
+2	's	_	AUX	VBZ	_	4	iobj	_	_
+3	what	_	PRON	WP	_	4	nsubj	_	_
+4	gave	_	VERB	VBD	_	0	root	_	_
+5	it	_	PRON	PRP	_	4	iobj	_	_
+6	value	_	NOUN	NN	_	4	obj	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 41
+# text = You could say you want that farmer's potatoes and he can go get $ 1 of gold from the bankers at his convenience or he could hold onto it and use it
+1	You	_	PRON	PRP	_	3	nsubj	_	_
+2	could	_	AUX	MD	_	3	aux	_	_
+3	say	_	VERB	VB	_	0	root	_	_
+4	you	_	PRON	PRP	_	5	nsubj	_	_
+5	want	_	VERB	VBP	_	3	advcl	_	_
+6	that	_	DET	DT	_	7	det	_	_
+7	farmer	_	NOUN	NN	_	9	nmod	_	SpaceAfter=No
+8	's	_	PART	POS	_	7	case	_	_
+9	potatoes	_	NOUN	NN	_	5	obj	_	_
+10	and	_	CCONJ	CC	_	13	cc	_	_
+11	he	_	PRON	PRP	_	13	nsubj	_	_
+12	can	_	AUX	MD	_	13	aux	_	_
+13	go	_	VERB	VB	_	5	conj	_	_
+14	get	_	VERB	VB	_	13	xcomp	_	_
+15	$	_	SYM	SYM	_	16	cc	_	_
+16	1	_	NOUN	NN	_	14	obj	_	_
+17	of	_	ADP	IN	_	18	case	_	_
+18	gold	_	NOUN	NN	_	16	nmod	_	_
+19	from	_	ADP	IN	_	21	case	_	_
+20	the	_	DET	DT	_	21	det	_	_
+21	bankers	_	NOUN	NNS	_	18	nmod	_	_
+22	at	_	ADP	IN	_	24	case	_	_
+23	his	_	PRON	PRP$	_	24	nmod	_	_
+24	convenience	_	NOUN	NN	_	21	nmod	_	_
+25	or	_	CCONJ	CC	_	28	cc	_	_
+26	he	_	PRON	PRP	_	28	nsubj	_	_
+27	could	_	AUX	MD	_	28	aux	_	_
+28	hold	_	VERB	VB	_	24	acl	_	_
+29	onto	_	ADP	IN	_	30	case	_	_
+30	it	_	PRON	PRP	_	28	obl	_	_
+31	and	_	CCONJ	CC	_	32	cc	_	_
+32	use	_	VERB	VB	_	28	conj	_	_
+33	it	_	PRON	PRP	_	32	obj	_	_
+
+# sent_id = 42
+# text = just like the person did before him -- 'trade' it for something else like new shoes.
+1	just	_	ADV	RB	_	4	advmod	_	_
+2	like	_	ADP	IN	_	4	case	_	_
+3	the	_	DET	DT	_	4	det	_	_
+4	person	_	NOUN	NN	_	5	nsubj	_	_
+5	did	_	VERB	VBD	_	0	root	_	_
+6	before	_	ADP	IN	_	7	case	_	_
+7	him	_	PRON	PRP	_	5	obl	_	_
+8	--	_	PUNCT	,	_	10	punct	_	_
+9	'	_	PUNCT	``	_	10	punct	_	SpaceAfter=No
+10	trade	_	NOUN	NN	_	5	obl	_	SpaceAfter=No
+11	'	_	PUNCT	''	_	10	punct	_	_
+12	it	_	PRON	PRP	_	14	xcomp	_	_
+13	for	_	ADP	IN	_	14	case	_	_
+14	something	_	PRON	NN	_	5	obl	_	_
+15	else	_	ADV	WDT	_	14	nsubj	_	_
+16	like	_	ADP	IN	_	18	case	_	_
+17	new	_	ADJ	JJ	_	18	amod	_	_
+18	shoes	_	NOUN	NNS	_	14	nmod	_	SpaceAfter=No
+19	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 43
+# text = Why?
+1	Why	_	ADV	WRB	_	0	root	_	SpaceAfter=No
+2	?	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 44
+# text = Because everyone liked gold
+1	Because	_	SCONJ	IN	_	3	mark	_	_
+2	everyone	_	NOUN	NN	_	3	nsubj	_	_
+3	liked	_	VERB	VBD	_	0	root	_	_
+4	gold	_	NOUN	NN	_	3	obj	_	_
+
+# sent_id = 45
+# text = and everyone believed gold had value.
+1	and	_	CCONJ	CC	_	3	cc	_	_
+2	everyone	_	PRON	NN	_	3	nsubj	_	_
+3	believed	_	VERB	VBZ	_	0	root	_	_
+4	gold	_	NOUN	NN	_	5	nsubj	_	_
+5	had	_	VERB	VBD	_	3	ccomp	_	_
+6	value	_	NOUN	NN	_	5	obj	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 46
+# text = Eventually, this took off
+1	Eventually	_	ADV	RB	_	4	advmod	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+3	this	_	PRON	DT	_	4	nsubj	_	_
+4	took	_	VERB	VBZ	_	0	root	_	_
+5	off	_	ADV	RB	_	4	advmod	_	_
+
+# sent_id = 47
+# text = and people stopped trading for things
+1	and	_	CCONJ	CC	_	2	cc	_	_
+2	people	_	NOUN	NNS	_	3	nsubj	_	_
+3	stopped	_	VERB	VBD	_	0	root	_	_
+4	trading	_	NOUN	NN	_	3	obj	_	_
+5	for	_	ADP	IN	_	6	case	_	_
+6	things	_	NOUN	NNS	_	4	nmod	_	_
+
+# sent_id = 48
+# text = and we developed currency with quantitative values that allowed for easy exchanges to take place.
+1	and	_	CCONJ	CC	_	3	cc	_	_
+2	we	_	PRON	PRP	_	3	nsubj	_	_
+3	developed	_	VERB	VBD	_	0	root	_	_
+4	currency	_	NOUN	NN	_	3	obj	_	_
+5	with	_	ADP	IN	_	7	case	_	_
+6	quantitative	_	ADJ	JJ	_	7	amod	_	_
+7	values	_	NOUN	NNS	_	4	nmod	_	_
+8	that	_	PRON	WDT	_	9	nsubj	_	_
+9	allowed	_	VERB	VBD	_	7	acl	_	_
+10	for	_	ADP	IN	_	12	case	_	_
+11	easy	_	ADJ	JJ	_	12	amod	_	_
+12	exchanges	_	NOUN	NNS	_	9	obl	_	_
+13	to	_	PART	TO	_	14	mark	_	_
+14	take	_	VERB	VB	_	12	acl	_	_
+15	place	_	NOUN	NN	_	14	obj	_	SpaceAfter=No
+16	.	_	PUNCT	.	_	14	punct	_	_
+
+# sent_id = 49
+# text = So you might think,'
+1	So	_	ADV	RB	_	4	advmod	_	_
+2	you	_	PRON	PRP	_	4	nsubj	_	_
+3	might	_	AUX	MD	_	4	aux	_	_
+4	think	_	VERB	VB	_	0	root	_	SpaceAfter=No
+5	,	_	PUNCT	,	_	4	punct	_	SpaceAfter=No
+6	'	_	PUNCT	``	_	4	punct	_	_
+
+# sent_id = 50
+# text = Well, now that there isn't gold behind my dollar, how is it worth anything even if the gov't say it is?
+1	Well	_	INTJ	UH	_	8	discourse	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+3	now	_	ADV	RB	_	8	discourse	_	_
+4	that	_	SCONJ	IN	_	8	mark	_	_
+5	there	_	PRON	EX	_	8	expl	_	_
+6	is	_	AUX	VBZ	_	8	cop	_	SpaceAfter=No
+7	n't	_	PART	RB	_	8	advmod	_	_
+8	gold	_	ADJ	JJ	_	0	root	_	_
+9	behind	_	ADP	IN	_	11	case	_	_
+10	my	_	PRON	PRP$	_	11	nmod	_	_
+11	dollar	_	NOUN	NN	_	8	obl	_	SpaceAfter=No
+12	,	_	PUNCT	,	_	16	punct	_	_
+13	how	_	ADV	WRB	_	16	advmod	_	_
+14	is	_	AUX	VBZ	_	16	aux	_	_
+15	it	_	PRON	PRP	_	16	nsubj	_	_
+16	worth	_	VERB	VB	_	8	conj	_	_
+17	anything	_	PRON	NN	_	16	obj	_	_
+18	even	_	ADV	RB	_	22	advmod	_	_
+19	if	_	SCONJ	IN	_	22	mark	_	_
+20	the	_	DET	DT	_	21	det	_	_
+21	gov't	_	NOUN	NN	_	22	nsubj	_	_
+22	say	_	VERB	VBP	_	17	acl	_	_
+23	it	_	PRON	PRP	_	24	expl	_	_
+24	is	_	AUX	VBZ	_	22	ccomp	_	SpaceAfter=No
+25	?	_	PUNCT	?	_	22	punct	_	_
+
+# sent_id = 51
+# text = They won't give me anything in return for it".
+1	They	_	PRON	PRP	_	4	nsubj	_	_
+2	wo	_	AUX	MD	_	4	aux	_	SpaceAfter=No
+3	n't	_	PART	RB	_	4	advmod	_	_
+4	give	_	VERB	VB	_	0	root	_	_
+5	me	_	PRON	PRP	_	4	iobj	_	_
+6	anything	_	PRON	NN	_	4	iobj	_	_
+7	in	_	ADP	IN	_	8	case	_	_
+8	return	_	NOUN	NN	_	4	obl	_	_
+9	for	_	ADP	IN	_	10	case	_	_
+10	it	_	PRON	PRP	_	8	nmod	_	SpaceAfter=No
+11	"	_	PUNCT	''	_	8	punct	_	SpaceAfter=No
+12	.	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 52
+# text = The same thing applies to gold.
+1	The	_	DET	DT	_	3	det	_	_
+2	same	_	ADJ	JJ	_	3	amod	_	_
+3	thing	_	NOUN	NN	_	4	nsubj	_	_
+4	applies	_	VERB	VBZ	_	0	root	_	_
+5	to	_	PART	TO	_	6	mark	_	_
+6	gold	_	VERB	VB	_	4	xcomp	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 53
+# text = No one wants gold unless other people want gold.
+1	No	_	DET	DT	_	2	det	_	_
+2	one	_	PRON	NN	_	3	nsubj	_	_
+3	wants	_	VERB	VBZ	_	0	root	_	_
+4	gold	_	ADJ	JJ	_	7	amod	_	_
+5	unless	_	ADV	RBR	_	6	advmod	_	_
+6	other	_	ADJ	JJ	_	7	amod	_	_
+7	people	_	NOUN	NNS	_	8	nsubj	_	_
+8	want	_	VERB	VBP	_	3	ccomp	_	_
+9	gold	_	ADJ	JJ	_	8	obj	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 54
+# text = If you can't reasonably trade your gold for something else, then what value does it have?
+1	If	_	SCONJ	IN	_	6	mark	_	_
+2	you	_	PRON	PRP	_	6	nsubj	_	_
+3	ca	_	AUX	MD	_	6	aux	_	SpaceAfter=No
+4	n't	_	PART	RB	_	6	advmod	_	_
+5	reasonably	_	ADV	RB	_	6	advmod	_	_
+6	trade	_	VERB	VB	_	0	root	_	_
+7	your	_	PRON	PRP$	_	8	nmod	_	_
+8	gold	_	NOUN	NN	_	6	obj	_	_
+9	for	_	ADP	IN	_	10	case	_	_
+10	something	_	PRON	NN	_	8	conj	_	_
+11	else	_	ADV	WDT	_	10	advmod	_	SpaceAfter=No
+12	,	_	PUNCT	,	_	6	punct	_	_
+13	then	_	ADV	RB	_	18	advmod	_	_
+14	what	_	PRON	WP	_	18	nsubj	_	_
+15	value	_	NOUN	NN	_	18	obj	_	_
+16	does	_	AUX	VBZ	_	18	aux	_	_
+17	it	_	PRON	PRP	_	18	nsubj	_	_
+18	have	_	VERB	VB	_	6	conj	_	SpaceAfter=No
+19	?	_	PUNCT	.	_	18	punct	_	_
+
+# sent_id = 55
+# text = (Someone did point out you can shave gold flakes into your water and drink it, like some companies have chosen to do, but that's on you)
+1	(	_	PUNCT	-LRB-	_	4	punct	_	SpaceAfter=No
+2	Someone	_	PRON	NN	_	4	nsubj	_	_
+3	did	_	AUX	VBD	_	4	aux	_	_
+4	point	_	VERB	VB	_	8	advcl	_	_
+5	out	_	ADP	RP	_	4	compound	_	_
+6	you	_	PRON	PRP	_	8	nsubj	_	_
+7	can	_	AUX	MD	_	8	aux	_	_
+8	shave	_	VERB	VB	_	0	root	_	_
+9	gold	_	ADJ	JJ	_	10	amod	_	_
+10	flakes	_	NOUN	NNS	_	8	obj	_	_
+11	into	_	ADP	IN	_	13	case	_	_
+12	your	_	PRON	PRP$	_	13	nmod	_	_
+13	water	_	NOUN	NN	_	10	nmod	_	_
+14	and	_	CCONJ	CC	_	15	cc	_	_
+15	drink	_	VERB	VB	_	8	conj	_	_
+16	it	_	PRON	PRP	_	15	obj	_	SpaceAfter=No
+17	,	_	PUNCT	,	_	20	punct	_	_
+18	like	_	ADP	IN	_	20	case	_	_
+19	some	_	DET	DT	_	20	det	_	_
+20	companies	_	NOUN	NNS	_	22	nsubj	_	_
+21	have	_	AUX	VBP	_	22	aux	_	_
+22	chosen	_	VERB	VBN	_	15	acl	_	_
+23	to	_	PART	TO	_	24	mark	_	_
+24	do	_	VERB	VB	_	22	xcomp	_	SpaceAfter=No
+25	,	_	PUNCT	,	_	27	punct	_	_
+26	but	_	CCONJ	CC	_	27	cc	_	_
+27	that	_	PRON	DT	_	30	reparandum	_	SpaceAfter=No
+28	's	_	AUX	VBZ	_	30	cop	_	_
+29	on	_	ADP	IN	_	30	case	_	_
+30	you	_	PRON	PRP	_	24	obl	_	SpaceAfter=No
+31	)	_	PUNCT	-RRB-	_	24	punct	_	_
+
+# sent_id = 56
+# text = As long as people continue to value dollars, it doesn't matter what
+1	As	_	ADV	RB	_	2	advmod	_	_
+2	long	_	ADV	RB	_	5	advmod	_	_
+3	as	_	ADP	IN	_	2	fixed	_	_
+4	people	_	NOUN	NNS	_	5	nsubj	_	_
+5	continue	_	VERB	VBN	_	0	root	_	_
+6	to	_	ADP	IN	_	7	case	_	_
+7	value	_	NOUN	NN	_	5	obl	_	_
+8	dollars	_	NOUN	NNS	_	5	obl	_	SpaceAfter=No
+9	,	_	PUNCT	,	_	13	punct	_	_
+10	it	_	PRON	PRP	_	13	nsubj	_	_
+11	does	_	AUX	VBZ	_	13	aux	_	SpaceAfter=No
+12	n't	_	PART	RB	_	13	advmod	_	_
+13	matter	_	VERB	VB	_	5	ccomp	_	_
+14	what	_	PRON	WP	_	13	obj	_	_
+
+# sent_id = 57
+# text = it's worth, sans some certain supply and demand laws.
+1	it	_	PRON	PRP	_	3	nsubj	_	SpaceAfter=No
+2	's	_	AUX	VBZ	_	3	cop	_	_
+3	worth	_	ADJ	JJ	_	0	root	_	SpaceAfter=No
+4	,	_	PUNCT	,	_	5	punct	_	_
+5	sans	_	NOUN	NNS	_	3	conj	_	_
+6	some	_	DET	DT	_	8	det	_	_
+7	certain	_	ADJ	JJ	_	8	amod	_	_
+8	supply	_	NOUN	NN	_	5	nmod	_	_
+9	and	_	CCONJ	CC	_	11	cc	_	_
+10	demand	_	NOUN	NN	_	11	compound	_	_
+11	laws	_	NOUN	NN	_	8	conj	_	SpaceAfter=No
+12	.	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 58
+# text = So gold is no different in that regard.
+1	So	_	ADV	RB	_	2	advmod	_	_
+2	gold	_	NOUN	NN	_	0	root	_	_
+3	is	_	AUX	VBZ	_	5	cop	_	_
+4	no	_	DET	DT	_	5	det	_	_
+5	different	_	ADJ	JJ	_	2	acl	_	_
+6	in	_	ADP	IN	_	8	case	_	_
+7	that	_	DET	DT	_	8	det	_	_
+8	regard	_	NOUN	NN	_	5	obl	_	SpaceAfter=No
+9	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 59
+# text = The ONE difference between paper currency and gold is that $ 100,000 in cash weighs a lot less than $ 100,000 in gold and is a lot easier to hide too.
+1	The	_	DET	DT	_	3	det	_	_
+2	ONE	_	NUM	CD	_	3	nummod	_	_
+3	difference	_	NOUN	NN	_	28	obl	_	_
+4	between	_	ADP	IN	_	6	case	_	_
+5	paper	_	NOUN	NN	_	6	compound	_	_
+6	currency	_	NOUN	NN	_	3	nmod	_	_
+7	and	_	CCONJ	CC	_	14	cc	_	_
+8	gold	_	NOUN	NN	_	14	dislocated	_	_
+9	is	_	AUX	VBZ	_	10	cop	_	_
+10	that	_	PRON	DT	_	8	nmod	_	_
+11	$	_	PUNCT	-LRB-	_	12	punct	_	_
+12	100,000	_	NUM	CD	_	27	nummod	_	_
+13	in	_	ADP	IN	_	14	case	_	_
+14	cash	_	NOUN	NN	_	12	nmod	_	_
+15	weighs	_	VERB	VBP	_	14	acl	_	_
+16	a	_	DET	DT	_	17	det	_	_
+17	lot	_	NOUN	NN	_	15	obj	_	_
+18	less	_	ADV	RBR	_	14	conj	_	_
+19	than	_	ADP	IN	_	18	fixed	_	_
+20	$	_	PUNCT	-LRB-	_	21	punct	_	_
+21	100,000	_	NUM	CD	_	6	nmod	_	_
+22	in	_	ADP	IN	_	23	case	_	_
+23	gold	_	NOUN	NN	_	6	nmod	_	_
+24	and	_	CCONJ	CC	_	28	cc	_	_
+25	is	_	VERB	VBZ	_	27	csubj	_	_
+26	a	_	DET	DT	_	27	det	_	_
+27	lot	_	NOUN	NN	_	28	nsubj	_	_
+28	easier	_	VERB	VBD	_	0	root	_	_
+29	to	_	PART	TO	_	30	mark	_	_
+30	hide	_	VERB	VB	_	28	xcomp	_	_
+31	too	_	ADV	RB	_	30	advmod	_	SpaceAfter=No
+32	.	_	PUNCT	.	_	28	punct	_	_
+
+# sent_id = 60
+# text = EDIT
+1	EDIT	_	NOUN	NN	_	0	root	_	_
+
+# sent_id = 61
+# text = : I made some slight revisions to correct errors and to try and relate things better
+1	:	_	PUNCT	:	_	3	punct	_	_
+2	I	_	PRON	PRP	_	3	nsubj	_	_
+3	made	_	VERB	VBD	_	0	root	_	_
+4	some	_	DET	DT	_	6	det	_	_
+5	slight	_	ADJ	JJ	_	6	amod	_	_
+6	revisions	_	NOUN	NNS	_	3	obj	_	_
+7	to	_	ADP	IN	_	9	case	_	_
+8	correct	_	ADJ	JJ	_	9	amod	_	_
+9	errors	_	NOUN	NNS	_	3	obl	_	_
+10	and	_	CCONJ	CC	_	12	cc	_	_
+11	to	_	PART	TO	_	12	mark	_	_
+12	try	_	VERB	VB	_	3	conj	_	_
+13	and	_	CCONJ	CC	_	14	cc	_	_
+14	relate	_	VERB	VB	_	12	conj	_	_
+15	things	_	NOUN	NNS	_	14	obj	_	_
+16	better	_	ADV	RBR	_	14	advmod	_	_
+
+# sent_id = 62
+# text = to the main topic at hand.
+1	to	_	ADP	IN	_	4	case	_	_
+2	the	_	DET	DT	_	4	det	_	_
+3	main	_	ADJ	JJ	_	4	amod	_	_
+4	topic	_	NOUN	NN	_	0	root	_	_
+5	at	_	ADP	IN	_	6	case	_	_
+6	hand	_	NOUN	NN	_	4	nmod	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 63
+# text = Sorry, I kinda started rambling.
+1	Sorry	_	ADJ	JJ	_	5	nsubj	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	5	punct	_	_
+3	I	_	PRON	PRP	_	5	nsubj	_	_
+4	kinda	_	ADV	RB	_	5	advmod	_	_
+5	started	_	VERB	VBD	_	0	root	_	_
+6	rambling	_	NOUN	NN	_	5	obj	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 64
+# text = I have also posted below in response to u/penny_eater to correct my errors and explain them in a little bit further detail but it kinda strays away from ELI5 territory.
+1	I	_	PRON	PRP	_	4	nsubj	_	_
+2	have	_	AUX	VBP	_	4	aux	_	_
+3	also	_	ADV	RB	_	4	advmod	_	_
+4	posted	_	VERB	VBN	_	26	advcl	_	_
+5	below	_	ADV	RB	_	4	advmod	_	_
+6	in	_	ADP	IN	_	7	case	_	_
+7	response	_	NOUN	NN	_	4	obl	_	_
+8	to	_	ADP	IN	_	9	case	_	_
+9	u/penny_eater	_	NOUN	NN	_	7	nmod	_	_
+10	to	_	PART	TO	_	11	mark	_	_
+11	correct	_	ADJ	JJ	_	9	obl	_	_
+12	my	_	PRON	PRP$	_	13	nmod	_	_
+13	errors	_	NOUN	NNS	_	11	obj	_	_
+14	and	_	CCONJ	CC	_	15	cc	_	_
+15	explain	_	VERB	VB	_	11	conj	_	_
+16	them	_	PRON	PRP	_	15	obj	_	_
+17	in	_	ADP	IN	_	20	case	_	_
+18	a	_	DET	DT	_	20	det	_	_
+19	little	_	ADJ	JJ	_	20	amod	_	_
+20	bit	_	NOUN	NN	_	15	obl	_	_
+21	further	_	ADV	RBR	_	22	advmod	_	_
+22	detail	_	NOUN	NN	_	20	nmod	_	_
+23	but	_	CCONJ	CC	_	26	cc	_	_
+24	it	_	PRON	PRP	_	26	nsubj	_	_
+25	kinda	_	ADV	RB	_	26	advmod	_	_
+26	strays	_	VERB	VBD	_	0	root	_	_
+27	away	_	ADV	RB	_	26	advmod	_	_
+28	from	_	ADP	IN	_	29	case	_	_
+29	EL	_	NOUN	NN	_	27	obl	_	SpaceAfter=No
+30	I5	_	ADP	IN	_	31	case	_	_
+31	territory	_	NOUN	NN	_	29	nmod	_	SpaceAfter=No
+32	.	_	PUNCT	.	_	26	punct	_	_
+
