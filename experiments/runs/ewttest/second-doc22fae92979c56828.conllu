@@ -1,0 +1,98 @@
+# sent_id = 1
+# text = Key Delhi blast suspect arrested Police in the Indian capital Delhi say they have arrested the suspected co-ordinator and financier of last month's deadly bomb blasts in the city.
+1	Key	_	ADJ	JJ	_	3	amod	_	_
+2	Delhi	_	PROPN	NNP	_	3	compound	_	_
+3	blast	_	NOUN	NN	_	4	nsubj	_	_
+4	suspect	_	VERB	VBP	_	0	root	_	_
+5	arrested	_	VERB	VBN	_	6	amod	_	_
+6	Police	_	NOUN	NN	_	4	obj	_	_
+7	in	_	ADP	IN	_	31	case	_	_
+8	the	_	DET	DT	_	11	det	_	_
+9	Indian	_	ADJ	JJ	_	11	amod	_	_
+10	capital	_	PROPN	NNP	_	11	compound	_	_
+11	Delhi	_	PROPN	NNP	_	12	nsubj	_	_
+12	say	_	VERB	VBP	_	31	advcl	_	_
+13	they	_	PRON	PRP	_	15	nsubj	_	_
+14	have	_	AUX	VBP	_	15	aux	_	_
+15	arrested	_	VERB	VBN	_	4	ccomp	_	_
+16	the	_	DET	DT	_	21	det	_	_
+17	suspected	_	VERB	VBN	_	19	amod	_	_
+18	co-	_	NOUN	NN	_	19	compound	_	SpaceAfter=No
+19	ordinator	_	NOUN	NN	_	16	nmod	_	_
+20	and	_	CCONJ	CC	_	21	cc	_	_
+21	financier	_	NOUN	NN	_	15	conj	_	_
+22	of	_	ADP	IN	_	27	case	_	_
+23	last	_	ADJ	JJ	_	24	amod	_	_
+24	month	_	NOUN	NN	_	27	nmod	_	SpaceAfter=No
+25	's	_	PART	POS	_	24	case	_	_
+26	deadly	_	ADJ	JJ	_	27	amod	_	_
+27	bomb	_	NOUN	NN	_	28	nsubj	_	_
+28	blasts	_	VERB	VBZ	_	21	acl	_	_
+29	in	_	ADP	IN	_	31	case	_	_
+30	the	_	DET	DT	_	31	det	_	_
+31	city	_	NOUN	NN	_	28	obl	_	SpaceAfter=No
+32	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 2
+# text = Delhi police chief KK
+1	Delhi	_	PROPN	NNP	_	3	compound	_	_
+2	police	_	NOUN	NN	_	3	compound	_	_
+3	chief	_	NOUN	NN	_	4	compound	_	_
+4	KK	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 3
+# text = Paul named the man as Tariq Ahmed Dar, and said police were hunting for four accomplices.
+1	Paul	_	PROPN	NNP	_	12	nmod	_	_
+2	named	_	VERB	VBN	_	1	acl	_	_
+3	the	_	DET	DT	_	4	det	_	_
+4	man	_	NOUN	NN	_	2	obj	_	_
+5	as	_	ADP	IN	_	6	case	_	_
+6	Tariq	_	PROPN	NNP	_	4	nmod	_	_
+7	Ahmed	_	PROPN	NNP	_	6	flat	_	_
+8	Dar	_	PROPN	NNP	_	7	flat	_	SpaceAfter=No
+9	,	_	PUNCT	,	_	11	punct	_	_
+10	and	_	CCONJ	CC	_	11	cc	_	_
+11	said	_	VERB	VBD	_	2	conj	_	_
+12	police	_	NOUN	NNS	_	14	nsubj	_	_
+13	were	_	AUX	VBD	_	14	aux	_	_
+14	hunting	_	VERB	VBG	_	0	root	_	_
+15	for	_	ADP	IN	_	17	case	_	_
+16	four	_	NUM	CD	_	17	nummod	_	_
+17	accomplices	_	NOUN	NNS	_	14	obl	_	SpaceAfter=No
+18	.	_	PUNCT	.	_	14	punct	_	_
+
+# sent_id = 4
+# text = He said Mr Dar, 33, was arrested in Indian-administered Kashmir and belonged to the outlawed Lashkar-e-Toiba militant group.
+1	He	_	PRON	PRP	_	2	nsubj	_	_
+2	said	_	VERB	VBD	_	0	root	_	_
+3	Mr	_	PROPN	NNP	_	2	nsubj	_	_
+4	Dar	_	PROPN	NNP	_	3	flat	_	SpaceAfter=No
+5	,	_	PUNCT	,	_	3	punct	_	_
+6	33	_	NUM	CD	_	3	nummod	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	9	punct	_	_
+8	was	_	AUX	VBD	_	9	aux	_	_
+9	arrested	_	VERB	VBN	_	2	parataxis	_	_
+10	in	_	ADP	IN	_	25	case	_	_
+11	Indian	_	ADJ	JJ	_	25	amod	_	SpaceAfter=No
+12	-administered	_	ADJ	JJ	_	13	amod	_	_
+13	Kashmir	_	PROPN	NNP	_	11	obl	_	_
+14	and	_	CCONJ	CC	_	15	cc	_	_
+15	belonged	_	VERB	VBD	_	25	acl	_	_
+16	to	_	ADP	IN	_	19	case	_	_
+17	the	_	DET	DT	_	19	det	_	_
+18	outlawed	_	VERB	VBN	_	19	amod	_	_
+19	Lashkar	_	NOUN	NN	_	21	compound	_	SpaceAfter=No
+20	-	_	PUNCT	HYPH	_	21	punct	_	SpaceAfter=No
+21	e	_	NOUN	NN	_	4	list	_	SpaceAfter=No
+22	-	_	PUNCT	HYPH	_	23	punct	_	SpaceAfter=No
+23	Toiba	_	PROPN	NNP	_	25	compound	_	_
+24	militant	_	ADJ	JJ	_	25	amod	_	_
+25	group	_	NOUN	NN	_	19	nmod	_	SpaceAfter=No
+26	.	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 5
+# text = The India Diaries
+1	The	_	DET	DT	_	3	det	_	_
+2	India	_	PROPN	NNP	_	3	compound	_	_
+3	Diaries	_	PROPN	NNPS	_	0	root	_	_
+

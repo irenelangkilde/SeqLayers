@@ -1,0 +1,64 @@
+# sent_id = 1
+# text = Hello,
+1	Hello	_	INTJ	UH	_	0	root	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+
+# sent_id = 2
+# text = We have started a new forum for an interactive and absorbing discussion on Astrology & Palmistry and everything in between including Gemology, Feng Shui/Vaastu Shastra.
+1	We	_	PRON	PRP	_	3	nsubj	_	_
+2	have	_	AUX	VBP	_	3	aux	_	_
+3	started	_	VERB	VBN	_	0	root	_	_
+4	a	_	DET	DT	_	6	det	_	_
+5	new	_	ADJ	JJ	_	6	amod	_	_
+6	forum	_	NOUN	NN	_	3	obj	_	_
+7	for	_	ADP	IN	_	12	case	_	_
+8	an	_	DET	DT	_	12	det	_	_
+9	interactive	_	ADJ	JJ	_	12	amod	_	_
+10	and	_	CCONJ	CC	_	11	cc	_	_
+11	absorbing	_	ADJ	JJ	_	9	conj	_	_
+12	discussion	_	NOUN	NN	_	6	nmod	_	_
+13	on	_	ADP	IN	_	14	case	_	_
+14	Astrology	_	NOUN	NN	_	12	nmod	_	_
+15	&	_	CCONJ	CC	_	16	cc	_	_
+16	Palmistry	_	NOUN	NN	_	14	conj	_	_
+17	and	_	CCONJ	CC	_	18	cc	_	_
+18	everything	_	PRON	NN	_	16	conj	_	_
+19	in	_	ADP	IN	_	20	case	_	_
+20	between	_	SCONJ	IN	_	21	mark	_	_
+21	including	_	VERB	VBG	_	22	case	_	_
+22	Gemology	_	PROPN	NNP	_	18	nmod	_	SpaceAfter=No
+23	,	_	PUNCT	,	_	24	punct	_	_
+24	Feng	_	PROPN	NNP	_	22	conj	_	_
+25	Shui/	_	PROPN	NNP	_	24	flat	_	SpaceAfter=No
+26	Vaastu	_	PROPN	NNP	_	22	nsubj	_	_
+27	Shastra	_	PROPN	NNP	_	26	flat	_	SpaceAfter=No
+28	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 3
+# text = We look forward to your active participation to make this forum an exciting meeting place for like minded individuals.
+1	We	_	PRON	PRP	_	2	nsubj	_	_
+2	look	_	VERB	VBP	_	0	root	_	_
+3	forward	_	ADV	RB	_	2	advmod	_	_
+4	to	_	SCONJ	IN	_	7	case	_	_
+5	your	_	PRON	PRP$	_	7	nmod	_	_
+6	active	_	ADJ	JJ	_	7	amod	_	_
+7	participation	_	NOUN	NN	_	2	obl	_	_
+8	to	_	PART	TO	_	9	mark	_	_
+9	make	_	VERB	VB	_	7	acl	_	_
+10	this	_	DET	DT	_	11	det	_	_
+11	forum	_	NOUN	NN	_	9	obj	_	_
+12	an	_	DET	DT	_	15	det	_	_
+13	exciting	_	ADJ	JJ	_	15	amod	_	_
+14	meeting	_	NOUN	NN	_	15	compound	_	_
+15	place	_	NOUN	NN	_	11	conj	_	_
+16	for	_	ADP	IN	_	19	case	_	_
+17	like	_	ADP	IN	_	19	case	_	_
+18	minded	_	ADJ	JJ	_	19	amod	_	_
+19	individuals	_	NOUN	NNS	_	15	nmod	_	SpaceAfter=No
+20	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 4
+# text = Regards Swetha
+1	Regards	_	NOUN	NNS	_	0	root	_	_
+2	Swetha	_	PROPN	NNP	_	1	flat	_	_
+

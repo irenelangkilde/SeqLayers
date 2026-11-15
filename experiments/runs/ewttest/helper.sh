@@ -27,6 +27,9 @@ while true; do
   left=$(printf "%s\n%s\n" "$sd" "$hd" | grep -v '^$' | sort -u | comm -23 <(sort -u $OUT/shard2-docs.txt) -)
   [ -z "$left" ] && { say "shard 2/2: every doc covered ($(echo $sd | wc -w) second, $(echo $hd | wc -w) helper)"; break; }
   $K -n $S "test -f $P/$OUT/done-second" && { say "second: finished shard 2/2 on its own"; break; }
+  # (2026-11-14 fix: a finished run merges its per-doc files into <tag>-pred.conllu and deletes them, so the helper's
+  # finishing covers everything it didn't skip -- the first version missed this and idled four hours)
+  $K -n $F "test -f $P/$OUT/done-help" && { say "helper: finished (the rest of shard 2/2)"; break; }
 done
 for H in $F $S; do $K -n $H "pkill -f 'experiments/dev_eval.jl'; sleep 5; pkill -f julia" ; done
 say "runs stopped"

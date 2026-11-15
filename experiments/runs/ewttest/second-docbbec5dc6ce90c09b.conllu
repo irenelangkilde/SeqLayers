@@ -1,0 +1,638 @@
+# sent_id = 1
+# text = Rodgers
+1	Rodgers	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 2
+# text = As we discussed, here is a first effort at a revised TVA offer letter.
+1	As	_	SCONJ	IN	_	3	mark	_	_
+2	we	_	PRON	PRP	_	3	nsubj	_	_
+3	discussed	_	VERB	VBD	_	5	advcl	_	SpaceAfter=No
+4	,	_	PUNCT	,	_	5	punct	_	_
+5	here	_	ADV	RB	_	0	root	_	_
+6	is	_	AUX	VBZ	_	5	cop	_	_
+7	a	_	DET	DT	_	9	det	_	_
+8	first	_	ADJ	JJ	_	9	amod	_	_
+9	effort	_	NOUN	NN	_	5	nsubj	_	_
+10	at	_	ADP	IN	_	15	case	_	_
+11	a	_	DET	DT	_	15	det	_	_
+12	revised	_	VERB	VBN	_	9	amod	_	_
+13	TVA	_	PROPN	NNP	_	14	nsubj	_	_
+14	offer	_	VERB	VB	_	12	conj	_	_
+15	letter	_	NOUN	NN	_	12	obl	_	SpaceAfter=No
+16	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 3
+# text = I drafted the Into TVA Option as a series of calls tied to the MOPA delivery term and quantity - not sure if this anything close to what you all had in mind.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	drafted	_	VERB	VBD	_	0	root	_	_
+3	the	_	DET	DT	_	7	det	_	_
+4	Into	_	PROPN	NNP	_	5	case	_	_
+5	TV	_	NOUN	NN	_	7	nmod	_	SpaceAfter=No
+6	A	_	DET	DT	_	7	det	_	_
+7	Option	_	NOUN	NN	_	2	obl	_	_
+8	as	_	ADP	IN	_	10	case	_	_
+9	a	_	DET	DT	_	10	det	_	_
+10	series	_	NOUN	NN	_	2	obl	_	_
+11	of	_	ADP	IN	_	12	case	_	_
+12	calls	_	NOUN	NNS	_	10	nmod	_	_
+13	tied	_	ADJ	JJ	_	12	acl	_	_
+14	to	_	ADP	IN	_	18	case	_	_
+15	the	_	DET	DT	_	18	det	_	_
+16	MOPA	_	PROPN	NNP	_	18	compound	_	_
+17	delivery	_	NOUN	NN	_	18	compound	_	_
+18	term	_	NOUN	NN	_	13	obl	_	_
+19	and	_	CCONJ	CC	_	20	cc	_	_
+20	quantity	_	NOUN	NN	_	18	conj	_	_
+21	-	_	PUNCT	HYPH	_	23	punct	_	_
+22	not	_	PART	RB	_	23	advmod	_	_
+23	sure	_	ADJ	JJ	_	2	parataxis	_	_
+24	if	_	SCONJ	IN	_	27	mark	_	_
+25	this	_	DET	DT	_	26	det	_	_
+26	anything	_	PRON	NN	_	27	nsubj	_	_
+27	close	_	ADJ	JJR	_	23	ccomp	_	_
+28	to	_	SCONJ	IN	_	29	case	_	_
+29	what	_	PRON	WP	_	27	obl	_	_
+30	you	_	PRON	PRP	_	32	nsubj	_	_
+31	all	_	DET	DT	_	30	det	_	_
+32	had	_	VERB	VB	_	29	acl	_	_
+33	in	_	ADP	IN	_	34	case	_	_
+34	mind	_	NOUN	NN	_	32	obl	_	SpaceAfter=No
+35	.	_	PUNCT	.	_	32	punct	_	_
+
+# sent_id = 4
+# text = Please let me know what shape you all think the offer ought to take and we can revise accordingly.
+1	Please	_	INTJ	UH	_	2	discourse	_	_
+2	let	_	VERB	VB	_	0	root	_	_
+3	me	_	PRON	PRP	_	2	obj	_	_
+4	know	_	VERB	VB	_	2	xcomp	_	_
+5	what	_	DET	WDT	_	6	det	_	_
+6	shape	_	NOUN	NN	_	4	conj	_	_
+7	you	_	PRON	PRP	_	9	nsubj	_	_
+8	all	_	DET	DT	_	7	appos	_	_
+9	think	_	VERB	VBP	_	6	acl	_	_
+10	the	_	DET	DT	_	11	det	_	_
+11	offer	_	NOUN	NN	_	12	nsubj	_	_
+12	ought	_	VERB	VBN	_	9	ccomp	_	_
+13	to	_	PART	TO	_	14	mark	_	_
+14	take	_	VERB	VB	_	12	xcomp	_	_
+15	and	_	CCONJ	CC	_	18	cc	_	_
+16	we	_	PRON	PRP	_	18	nsubj	_	_
+17	can	_	AUX	MD	_	18	aux	_	_
+18	revise	_	VERB	VB	_	14	conj	_	_
+19	accordingly	_	ADV	RB	_	18	advmod	_	SpaceAfter=No
+20	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 5
+# text = Thanks
+1	Thanks	_	NOUN	NN	_	0	root	_	_
+
+# sent_id = 6
+# text = Elizabeth 36349 see you there at 4:00 unless I call you Mark E Haedicke
+1	Elizabeth	_	PROPN	NNP	_	3	nsubj	_	_
+2	36349	_	AUX	MD	_	3	aux	_	_
+3	see	_	VERB	VB	_	0	root	_	_
+4	you	_	PRON	PRP	_	3	obj	_	_
+5	there	_	ADV	RB	_	3	advmod	_	_
+6	at	_	ADP	IN	_	7	case	_	_
+7	4:00	_	NUM	CD	_	5	obl	_	_
+8	unless	_	SCONJ	IN	_	10	mark	_	_
+9	I	_	PRON	PRP	_	10	nsubj	_	_
+10	call	_	VERB	VBP	_	3	advcl	_	_
+11	you	_	PRON	PRP	_	10	obj	_	_
+12	Mark	_	PROPN	NNP	_	10	obj	_	_
+13	E	_	PROPN	NNP	_	12	flat	_	_
+14	Haedicke	_	PROPN	NNP	_	13	flat	_	_
+
+# sent_id = 7
+# text = Sent by: Janette Elbertson 02/28/2001 03:16 PM
+1	Sent	_	VERB	VBN	_	0	root	_	_
+2	by	_	ADP	IN	_	4	case	_	SpaceAfter=No
+3	:	_	PUNCT	:	_	4	punct	_	_
+4	Janette	_	PROPN	NNP	_	1	obl	_	_
+5	Elbertson	_	PROPN	NNP	_	4	flat	_	_
+6	02/28/2001	_	NUM	CD	_	1	parataxis	_	_
+7	03:16	_	NUM	CD	_	8	nummod	_	_
+8	PM	_	NOUN	NN	_	6	nmod	_	_
+
+# sent_id = 8
+# text = Please use the form attached when preparing the top ten risks for your businesses.
+1	Please	_	INTJ	UH	_	2	discourse	_	_
+2	use	_	VERB	VB	_	0	root	_	_
+3	the	_	DET	DT	_	4	det	_	_
+4	form	_	NOUN	NN	_	2	obj	_	_
+5	attached	_	VERB	VBN	_	2	csubj	_	_
+6	when	_	ADV	WRB	_	7	discourse	_	_
+7	preparing	_	VERB	VBG	_	2	parataxis	_	_
+8	the	_	DET	DT	_	11	det	_	_
+9	top	_	ADJ	JJ	_	11	amod	_	_
+10	ten	_	NUM	CD	_	11	nummod	_	_
+11	risks	_	NOUN	NNS	_	7	obl	_	_
+12	for	_	ADP	IN	_	14	case	_	_
+13	your	_	PRON	PRP$	_	14	nmod	_	_
+14	businesses	_	NOUN	NNS	_	11	nmod	_	SpaceAfter=No
+15	.	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 9
+# text = Please be brief!
+1	Please	_	INTJ	UH	_	3	discourse	_	_
+2	be	_	AUX	VB	_	3	cop	_	_
+3	brief	_	ADJ	JJ	_	0	root	_	SpaceAfter=No
+4	!	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 10
+# text = Mark E Haedicke
+1	Mark	_	PROPN	NNP	_	0	root	_	_
+2	E	_	PROPN	NNP	_	1	flat	_	_
+3	Haedicke	_	PROPN	NNP	_	2	flat	_	_
+
+# sent_id = 11
+# text = Sent by: Janette Elbertson 02/28/2001 04:41 PM
+1	Sent	_	VERB	VBN	_	0	root	_	_
+2	by	_	ADP	IN	_	4	case	_	SpaceAfter=No
+3	:	_	PUNCT	:	_	4	punct	_	_
+4	Janette	_	PROPN	NNP	_	1	obl	_	_
+5	Elbertson	_	PROPN	NNP	_	4	flat	_	_
+6	02/28/2001	_	NUM	CD	_	1	parataxis	_	_
+7	04:41	_	NUM	CD	_	8	nummod	_	_
+8	PM	_	NOUN	NN	_	6	nmod	_	_
+
+# sent_id = 12
+# text = Please update the attached Legal Risk Report.
+1	Please	_	INTJ	UH	_	2	discourse	_	_
+2	update	_	VERB	VB	_	0	root	_	_
+3	the	_	DET	DT	_	7	det	_	_
+4	attached	_	VERB	VBN	_	7	amod	_	_
+5	Legal	_	ADJ	JJ	_	7	amod	_	_
+6	Risk	_	NOUN	NN	_	7	compound	_	_
+7	Report	_	NOUN	NN	_	2	obj	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 13
+# text = Send the revised report by e-mail.
+1	Send	_	VERB	VB	_	0	root	_	_
+2	the	_	DET	DT	_	4	det	_	_
+3	revised	_	VERB	VBN	_	4	amod	_	_
+4	report	_	NOUN	NN	_	1	obj	_	_
+5	by	_	ADP	IN	_	6	case	_	_
+6	e-mail	_	NOUN	NN	_	4	obl	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 14
+# text = Thank you.
+1	Thank	_	VERB	VBP	_	0	root	_	_
+2	you	_	PRON	PRP	_	1	obj	_	SpaceAfter=No
+3	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 15
+# text = Mike Curry 11/14/2000 11:37 AM
+1	Mike	_	PROPN	NNP	_	3	nsubj	_	_
+2	Curry	_	PROPN	NNP	_	1	flat	_	_
+3	11/14/2000	_	NUM	CD	_	0	root	_	_
+4	11:37	_	NUM	CD	_	5	nummod	_	_
+5	AM	_	NOUN	NN	_	3	nmod	_	_
+
+# sent_id = 16
+# text = With Elizabeth's comments added to summary... yuk.
+1	With	_	ADP	IN	_	4	case	_	_
+2	Elizabeth	_	PROPN	NNP	_	4	nmod	_	SpaceAfter=No
+3	's	_	PART	POS	_	2	case	_	_
+4	comments	_	NOUN	NNS	_	0	root	_	_
+5	added	_	VERB	VBN	_	4	acl	_	_
+6	to	_	ADP	IN	_	7	case	_	_
+7	summary	_	NOUN	NN	_	5	obl	_	SpaceAfter=No
+8	...	_	PUNCT	,	_	4	punct	_	_
+9	yuk	_	INTJ	UH	_	4	discourse	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 17
+# text = so sorry to have to cancel that deal is making like it wants to close and the traders scheduled a 430 call to wrap it up don't they know we have better things to do here is to getting back on track after thanksgiving sorry again per my vm John Lamb@ENRON
+1	so	_	ADV	RB	_	2	advmod	_	_
+2	sorry	_	ADJ	JJ	_	30	parataxis	_	_
+3	to	_	PART	TO	_	4	mark	_	_
+4	have	_	VERB	VB	_	2	advcl	_	_
+5	to	_	PART	TO	_	6	mark	_	_
+6	cancel	_	VERB	VB	_	4	xcomp	_	_
+7	that	_	SCONJ	IN	_	10	mark	_	_
+8	deal	_	NOUN	NN	_	10	nsubj	_	_
+9	is	_	AUX	VBZ	_	10	aux	_	_
+10	making	_	VERB	VBG	_	6	advcl	_	_
+11	like	_	SCONJ	IN	_	13	mark	_	_
+12	it	_	PRON	PRP	_	13	nsubj	_	_
+13	wants	_	VERB	VBZ	_	10	advcl	_	_
+14	to	_	PART	TO	_	15	mark	_	_
+15	close	_	VERB	VB	_	13	xcomp	_	_
+16	and	_	CCONJ	CC	_	18	cc	_	_
+17	the	_	DET	DT	_	18	det	_	_
+18	traders	_	NOUN	NNS	_	15	conj	_	_
+19	scheduled	_	VERB	VBN	_	18	acl	_	_
+20	a	_	DET	DT	_	22	det	_	_
+21	430	_	NUM	CD	_	22	nummod	_	_
+22	call	_	NOUN	NN	_	19	obj	_	_
+23	to	_	PART	TO	_	24	mark	_	_
+24	wrap	_	VERB	VB	_	22	acl	_	_
+25	it	_	PRON	PRP	_	24	obj	_	_
+26	up	_	ADP	RP	_	24	compound	_	_
+27	do	_	AUX	VBP	_	30	aux	_	SpaceAfter=No
+28	n't	_	PART	RB	_	30	advmod	_	_
+29	they	_	PRON	PRP	_	30	nsubj	_	_
+30	know	_	VERB	VBP	_	0	root	_	_
+31	we	_	PRON	PRP	_	32	nsubj	_	_
+32	have	_	VERB	VB	_	30	ccomp	_	_
+33	better	_	ADJ	JJR	_	34	amod	_	_
+34	things	_	NOUN	NNS	_	32	obj	_	_
+35	to	_	PART	TO	_	36	mark	_	_
+36	do	_	VERB	VB	_	34	acl	_	_
+37	here	_	ADV	RB	_	36	advmod	_	_
+38	is	_	VERB	VBZ	_	36	obl	_	_
+39	to	_	SCONJ	IN	_	40	mark	_	_
+40	getting	_	VERB	VBG	_	38	ccomp	_	_
+41	back	_	ADV	RB	_	40	advmod	_	_
+42	on	_	ADP	IN	_	43	case	_	_
+43	track	_	NOUN	NN	_	40	obl	_	_
+44	after	_	SCONJ	IN	_	32	mark	_	_
+45	thanks	_	NOUN	NN	_	47	vocative	_	SpaceAfter=No
+46	giving	_	VERB	VBG	_	45	acl	_	_
+47	sorry	_	ADJ	JJ	_	30	parataxis	_	_
+48	again	_	ADV	RB	_	47	advmod	_	_
+49	per	_	ADP	IN	_	52	case	_	_
+50	my	_	PRON	PRP$	_	52	nmod	_	_
+51	vm	_	PROPN	NNP	_	52	compound	_	_
+52	John	_	PROPN	NNP	_	30	parataxis	_	_
+53	Lamb@ENRON	_	X	ADD	_	52	goeswith	_	_
+
+# sent_id = 18
+# text = 11/15/2000 11:58 AM
+1	11/15/2000	_	NUM	CD	_	0	root	_	_
+2	11:58	_	NUM	CD	_	3	nummod	_	_
+3	AM	_	NOUN	NN	_	1	nmod	_	_
+
+# sent_id = 19
+# text = Attached are clean and blacklined drafts of the Enron guaranties to be made in support of EPMI's obligations under the Indian Mesa II Renewable Energy Purchase Agreement ("PPA") and Green Premium Sharing Agreement ("GSPA").?
+1	Attached	_	VERB	VBN	_	0	root	_	_
+2	are	_	AUX	VBP	_	3	cop	_	_
+3	clean	_	ADJ	JJ	_	6	advcl	_	_
+4	and	_	CCONJ	CC	_	5	cc	_	_
+5	blacklined	_	VERB	VBN	_	3	conj	_	_
+6	drafts	_	NOUN	NNS	_	1	obj	_	_
+7	of	_	ADP	IN	_	10	case	_	_
+8	the	_	DET	DT	_	10	det	_	_
+9	Enron	_	PROPN	NNP	_	10	compound	_	_
+10	guaranties	_	NOUN	NNS	_	6	nmod	_	_
+11	to	_	PART	TO	_	13	mark	_	_
+12	be	_	AUX	VB	_	13	aux	_	_
+13	made	_	VERB	VBN	_	10	acl	_	_
+14	in	_	ADP	IN	_	15	case	_	_
+15	support	_	NOUN	NN	_	13	obl	_	_
+16	of	_	ADP	IN	_	19	case	_	_
+17	EPMI	_	PROPN	NNP	_	19	nmod	_	SpaceAfter=No
+18	's	_	PART	POS	_	17	case	_	_
+19	obligations	_	NOUN	NNS	_	15	nmod	_	_
+20	under	_	ADP	IN	_	27	case	_	_
+21	the	_	DET	DT	_	27	det	_	_
+22	Indian	_	ADJ	JJ	_	23	amod	_	_
+23	Mesa	_	NOUN	NN	_	27	nmod	_	_
+24	II	_	NUM	CD	_	23	nummod	_	_
+25	Renewable	_	ADJ	JJ	_	27	amod	_	_
+26	Energy	_	NOUN	NN	_	27	compound	_	_
+27	Purchase	_	NOUN	NN	_	28	compound	_	_
+28	Agreement	_	NOUN	NN	_	19	nmod	_	_
+29	(	_	PUNCT	-LRB-	_	31	punct	_	SpaceAfter=No
+30	"	_	PUNCT	``	_	31	punct	_	SpaceAfter=No
+31	PPA	_	PROPN	NNP	_	28	compound	_	SpaceAfter=No
+32	"	_	PUNCT	''	_	31	punct	_	SpaceAfter=No
+33	)	_	PUNCT	-RRB-	_	31	punct	_	_
+34	and	_	CCONJ	CC	_	38	cc	_	_
+35	Green	_	ADJ	JJ	_	38	amod	_	_
+36	Premium	_	NOUN	NN	_	37	compound	_	_
+37	Sharing	_	NOUN	NN	_	38	compound	_	_
+38	Agreement	_	NOUN	NN	_	31	nmod	_	_
+39	(	_	PUNCT	-LRB-	_	41	punct	_	SpaceAfter=No
+40	"	_	PUNCT	``	_	41	punct	_	SpaceAfter=No
+41	GSPA	_	NOUN	NN	_	38	compound	_	SpaceAfter=No
+42	"	_	PUNCT	''	_	41	punct	_	SpaceAfter=No
+43	)	_	PUNCT	-RRB-	_	31	punct	_	SpaceAfter=No
+44	.	_	PUNCT	.	_	28	punct	_	SpaceAfter=No
+45	?	_	PUNCT	.	_	28	punct	_	_
+
+# sent_id = 20
+# text = The guaranty for the PPA is blacklined against the Enron EPC Contract guaranty in favor of the banks which was granted in connection with our Cabazon Wind Power Project (the project most recently financed by EWC) and the GPSA guaranty is blacklined against the PPA guaranty.
+1	The	_	DET	DT	_	2	det	_	_
+2	guaranty	_	NOUN	NN	_	7	nsubj	_	_
+3	for	_	ADP	IN	_	5	case	_	_
+4	the	_	DET	DT	_	5	det	_	_
+5	PPA	_	PROPN	NNP	_	2	nmod	_	_
+6	is	_	AUX	VBZ	_	7	aux	_	_
+7	blacklined	_	VERB	VBN	_	13	advcl	_	_
+8	against	_	ADP	IN	_	11	case	_	_
+9	the	_	DET	DT	_	11	det	_	_
+10	Enron	_	PROPN	NNP	_	11	compound	_	_
+11	EPC	_	PROPN	NNP	_	12	compound	_	_
+12	Contract	_	NOUN	NN	_	47	compound	_	_
+13	guaranty	_	NOUN	NN	_	12	flat	_	_
+14	in	_	ADP	IN	_	15	case	_	_
+15	favor	_	NOUN	NN	_	13	nmod	_	_
+16	of	_	ADP	IN	_	18	case	_	_
+17	the	_	DET	DT	_	18	det	_	_
+18	banks	_	NOUN	NNS	_	15	nmod	_	_
+19	which	_	PRON	WDT	_	21	nsubj	_	_
+20	was	_	AUX	VBD	_	21	aux	_	_
+21	granted	_	VERB	VBN	_	2	acl	_	_
+22	in	_	ADP	IN	_	23	case	_	_
+23	connection	_	NOUN	NN	_	21	obl	_	_
+24	with	_	ADP	IN	_	29	case	_	_
+25	our	_	PRON	PRP$	_	29	nmod	_	_
+26	Cabazon	_	ADJ	JJ	_	27	amod	_	_
+27	Wind	_	NOUN	NN	_	29	acl	_	_
+28	Power	_	NOUN	NN	_	29	compound	_	_
+29	Project	_	NOUN	NN	_	23	nmod	_	_
+30	(	_	PUNCT	-LRB-	_	32	punct	_	SpaceAfter=No
+31	the	_	DET	DT	_	32	det	_	_
+32	project	_	NOUN	NN	_	29	appos	_	_
+33	most	_	ADV	RBS	_	34	advmod	_	_
+34	recently	_	ADV	RB	_	35	advmod	_	_
+35	financed	_	VERB	VBN	_	0	root	_	_
+36	by	_	ADP	IN	_	37	case	_	_
+37	EWC	_	PROPN	NNP	_	35	obl	_	SpaceAfter=No
+38	)	_	PUNCT	-RRB-	_	37	punct	_	_
+39	and	_	CCONJ	CC	_	44	cc	_	_
+40	the	_	DET	DT	_	42	det	_	_
+41	GPSA	_	NOUN	NN	_	42	compound	_	_
+42	guaranty	_	NOUN	NN	_	44	nsubj	_	_
+43	is	_	AUX	VBZ	_	44	aux	_	_
+44	blacklined	_	VERB	VBN	_	35	conj	_	_
+45	against	_	ADP	IN	_	48	case	_	_
+46	the	_	DET	DT	_	48	det	_	_
+47	PPA	_	NOUN	NN	_	48	compound	_	_
+48	guaranty	_	NOUN	NN	_	44	obj	_	SpaceAfter=No
+49	.	_	PUNCT	.	_	35	punct	_	_
+
+# sent_id = 21
+# text = As we discussed last week, since the Enron guaranties will need to be in a form that will acceptable to our project lenders and equity participants, we thought that we should start with a form that was used in our last financing and that was negotiated by Enron and the banks.
+1	As	_	SCONJ	IN	_	3	mark	_	_
+2	we	_	PRON	PRP	_	3	nsubj	_	_
+3	discussed	_	VERB	VBD	_	30	advcl	_	_
+4	last	_	ADJ	JJ	_	5	amod	_	_
+5	week	_	NOUN	NN	_	3	obl	_	SpaceAfter=No
+6	,	_	PUNCT	,	_	30	punct	_	_
+7	since	_	SCONJ	IN	_	17	mark	_	_
+8	the	_	DET	DT	_	10	det	_	_
+9	Enron	_	PROPN	NNP	_	10	compound	_	_
+10	guaranties	_	NOUN	NNS	_	12	nsubj	_	_
+11	will	_	AUX	MD	_	12	aux	_	_
+12	need	_	VERB	VB	_	5	acl	_	_
+13	to	_	PART	TO	_	17	mark	_	_
+14	be	_	AUX	VB	_	17	cop	_	_
+15	in	_	ADP	IN	_	17	case	_	_
+16	a	_	DET	DT	_	17	det	_	_
+17	form	_	NOUN	NN	_	12	obl	_	_
+18	that	_	PRON	WDT	_	20	nsubj	_	_
+19	will	_	AUX	MD	_	20	aux	_	_
+20	acceptable	_	ADJ	JJ	_	17	acl	_	_
+21	to	_	ADP	IN	_	23	case	_	_
+22	our	_	PRON	PRP$	_	23	nmod	_	_
+23	project	_	NOUN	NN	_	24	compound	_	_
+24	lenders	_	NOUN	NNS	_	17	nmod	_	_
+25	and	_	CCONJ	CC	_	27	cc	_	_
+26	equity	_	NOUN	NN	_	27	compound	_	_
+27	participants	_	NOUN	NNS	_	24	conj	_	SpaceAfter=No
+28	,	_	PUNCT	,	_	30	punct	_	_
+29	we	_	PRON	PRP	_	30	nsubj	_	_
+30	thought	_	VERB	VBD	_	0	root	_	_
+31	that	_	SCONJ	IN	_	34	mark	_	_
+32	we	_	PRON	PRP	_	34	nsubj	_	_
+33	should	_	AUX	MD	_	34	aux	_	_
+34	start	_	VERB	VB	_	30	ccomp	_	_
+35	with	_	ADP	IN	_	37	case	_	_
+36	a	_	DET	DT	_	37	det	_	_
+37	form	_	NOUN	NN	_	34	obl	_	_
+38	that	_	PRON	WDT	_	40	nsubj	_	_
+39	was	_	AUX	VBD	_	40	aux	_	_
+40	used	_	VERB	VBN	_	37	acl	_	_
+41	in	_	ADP	IN	_	44	case	_	_
+42	our	_	PRON	PRP$	_	44	nmod	_	_
+43	last	_	ADJ	JJ	_	44	amod	_	_
+44	financing	_	NOUN	NN	_	40	obl	_	_
+45	and	_	CCONJ	CC	_	48	cc	_	_
+46	that	_	PRON	DT	_	48	nsubj	_	_
+47	was	_	AUX	VBD	_	48	aux	_	_
+48	negotiated	_	VERB	VBN	_	44	acl	_	_
+49	by	_	ADP	IN	_	50	case	_	_
+50	Enron	_	PROPN	NNP	_	48	obl	_	_
+51	and	_	CCONJ	CC	_	53	cc	_	_
+52	the	_	DET	DT	_	53	det	_	_
+53	banks	_	NOUN	NNS	_	44	conj	_	SpaceAfter=No
+54	.	_	PUNCT	.	_	34	punct	_	_
+
+# sent_id = 22
+# text = We plan to use the same basic form for the Enron guaranty
+1	We	_	PRON	PRP	_	2	nsubj	_	_
+2	plan	_	VERB	VBP	_	0	root	_	_
+3	to	_	PART	TO	_	4	mark	_	_
+4	use	_	VERB	VB	_	2	xcomp	_	_
+5	the	_	DET	DT	_	8	det	_	_
+6	same	_	ADJ	JJ	_	8	amod	_	_
+7	basic	_	ADJ	JJ	_	8	amod	_	_
+8	form	_	NOUN	NN	_	4	obj	_	_
+9	for	_	ADP	IN	_	12	case	_	_
+10	the	_	DET	DT	_	12	det	_	_
+11	Enron	_	PROPN	NNP	_	12	compound	_	_
+12	guaranty	_	NOUN	NN	_	8	nmod	_	_
+
+# sent_id = 23
+# text = that will be made in favor of EPMI with respect to the seller's obligations under the PPA.
+1	that	_	PRON	DT	_	4	nsubj	_	_
+2	will	_	AUX	MD	_	4	aux	_	_
+3	be	_	AUX	VB	_	4	aux	_	_
+4	made	_	VERB	VBN	_	0	root	_	_
+5	in	_	ADP	IN	_	6	case	_	_
+6	favor	_	NOUN	NN	_	4	obl	_	_
+7	of	_	ADP	IN	_	8	case	_	_
+8	EPM	_	NOUN	NN	_	6	nmod	_	SpaceAfter=No
+9	I	_	PRON	PRP	_	8	obj	_	_
+10	with	_	ADP	IN	_	11	case	_	_
+11	respect	_	NOUN	NN	_	4	obl	_	_
+12	to	_	ADP	IN	_	14	case	_	_
+13	the	_	DET	DT	_	14	det	_	_
+14	seller	_	NOUN	NN	_	16	nmod	_	SpaceAfter=No
+15	's	_	PART	POS	_	14	case	_	_
+16	obligations	_	NOUN	NNS	_	11	nmod	_	_
+17	under	_	ADP	IN	_	19	case	_	_
+18	the	_	DET	DT	_	19	det	_	_
+19	PPA	_	NOUN	NN	_	11	nmod	_	SpaceAfter=No
+20	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 24
+# text = We will forward the draft of that guaranty to you later today.
+1	We	_	PRON	PRP	_	3	nsubj	_	_
+2	will	_	AUX	MD	_	3	aux	_	_
+3	forward	_	VERB	VB	_	0	root	_	_
+4	the	_	DET	DT	_	5	det	_	_
+5	draft	_	NOUN	NN	_	3	obj	_	_
+6	of	_	ADP	IN	_	8	case	_	_
+7	that	_	DET	DT	_	8	det	_	_
+8	guaranty	_	NOUN	NN	_	5	nmod	_	_
+9	to	_	ADP	IN	_	10	case	_	_
+10	you	_	PRON	PRP	_	8	nmod	_	_
+11	later	_	ADV	RB	_	12	advmod	_	_
+12	today	_	NOUN	NN	_	3	obl	_	SpaceAfter=No
+13	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 25
+# text = Please feel free to give me a call if you have any questions concerning the attached guaranties.
+1	Please	_	INTJ	UH	_	2	discourse	_	_
+2	feel	_	VERB	VB	_	0	root	_	_
+3	free	_	ADJ	JJ	_	2	xcomp	_	_
+4	to	_	PART	TO	_	5	mark	_	_
+5	give	_	VERB	VB	_	3	advcl	_	_
+6	me	_	PRON	PRP	_	5	iobj	_	_
+7	a	_	DET	DT	_	8	det	_	_
+8	call	_	NOUN	NN	_	5	obj	_	_
+9	if	_	SCONJ	IN	_	11	mark	_	_
+10	you	_	PRON	PRP	_	11	nsubj	_	_
+11	have	_	VERB	VBP	_	5	advcl	_	_
+12	any	_	DET	DT	_	13	det	_	_
+13	questions	_	NOUN	NNS	_	11	obj	_	_
+14	concerning	_	VERB	VBG	_	13	acl	_	_
+15	the	_	DET	DT	_	17	det	_	_
+16	attached	_	VERB	VBN	_	17	amod	_	_
+17	guaranties	_	NOUN	NNS	_	14	obj	_	SpaceAfter=No
+18	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 26
+# text = Thank you.
+1	Thank	_	VERB	VBP	_	0	root	_	_
+2	you	_	PRON	PRP	_	1	obj	_	SpaceAfter=No
+3	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 27
+# text = - PPA Guaranty
+1	-	_	PUNCT	NFP	_	2	punct	_	_
+2	PPA	_	PROPN	NNP	_	0	root	_	_
+3	Guaranty	_	PROPN	NNP	_	2	flat	_	_
+
+# sent_id = 28
+# text = .doc - GPSA Guaranty.doc - REDLINE GPSA Guaranty.doc - REDLINE PPA Guaranty.doc ?
+1	.doc	_	NOUN	NN	_	0	root	_	_
+2	-	_	PUNCT	NFP	_	3	punct	_	_
+3	GPSA	_	PROPN	NNP	_	14	goeswith	_	_
+4	Guaranty	_	PROPN	NNP	_	3	flat	_	SpaceAfter=No
+5	.doc	_	NOUN	NN	_	7	compound	_	_
+6	-	_	PUNCT	NFP	_	7	punct	_	_
+7	REDLINE	_	PROPN	NNP	_	4	list	_	_
+8	GPSA	_	PROPN	NNP	_	10	compound	_	_
+9	Guaranty	_	PROPN	NNP	_	8	compound	_	SpaceAfter=No
+10	.doc	_	NOUN	NN	_	1	appos	_	_
+11	-	_	PUNCT	NFP	_	12	punct	_	_
+12	REDLINE	_	PROPN	NNP	_	10	conj	_	_
+13	PPA	_	PROPN	NNP	_	14	compound	_	_
+14	Guaranty	_	PROPN	NNP	_	12	compound	_	SpaceAfter=No
+15	.doc	_	NOUN	NN	_	14	appos	_	_
+16	?	_	PUNCT	.	_	15	punct	_	_
+
+# sent_id = 29
+# text = Sheila Tweed 03/26/2001 08:58 PM
+1	Sheila	_	PROPN	NNP	_	3	parataxis	_	_
+2	Tweed	_	PROPN	NNP	_	1	flat	_	_
+3	03/26/2001	_	NUM	CD	_	0	root	_	_
+4	08:58	_	NUM	CD	_	5	nummod	_	_
+5	PM	_	NOUN	NN	_	3	nmod	_	_
+
+# sent_id = 30
+# text = Mary Hain 03/23/2001 12:24 PM
+1	Mary	_	PROPN	NNP	_	3	parataxis	_	_
+2	Hain	_	PROPN	NNP	_	1	flat	_	_
+3	03/23/2001	_	NUM	CD	_	0	root	_	_
+4	12:24	_	NUM	CD	_	5	nummod	_	_
+5	PM	_	NOUN	NN	_	3	nmod	_	_
+
+# sent_id = 31
+# text = I am going to be the Senior Regulatory Counsel at ISO New England starting on April 9, 2001.
+1	I	_	PRON	PRP	_	3	nsubj	_	_
+2	am	_	AUX	VBP	_	3	aux	_	_
+3	going	_	VERB	VBG	_	0	root	_	_
+4	to	_	PART	TO	_	9	mark	_	_
+5	be	_	AUX	VB	_	9	cop	_	_
+6	the	_	DET	DT	_	9	det	_	_
+7	Senior	_	ADJ	JJ	_	9	amod	_	_
+8	Regulatory	_	ADJ	JJ	_	9	amod	_	_
+9	Counsel	_	NOUN	NN	_	3	list	_	_
+10	at	_	ADP	IN	_	13	case	_	_
+11	ISO	_	PROPN	NNP	_	13	compound	_	_
+12	New	_	PROPN	NNP	_	13	compound	_	_
+13	England	_	PROPN	NNP	_	9	nmod	_	_
+14	starting	_	VERB	VBG	_	9	acl	_	_
+15	on	_	ADP	IN	_	16	case	_	_
+16	April	_	PROPN	NNP	_	14	obl	_	_
+17	9	_	NUM	CD	_	16	nummod	_	SpaceAfter=No
+18	,	_	PUNCT	,	_	16	punct	_	_
+19	2001	_	NUM	CD	_	16	nummod	_	SpaceAfter=No
+20	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 32
+# text = My last day in the Portland area will be March 31, 2001.
+1	My	_	PRON	PRP$	_	3	nmod	_	_
+2	last	_	ADJ	JJ	_	3	amod	_	_
+3	day	_	NOUN	NN	_	0	root	_	_
+4	in	_	ADP	IN	_	7	case	_	_
+5	the	_	DET	DT	_	7	det	_	_
+6	Portland	_	PROPN	NNP	_	7	compound	_	_
+7	area	_	NOUN	NN	_	3	nmod	_	_
+8	will	_	AUX	MD	_	10	aux	_	_
+9	be	_	AUX	VB	_	10	cop	_	_
+10	March	_	PROPN	NNP	_	7	compound	_	_
+11	31	_	NUM	CD	_	10	nummod	_	SpaceAfter=No
+12	,	_	PUNCT	,	_	10	punct	_	_
+13	2001	_	NUM	CD	_	10	nummod	_	SpaceAfter=No
+14	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 33
+# text = I enjoyed working with you and wish you the best of everything.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	enjoyed	_	VERB	VBD	_	0	root	_	_
+3	working	_	VERB	VBG	_	2	xcomp	_	_
+4	with	_	ADP	IN	_	5	case	_	_
+5	you	_	PRON	PRP	_	3	obl	_	_
+6	and	_	CCONJ	CC	_	7	cc	_	_
+7	wish	_	VERB	VBP	_	3	conj	_	_
+8	you	_	PRON	PRP	_	7	iobj	_	_
+9	the	_	DET	DT	_	10	det	_	_
+10	best	_	ADJ	JJS	_	7	ccomp	_	_
+11	of	_	ADP	IN	_	12	case	_	_
+12	everything	_	PRON	NN	_	10	obl	_	SpaceAfter=No
+13	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 34
+# text = My new address will be:
+1	My	_	PRON	PRP$	_	3	nmod	_	_
+2	new	_	ADJ	JJ	_	3	amod	_	_
+3	address	_	NOUN	NN	_	0	root	_	_
+4	will	_	AUX	MD	_	3	aux	_	_
+5	be	_	AUX	VB	_	3	cop	_	SpaceAfter=No
+6	:	_	PUNCT	:	_	3	punct	_	_
+
+# sent_id = 35
+# text = Mary Hain Senior Regulatory Counsel ISO New England Inc.One Sullivan Road Holyoke, MA 01040-2841 (413) 535-4000 mhain@ISO-NE.com
+1	Mary	_	PROPN	NNP	_	0	root	_	_
+2	Hain	_	PROPN	NNP	_	1	flat	_	_
+3	Senior	_	ADJ	JJ	_	5	amod	_	_
+4	Regulatory	_	ADJ	JJ	_	5	amod	_	_
+5	Counsel	_	NOUN	NN	_	1	list	_	_
+6	ISO	_	PROPN	NNP	_	8	compound	_	_
+7	New	_	PROPN	NNP	_	8	compound	_	_
+8	England	_	PROPN	NNP	_	9	compound	_	_
+9	Inc.	_	PROPN	NNP	_	15	compound	_	SpaceAfter=No
+10	One	_	NUM	CD	_	12	nummod	_	_
+11	Sullivan	_	PROPN	NNP	_	12	compound	_	_
+12	Road	_	PROPN	NNP	_	9	nmod	_	_
+13	Holyoke	_	PROPN	NNP	_	2	conj	_	SpaceAfter=No
+14	,	_	PUNCT	,	_	13	punct	_	_
+15	MA	_	PROPN	NNP	_	13	appos	_	_
+16	01040-2841	_	NUM	CD	_	9	nummod	_	_
+17	(	_	PUNCT	-LRB-	_	18	punct	_	SpaceAfter=No
+18	413	_	PROPN	NNP	_	8	list	_	SpaceAfter=No
+19	)	_	PUNCT	-RRB-	_	20	punct	_	_
+20	535-4000	_	NUM	CD	_	1	parataxis	_	_
+21	mhain@ISO	_	NOUN	NN	_	20	appos	_	SpaceAfter=No
+22	-	_	PUNCT	NFP	_	21	punct	_	SpaceAfter=No
+23	NE.com	_	X	GW	_	21	goeswith	_	_
+

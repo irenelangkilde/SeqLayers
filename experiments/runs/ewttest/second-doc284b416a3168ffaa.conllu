@@ -1,0 +1,571 @@
+# sent_id = 1
+# text = Debra Perlingiere Please give me a call to discuss Nov transaction.
+1	Debra	_	PROPN	NNP	_	4	nsubj	_	_
+2	Perlingiere	_	PROPN	NNP	_	1	list	_	_
+3	Please	_	INTJ	UH	_	4	discourse	_	_
+4	give	_	VERB	VB	_	0	root	_	_
+5	me	_	PRON	PRP	_	4	iobj	_	_
+6	a	_	DET	DT	_	7	det	_	_
+7	call	_	NOUN	NN	_	4	obj	_	_
+8	to	_	PART	TO	_	9	mark	_	_
+9	discuss	_	VERB	VB	_	11	acl	_	_
+10	Nov	_	PROPN	NNP	_	11	compound	_	_
+11	transaction	_	NOUN	NN	_	7	nmod	_	SpaceAfter=No
+12	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 2
+# text = Debra Perlingiere Are you free for lunch some day this week?
+1	Debra	_	PROPN	NNP	_	2	compound	_	_
+2	Perlingiere	_	PROPN	NNP	_	5	nsubj	_	_
+3	Are	_	AUX	VBP	_	5	cop	_	_
+4	you	_	PRON	PRP	_	5	nsubj	_	_
+5	free	_	ADJ	JJ	_	0	root	_	_
+6	for	_	ADP	IN	_	7	case	_	_
+7	lunch	_	NOUN	NN	_	5	obl	_	_
+8	some	_	DET	DT	_	9	det	_	_
+9	day	_	NOUN	NN	_	7	advmod	_	_
+10	this	_	DET	DT	_	11	det	_	_
+11	week	_	NOUN	NN	_	7	nmod	_	SpaceAfter=No
+12	?	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 3
+# text = Also, I have an extra ticket for the Comets game on Sat. you said you wanted to go?
+1	Also	_	ADV	RB	_	4	advmod	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	4	punct	_	_
+3	I	_	PRON	PRP	_	4	nsubj	_	_
+4	have	_	VERB	VBP	_	16	ccomp	_	_
+5	an	_	DET	DT	_	7	det	_	_
+6	extra	_	ADJ	JJ	_	7	amod	_	_
+7	ticket	_	NOUN	NN	_	4	obj	_	_
+8	for	_	ADP	IN	_	11	case	_	_
+9	the	_	DET	DT	_	11	det	_	_
+10	Comets	_	PROPN	NNPS	_	11	compound	_	_
+11	game	_	NOUN	NN	_	7	nmod	_	_
+12	on	_	ADP	IN	_	13	case	_	_
+13	Sat	_	VERB	VBN	_	4	advcl	_	SpaceAfter=No
+14	.	_	PUNCT	.	_	13	punct	_	_
+15	you	_	PRON	PRP	_	16	nsubj	_	_
+16	said	_	VERB	VBD	_	0	root	_	_
+17	you	_	PRON	PRP	_	18	nsubj	_	_
+18	wanted	_	VERB	VBD	_	16	ccomp	_	_
+19	to	_	PART	TO	_	20	mark	_	_
+20	go	_	VERB	VB	_	18	xcomp	_	SpaceAfter=No
+21	?	_	PUNCT	.	_	18	punct	_	_
+
+# sent_id = 4
+# text = The game is at 12:Sat @ Compaq Center.
+1	The	_	DET	DT	_	2	det	_	_
+2	game	_	NOUN	NN	_	5	nsubj	_	_
+3	is	_	AUX	VBZ	_	2	cop	_	_
+4	at	_	ADP	IN	_	2	acl	_	_
+5	12:	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+6	Sat	_	NUM	CD	_	5	nummod	_	_
+7	@	_	ADP	IN	_	9	case	_	_
+8	Compaq	_	PROPN	NNP	_	9	compound	_	_
+9	Center	_	PROPN	NNP	_	2	nmod	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 5
+# text = Would love for you to join us.
+1	Would	_	AUX	MD	_	2	aux	_	_
+2	love	_	VERB	VB	_	0	root	_	_
+3	for	_	SCONJ	IN	_	6	mark	_	_
+4	you	_	PRON	PRP	_	6	nsubj	_	_
+5	to	_	PART	TO	_	6	mark	_	_
+6	join	_	VERB	VB	_	2	advcl	_	_
+7	us	_	PRON	PRP	_	6	obj	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 6
+# text = I am bringing two of my girlfriends from LJ. Debra Perlingiere Stacey here is the Master draft we discussed.
+1	I	_	PRON	PRP	_	3	nsubj	_	_
+2	am	_	AUX	VBP	_	3	aux	_	_
+3	bringing	_	VERB	VBG	_	0	root	_	_
+4	two	_	NUM	CD	_	3	obj	_	_
+5	of	_	ADP	IN	_	7	case	_	_
+6	my	_	PRON	PRP$	_	7	nmod	_	_
+7	girlfriends	_	NOUN	NNS	_	4	nmod	_	_
+8	from	_	ADP	IN	_	9	case	_	_
+9	LJ	_	PROPN	NNP	_	7	nmod	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	3	punct	_	_
+11	Debra	_	PROPN	NNP	_	10	dep	_	_
+12	Perlingiere	_	PROPN	NNP	_	11	flat	_	_
+13	Stacey	_	PROPN	NNP	_	11	flat	_	_
+14	here	_	ADV	RB	_	3	parataxis	_	_
+15	is	_	AUX	VBZ	_	14	cop	_	_
+16	the	_	DET	DT	_	18	det	_	_
+17	Master	_	NOUN	NN	_	18	compound	_	_
+18	draft	_	NOUN	NN	_	14	nsubj	_	_
+19	we	_	PRON	PRP	_	20	nsubj	_	_
+20	discussed	_	VERB	VBD	_	18	acl	_	SpaceAfter=No
+21	.	_	PUNCT	.	_	20	punct	_	_
+
+# sent_id = 7
+# text = I am sending you a version with comments.
+1	I	_	PRON	PRP	_	3	nsubj	_	_
+2	am	_	AUX	VBP	_	3	aux	_	_
+3	sending	_	VERB	VBG	_	0	root	_	_
+4	you	_	PRON	PRP	_	3	iobj	_	_
+5	a	_	DET	DT	_	6	det	_	_
+6	version	_	NOUN	NN	_	3	obj	_	_
+7	with	_	ADP	IN	_	8	case	_	_
+8	comments	_	NOUN	NNS	_	6	nmod	_	SpaceAfter=No
+9	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 8
+# text = dp
+1	dp	_	NOUN	NN	_	0	root	_	_
+
+# sent_id = 9
+# text = Could one of you please email me a copy of the standard template you use for Enfolio gas purchase agreements?
+1	Could	_	AUX	MD	_	6	aux	_	_
+2	one	_	NUM	CD	_	6	nsubj	_	_
+3	of	_	ADP	IN	_	4	case	_	_
+4	you	_	PRON	PRP	_	2	nmod	_	_
+5	please	_	INTJ	UH	_	6	discourse	_	_
+6	email	_	VERB	VB	_	0	root	_	_
+7	me	_	PRON	PRP	_	6	iobj	_	_
+8	a	_	DET	DT	_	9	det	_	_
+9	copy	_	NOUN	NN	_	6	obj	_	_
+10	of	_	ADP	IN	_	13	case	_	_
+11	the	_	DET	DT	_	13	det	_	_
+12	standard	_	ADJ	JJ	_	13	amod	_	_
+13	template	_	NOUN	NN	_	6	obl	_	_
+14	you	_	PRON	PRP	_	15	nsubj	_	_
+15	use	_	VERB	VBP	_	13	acl	_	_
+16	for	_	ADP	IN	_	19	case	_	_
+17	Enfolio	_	PROPN	NNP	_	18	compound	_	_
+18	gas	_	NOUN	NN	_	19	compound	_	_
+19	purchase	_	NOUN	NN	_	20	compound	_	_
+20	agreements	_	NOUN	NNS	_	13	nmod	_	SpaceAfter=No
+21	?	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 10
+# text = As we're getting more and more of those agreements, I'd like to add a template in Global Contracts.
+1	As	_	SCONJ	IN	_	4	mark	_	_
+2	we	_	PRON	PRP	_	4	nsubj	_	SpaceAfter=No
+3	're	_	AUX	VBP	_	4	aux	_	_
+4	getting	_	VERB	VBG	_	14	advcl	_	_
+5	more	_	ADJ	JJR	_	4	obj	_	_
+6	and	_	CCONJ	CC	_	7	cc	_	_
+7	more	_	ADJ	JJR	_	5	conj	_	_
+8	of	_	ADP	IN	_	10	case	_	_
+9	those	_	DET	DT	_	10	det	_	_
+10	agreements	_	NOUN	NNS	_	7	obl	_	SpaceAfter=No
+11	,	_	PUNCT	,	_	14	punct	_	_
+12	I	_	PRON	PRP	_	14	nsubj	_	SpaceAfter=No
+13	'd	_	AUX	MD	_	14	aux	_	_
+14	like	_	VERB	VB	_	0	root	_	_
+15	to	_	PART	TO	_	16	mark	_	_
+16	add	_	VERB	VB	_	14	xcomp	_	_
+17	a	_	DET	DT	_	18	det	_	_
+18	template	_	NOUN	NN	_	16	obj	_	_
+19	in	_	ADP	IN	_	21	case	_	_
+20	Global	_	ADJ	JJ	_	21	amod	_	_
+21	Contracts	_	NOUN	NNS	_	18	nmod	_	SpaceAfter=No
+22	.	_	PUNCT	.	_	14	punct	_	_
+
+# sent_id = 11
+# text = Thanks!
+1	Thanks	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+2	!	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 12
+# text = Stacey Barclay Richardson Enron Net Works,
+1	Stacey	_	PROPN	NNP	_	0	root	_	_
+2	Barclay	_	PROPN	NNP	_	1	flat	_	_
+3	Richardson	_	PROPN	NNP	_	1	flat	_	_
+4	Enron	_	PROPN	NNP	_	3	compound	_	_
+5	Net	_	PROPN	NNP	_	6	compound	_	_
+6	Works	_	PROPN	NNPS	_	4	compound	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	3	punct	_	_
+
+# sent_id = 13
+# text = LLC
+1	LLC	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 14
+# text = - Global Contracts Stacey.Richardson@enron.com
+1	-	_	PUNCT	HYPH	_	2	punct	_	_
+2	Global	_	PROPN	NNP	_	3	compound	_	_
+3	Contracts	_	PROPN	NNPS	_	0	root	_	_
+4	Stacey	_	PROPN	NNP	_	3	flat	_	SpaceAfter=No
+5	.Richardson@enron.com	_	X	ADD	_	4	list	_	_
+
+# sent_id = 15
+# text = (713) 853-0569 Office (713) 646-2495 Fax (713) 710-6084 Pager Today is good 12:30 ?
+1	(	_	PUNCT	-LRB-	_	4	punct	_	SpaceAfter=No
+2	713	_	NUM	CD	_	4	nummod	_	SpaceAfter=No
+3	)	_	PUNCT	-RRB-	_	4	punct	_	_
+4	853-0569	_	NUM	CD	_	5	appos	_	_
+5	Office	_	NOUN	NN	_	10	appos	_	_
+6	(	_	PUNCT	-LRB-	_	9	punct	_	SpaceAfter=No
+7	713	_	NUM	CD	_	9	nummod	_	SpaceAfter=No
+8	)	_	PUNCT	-RRB-	_	9	punct	_	_
+9	646-2495	_	NUM	CD	_	5	appos	_	_
+10	Fax	_	NOUN	NN	_	19	appos	_	_
+11	(	_	PUNCT	-LRB-	_	14	punct	_	SpaceAfter=No
+12	713	_	NUM	CD	_	14	appos	_	SpaceAfter=No
+13	)	_	PUNCT	-RRB-	_	14	punct	_	_
+14	710-6084	_	NUM	CD	_	10	appos	_	_
+15	Pager	_	NOUN	NN	_	16	orphan	_	_
+16	Today	_	NOUN	NN	_	5	obl	_	_
+17	is	_	AUX	VBZ	_	18	cop	_	_
+18	good	_	ADJ	JJ	_	0	root	_	_
+19	12:30	_	NUM	CD	_	18	compound	_	_
+20	?	_	PUNCT	.	_	18	punct	_	_
+
+# sent_id = 16
+# text = Cafeteria is fine.
+1	Cafeteria	_	PROPN	NNP	_	3	nsubj	_	_
+2	is	_	AUX	VBZ	_	3	cop	_	_
+3	fine	_	ADJ	JJ	_	0	root	_	SpaceAfter=No
+4	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 17
+# text = I'm free any day but Tuesday.
+1	I	_	PRON	PRP	_	3	nsubj	_	SpaceAfter=No
+2	'm	_	AUX	VBP	_	3	cop	_	_
+3	free	_	ADJ	JJ	_	0	root	_	_
+4	any	_	DET	DT	_	5	det	_	_
+5	day	_	NOUN	NN	_	3	obl	_	_
+6	but	_	ADP	IN	_	7	case	_	_
+7	Tuesday	_	PROPN	NNP	_	5	nmod	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 18
+# text = I better pass on the Comets game.
+1	I	_	PRON	PRP	_	3	nsubj	_	_
+2	better	_	ADV	RB	_	3	advmod	_	_
+3	pass	_	VERB	VB	_	0	root	_	_
+4	on	_	ADP	IN	_	6	case	_	_
+5	the	_	DET	DT	_	6	det	_	_
+6	Comets	_	PROPN	NNPS	_	7	compound	_	_
+7	game	_	NOUN	NN	_	3	obj	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 19
+# text = My weekends seem to be taken up with condo matters, house hunting.
+1	My	_	PRON	PRP$	_	2	nmod	_	_
+2	weekends	_	NOUN	NNS	_	3	nsubj	_	_
+3	seem	_	VERB	VBP	_	0	root	_	_
+4	to	_	PART	TO	_	6	mark	_	_
+5	be	_	AUX	VB	_	6	aux	_	_
+6	taken	_	VERB	VBN	_	3	xcomp	_	_
+7	up	_	ADP	RP	_	6	compound	_	_
+8	with	_	ADP	IN	_	10	case	_	_
+9	condo	_	NOUN	NN	_	10	compound	_	_
+10	matters	_	NOUN	NNS	_	13	obl	_	SpaceAfter=No
+11	,	_	PUNCT	,	_	13	punct	_	_
+12	house	_	NOUN	NN	_	13	compound	_	_
+13	hunting	_	NOUN	NN	_	6	obl	_	SpaceAfter=No
+14	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 20
+# text = Thank you though.
+1	Thank	_	VERB	VBP	_	0	root	_	_
+2	you	_	PRON	PRP	_	1	obj	_	_
+3	though	_	ADV	RB	_	1	advmod	_	SpaceAfter=No
+4	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 21
+# text = Are you free for lunch today.
+1	Are	_	AUX	VBP	_	3	cop	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	free	_	ADJ	JJ	_	0	root	_	_
+4	for	_	ADP	IN	_	5	case	_	_
+5	lunch	_	NOUN	NN	_	3	obl	_	_
+6	today	_	NOUN	NN	_	3	obl	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 22
+# text = I want to go to the cafeteria for vegetables.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	want	_	VERB	VBP	_	0	root	_	_
+3	to	_	PART	TO	_	4	mark	_	_
+4	go	_	VERB	VB	_	2	xcomp	_	_
+5	to	_	ADP	IN	_	7	case	_	_
+6	the	_	DET	DT	_	7	det	_	_
+7	cafeteria	_	NOUN	NN	_	4	obl	_	_
+8	for	_	ADP	IN	_	9	case	_	_
+9	vegetables	_	NOUN	NNS	_	7	nmod	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 23
+# text = Let me know if you are interested.
+1	Let	_	VERB	VB	_	0	root	_	_
+2	me	_	PRON	PRP	_	1	obj	_	_
+3	know	_	VERB	VB	_	1	xcomp	_	_
+4	if	_	SCONJ	IN	_	7	mark	_	_
+5	you	_	PRON	PRP	_	7	nsubj	_	_
+6	are	_	AUX	VBP	_	7	cop	_	_
+7	interested	_	ADJ	JJ	_	3	ccomp	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 24
+# text = Janette Elbertson Administrative Coordinator EWS Legal, EB3326
+1	Janette	_	PROPN	NNP	_	0	root	_	_
+2	Elbertson	_	PROPN	NNP	_	1	flat	_	_
+3	Administrative	_	PROPN	NNP	_	4	compound	_	_
+4	Coordinator	_	NOUN	NN	_	1	compound	_	_
+5	EWS	_	PROPN	NNP	_	1	conj	_	_
+6	Legal	_	PROPN	NNP	_	5	flat	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	5	punct	_	_
+8	EB	_	PROPN	NNP	_	5	reparandum	_	SpaceAfter=No
+9	3326	_	NUM	CD	_	8	nummod	_	_
+
+# sent_id = 25
+# text = Telephone: (713) 853-7906 Facsimile: (713) 646-2600 e-mail address: janette.elbertson@enron.com
+1	Telephone	_	NOUN	NN	_	14	parataxis	_	SpaceAfter=No
+2	:	_	PUNCT	:	_	1	punct	_	_
+3	(	_	PUNCT	-LRB-	_	6	punct	_	SpaceAfter=No
+4	713	_	NUM	CD	_	6	nummod	_	SpaceAfter=No
+5	)	_	PUNCT	-RRB-	_	6	punct	_	_
+6	853-7906	_	NUM	CD	_	1	appos	_	_
+7	Facsimile	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+8	:	_	PUNCT	:	_	7	punct	_	_
+9	(	_	PUNCT	-LRB-	_	12	punct	_	SpaceAfter=No
+10	713	_	NUM	CD	_	12	nummod	_	SpaceAfter=No
+11	)	_	PUNCT	-RRB-	_	12	punct	_	_
+12	646-2600	_	NUM	CD	_	7	appos	_	_
+13	e-mail	_	NOUN	NN	_	14	compound	_	_
+14	address	_	NOUN	NN	_	7	nmod	_	SpaceAfter=No
+15	:	_	PUNCT	:	_	1	punct	_	_
+16	janette.elbertson@enron.com	_	X	ADD	_	1	list	_	_
+
+# sent_id = 26
+# text = Are you free for lunch some day this week?
+1	Are	_	AUX	VBP	_	3	cop	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	free	_	ADJ	JJ	_	0	root	_	_
+4	for	_	ADP	IN	_	5	case	_	_
+5	lunch	_	NOUN	NN	_	3	obl	_	_
+6	some	_	DET	DT	_	7	det	_	_
+7	day	_	NOUN	NN	_	5	advmod	_	_
+8	this	_	DET	DT	_	9	det	_	_
+9	week	_	NOUN	NN	_	5	nmod	_	SpaceAfter=No
+10	?	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 27
+# text = Also, I have an extra ticket for the Comets game on Sat. you said you wanted to go?
+1	Also	_	ADV	RB	_	4	advmod	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	4	punct	_	_
+3	I	_	PRON	PRP	_	4	nsubj	_	_
+4	have	_	VERB	VBP	_	16	ccomp	_	_
+5	an	_	DET	DT	_	7	det	_	_
+6	extra	_	ADJ	JJ	_	7	amod	_	_
+7	ticket	_	NOUN	NN	_	4	obj	_	_
+8	for	_	ADP	IN	_	11	case	_	_
+9	the	_	DET	DT	_	11	det	_	_
+10	Comets	_	PROPN	NNPS	_	11	compound	_	_
+11	game	_	NOUN	NN	_	7	nmod	_	_
+12	on	_	ADP	IN	_	13	case	_	_
+13	Sat	_	VERB	VBN	_	4	advcl	_	SpaceAfter=No
+14	.	_	PUNCT	.	_	13	punct	_	_
+15	you	_	PRON	PRP	_	16	nsubj	_	_
+16	said	_	VERB	VBD	_	0	root	_	_
+17	you	_	PRON	PRP	_	18	nsubj	_	_
+18	wanted	_	VERB	VBD	_	16	ccomp	_	_
+19	to	_	PART	TO	_	20	mark	_	_
+20	go	_	VERB	VB	_	18	xcomp	_	SpaceAfter=No
+21	?	_	PUNCT	.	_	16	punct	_	_
+
+# sent_id = 28
+# text = The game is at 12:Sat @ Compaq Center.
+1	The	_	DET	DT	_	2	det	_	_
+2	game	_	NOUN	NN	_	5	nsubj	_	_
+3	is	_	AUX	VBZ	_	2	cop	_	_
+4	at	_	ADP	IN	_	2	acl	_	_
+5	12:	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+6	Sat	_	NUM	CD	_	5	nummod	_	_
+7	@	_	ADP	IN	_	9	case	_	_
+8	Compaq	_	PROPN	NNP	_	9	compound	_	_
+9	Center	_	PROPN	NNP	_	2	nmod	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 29
+# text = Would love for you to join us.
+1	Would	_	AUX	MD	_	2	aux	_	_
+2	love	_	VERB	VB	_	0	root	_	_
+3	for	_	SCONJ	IN	_	6	mark	_	_
+4	you	_	PRON	PRP	_	6	nsubj	_	_
+5	to	_	PART	TO	_	6	mark	_	_
+6	join	_	VERB	VB	_	2	advcl	_	_
+7	us	_	PRON	PRP	_	6	obj	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 30
+# text = I am bringing two of my girlfriends from LJ. Debra Perlingiere ok call me Maybe 12:15?
+1	I	_	PRON	PRP	_	3	nsubj	_	_
+2	am	_	AUX	VBP	_	3	aux	_	_
+3	bringing	_	VERB	VBG	_	0	root	_	_
+4	two	_	NUM	CD	_	3	obj	_	_
+5	of	_	ADP	IN	_	7	case	_	_
+6	my	_	PRON	PRP$	_	7	nmod	_	_
+7	girlfriends	_	NOUN	NNS	_	4	nmod	_	_
+8	from	_	ADP	IN	_	9	case	_	_
+9	LJ	_	PROPN	NNP	_	7	nmod	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	3	punct	_	_
+11	Debra	_	PROPN	NNP	_	13	nsubj	_	_
+12	Perlingiere	_	PROPN	NNP	_	11	flat	_	_
+13	ok	_	ADJ	JJ	_	3	parataxis	_	_
+14	call	_	VERB	VB	_	3	parataxis	_	_
+15	me	_	PRON	PRP	_	14	obj	_	_
+16	Maybe	_	ADV	RB	_	17	advmod	_	_
+17	12:15	_	NUM	CD	_	14	nummod	_	SpaceAfter=No
+18	?	_	PUNCT	.	_	14	punct	_	_
+
+# sent_id = 31
+# text = Janette Elbertson Administrative Coordinator EWS Legal, EB3326 Telephone: (713) 853-7906 Facsimile: (713) 646-2600 e-mail address: janette.elbertson@enron.com
+1	Janette	_	PROPN	NNP	_	23	compound	_	_
+2	Elbertson	_	PROPN	NNP	_	1	flat	_	_
+3	Administrative	_	PROPN	NNP	_	4	compound	_	_
+4	Coordinator	_	NOUN	NN	_	5	compound	_	_
+5	EWS	_	PROPN	NNP	_	1	conj	_	_
+6	Legal	_	PROPN	NNP	_	5	appos	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	6	punct	_	_
+8	EB	_	PROPN	NNP	_	6	reparandum	_	SpaceAfter=No
+9	3326	_	NUM	CD	_	8	nummod	_	_
+10	Telephone	_	NOUN	NN	_	6	list	_	SpaceAfter=No
+11	:	_	PUNCT	:	_	10	punct	_	_
+12	(	_	PUNCT	-LRB-	_	15	punct	_	SpaceAfter=No
+13	713	_	NUM	CD	_	15	nummod	_	SpaceAfter=No
+14	)	_	PUNCT	-RRB-	_	15	punct	_	_
+15	853-7906	_	NUM	CD	_	10	appos	_	_
+16	Facsimile	_	NOUN	NN	_	6	list	_	SpaceAfter=No
+17	:	_	PUNCT	:	_	16	punct	_	_
+18	(	_	PUNCT	-LRB-	_	21	punct	_	SpaceAfter=No
+19	713	_	NUM	CD	_	21	nummod	_	SpaceAfter=No
+20	)	_	PUNCT	-RRB-	_	21	punct	_	_
+21	646-2600	_	NUM	CD	_	16	appos	_	_
+22	e-mail	_	NOUN	NN	_	23	compound	_	_
+23	address	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+24	:	_	PUNCT	:	_	23	punct	_	_
+25	janette.elbertson@enron.com	_	X	ADD	_	23	appos	_	_
+
+# sent_id = 32
+# text = Today is good 12:30 ?
+1	Today	_	NOUN	NN	_	3	nsubj	_	_
+2	is	_	AUX	VBZ	_	3	cop	_	_
+3	good	_	ADJ	JJ	_	0	root	_	_
+4	12:30	_	NUM	CD	_	3	compound	_	_
+5	?	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 33
+# text = Cafeteria is fine.
+1	Cafeteria	_	PROPN	NNP	_	3	nsubj	_	_
+2	is	_	AUX	VBZ	_	3	cop	_	_
+3	fine	_	ADJ	JJ	_	0	root	_	SpaceAfter=No
+4	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 34
+# text = I'm free any day but Tuesday.
+1	I	_	PRON	PRP	_	3	nsubj	_	SpaceAfter=No
+2	'm	_	AUX	VBP	_	3	cop	_	_
+3	free	_	ADJ	JJ	_	0	root	_	_
+4	any	_	DET	DT	_	5	det	_	_
+5	day	_	NOUN	NN	_	3	obl	_	_
+6	but	_	ADP	IN	_	7	case	_	_
+7	Tuesday	_	PROPN	NNP	_	5	nmod	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 35
+# text = I better pass on the Comets game.
+1	I	_	PRON	PRP	_	3	nsubj	_	_
+2	better	_	ADV	RB	_	3	advmod	_	_
+3	pass	_	VERB	VB	_	0	root	_	_
+4	on	_	ADP	IN	_	7	case	_	_
+5	the	_	DET	DT	_	6	det	_	_
+6	Comets	_	PROPN	NNPS	_	7	compound	_	_
+7	game	_	NOUN	NN	_	3	obj	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 36
+# text = My weekends seem to be taken up with condo matters, house hunting.
+1	My	_	PRON	PRP$	_	2	nmod	_	_
+2	weekends	_	NOUN	NNS	_	3	nsubj	_	_
+3	seem	_	VERB	VBP	_	0	root	_	_
+4	to	_	PART	TO	_	6	mark	_	_
+5	be	_	AUX	VB	_	6	aux	_	_
+6	taken	_	VERB	VBN	_	3	xcomp	_	_
+7	up	_	ADP	RP	_	6	compound	_	_
+8	with	_	ADP	IN	_	10	case	_	_
+9	condo	_	NOUN	NN	_	10	compound	_	_
+10	matters	_	NOUN	NNS	_	6	obl	_	SpaceAfter=No
+11	,	_	PUNCT	,	_	13	punct	_	_
+12	house	_	NOUN	NN	_	13	compound	_	_
+13	hunting	_	NOUN	NN	_	6	obl	_	SpaceAfter=No
+14	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 37
+# text = Thank you though.
+1	Thank	_	VERB	VBP	_	0	root	_	_
+2	you	_	PRON	PRP	_	1	obj	_	_
+3	though	_	ADV	RB	_	1	advmod	_	SpaceAfter=No
+4	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 38
+# text = Are you free for lunch today.
+1	Are	_	AUX	VBP	_	3	cop	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	free	_	ADJ	JJ	_	0	root	_	_
+4	for	_	ADP	IN	_	5	case	_	_
+5	lunch	_	NOUN	NN	_	3	obl	_	_
+6	today	_	NOUN	NN	_	3	obl	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 39
+# text = I want to go to the cafeteria for vegetables.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	want	_	VERB	VBP	_	0	root	_	_
+3	to	_	PART	TO	_	4	mark	_	_
+4	go	_	VERB	VB	_	2	xcomp	_	_
+5	to	_	ADP	IN	_	7	case	_	_
+6	the	_	DET	DT	_	7	det	_	_
+7	cafeteria	_	NOUN	NN	_	4	obl	_	_
+8	for	_	ADP	IN	_	9	case	_	_
+9	vegetables	_	NOUN	NNS	_	7	nmod	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 40
+# text = Let me know if you are interested.
+1	Let	_	VERB	VB	_	0	root	_	_
+2	me	_	PRON	PRP	_	1	obj	_	_
+3	know	_	VERB	VB	_	1	xcomp	_	_
+4	if	_	SCONJ	IN	_	7	mark	_	_
+5	you	_	PRON	PRP	_	7	nsubj	_	_
+6	are	_	AUX	VBP	_	7	cop	_	_
+7	interested	_	ADJ	JJ	_	3	ccomp	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 41
+# text = Janette Elbertson Administrative Coordinator EWS Legal, EB3326
+1	Janette	_	PROPN	NNP	_	0	root	_	_
+2	Elbertson	_	PROPN	NNP	_	1	flat	_	_
+3	Administrative	_	PROPN	NNP	_	4	compound	_	_
+4	Coordinator	_	NOUN	NN	_	1	compound	_	_
+5	EWS	_	PROPN	NNP	_	1	conj	_	_
+6	Legal	_	PROPN	NNP	_	5	flat	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	5	punct	_	_
+8	EB	_	PROPN	NNP	_	5	reparandum	_	SpaceAfter=No
+9	3326	_	NUM	CD	_	8	nummod	_	_
+
+# sent_id = 42
+# text = Telephone: (713) 853-7906 Facsimile: (713) 646-2600 e-mail address: janette.elbertson@enron.com
+1	Telephone	_	NOUN	NN	_	14	parataxis	_	SpaceAfter=No
+2	:	_	PUNCT	:	_	1	punct	_	_
+3	(	_	PUNCT	-LRB-	_	6	punct	_	SpaceAfter=No
+4	713	_	NUM	CD	_	6	nummod	_	SpaceAfter=No
+5	)	_	PUNCT	-RRB-	_	6	punct	_	_
+6	853-7906	_	NUM	CD	_	1	appos	_	_
+7	Facsimile	_	NOUN	NN	_	14	vocative	_	SpaceAfter=No
+8	:	_	PUNCT	:	_	7	punct	_	_
+9	(	_	PUNCT	-LRB-	_	12	punct	_	SpaceAfter=No
+10	713	_	NUM	CD	_	12	nummod	_	SpaceAfter=No
+11	)	_	PUNCT	-RRB-	_	12	punct	_	_
+12	646-2600	_	NUM	CD	_	7	appos	_	_
+13	e-mail	_	NOUN	NN	_	14	compound	_	_
+14	address	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+15	:	_	PUNCT	:	_	14	punct	_	_
+16	janette.elbertson@enron.com	_	X	ADD	_	14	appos	_	_
+

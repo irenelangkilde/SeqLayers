@@ -1,0 +1,84 @@
+# sent_id = 1
+# text = Courage the cowardly dog?
+1	Courage	_	VERB	VB	_	0	root	_	_
+2	the	_	DET	DT	_	4	det	_	_
+3	cowardly	_	ADJ	JJ	_	4	amod	_	_
+4	dog	_	NOUN	NN	_	1	obj	_	SpaceAfter=No
+5	?	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 2
+# text = In the Episode "So in Louvre Are We Two", How many diffrent painting/scupltures are their and who are the artists?
+1	In	_	ADP	IN	_	3	case	_	_
+2	the	_	DET	DT	_	3	det	_	_
+3	Episode	_	NOUN	NN	_	10	nmod	_	_
+4	"	_	PUNCT	''	_	3	punct	_	SpaceAfter=No
+5	So	_	ADV	RB	_	10	advmod	_	_
+6	in	_	ADP	IN	_	7	case	_	_
+7	Louvre	_	PROPN	NNP	_	5	obl	_	_
+8	Are	_	AUX	VBP	_	0	root	_	_
+9	We	_	PRON	PRP	_	8	advcl	_	_
+10	Two	_	NUM	CD	_	9	nummod	_	SpaceAfter=No
+11	"	_	PUNCT	''	_	10	punct	_	SpaceAfter=No
+12	,	_	PUNCT	,	_	25	punct	_	_
+13	How	_	ADV	WRB	_	14	advmod	_	_
+14	many	_	ADJ	JJ	_	15	amod	_	_
+15	diffrent	_	NOUN	NN	_	16	compound	_	_
+16	painting	_	NOUN	NN	_	3	conj	_	SpaceAfter=No
+17	/	_	PUNCT	,	_	18	cc	_	SpaceAfter=No
+18	scupltures	_	NOUN	NNS	_	19	nsubj	_	_
+19	are	_	VERB	VBP	_	16	conj	_	_
+20	their	_	PRON	PRP$	_	16	nmod	_	_
+21	and	_	CCONJ	CC	_	25	cc	_	_
+22	who	_	PRON	WP	_	25	nsubj	_	_
+23	are	_	AUX	VBP	_	25	cop	_	_
+24	the	_	DET	DT	_	25	det	_	_
+25	artists	_	NOUN	NNS	_	16	nsubj	_	SpaceAfter=No
+26	?	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 3
+# text = Link to video: http://www.livevideo.com/video/C8F5BBEC570C4A4DBC326F694D79942A/courage-the-cowardly-dog-so-.aspx
+1	Link	_	NOUN	NN	_	0	root	_	_
+2	to	_	ADP	IN	_	3	case	_	_
+3	video	_	NOUN	NN	_	15	compound	_	SpaceAfter=No
+4	:	_	PUNCT	:	_	3	punct	_	_
+5	http://www.livevideo.com/video	_	NOUN	NN	_	6	compound	_	SpaceAfter=No
+6	/C8F5BBEC570C4A4DBC326F694D79942A	_	NOUN	NN	_	1	appos	_	SpaceAfter=No
+7	/	_	PUNCT	,	_	8	cc	_	SpaceAfter=No
+8	courage	_	NOUN	NN	_	6	conj	_	SpaceAfter=No
+9	-	_	PUNCT	HYPH	_	14	punct	_	SpaceAfter=No
+10	the	_	DET	DT	_	12	det	_	SpaceAfter=No
+11	-	_	PUNCT	HYPH	_	12	punct	_	SpaceAfter=No
+12	cowardly	_	ADJ	JJ	_	14	amod	_	SpaceAfter=No
+13	-	_	PUNCT	HYPH	_	14	punct	_	SpaceAfter=No
+14	dog	_	NOUN	NN	_	5	nmod	_	SpaceAfter=No
+15	-so	_	ADP	IN	_	14	nmod	_	SpaceAfter=No
+16	-	_	PUNCT	HYPH	_	1	punct	_	SpaceAfter=No
+17	.	_	PUNCT	.	_	1	punct	_	SpaceAfter=No
+18	aspx	_	ADV	RB	_	1	discourse	_	_
+
+# sent_id = 4
+# text = You should really ask this in the art section.
+1	You	_	PRON	PRP	_	4	nsubj	_	_
+2	should	_	AUX	MD	_	4	aux	_	_
+3	really	_	ADV	RB	_	4	advmod	_	_
+4	ask	_	VERB	VB	_	0	root	_	_
+5	this	_	PRON	DT	_	4	obj	_	_
+6	in	_	ADP	IN	_	9	case	_	_
+7	the	_	DET	DT	_	9	det	_	_
+8	art	_	NOUN	NN	_	9	compound	_	_
+9	section	_	NOUN	NN	_	4	obl	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 5
+# text = Theyre probably just drawn for the show anyways.
+1	Theyre	_	NOUN	NN	_	4	nsubj	_	_
+2	probably	_	ADV	RB	_	4	advmod	_	_
+3	just	_	ADV	RB	_	4	advmod	_	_
+4	drawn	_	VERB	VBN	_	0	root	_	_
+5	for	_	ADP	IN	_	7	case	_	_
+6	the	_	DET	DT	_	7	det	_	_
+7	show	_	NOUN	NN	_	4	obl	_	_
+8	anyway	_	ADV	RB	_	7	advmod	_	SpaceAfter=No
+9	s	_	X	AFX	_	7	advmod	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	7	punct	_	_
+

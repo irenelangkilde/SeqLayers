@@ -4,3 +4,9 @@
 2026-11-13 21:17:09 event sizes first: 2086745632 20736664512  second: 2086745632 20736664512 
 2026-11-13 21:17:48 second: first's count cache copied and re-signed (314M)
 2026-11-13 21:17:49 second: shard 2/2 started
+2026-11-14 08:05:28 helper: armed (code synced)
+2026-11-14 10:14:45 first: shard 1/2 done, copied back
+2026-11-14 10:14:48 first: helping with shard 2/2 (smallest first)
+2026-11-14 19:21:04 helper: had finished at 15:09 (its per-doc files merged into help-pred.conllu, which the coverage check missed); second stopped, both copied back
+2026-11-14 19:21:19 both machines shut down in 5 min
+2026-11-14 19:21:42 assembled (first 160, second 55, helper 105) and scored: UAS | 72.70 | 73.21 | 72.96 | 74.59;LAS | 68.12 | 68.60 | 68.36 | 69.89;

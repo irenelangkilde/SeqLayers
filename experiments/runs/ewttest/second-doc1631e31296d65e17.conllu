@@ -1,0 +1,475 @@
+# sent_id = 1
+# text = Sara,
+1	Sara	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+
+# sent_id = 2
+# text = Attached below is Davis Thames' presentation regarding the proposed Project Bruin.
+1	Attached	_	VERB	VBN	_	0	root	_	_
+2	below	_	ADV	RB	_	1	advmod	_	_
+3	is	_	AUX	VBZ	_	2	cop	_	_
+4	Davis	_	PROPN	NNP	_	5	compound	_	_
+5	Thames	_	PROPN	NNP	_	7	nmod	_	SpaceAfter=No
+6	'	_	PART	POS	_	5	case	_	_
+7	presentation	_	NOUN	NN	_	1	nsubj	_	_
+8	regarding	_	VERB	VBG	_	12	case	_	_
+9	the	_	DET	DT	_	12	det	_	_
+10	proposed	_	VERB	VBN	_	12	amod	_	_
+11	Project	_	NOUN	NN	_	7	compound	_	_
+12	Bruin	_	PROPN	NNP	_	11	flat	_	SpaceAfter=No
+13	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 3
+# text = I will forward the draft Bear Stearns term sheet separately.
+1	I	_	PRON	PRP	_	3	nsubj	_	_
+2	will	_	AUX	MD	_	3	aux	_	_
+3	forward	_	VERB	VB	_	0	root	_	_
+4	the	_	DET	DT	_	6	det	_	_
+5	draft	_	NOUN	NN	_	6	compound	_	_
+6	Bear	_	NOUN	NN	_	9	compound	_	_
+7	Stearns	_	NOUN	NNS	_	6	compound	_	_
+8	term	_	NOUN	NN	_	9	compound	_	_
+9	sheet	_	NOUN	NN	_	3	obj	_	_
+10	separately	_	ADV	RB	_	3	advmod	_	SpaceAfter=No
+11	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 4
+# text = Paul Team, sorry for the delay on getting this around.
+1	Paul	_	PROPN	NNP	_	2	compound	_	_
+2	Team	_	PROPN	NNP	_	4	vocative	_	SpaceAfter=No
+3	,	_	PUNCT	,	_	2	punct	_	_
+4	sorry	_	ADJ	JJ	_	0	root	_	_
+5	for	_	ADP	IN	_	7	case	_	_
+6	the	_	DET	DT	_	7	det	_	_
+7	delay	_	NOUN	NN	_	4	obl	_	_
+8	on	_	SCONJ	IN	_	9	mark	_	_
+9	getting	_	VERB	VBG	_	7	acl	_	_
+10	this	_	PRON	DT	_	9	obj	_	_
+11	around	_	ADV	RB	_	9	advmod	_	SpaceAfter=No
+12	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 5
+# text = Please advise when you can meet to discuss issues related to your area.
+1	Please	_	INTJ	UH	_	2	discourse	_	_
+2	advise	_	VERB	VB	_	0	root	_	_
+3	when	_	ADV	WRB	_	6	mark	_	_
+4	you	_	PRON	PRP	_	6	nsubj	_	_
+5	can	_	AUX	MD	_	6	aux	_	_
+6	meet	_	VERB	VB	_	2	advcl	_	_
+7	to	_	PART	TO	_	8	mark	_	_
+8	discuss	_	VERB	VB	_	6	advcl	_	_
+9	issues	_	NOUN	NNS	_	8	obj	_	_
+10	related	_	ADJ	JJ	_	9	amod	_	_
+11	to	_	ADP	IN	_	13	case	_	_
+12	your	_	PRON	PRP$	_	13	nmod	_	_
+13	area	_	NOUN	NN	_	8	obl	_	SpaceAfter=No
+14	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 6
+# text = Thanks - Davis Clint: I spoke with Mike Collins [203-719-8385 (phone) and 203-719-7031 (fax)] who conrfirmed to me that the cap included the remaining 2.5+million remaining shares.
+1	Thanks	_	NOUN	NN	_	7	parataxis	_	_
+2	-	_	PUNCT	,	_	1	punct	_	_
+3	Davis	_	PROPN	NNP	_	7	parataxis	_	_
+4	Clint	_	PROPN	NNP	_	7	parataxis	_	SpaceAfter=No
+5	:	_	PUNCT	:	_	4	punct	_	_
+6	I	_	PRON	PRP	_	7	nsubj	_	_
+7	spoke	_	VERB	VBD	_	0	root	_	_
+8	with	_	ADP	IN	_	10	case	_	_
+9	Mike	_	PROPN	NNP	_	7	obl	_	_
+10	Collins	_	PROPN	NNP	_	9	flat	_	_
+11	[	_	PUNCT	-LRB-	_	12	punct	_	SpaceAfter=No
+12	203-719-8385	_	NUM	CD	_	14	appos	_	_
+13	(	_	PUNCT	-LRB-	_	14	punct	_	SpaceAfter=No
+14	phone	_	NOUN	NN	_	7	obl	_	SpaceAfter=No
+15	)	_	PUNCT	-RRB-	_	14	punct	_	_
+16	and	_	CCONJ	CC	_	17	cc	_	_
+17	203-719-7031	_	NUM	CD	_	19	appos	_	_
+18	(	_	PUNCT	-LRB-	_	19	punct	_	SpaceAfter=No
+19	fax	_	NOUN	NN	_	7	obl	_	SpaceAfter=No
+20	)	_	PUNCT	-RRB-	_	19	punct	_	SpaceAfter=No
+21	]	_	PUNCT	ADD	_	19	punct	_	_
+22	who	_	PRON	WP	_	23	nsubj	_	_
+23	conrfirmed	_	VERB	VBD	_	19	acl	_	_
+24	to	_	ADP	IN	_	25	case	_	_
+25	me	_	PRON	PRP	_	23	obl	_	_
+26	that	_	SCONJ	IN	_	29	mark	_	_
+27	the	_	DET	DT	_	28	det	_	_
+28	cap	_	NOUN	NN	_	29	nsubj	_	_
+29	included	_	VERB	VBD	_	7	parataxis	_	_
+30	the	_	DET	DT	_	36	det	_	_
+31	remaining	_	VERB	VBG	_	36	amod	_	_
+32	2.5	_	NUM	CD	_	28	compound	_	SpaceAfter=No
+33	+	_	SYM	SYM	_	34	advmod	_	SpaceAfter=No
+34	million	_	NUM	CD	_	32	nmod	_	_
+35	remaining	_	NOUN	NN	_	36	compound	_	_
+36	shares	_	NOUN	NNS	_	32	nmod	_	SpaceAfter=No
+37	.	_	PUNCT	.	_	29	punct	_	_
+
+# sent_id = 7
+# text = Please return an executed copy of confirm to me.
+1	Please	_	INTJ	UH	_	2	discourse	_	_
+2	return	_	VERB	VB	_	0	root	_	_
+3	an	_	DET	DT	_	5	det	_	_
+4	executed	_	VERB	VBN	_	5	amod	_	_
+5	copy	_	NOUN	NN	_	2	obj	_	_
+6	of	_	ADP	IN	_	7	case	_	_
+7	confirm	_	NOUN	NN	_	5	nmod	_	_
+8	to	_	ADP	IN	_	9	case	_	_
+9	me	_	PRON	PRP	_	5	nmod	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 8
+# text = Thanks.
+1	Thanks	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+2	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 9
+# text = sara
+1	sara	_	NOUN	NN	_	0	root	_	_
+
+# sent_id = 10
+# text = My assistant Joanne Rozycki has cell, car numbers to reach me.
+1	My	_	PRON	PRP$	_	2	nmod	_	_
+2	assistant	_	NOUN	NN	_	4	compound	_	_
+3	Joanne	_	PROPN	NNP	_	4	compound	_	_
+4	Rozycki	_	PROPN	NNP	_	6	nsubj	_	_
+5	has	_	AUX	VBZ	_	6	aux	_	_
+6	cell	_	VERB	VBN	_	0	root	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	9	punct	_	_
+8	car	_	NOUN	NN	_	9	compound	_	_
+9	numbers	_	NOUN	NNS	_	6	appos	_	_
+10	to	_	PART	TO	_	11	mark	_	_
+11	reach	_	VERB	VB	_	9	acl	_	_
+12	me	_	PRON	PRP	_	11	obj	_	SpaceAfter=No
+13	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 11
+# text = I'll be back on Monday.
+1	I	_	PRON	PRP	_	4	nsubj	_	SpaceAfter=No
+2	'll	_	AUX	MD	_	4	aux	_	_
+3	be	_	AUX	VB	_	4	cop	_	_
+4	back	_	ADV	RB	_	0	root	_	_
+5	on	_	ADP	IN	_	6	case	_	_
+6	Monday	_	PROPN	NNP	_	4	obl	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 12
+# text = Sara
+1	Sara	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 13
+# text = Shackleton
+1	Shackleton	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 14
+# text = Enron Wholesale Services 1400 Smith Street, EB3801a Houston, TX 77002 Ph: (713) 853-5620 Fax: (713) 646-3490
+1	Enron	_	PROPN	NNP	_	0	root	_	_
+2	Wholesale	_	NOUN	NN	_	3	compound	_	_
+3	Services	_	NOUN	NNS	_	1	list	_	_
+4	1400	_	NUM	CD	_	6	nummod	_	_
+5	Smith	_	PROPN	NNP	_	6	compound	_	_
+6	Street	_	PROPN	NNP	_	3	list	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	6	punct	_	_
+8	EB	_	PROPN	NNP	_	6	appos	_	SpaceAfter=No
+9	3801	_	NUM	CD	_	8	nummod	_	SpaceAfter=No
+10	a	_	DET	DT	_	11	det	_	_
+11	Houston	_	PROPN	NNP	_	6	list	_	SpaceAfter=No
+12	,	_	PUNCT	,	_	11	punct	_	_
+13	TX	_	PROPN	NNP	_	3	appos	_	_
+14	77002	_	NUM	CD	_	13	nummod	_	_
+15	Ph	_	NOUN	NN	_	13	list	_	SpaceAfter=No
+16	:	_	PUNCT	:	_	15	punct	_	_
+17	(	_	PUNCT	-LRB-	_	20	punct	_	SpaceAfter=No
+18	713	_	NUM	CD	_	20	nummod	_	SpaceAfter=No
+19	)	_	PUNCT	-RRB-	_	20	punct	_	_
+20	853-5620	_	NUM	CD	_	3	appos	_	_
+21	Fax	_	NOUN	NN	_	3	list	_	SpaceAfter=No
+22	:	_	PUNCT	:	_	21	punct	_	_
+23	(	_	PUNCT	-LRB-	_	26	punct	_	SpaceAfter=No
+24	713	_	NUM	CD	_	26	nummod	_	SpaceAfter=No
+25	)	_	PUNCT	-RRB-	_	26	punct	_	_
+26	646-3490	_	NUM	CD	_	21	appos	_	_
+
+# sent_id = 15
+# text = Thanks.
+1	Thanks	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+2	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 16
+# text = SS Sara,
+1	SS	_	PROPN	NNP	_	0	root	_	_
+2	Sara	_	PROPN	NNP	_	1	flat	_	SpaceAfter=No
+3	,	_	PUNCT	,	_	2	punct	_	_
+
+# sent_id = 17
+# text = Currently we have a blank "sample" for our Paragraph 13s which are attached to our sample ISDAs for (a) US Corporate, (b) Hedge Funds, (c) Municipal.
+1	Currently	_	ADV	RB	_	3	advmod	_	_
+2	we	_	PRON	PRP	_	3	nsubj	_	_
+3	have	_	VERB	VBP	_	0	root	_	_
+4	a	_	DET	DT	_	5	det	_	_
+5	blank	_	NOUN	NN	_	3	obj	_	_
+6	"	_	PUNCT	``	_	7	punct	_	SpaceAfter=No
+7	sample	_	NOUN	NNS	_	5	appos	_	SpaceAfter=No
+8	"	_	PUNCT	''	_	7	punct	_	_
+9	for	_	ADP	IN	_	11	case	_	_
+10	our	_	PRON	PRP$	_	11	nmod	_	_
+11	Paragraph	_	NOUN	NN	_	5	nmod	_	_
+12	13s	_	NOUN	NN	_	11	obl	_	_
+13	which	_	PRON	WDT	_	15	nsubj	_	_
+14	are	_	AUX	VBP	_	15	aux	_	_
+15	attached	_	VERB	VBN	_	12	acl	_	_
+16	to	_	ADP	IN	_	18	case	_	_
+17	our	_	PRON	PRP$	_	18	nmod	_	_
+18	sample	_	NOUN	NNS	_	19	compound	_	_
+19	ISDA	_	NOUN	NN	_	11	nmod	_	SpaceAfter=No
+20	s	_	PART	POS	_	19	case	_	_
+21	for	_	ADP	IN	_	26	case	_	_
+22	(	_	PUNCT	-LRB-	_	23	punct	_	SpaceAfter=No
+23	a	_	X	LS	_	24	nummod	_	SpaceAfter=No
+24	)	_	PUNCT	-RRB-	_	26	punct	_	_
+25	US	_	PROPN	NNP	_	26	compound	_	_
+26	Corporate	_	PROPN	NNP	_	19	list	_	SpaceAfter=No
+27	,	_	PUNCT	,	_	37	punct	_	_
+28	(	_	PUNCT	-LRB-	_	29	punct	_	SpaceAfter=No
+29	b	_	X	LS	_	37	nummod	_	SpaceAfter=No
+30	)	_	PUNCT	-RRB-	_	29	punct	_	_
+31	Hedge	_	PROPN	NNP	_	32	compound	_	_
+32	Funds	_	PROPN	NNPS	_	15	nsubj	_	SpaceAfter=No
+33	,	_	PUNCT	,	_	31	punct	_	_
+34	(	_	PUNCT	-LRB-	_	35	punct	_	SpaceAfter=No
+35	c	_	NOUN	NN	_	31	punct	_	SpaceAfter=No
+36	)	_	PUNCT	-RRB-	_	35	punct	_	_
+37	Municipal	_	PROPN	NNP	_	26	conj	_	SpaceAfter=No
+38	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 18
+# text = I will extract the one for the US corporate Paragraph 13 and email to your contact @ First Union Securities.
+1	I	_	PRON	PRP	_	3	nsubj	_	_
+2	will	_	AUX	MD	_	3	aux	_	_
+3	extract	_	VERB	VB	_	0	root	_	_
+4	the	_	DET	DT	_	5	det	_	_
+5	one	_	NUM	CD	_	3	obj	_	_
+6	for	_	ADP	IN	_	10	case	_	_
+7	the	_	DET	DT	_	10	det	_	_
+8	US	_	PROPN	NNP	_	10	compound	_	_
+9	corporate	_	ADJ	JJ	_	10	amod	_	_
+10	Paragraph	_	NOUN	NN	_	5	list	_	_
+11	13	_	NUM	CD	_	10	nummod	_	_
+12	and	_	CCONJ	CC	_	13	cc	_	_
+13	email	_	NOUN	NN	_	10	conj	_	_
+14	to	_	ADP	IN	_	16	case	_	_
+15	your	_	PRON	PRP$	_	16	nmod	_	_
+16	contact	_	NOUN	NN	_	20	compound	_	_
+17	@	_	ADP	IN	_	19	case	_	_
+18	First	_	ADJ	JJ	_	19	amod	_	_
+19	Union	_	NOUN	NN	_	16	nmod	_	_
+20	Securities	_	NOUN	NNS	_	13	appos	_	SpaceAfter=No
+21	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 19
+# text = The sample includes our "caveat", so it should be fine.
+1	The	_	DET	DT	_	2	det	_	_
+2	sample	_	NOUN	NNS	_	3	nsubj	_	_
+3	includes	_	VERB	VBZ	_	13	advcl	_	_
+4	our	_	PRON	PRP$	_	6	nmod	_	_
+5	"	_	PUNCT	``	_	6	punct	_	SpaceAfter=No
+6	caveat	_	NOUN	NN	_	3	obj	_	SpaceAfter=No
+7	"	_	PUNCT	''	_	6	punct	_	SpaceAfter=No
+8	,	_	PUNCT	,	_	13	punct	_	_
+9	so	_	ADV	RB	_	13	advmod	_	_
+10	it	_	PRON	PRP	_	13	expl	_	_
+11	should	_	AUX	MD	_	13	aux	_	_
+12	be	_	AUX	VB	_	13	cop	_	_
+13	fine	_	ADJ	JJ	_	0	root	_	SpaceAfter=No
+14	.	_	PUNCT	.	_	13	punct	_	_
+
+# sent_id = 20
+# text = Susan Susan:
+1	Susan	_	PROPN	NNP	_	2	parataxis	_	_
+2	Susan	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+3	:	_	PUNCT	:	_	2	punct	_	_
+
+# sent_id = 21
+# text = While Tanya is reviewing credit, can you please send a "blank form Paragraph 13" for this master.
+1	While	_	SCONJ	IN	_	4	mark	_	_
+2	Tanya	_	PROPN	NNP	_	4	nsubj	_	_
+3	is	_	AUX	VBZ	_	4	aux	_	_
+4	reviewing	_	VERB	VBG	_	0	root	_	_
+5	credit	_	NOUN	NN	_	4	obj	_	SpaceAfter=No
+6	,	_	PUNCT	,	_	10	punct	_	_
+7	can	_	AUX	MD	_	10	aux	_	_
+8	you	_	PRON	PRP	_	10	nsubj	_	_
+9	please	_	INTJ	UH	_	10	discourse	_	_
+10	send	_	VERB	VB	_	4	parataxis	_	_
+11	a	_	DET	DT	_	14	det	_	_
+12	"	_	PUNCT	``	_	14	punct	_	SpaceAfter=No
+13	blank	_	NOUN	NN	_	14	compound	_	_
+14	form	_	NOUN	NN	_	15	compound	_	_
+15	Paragraph	_	NOUN	NN	_	20	nmod	_	_
+16	13	_	NUM	CD	_	15	nummod	_	SpaceAfter=No
+17	"	_	NOUN	NNS	_	10	punct	_	_
+18	for	_	ADP	IN	_	20	case	_	_
+19	this	_	DET	DT	_	20	det	_	_
+20	master	_	NOUN	NN	_	17	nmod	_	SpaceAfter=No
+21	.	_	PUNCT	.	_	10	punct	_	_
+
+# sent_id = 22
+# text = Just our standard.
+1	Just	_	ADV	RB	_	3	advmod	_	_
+2	our	_	PRON	PRP$	_	3	nmod	_	_
+3	standard	_	ADJ	JJ	_	0	root	_	SpaceAfter=No
+4	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 23
+# text = Caveat: subject to credit review even though there are blanks.
+1	Caveat	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+2	:	_	PUNCT	:	_	1	punct	_	_
+3	subject	_	ADJ	JJ	_	1	amod	_	_
+4	to	_	ADP	IN	_	6	case	_	_
+5	credit	_	NOUN	NN	_	6	compound	_	_
+6	review	_	NOUN	NN	_	3	obl	_	_
+7	even	_	ADV	RB	_	10	advmod	_	_
+8	though	_	SCONJ	IN	_	10	mark	_	_
+9	there	_	PRON	EX	_	10	expl	_	_
+10	are	_	VERB	VBP	_	3	appos	_	_
+11	blanks	_	NOUN	NNS	_	10	nsubj	_	SpaceAfter=No
+12	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 24
+# text = Thanks.
+1	Thanks	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+2	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 25
+# text = Sara
+1	Sara	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 26
+# text = First Union Securities, Inc.
+1	First	_	PROPN	NNP	_	2	compound	_	_
+2	Union	_	PROPN	NNP	_	3	compound	_	_
+3	Securities	_	PROPN	NNPS	_	5	compound	_	SpaceAfter=No
+4	,	_	PUNCT	,	_	5	punct	_	_
+5	Inc	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 27
+# text = Hi Sara,
+1	Hi	_	INTJ	UH	_	2	discourse	_	_
+2	Sara	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+3	,	_	PUNCT	,	_	2	punct	_	_
+
+# sent_id = 28
+# text = I just wanted to follow up
+1	I	_	PRON	PRP	_	3	nsubj	_	_
+2	just	_	ADV	RB	_	3	advmod	_	_
+3	wanted	_	VERB	VBD	_	0	root	_	_
+4	to	_	PART	TO	_	5	mark	_	_
+5	follow	_	VERB	VB	_	3	xcomp	_	_
+6	up	_	ADP	RP	_	5	compound	_	_
+
+# sent_id = 29
+# text = on whether you will have a chance to send a draft Credit Support Annex (similar in form
+1	on	_	SCONJ	IN	_	5	mark	_	_
+2	whether	_	SCONJ	IN	_	5	mark	_	_
+3	you	_	PRON	PRP	_	5	nsubj	_	_
+4	will	_	AUX	MD	_	5	aux	_	_
+5	have	_	VERB	VB	_	0	root	_	_
+6	a	_	DET	DT	_	7	det	_	_
+7	chance	_	NOUN	NN	_	5	obj	_	_
+8	to	_	PART	TO	_	9	mark	_	_
+9	send	_	VERB	VB	_	7	acl	_	_
+10	a	_	DET	DT	_	14	det	_	_
+11	draft	_	NOUN	NN	_	13	compound	_	_
+12	Credit	_	NOUN	NN	_	13	compound	_	_
+13	Support	_	NOUN	NN	_	14	compound	_	_
+14	Annex	_	NOUN	NN	_	9	obj	_	_
+15	(	_	PUNCT	-LRB-	_	16	punct	_	SpaceAfter=No
+16	similar	_	ADJ	JJ	_	14	appos	_	_
+17	in	_	ADP	IN	_	18	case	_	_
+18	form	_	NOUN	NN	_	16	obl	_	_
+
+# sent_id = 30
+# text = to the one previously executed with ENA).
+1	to	_	ADP	IN	_	3	case	_	_
+2	the	_	DET	DT	_	3	det	_	_
+3	one	_	NOUN	NN	_	0	root	_	_
+4	previously	_	ADV	RB	_	5	advmod	_	_
+5	executed	_	VERB	VBN	_	3	acl	_	_
+6	with	_	ADP	IN	_	7	case	_	_
+7	ENA	_	PROPN	NNP	_	5	obl	_	SpaceAfter=No
+8	)	_	PUNCT	-RRB-	_	7	punct	_	SpaceAfter=No
+9	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 31
+# text = I understand you may not have credit approval yet so perhaps we can leave the appropriate sections blank in the meantime.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	understand	_	VERB	VBP	_	0	root	_	_
+3	you	_	PRON	PRP	_	6	nsubj	_	_
+4	may	_	AUX	MD	_	6	aux	_	_
+5	not	_	PART	RB	_	6	advmod	_	_
+6	have	_	VERB	VB	_	2	ccomp	_	_
+7	credit	_	NOUN	NN	_	8	compound	_	_
+8	approval	_	NOUN	NN	_	6	obj	_	_
+9	yet	_	ADV	RB	_	6	advmod	_	_
+10	so	_	ADV	RB	_	14	advmod	_	_
+11	perhaps	_	ADV	RB	_	14	advmod	_	_
+12	we	_	PRON	PRP	_	14	nsubj	_	_
+13	can	_	AUX	MD	_	14	aux	_	_
+14	leave	_	VERB	VB	_	6	conj	_	_
+15	the	_	DET	DT	_	18	det	_	_
+16	appropriate	_	ADJ	JJ	_	17	amod	_	_
+17	sections	_	NOUN	NNS	_	18	compound	_	_
+18	blank	_	NOUN	NN	_	14	obj	_	_
+19	in	_	ADP	IN	_	21	case	_	_
+20	the	_	DET	DT	_	21	det	_	_
+21	meantime	_	NOUN	NN	_	14	obl	_	SpaceAfter=No
+22	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 32
+# text = Thanks and regards,
+1	Thanks	_	NOUN	NN	_	0	root	_	_
+2	and	_	CCONJ	CC	_	3	cc	_	_
+3	regards	_	NOUN	NNS	_	1	vocative	_	SpaceAfter=No
+4	,	_	PUNCT	,	_	3	punct	_	_
+
+# sent_id = 33
+# text = Vijay K.
+1	Vijay	_	PROPN	NNP	_	0	root	_	_
+2	K.	_	PROPN	NNP	_	1	flat	_	_
+
+# sent_id = 34
+# text = Suchdev Vice President Equity Derivatives First Union Securities, Inc.
+1	Suchdev	_	PROPN	NNP	_	3	compound	_	_
+2	Vice	_	PROPN	NNP	_	3	compound	_	_
+3	President	_	PROPN	NNP	_	7	nmod	_	_
+4	Equity	_	PROPN	NNP	_	3	flat	_	_
+5	Derivatives	_	PROPN	NNPS	_	3	flat	_	_
+6	First	_	ADJ	JJ	_	7	amod	_	_
+7	Union	_	NOUN	NN	_	8	compound	_	_
+8	Securities	_	NOUN	NNS	_	0	root	_	SpaceAfter=No
+9	,	_	PUNCT	,	_	8	punct	_	_
+10	Inc.	_	PROPN	NNP	_	7	dep	_	_
+
+# sent_id = 35
+# text = Telephone: (212) 909-0951 Facsimile: (212) 891-5042 email: vijay.suchdev@funb.com <mailto:vijay.suchdev@funb.com>
+1	Telephone	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+2	:	_	PUNCT	:	_	1	punct	_	_
+3	(	_	PUNCT	-LRB-	_	13	punct	_	SpaceAfter=No
+4	212	_	NUM	CD	_	13	nummod	_	SpaceAfter=No
+5	)	_	PUNCT	-RRB-	_	4	punct	_	_
+6	909	_	NOUN	NN	_	7	compound	_	SpaceAfter=No
+7	-0951	_	NOUN	NN	_	14	compound	_	_
+8	Facsimile	_	NOUN	NN	_	6	list	_	SpaceAfter=No
+9	:	_	PUNCT	:	_	8	punct	_	_
+10	(	_	PUNCT	-LRB-	_	13	punct	_	SpaceAfter=No
+11	212	_	NUM	CD	_	13	nummod	_	SpaceAfter=No
+12	)	_	PUNCT	-RRB-	_	13	punct	_	_
+13	891-5042	_	NUM	CD	_	8	appos	_	_
+14	email	_	NOUN	NN	_	1	nmod	_	SpaceAfter=No
+15	:	_	PUNCT	:	_	14	punct	_	_
+16	vijay.suchdev@funb.com	_	X	ADD	_	1	appos	_	_
+17	<	_	PUNCT	-LRB-	_	18	punct	_	SpaceAfter=No
+18	mailto:vijay.suchdev@funb.com	_	X	ADD	_	16	appos	_	SpaceAfter=No
+19	>	_	PUNCT	-RRB-	_	18	punct	_	_
+

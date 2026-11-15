@@ -1,0 +1,7 @@
+=== prep (1/1, dev_sents 1)
+recorded events in 2858.2 s
+conllu: experiments/runs/ewttest/prep-pred.conllu, experiments/runs/ewttest/prep-gold.conllu
+count cache: 56655 new feature sets, 56655 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train100000-EWT-gold-cdc3db987-wcclasses5-sfx3-rootabs-htrank-kin-hkinleftright-nn2/events
+EWT         39      1.0     0.7436  0.7179  1.0     
+ALL         39      1.0     0.7436  0.7179  1.0     
+build 2868.3 s, decode 402.4 s, run 20261114-041701 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv

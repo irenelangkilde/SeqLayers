@@ -1,0 +1,113 @@
+# sent_id = 1
+# text = (And, by the way, is anybody else just a little nostalgic for the days when that was a good thing?)
+1	(	_	PUNCT	-LRB-	_	14	punct	_	SpaceAfter=No
+2	And	_	CCONJ	CC	_	6	cc	_	SpaceAfter=No
+3	,	_	PUNCT	,	_	6	punct	_	_
+4	by	_	ADP	IN	_	6	case	_	_
+5	the	_	DET	DT	_	6	det	_	_
+6	way	_	NOUN	NN	_	9	acl	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	8	punct	_	_
+8	is	_	VERB	VBZ	_	0	root	_	_
+9	anybody	_	PRON	NN	_	8	nsubj	_	_
+10	else	_	ADJ	JJ	_	9	amod	_	_
+11	just	_	ADV	RB	_	14	advmod	_	_
+12	a	_	DET	DT	_	13	det	_	_
+13	little	_	ADJ	JJ	_	14	obl	_	_
+14	nostalgic	_	ADJ	JJ	_	6	amod	_	_
+15	for	_	ADP	IN	_	17	case	_	_
+16	the	_	DET	DT	_	17	det	_	_
+17	days	_	NOUN	NNS	_	14	obl	_	_
+18	when	_	ADV	WRB	_	23	mark	_	_
+19	that	_	PRON	DT	_	23	nsubj	_	_
+20	was	_	AUX	VBD	_	23	cop	_	_
+21	a	_	DET	DT	_	23	det	_	_
+22	good	_	ADJ	JJ	_	23	amod	_	_
+23	thing	_	NOUN	NN	_	17	nmod	_	SpaceAfter=No
+24	?	_	PUNCT	.	_	14	punct	_	SpaceAfter=No
+25	)	_	PUNCT	-RRB-	_	14	punct	_	_
+
+# sent_id = 2
+# text = This BuzzMachine post argues that Google's rush toward ubiquity might backfire -- which we've all heard before, but it's particularly well-put in this post.
+1	This	_	PRON	DT	_	3	nsubj	_	_
+2	BuzzMachine	_	PROPN	NNP	_	3	compound	_	_
+3	post	_	NOUN	NN	_	4	nsubj	_	_
+4	argues	_	VERB	VBZ	_	0	root	_	_
+5	that	_	SCONJ	IN	_	12	mark	_	_
+6	Google	_	PROPN	NNP	_	8	nmod	_	SpaceAfter=No
+7	's	_	PART	POS	_	6	case	_	_
+8	rush	_	NOUN	NN	_	4	obj	_	_
+9	toward	_	ADP	IN	_	10	case	_	_
+10	ubiquity	_	NOUN	NN	_	8	nmod	_	_
+11	might	_	AUX	MD	_	12	aux	_	_
+12	backfire	_	VERB	VB	_	10	acl	_	_
+13	--	_	PUNCT	,	_	12	punct	_	_
+14	which	_	PRON	WDT	_	18	obj	_	_
+15	we	_	PRON	PRP	_	18	nsubj	_	SpaceAfter=No
+16	've	_	AUX	VBP	_	18	aux	_	_
+17	all	_	ADV	RB	_	18	advmod	_	_
+18	heard	_	VERB	VBN	_	12	advcl	_	_
+19	before	_	ADV	RB	_	18	advmod	_	SpaceAfter=No
+20	,	_	PUNCT	,	_	12	punct	_	_
+21	but	_	CCONJ	CC	_	30	cc	_	_
+22	it	_	PRON	PRP	_	27	nsubj	_	SpaceAfter=No
+23	's	_	AUX	VBZ	_	27	aux	_	_
+24	particularly	_	ADV	RB	_	25	advmod	_	_
+25	well	_	ADV	RB	_	27	advmod	_	SpaceAfter=No
+26	-	_	PUNCT	HYPH	_	27	punct	_	SpaceAfter=No
+27	put	_	VERB	VBN	_	8	advcl	_	_
+28	in	_	ADP	IN	_	30	case	_	_
+29	this	_	DET	DT	_	30	det	_	_
+30	post	_	NOUN	NN	_	27	obl	_	SpaceAfter=No
+31	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 3
+# text = Google is a nice search engine.
+1	Google	_	PROPN	NNP	_	6	nsubj	_	_
+2	is	_	AUX	VBZ	_	6	cop	_	_
+3	a	_	DET	DT	_	6	det	_	_
+4	nice	_	ADJ	JJ	_	6	amod	_	_
+5	search	_	NOUN	NN	_	6	compound	_	_
+6	engine	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 4
+# text = Does anybody use it for anything else?
+1	Does	_	AUX	VBZ	_	3	aux	_	_
+2	anybody	_	PRON	NN	_	3	nsubj	_	_
+3	use	_	VERB	VB	_	0	root	_	_
+4	it	_	PRON	PRP	_	3	obj	_	_
+5	for	_	ADP	IN	_	6	case	_	_
+6	anything	_	PRON	NN	_	3	obl	_	_
+7	else	_	ADJ	JJ	_	6	acl	_	SpaceAfter=No
+8	?	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 5
+# text = They own blogger, of course.
+1	They	_	PRON	PRP	_	3	nsubj	_	_
+2	own	_	ADJ	JJ	_	3	amod	_	_
+3	blogger	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+4	,	_	PUNCT	,	_	3	punct	_	_
+5	of	_	ADV	RB	_	3	discourse	_	_
+6	course	_	ADV	RB	_	5	fixed	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 6
+# text = Is that a money maker?
+1	Is	_	VERB	VBZ	_	0	root	_	_
+2	that	_	SCONJ	IN	_	5	mark	_	_
+3	a	_	DET	DT	_	5	det	_	_
+4	money	_	NOUN	NN	_	5	compound	_	_
+5	maker	_	NOUN	NN	_	1	obl	_	SpaceAfter=No
+6	?	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 7
+# text = I'm staying away from the stock.
+1	I	_	PRON	PRP	_	3	nsubj	_	SpaceAfter=No
+2	'm	_	AUX	VBP	_	3	aux	_	_
+3	staying	_	VERB	VBG	_	0	root	_	_
+4	away	_	ADV	RB	_	3	advmod	_	_
+5	from	_	ADP	IN	_	7	case	_	_
+6	the	_	DET	DT	_	7	det	_	_
+7	stock	_	NOUN	NN	_	3	obl	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	3	punct	_	_
+

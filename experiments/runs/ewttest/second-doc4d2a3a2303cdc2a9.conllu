@@ -1,0 +1,176 @@
+# sent_id = 1
+# text = Name of specific Hibachi restaurant in Chicago?
+1	Name	_	NOUN	NN	_	0	root	_	_
+2	of	_	ADP	IN	_	5	case	_	_
+3	specific	_	ADJ	JJ	_	5	amod	_	_
+4	Hibachi	_	PROPN	NNP	_	5	compound	_	_
+5	restaurant	_	NOUN	NN	_	1	nmod	_	_
+6	in	_	ADP	IN	_	7	case	_	_
+7	Chicago	_	PROPN	NNP	_	5	nmod	_	SpaceAfter=No
+8	?	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 2
+# text = I have a friend out in Chicago this week, and I am trying to remember the name of an awesome hibachi style restaurant i visited while out there a couple years ago.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	have	_	VERB	VBP	_	0	root	_	_
+3	a	_	DET	DT	_	4	det	_	_
+4	friend	_	NOUN	NN	_	2	obj	_	_
+5	out	_	ADP	RP	_	4	compound	_	_
+6	in	_	ADP	IN	_	7	case	_	_
+7	Chicago	_	PROPN	NNP	_	4	nmod	_	_
+8	this	_	DET	DT	_	9	det	_	_
+9	week	_	NOUN	NN	_	2	obl	_	SpaceAfter=No
+10	,	_	PUNCT	,	_	14	punct	_	_
+11	and	_	CCONJ	CC	_	14	cc	_	_
+12	I	_	PRON	PRP	_	14	nsubj	_	_
+13	am	_	AUX	VBP	_	14	aux	_	_
+14	trying	_	VERB	VBG	_	26	advcl	_	_
+15	to	_	PART	TO	_	16	mark	_	_
+16	remember	_	VERB	VB	_	14	xcomp	_	_
+17	the	_	DET	DT	_	18	det	_	_
+18	name	_	NOUN	NN	_	16	obj	_	_
+19	of	_	ADP	IN	_	23	case	_	_
+20	an	_	DET	DT	_	23	det	_	_
+21	awesome	_	ADJ	JJ	_	23	amod	_	_
+22	hibachi	_	NOUN	NN	_	23	compound	_	_
+23	style	_	NOUN	NN	_	24	compound	_	_
+24	restaurant	_	NOUN	NN	_	18	nmod	_	_
+25	i	_	PRON	PRP	_	26	nsubj	_	_
+26	visited	_	VERB	VBD	_	2	ccomp	_	_
+27	while	_	NOUN	NN	_	26	obj	_	_
+28	out	_	ADV	RB	_	29	advmod	_	_
+29	there	_	ADV	RB	_	26	advmod	_	_
+30	a	_	DET	DT	_	32	det	_	_
+31	couple	_	NUM	CD	_	32	nummod	_	_
+32	years	_	NOUN	NNS	_	33	obl	_	_
+33	ago	_	ADV	RB	_	26	advmod	_	SpaceAfter=No
+34	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 3
+# text = I think it was in the Lincoln Square area but don't quote me on that.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	think	_	VERB	VBP	_	0	root	_	_
+3	it	_	PRON	PRP	_	8	nsubj	_	_
+4	was	_	AUX	VBD	_	8	cop	_	_
+5	in	_	ADP	IN	_	8	case	_	_
+6	the	_	DET	DT	_	8	det	_	_
+7	Lincoln	_	PROPN	NNP	_	8	compound	_	_
+8	Square	_	PROPN	NNP	_	9	compound	_	_
+9	area	_	NOUN	NN	_	2	obl	_	_
+10	but	_	CCONJ	CC	_	13	cc	_	_
+11	do	_	AUX	VBP	_	13	aux	_	SpaceAfter=No
+12	n't	_	PART	RB	_	13	advmod	_	_
+13	quote	_	VERB	VB	_	2	parataxis	_	_
+14	me	_	PRON	PRP	_	13	obj	_	_
+15	on	_	ADP	IN	_	16	case	_	_
+16	that	_	PRON	DT	_	13	obl	_	SpaceAfter=No
+17	.	_	PUNCT	.	_	13	punct	_	_
+
+# sent_id = 4
+# text = It's 'gimmick' was that you fill your bowl cafeteria-style from raw ingredients and leave it on the counter with a chopstick listing your table number on it.
+1	It	_	PRON	PRP	_	4	nsubj	_	SpaceAfter=No
+2	's	_	AUX	VBZ	_	4	cop	_	_
+3	'	_	PUNCT	``	_	4	punct	_	SpaceAfter=No
+4	gimmick	_	NOUN	NN	_	6	nsubj	_	SpaceAfter=No
+5	'	_	PUNCT	''	_	4	punct	_	_
+6	was	_	VERB	VBD	_	0	root	_	_
+7	that	_	SCONJ	IN	_	9	mark	_	_
+8	you	_	PRON	PRP	_	9	nsubj	_	_
+9	fill	_	VERB	VBP	_	6	ccomp	_	_
+10	your	_	PRON	PRP$	_	11	nmod	_	_
+11	bowl	_	NOUN	NN	_	12	compound	_	_
+12	cafeteria	_	NOUN	NN	_	13	compound	_	SpaceAfter=No
+13	-style	_	NOUN	NN	_	9	obj	_	_
+14	from	_	ADP	IN	_	16	case	_	_
+15	raw	_	ADJ	JJ	_	16	amod	_	_
+16	ingredients	_	NOUN	NNS	_	9	obl	_	_
+17	and	_	CCONJ	CC	_	18	cc	_	_
+18	leave	_	VERB	VB	_	6	conj	_	_
+19	it	_	PRON	PRP	_	18	obj	_	_
+20	on	_	ADP	IN	_	22	case	_	_
+21	the	_	DET	DT	_	22	det	_	_
+22	counter	_	NOUN	NN	_	18	obl	_	_
+23	with	_	ADP	IN	_	25	case	_	_
+24	a	_	DET	DT	_	25	det	_	_
+25	chopstick	_	NOUN	NN	_	22	nmod	_	_
+26	listing	_	VERB	VBG	_	25	acl	_	_
+27	your	_	PRON	PRP$	_	29	nmod	_	_
+28	table	_	NOUN	NN	_	29	compound	_	_
+29	number	_	NOUN	NN	_	26	obj	_	_
+30	on	_	ADP	IN	_	31	case	_	_
+31	it	_	PRON	PRP	_	29	nmod	_	SpaceAfter=No
+32	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 5
+# text = Four guys around a large square open hibachi cook your food, and when it's finished a server brings it to your table.
+1	Four	_	NUM	CD	_	2	nummod	_	_
+2	guys	_	NOUN	NNS	_	7	nsubj	_	_
+3	around	_	ADP	IN	_	6	case	_	_
+4	a	_	DET	DT	_	6	det	_	_
+5	large	_	ADJ	JJ	_	6	amod	_	_
+6	square	_	NOUN	NN	_	7	obl	_	_
+7	open	_	ADJ	JJ	_	8	amod	_	_
+8	hibachi	_	NOUN	NN	_	9	nsubj	_	_
+9	cook	_	VERB	VB	_	0	root	_	_
+10	your	_	PRON	PRP$	_	11	nmod	_	_
+11	food	_	NOUN	NN	_	9	obj	_	SpaceAfter=No
+12	,	_	PUNCT	,	_	17	punct	_	_
+13	and	_	CCONJ	CC	_	17	cc	_	_
+14	when	_	ADV	WRB	_	17	mark	_	_
+15	it	_	PRON	PRP	_	17	nsubj	_	SpaceAfter=No
+16	's	_	AUX	VBZ	_	17	cop	_	_
+17	finished	_	ADJ	JJ	_	9	advcl	_	_
+18	a	_	DET	DT	_	19	det	_	_
+19	server	_	NOUN	NN	_	17	obj	_	_
+20	brings	_	VERB	VBZ	_	17	conj	_	_
+21	it	_	PRON	PRP	_	20	obj	_	_
+22	to	_	ADP	IN	_	24	case	_	_
+23	your	_	PRON	PRP$	_	24	nmod	_	_
+24	table	_	NOUN	NN	_	20	obl	_	SpaceAfter=No
+25	.	_	PUNCT	.	_	20	punct	_	_
+
+# sent_id = 6
+# text = All-you can-eat style deal.
+1	All	_	ADV	RB	_	6	advmod	_	SpaceAfter=No
+2	-	_	PUNCT	,	_	6	punct	_	SpaceAfter=No
+3	you	_	PRON	PRP	_	4	nsubj	_	_
+4	can	_	AUX	MD	_	6	parataxis	_	SpaceAfter=No
+5	-	_	PUNCT	HYPH	_	6	punct	_	SpaceAfter=No
+6	eat	_	VERB	VB	_	0	root	_	_
+7	style	_	NOUN	NN	_	8	compound	_	_
+8	deal	_	NOUN	NN	_	6	obj	_	SpaceAfter=No
+9	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 7
+# text = It was pretty epic as I remember and would love to send my friend there.
+1	It	_	PRON	PRP	_	4	nsubj	_	_
+2	was	_	AUX	VBD	_	4	cop	_	_
+3	pretty	_	ADV	RB	_	4	advmod	_	_
+4	epic	_	ADJ	JJ	_	0	root	_	_
+5	as	_	SCONJ	IN	_	7	mark	_	_
+6	I	_	PRON	PRP	_	7	nsubj	_	_
+7	remember	_	VERB	VBD	_	4	advcl	_	_
+8	and	_	CCONJ	CC	_	10	cc	_	_
+9	would	_	AUX	MD	_	10	aux	_	_
+10	love	_	VERB	VB	_	4	conj	_	_
+11	to	_	PART	TO	_	12	mark	_	_
+12	send	_	VERB	VB	_	10	xcomp	_	_
+13	my	_	PRON	PRP$	_	14	nmod	_	_
+14	friend	_	NOUN	NN	_	12	obj	_	_
+15	there	_	ADV	RB	_	12	advmod	_	SpaceAfter=No
+16	.	_	PUNCT	.	_	12	punct	_	_
+
+# sent_id = 8
+# text = Any help?
+1	Any	_	DET	DT	_	2	det	_	_
+2	help	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+3	?	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 9
+# text = That is Flat Top Grill
+1	That	_	PRON	DT	_	0	root	_	_
+2	is	_	AUX	VBZ	_	3	cop	_	_
+3	Flat	_	ADJ	JJ	_	5	amod	_	_
+4	Top	_	ADJ	JJ	_	5	compound	_	_
+5	Grill	_	PROPN	NNP	_	1	conj	_	_
+

@@ -1,0 +1,41 @@
+treebanks: EWT
+train sample: 12543 sentences;  dev: 3 sentences
+dev slice: 1 docs, max_doc_sents 3, max_doc_chars 185, dev_doc_sents 50
+recorded events in 2858.2 s
+      From worker 2:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 683.1 s): 20 of 56 slots always, 572 gate values
+      From worker 2:	[ Info: ChainModel: grouped decisions into 18750915 records (3700514 grouped, 2712 label sets)
+      From worker 4:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 695.8 s): 20 of 56 slots always, 572 gate values
+      From worker 4:	[ Info: ChainModel: grouped decisions into 18750915 records (3700514 grouped, 2712 label sets)
+      From worker 3:	[ Info: ChainModel: relevance gates for 1 decision types (gate = 0.5, 696.6 s): 20 of 56 slots always, 572 gate values
+      From worker 3:	[ Info: ChainModel: grouped decisions into 18750915 records (3700514 grouped, 2712 label sets)
+      From worker 2:	[ Info: ChainModel: joint tables for 6282 frequent items, 4077574 pairs (1993.8 s)
+      From worker 3:	[ Info: ChainModel: joint tables for 6282 frequent items, 4077574 pairs (2074.1 s)
+      From worker 4:	[ Info: ChainModel: joint tables for 6282 frequent items, 4077574 pairs (2107.4 s)
+      From worker 2:	doc EWT 185 chars: 380.3 s (gc 8.9 s, heap 20.6 GB)
+conllu: experiments/runs/ewttest/prep-pred.conllu, experiments/runs/ewttest/prep-gold.conllu
+profdecode: decision	calls	not ready	seconds	ms per call
+profdecode: token.attach	381	60	338.7	888.855
+profdecode: char.gap	453	0	23.5	51.965
+profdecode: token.deprel	82	39	6.2	75.137
+profdecode: token.xpos	212	0	3.0	13.946
+profdecode: token.upos	189	0	2.5	13.267
+profdecode: token.basepos	160	0	0.6	3.966
+profdecode: token.person	148	0	0.5	3.233
+profdecode: token.number	162	0	0.4	2.209
+profdecode: token.tense	115	0	0.3	2.69
+profdecode: token.wclass300	74	0	0.1	1.795
+profdecode: token.wclass30	71	0	0.1	1.434
+profdecode: token.wclass3000	71	0	0.1	1.274
+profdecode: token.wclass30000	81	0	0.1	1.003
+profdecode: token.head_dir	39	39	0.0	0.449
+profdecode: token.head_upos	39	39	0.0	0.095
+profdecode: token.head_dist	39	39	0.0	0.002
+profdecode: token.head_kinright	39	39	0.0	0.002
+profdecode: token.head_kinleft	39	39	0.0	0.002
+profdecode: token.head_trank	39	39	0.0	0.002
+profdecode: token.head_xpos	39	39	0.0	0.002
+count cache: 56655 new feature sets, 56655 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train100000-EWT-gold-cdc3db987-wcclasses5-sfx3-rootabs-htrank-kin-hkinleftright-nn2/events
+treebank    words   token_f1  uas     las     sent_f1
+EWT         39      1.0     0.7436  0.7179  1.0     
+ALL         39      1.0     0.7436  0.7179  1.0     
+build 2868.3 s, decode 402.4 s, run 20261114-041701 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv

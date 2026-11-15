@@ -1,0 +1,192 @@
+# sent_id = 1
+# text = Where can I go on a first date (adults)?
+1	Where	_	ADV	WRB	_	4	advmod	_	_
+2	can	_	AUX	MD	_	4	aux	_	_
+3	I	_	PRON	PRP	_	4	nsubj	_	_
+4	go	_	VERB	VB	_	0	root	_	_
+5	on	_	ADP	IN	_	8	case	_	_
+6	a	_	DET	DT	_	8	det	_	_
+7	first	_	ADJ	JJ	_	8	amod	_	_
+8	date	_	NOUN	NN	_	4	obl	_	_
+9	(	_	PUNCT	-LRB-	_	8	punct	_	SpaceAfter=No
+10	adults	_	NOUN	AFX	_	8	compound	_	SpaceAfter=No
+11	)	_	PUNCT	-RRB-	_	8	punct	_	SpaceAfter=No
+12	?	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 2
+# text = Looking for something on the casual side and we want it to be fun.
+1	Looking	_	VERB	VBG	_	0	root	_	_
+2	for	_	ADP	IN	_	3	case	_	_
+3	something	_	PRON	NN	_	1	obl	_	_
+4	on	_	ADP	IN	_	7	case	_	_
+5	the	_	DET	DT	_	7	det	_	_
+6	casual	_	ADJ	JJ	_	7	amod	_	_
+7	side	_	NOUN	NN	_	1	obl	_	_
+8	and	_	CCONJ	CC	_	10	cc	_	_
+9	we	_	PRON	PRP	_	10	nsubj	_	_
+10	want	_	VERB	VB	_	1	conj	_	_
+11	it	_	PRON	PRP	_	10	obj	_	_
+12	to	_	PART	TO	_	14	mark	_	_
+13	be	_	AUX	VB	_	14	cop	_	_
+14	fun	_	ADJ	JJ	_	10	advcl	_	SpaceAfter=No
+15	.	_	PUNCT	.	_	10	punct	_	_
+
+# sent_id = 3
+# text = May seem a little silly, but, taking a long ride on the Metra system or the "L" system is a great way to see the city and sites without spending a fortune.
+1	May	_	AUX	MD	_	2	aux	_	_
+2	seem	_	VERB	VB	_	0	root	_	_
+3	a	_	DET	DT	_	5	det	_	_
+4	little	_	ADJ	JJ	_	5	amod	_	_
+5	silly	_	NOUN	NN	_	2	xcomp	_	SpaceAfter=No
+6	,	_	PUNCT	,	_	26	punct	_	_
+7	but	_	CCONJ	CC	_	9	cc	_	SpaceAfter=No
+8	,	_	PUNCT	,	_	9	punct	_	_
+9	taking	_	VERB	VBG	_	22	acl	_	_
+10	a	_	DET	DT	_	12	det	_	_
+11	long	_	ADJ	JJ	_	12	amod	_	_
+12	ride	_	NOUN	NN	_	9	obl	_	_
+13	on	_	ADP	IN	_	16	case	_	_
+14	the	_	DET	DT	_	16	det	_	_
+15	Metra	_	NOUN	NN	_	16	compound	_	_
+16	system	_	NOUN	NN	_	12	nmod	_	_
+17	or	_	CCONJ	CC	_	22	cc	_	_
+18	the	_	DET	DT	_	22	det	_	_
+19	"	_	PUNCT	``	_	22	punct	_	SpaceAfter=No
+20	L	_	NOUN	NN	_	22	compound	_	SpaceAfter=No
+21	"	_	PUNCT	''	_	20	punct	_	_
+22	system	_	NOUN	NN	_	26	nsubj	_	_
+23	is	_	AUX	VBZ	_	26	cop	_	_
+24	a	_	DET	DT	_	26	det	_	_
+25	great	_	ADJ	JJ	_	26	amod	_	_
+26	way	_	NOUN	NN	_	2	obl	_	_
+27	to	_	PART	TO	_	28	mark	_	_
+28	see	_	VERB	VB	_	26	acl	_	_
+29	the	_	DET	DT	_	30	det	_	_
+30	city	_	NOUN	NN	_	28	obj	_	_
+31	and	_	CCONJ	CC	_	32	cc	_	_
+32	sites	_	NOUN	NNS	_	30	conj	_	_
+33	without	_	SCONJ	IN	_	34	mark	_	_
+34	spending	_	VERB	VBG	_	32	advcl	_	_
+35	a	_	DET	DT	_	36	det	_	_
+36	fortune	_	NOUN	NN	_	34	obj	_	SpaceAfter=No
+37	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 4
+# text = Or how about visiting the Chicago Botanical Gardens and see the change of colors and enjoy the air,
+1	Or	_	CCONJ	CC	_	2	cc	_	_
+2	how	_	ADV	WRB	_	0	root	_	_
+3	about	_	SCONJ	IN	_	4	mark	_	_
+4	visiting	_	VERB	VBG	_	2	advcl	_	_
+5	the	_	DET	DT	_	8	det	_	_
+6	Chicago	_	PROPN	NNP	_	4	obj	_	_
+7	Botanical	_	ADJ	JJ	_	8	amod	_	_
+8	Gardens	_	PROPN	NNP	_	6	appos	_	_
+9	and	_	CCONJ	CC	_	10	cc	_	_
+10	see	_	VERB	VB	_	4	conj	_	_
+11	the	_	DET	DT	_	12	det	_	_
+12	change	_	NOUN	NN	_	10	obj	_	_
+13	of	_	ADP	IN	_	14	case	_	_
+14	colors	_	NOUN	NNS	_	12	nmod	_	_
+15	and	_	CCONJ	CC	_	16	cc	_	_
+16	enjoy	_	VERB	VB	_	10	conj	_	_
+17	the	_	DET	DT	_	18	det	_	_
+18	air	_	NOUN	NN	_	16	obj	_	SpaceAfter=No
+19	,	_	PUNCT	,	_	10	punct	_	_
+
+# sent_id = 5
+# text = They also have many inside exhibits you might enjoy, food is pretty good to.
+1	They	_	PRON	PRP	_	3	nsubj	_	_
+2	also	_	ADV	RB	_	3	advmod	_	_
+3	have	_	VERB	VBP	_	0	root	_	_
+4	many	_	ADJ	JJ	_	6	amod	_	_
+5	inside	_	ADJ	JJ	_	6	amod	_	_
+6	exhibits	_	NOUN	NNS	_	3	obj	_	_
+7	you	_	PRON	PRP	_	9	nsubj	_	_
+8	might	_	AUX	MD	_	9	aux	_	_
+9	enjoy	_	VERB	VB	_	3	advcl	_	SpaceAfter=No
+10	,	_	PUNCT	,	_	14	punct	_	_
+11	food	_	NOUN	NN	_	14	nsubj	_	_
+12	is	_	AUX	VBZ	_	14	cop	_	_
+13	pretty	_	ADV	RB	_	14	advmod	_	_
+14	good	_	ADJ	JJ	_	15	amod	_	_
+15	to	_	PART	TO	_	9	mark	_	SpaceAfter=No
+16	.	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 6
+# text = go 2 starbucks dont spend more than 20 bucks :) Bike ride in the park, followed by coffee.
+1	go	_	VERB	VB	_	0	root	_	_
+2	2	_	NUM	CD	_	3	nummod	_	_
+3	starbucks	_	PROPN	NNP	_	1	obl	_	_
+4	dont	_	ADV	RB	_	5	advmod	_	_
+5	spend	_	VERB	VB	_	1	xcomp	_	_
+6	more	_	ADJ	JJR	_	8	advmod	_	_
+7	than	_	ADP	IN	_	6	fixed	_	_
+8	20	_	NUM	CD	_	9	nummod	_	_
+9	bucks	_	NOUN	NNS	_	5	obj	_	_
+10	:)	_	SYM	NFP	_	5	discourse	_	_
+11	Bike	_	PROPN	NNP	_	12	compound	_	_
+12	ride	_	NOUN	NN	_	5	obl	_	_
+13	in	_	ADP	IN	_	15	case	_	_
+14	the	_	DET	DT	_	15	det	_	_
+15	park	_	NOUN	NN	_	12	nmod	_	SpaceAfter=No
+16	,	_	PUNCT	,	_	15	punct	_	_
+17	followed	_	VERB	VBN	_	15	acl	_	_
+18	by	_	ADP	IN	_	19	case	_	_
+19	coffee	_	NOUN	NN	_	17	obl	_	SpaceAfter=No
+20	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 7
+# text = You are busy, you don't have to sit face to face to try to make convo,
+1	You	_	PRON	PRP	_	3	nsubj	_	_
+2	are	_	AUX	VBP	_	3	cop	_	_
+3	busy	_	ADJ	JJ	_	8	advcl	_	SpaceAfter=No
+4	,	_	PUNCT	,	_	8	punct	_	_
+5	you	_	PRON	PRP	_	8	nsubj	_	_
+6	do	_	AUX	VBP	_	8	aux	_	SpaceAfter=No
+7	n't	_	PART	RB	_	8	advmod	_	_
+8	have	_	VERB	VB	_	0	root	_	_
+9	to	_	PART	TO	_	10	mark	_	_
+10	sit	_	VERB	VB	_	8	xcomp	_	_
+11	face	_	NOUN	NN	_	10	obj	_	_
+12	to	_	PART	TO	_	13	mark	_	_
+13	face	_	VERB	VB	_	11	acl	_	_
+14	to	_	PART	TO	_	15	mark	_	_
+15	try	_	VERB	VB	_	13	xcomp	_	_
+16	to	_	PART	TO	_	17	mark	_	_
+17	make	_	VERB	VB	_	15	xcomp	_	_
+18	convo	_	NOUN	NN	_	17	obj	_	SpaceAfter=No
+19	,	_	PUNCT	,	_	8	punct	_	_
+
+# sent_id = 8
+# text = it's short, so if things go great, you can extend, and if you want to end it, you just say bye, gotta go.
+1	it	_	PRON	PRP	_	3	expl	_	SpaceAfter=No
+2	's	_	AUX	VBZ	_	3	cop	_	_
+3	short	_	ADJ	JJ	_	0	root	_	SpaceAfter=No
+4	,	_	PUNCT	,	_	13	punct	_	_
+5	so	_	ADV	RB	_	8	advmod	_	_
+6	if	_	SCONJ	IN	_	8	mark	_	_
+7	things	_	NOUN	NNS	_	8	nsubj	_	_
+8	go	_	VERB	VBP	_	13	advcl	_	_
+9	great	_	ADJ	JJ	_	8	xcomp	_	SpaceAfter=No
+10	,	_	PUNCT	,	_	13	punct	_	_
+11	you	_	PRON	PRP	_	13	nsubj	_	_
+12	can	_	AUX	MD	_	13	aux	_	_
+13	extend	_	VERB	VB	_	3	conj	_	SpaceAfter=No
+14	,	_	PUNCT	,	_	25	punct	_	_
+15	and	_	CCONJ	CC	_	25	cc	_	_
+16	if	_	SCONJ	IN	_	18	mark	_	_
+17	you	_	PRON	PRP	_	18	nsubj	_	_
+18	want	_	VERB	VBP	_	29	advcl	_	_
+19	to	_	PART	TO	_	20	mark	_	_
+20	end	_	VERB	VB	_	18	xcomp	_	_
+21	it	_	PRON	PRP	_	20	obj	_	SpaceAfter=No
+22	,	_	PUNCT	,	_	25	punct	_	_
+23	you	_	PRON	PRP	_	25	nsubj	_	_
+24	just	_	ADV	RB	_	25	advmod	_	_
+25	say	_	VERB	VB	_	20	advcl	_	_
+26	bye	_	INTJ	UH	_	25	ccomp	_	SpaceAfter=No
+27	,	_	PUNCT	,	_	25	punct	_	_
+28	gotta	_	PROPN	NNP	_	13	discourse	_	_
+29	go	_	VERB	VB	_	28	parataxis	_	SpaceAfter=No
+30	.	_	PUNCT	.	_	25	punct	_	_
+

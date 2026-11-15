@@ -1,0 +1,121 @@
+# sent_id = 1
+# text = i am sure they are.
+1	i	_	PRON	PRP	_	3	nsubj	_	_
+2	am	_	AUX	VBP	_	3	cop	_	_
+3	sure	_	ADJ	JJ	_	0	root	_	_
+4	they	_	PRON	PRP	_	5	nsubj	_	_
+5	are	_	VERB	VBP	_	3	ccomp	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 2
+# text = houston won't be too affected b/c most of the layoffs affect satelite offices.
+1	houston	_	PROPN	NNP	_	13	nsubj	_	_
+2	wo	_	AUX	MD	_	6	aux	_	SpaceAfter=No
+3	n't	_	PART	RB	_	6	advmod	_	_
+4	be	_	AUX	VB	_	6	cop	_	_
+5	too	_	ADV	RB	_	6	advmod	_	_
+6	affected	_	ADJ	JJ	_	1	parataxis	_	_
+7	b/	_	PUNCT	-LRB-	_	12	punct	_	SpaceAfter=No
+8	c	_	X	AFX	_	12	nummod	_	_
+9	most	_	ADJ	JJS	_	8	obj	_	_
+10	of	_	ADP	IN	_	12	case	_	_
+11	the	_	DET	DT	_	12	det	_	_
+12	layoffs	_	NOUN	NNS	_	6	obl	_	_
+13	affect	_	VERB	VB	_	0	root	_	_
+14	satelite	_	ADJ	JJ	_	15	amod	_	_
+15	offices	_	NOUN	NNS	_	13	obj	_	SpaceAfter=No
+16	.	_	PUNCT	.	_	15	punct	_	_
+
+# sent_id = 3
+# text = economy should be good here.
+1	economy	_	NOUN	NN	_	4	nsubj	_	_
+2	should	_	AUX	MD	_	4	aux	_	_
+3	be	_	AUX	VB	_	4	cop	_	_
+4	good	_	ADJ	JJ	_	0	root	_	_
+5	here	_	ADV	RB	_	4	advmod	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 4
+# text = hopefully she doesn't hose you.
+1	hopefully	_	ADV	RB	_	5	advmod	_	_
+2	she	_	PRON	PRP	_	5	nsubj	_	_
+3	does	_	AUX	VBZ	_	5	aux	_	SpaceAfter=No
+4	n't	_	PART	RB	_	5	advmod	_	_
+5	hose	_	VERB	VB	_	0	root	_	_
+6	you	_	PRON	PRP	_	5	obj	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 5
+# text = I'll probably start looking next weekend.
+1	I	_	PRON	PRP	_	4	nsubj	_	SpaceAfter=No
+2	'll	_	AUX	MD	_	4	aux	_	_
+3	probably	_	ADV	RB	_	4	advmod	_	_
+4	start	_	VERB	VB	_	0	root	_	_
+5	looking	_	VERB	VBG	_	4	xcomp	_	_
+6	next	_	ADJ	JJ	_	7	amod	_	_
+7	weekend	_	NOUN	NN	_	5	obl	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 6
+# text = I heard that more may be going up for sale in the next month or do.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	heard	_	VERB	VBD	_	0	root	_	_
+3	that	_	SCONJ	IN	_	7	mark	_	_
+4	more	_	ADJ	JJR	_	7	nsubj	_	_
+5	may	_	AUX	MD	_	7	aux	_	_
+6	be	_	AUX	VB	_	7	aux	_	_
+7	going	_	VERB	VBG	_	2	ccomp	_	_
+8	up	_	ADP	RP	_	7	compound	_	_
+9	for	_	ADP	IN	_	10	case	_	_
+10	sale	_	NOUN	NN	_	7	obl	_	_
+11	in	_	ADP	IN	_	14	case	_	_
+12	the	_	DET	DT	_	14	det	_	_
+13	next	_	ADJ	JJ	_	14	amod	_	_
+14	month	_	NOUN	NN	_	10	nmod	_	_
+15	or	_	CCONJ	CC	_	16	cc	_	_
+16	do	_	VERB	VB	_	7	conj	_	SpaceAfter=No
+17	.	_	PUNCT	.	_	16	punct	_	_
+
+# sent_id = 7
+# text = Someone told me that Chase is planning a shitload of layoffs.
+1	Someone	_	PRON	NN	_	2	nsubj	_	_
+2	told	_	VERB	VBD	_	0	root	_	_
+3	me	_	PRON	PRP	_	2	obj	_	_
+4	that	_	SCONJ	IN	_	7	mark	_	_
+5	Chase	_	NOUN	NN	_	7	nsubj	_	_
+6	is	_	AUX	VBZ	_	7	aux	_	_
+7	planning	_	VERB	VBG	_	2	parataxis	_	_
+8	a	_	DET	DT	_	9	det	_	_
+9	shitload	_	NOUN	NN	_	7	obj	_	_
+10	of	_	ADP	IN	_	11	case	_	_
+11	layoffs	_	NOUN	NNS	_	9	nmod	_	SpaceAfter=No
+12	.	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 8
+# text = I am not sure how reliable that is, though.
+1	I	_	PRON	PRP	_	4	nsubj	_	_
+2	am	_	AUX	VBP	_	4	cop	_	_
+3	not	_	PART	RB	_	4	advmod	_	_
+4	sure	_	ADJ	JJ	_	0	root	_	_
+5	how	_	ADV	WRB	_	6	advmod	_	_
+6	reliable	_	ADJ	JJ	_	4	ccomp	_	_
+7	that	_	PRON	DT	_	8	nsubj	_	_
+8	is	_	AUX	VBZ	_	6	conj	_	SpaceAfter=No
+9	,	_	PUNCT	,	_	6	punct	_	_
+10	though	_	ADV	RB	_	6	advmod	_	SpaceAfter=No
+11	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 9
+# text = she is waiting to see if she can get financing.
+1	she	_	PRON	PRP	_	3	nsubj	_	_
+2	is	_	AUX	VBZ	_	3	aux	_	_
+3	waiting	_	VERB	VBG	_	0	root	_	_
+4	to	_	PART	TO	_	5	mark	_	_
+5	see	_	VERB	VB	_	3	xcomp	_	_
+6	if	_	SCONJ	IN	_	9	mark	_	_
+7	she	_	PRON	PRP	_	9	nsubj	_	_
+8	can	_	AUX	MD	_	9	aux	_	_
+9	get	_	VERB	VB	_	5	ccomp	_	_
+10	financing	_	NOUN	NN	_	9	obj	_	SpaceAfter=No
+11	.	_	PUNCT	.	_	9	punct	_	_
+

@@ -1,0 +1,178 @@
+# sent_id = 1
+# text = What's the best time to start a trip around the world?
+1	What	_	PRON	WP	_	0	root	_	SpaceAfter=No
+2	's	_	AUX	VBZ	_	1	cop	_	_
+3	the	_	DET	DT	_	5	det	_	_
+4	best	_	ADJ	JJS	_	5	amod	_	_
+5	time	_	NOUN	NN	_	1	nsubj	_	_
+6	to	_	PART	TO	_	7	mark	_	_
+7	start	_	VERB	VB	_	5	acl	_	_
+8	a	_	DET	DT	_	9	det	_	_
+9	trip	_	NOUN	NN	_	7	obj	_	_
+10	around	_	ADP	IN	_	12	case	_	_
+11	the	_	DET	DT	_	12	det	_	_
+12	world	_	NOUN	NN	_	9	nmod	_	SpaceAfter=No
+13	?	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 2
+# text = Well,I'm about to graduate in less then a year,and I'm planning to study medical school.
+1	Well	_	INTJ	UH	_	5	discourse	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	5	punct	_	SpaceAfter=No
+3	I	_	PRON	PRP	_	5	nsubj	_	SpaceAfter=No
+4	'm	_	AUX	VBP	_	5	cop	_	_
+5	about	_	ADJ	JJ	_	17	advcl	_	_
+6	to	_	PART	TO	_	7	mark	_	_
+7	graduate	_	VERB	VB	_	5	xcomp	_	_
+8	in	_	ADP	IN	_	9	case	_	_
+9	less	_	ADJ	JJR	_	7	obl	_	_
+10	then	_	ADV	RB	_	9	fixed	_	_
+11	a	_	DET	DT	_	12	det	_	_
+12	year	_	NOUN	NN	_	8	obl	_	SpaceAfter=No
+13	,	_	PUNCT	,	_	17	punct	_	SpaceAfter=No
+14	and	_	CCONJ	CC	_	17	cc	_	_
+15	I	_	PRON	PRP	_	17	nsubj	_	SpaceAfter=No
+16	'm	_	AUX	VBP	_	17	aux	_	_
+17	planning	_	VERB	VBG	_	0	root	_	_
+18	to	_	PART	TO	_	19	mark	_	_
+19	study	_	VERB	VB	_	17	xcomp	_	_
+20	medical	_	ADJ	JJ	_	21	amod	_	_
+21	school	_	NOUN	NN	_	19	obj	_	SpaceAfter=No
+22	.	_	PUNCT	.	_	17	punct	_	_
+
+# sent_id = 3
+# text = But since in my country it lasts for minimum 6 years,and I want to go aground the world,what do you think,should I do it before or after medical school?
+1	But	_	CCONJ	CC	_	15	cc	_	_
+2	since	_	ADV	RB	_	5	advmod	_	_
+3	in	_	ADP	IN	_	5	case	_	_
+4	my	_	PRON	PRP$	_	5	nmod	_	_
+5	country	_	NOUN	NN	_	15	obl	_	_
+6	it	_	PRON	PRP	_	7	nsubj	_	_
+7	lasts	_	VERB	VBZ	_	5	acl	_	_
+8	for	_	ADP	IN	_	9	case	_	_
+9	minimum	_	NOUN	NN	_	7	obl	_	_
+10	6	_	NUM	CD	_	11	nummod	_	_
+11	years	_	NOUN	NNS	_	9	nmod	_	SpaceAfter=No
+12	,	_	PUNCT	,	_	15	punct	_	SpaceAfter=No
+13	and	_	CCONJ	CC	_	15	cc	_	_
+14	I	_	PRON	PRP	_	15	nsubj	_	_
+15	want	_	VERB	VBP	_	0	root	_	_
+16	to	_	PART	TO	_	17	mark	_	_
+17	go	_	VERB	VB	_	15	xcomp	_	_
+18	aground	_	ADP	IN	_	20	case	_	_
+19	the	_	DET	DT	_	20	det	_	_
+20	world	_	NOUN	NN	_	17	obl	_	SpaceAfter=No
+21	,	_	PUNCT	,	_	25	punct	_	SpaceAfter=No
+22	what	_	PRON	WP	_	25	obj	_	_
+23	do	_	AUX	VBP	_	25	aux	_	_
+24	you	_	PRON	PRP	_	25	nsubj	_	_
+25	think	_	VERB	VB	_	20	appos	_	SpaceAfter=No
+26	,	_	PUNCT	,	_	25	punct	_	SpaceAfter=No
+27	should	_	AUX	MD	_	29	aux	_	_
+28	I	_	PRON	PRP	_	29	nsubj	_	_
+29	do	_	VERB	VB	_	25	ccomp	_	_
+30	it	_	PRON	PRP	_	29	obj	_	_
+31	before	_	ADV	RB	_	29	advmod	_	_
+32	or	_	CCONJ	CC	_	35	cc	_	_
+33	after	_	ADP	IN	_	35	case	_	_
+34	medical	_	ADJ	JJ	_	35	amod	_	_
+35	school	_	NOUN	NN	_	31	obl	_	SpaceAfter=No
+36	?	_	PUNCT	.	_	29	punct	_	_
+
+# sent_id = 4
+# text = If you can afford to go before, then by all means, GO.
+1	If	_	SCONJ	IN	_	4	mark	_	_
+2	you	_	PRON	PRP	_	4	nsubj	_	_
+3	can	_	AUX	MD	_	4	aux	_	_
+4	afford	_	VERB	VB	_	0	root	_	_
+5	to	_	PART	TO	_	6	mark	_	_
+6	go	_	VERB	VB	_	4	xcomp	_	_
+7	before	_	ADV	RB	_	6	advmod	_	SpaceAfter=No
+8	,	_	PUNCT	,	_	4	punct	_	_
+9	then	_	ADV	RB	_	4	advmod	_	_
+10	by	_	ADP	IN	_	12	case	_	_
+11	all	_	DET	DT	_	12	det	_	_
+12	means	_	NOUN	NNS	_	9	obl	_	SpaceAfter=No
+13	,	_	PUNCT	,	_	14	punct	_	_
+14	GO	_	VERB	VB	_	12	acl	_	SpaceAfter=No
+15	.	_	PUNCT	.	_	14	punct	_	_
+
+# sent_id = 5
+# text = If you have to wait, due to financial reasons, then wait.
+1	If	_	SCONJ	IN	_	3	mark	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	have	_	VERB	VBP	_	13	advcl	_	_
+4	to	_	PART	TO	_	5	mark	_	_
+5	wait	_	VERB	VB	_	3	xcomp	_	SpaceAfter=No
+6	,	_	PUNCT	,	_	5	punct	_	_
+7	due	_	ADP	IN	_	10	case	_	_
+8	to	_	ADP	IN	_	7	fixed	_	_
+9	financial	_	ADJ	JJ	_	10	amod	_	_
+10	reasons	_	NOUN	NNS	_	5	obl	_	SpaceAfter=No
+11	,	_	PUNCT	,	_	13	punct	_	_
+12	then	_	ADV	RB	_	13	advmod	_	_
+13	wait	_	VERB	VB	_	0	root	_	SpaceAfter=No
+14	.	_	PUNCT	.	_	13	punct	_	_
+
+# sent_id = 6
+# text = I would much rather put it off until I can afford to have the vacation of a lifetime as I'm sure this trip is intended to be.
+1	I	_	PRON	PRP	_	5	nsubj	_	_
+2	would	_	AUX	MD	_	5	aux	_	_
+3	much	_	ADV	RB	_	4	advmod	_	_
+4	rather	_	ADV	RBR	_	5	advmod	_	_
+5	put	_	VERB	VB	_	26	advcl	_	_
+6	it	_	PRON	PRP	_	5	obj	_	_
+7	off	_	ADP	RP	_	5	compound	_	_
+8	until	_	SCONJ	IN	_	11	mark	_	_
+9	I	_	PRON	PRP	_	11	nsubj	_	_
+10	can	_	AUX	MD	_	11	aux	_	_
+11	afford	_	VERB	VB	_	1	advcl	_	_
+12	to	_	PART	TO	_	13	mark	_	_
+13	have	_	VERB	VB	_	11	xcomp	_	_
+14	the	_	DET	DT	_	15	det	_	_
+15	vacation	_	NOUN	NN	_	13	obj	_	_
+16	of	_	ADP	IN	_	18	case	_	_
+17	a	_	DET	DT	_	18	det	_	_
+18	lifetime	_	NOUN	NN	_	15	nmod	_	_
+19	as	_	SCONJ	IN	_	22	mark	_	_
+20	I	_	PRON	PRP	_	22	nsubj	_	SpaceAfter=No
+21	'm	_	AUX	VBP	_	22	cop	_	_
+22	sure	_	ADJ	JJ	_	26	parataxis	_	_
+23	this	_	DET	DT	_	24	det	_	_
+24	trip	_	NOUN	NN	_	26	nsubj	_	_
+25	is	_	AUX	VBZ	_	26	aux	_	_
+26	intended	_	VERB	VBN	_	0	root	_	_
+27	to	_	PART	TO	_	28	mark	_	_
+28	be	_	AUX	VB	_	26	advcl	_	SpaceAfter=No
+29	.	_	PUNCT	.	_	28	punct	_	_
+
+# sent_id = 7
+# text = Airfare alone will be incredibly expensive so make sure you have the money and of course free time to take your time and have a great time.
+1	Airfare	_	NOUN	NN	_	6	nsubj	_	_
+2	alone	_	ADV	RB	_	1	advmod	_	_
+3	will	_	AUX	MD	_	6	aux	_	_
+4	be	_	AUX	VB	_	6	cop	_	_
+5	incredibly	_	ADV	RB	_	6	advmod	_	_
+6	expensive	_	ADJ	JJ	_	0	root	_	_
+7	so	_	ADV	RB	_	8	advmod	_	_
+8	make	_	VERB	VB	_	6	csubj	_	_
+9	sure	_	ADJ	JJ	_	8	xcomp	_	_
+10	you	_	PRON	PRP	_	11	nsubj	_	_
+11	have	_	VERB	VBP	_	9	ccomp	_	_
+12	the	_	DET	DT	_	13	det	_	_
+13	money	_	NOUN	NN	_	11	obj	_	_
+14	and	_	CCONJ	CC	_	18	cc	_	_
+15	of	_	ADV	RB	_	18	advmod	_	_
+16	course	_	ADV	RB	_	15	fixed	_	_
+17	free	_	ADJ	JJ	_	18	amod	_	_
+18	time	_	NOUN	NN	_	11	obj	_	_
+19	to	_	PART	TO	_	20	mark	_	_
+20	take	_	VERB	VB	_	18	acl	_	_
+21	your	_	PRON	PRP$	_	22	nmod	_	_
+22	time	_	NOUN	NN	_	20	obj	_	_
+23	and	_	CCONJ	CC	_	24	cc	_	_
+24	have	_	VERB	VB	_	20	conj	_	_
+25	a	_	DET	DT	_	27	det	_	_
+26	great	_	ADJ	JJ	_	27	amod	_	_
+27	time	_	NOUN	NN	_	24	obj	_	SpaceAfter=No
+28	.	_	PUNCT	.	_	8	punct	_	_
+

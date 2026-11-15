@@ -1,0 +1,117 @@
+# sent_id = 1
+# text = This is a beautiful site and a wonderful idea.
+1	This	_	PRON	DT	_	5	nsubj	_	_
+2	is	_	AUX	VBZ	_	5	cop	_	_
+3	a	_	DET	DT	_	5	det	_	_
+4	beautiful	_	ADJ	JJ	_	5	amod	_	_
+5	site	_	NOUN	NN	_	9	amod	_	_
+6	and	_	CCONJ	CC	_	9	cc	_	_
+7	a	_	DET	DT	_	9	det	_	_
+8	wonderful	_	ADJ	JJ	_	9	amod	_	_
+9	idea	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 2
+# text = And a portion of each package or memorial purchased goes to a charity on their database.
+1	And	_	CCONJ	CC	_	3	cc	_	_
+2	a	_	DET	DT	_	3	det	_	_
+3	portion	_	NOUN	NN	_	10	nsubj	_	_
+4	of	_	ADP	IN	_	6	case	_	_
+5	each	_	DET	DT	_	6	det	_	_
+6	package	_	NOUN	NN	_	3	nmod	_	_
+7	or	_	CCONJ	CC	_	9	cc	_	_
+8	memorial	_	ADJ	JJ	_	9	amod	_	_
+9	purchased	_	VERB	VBN	_	10	csubj	_	_
+10	goes	_	VERB	VBZ	_	0	root	_	_
+11	to	_	ADP	IN	_	13	case	_	_
+12	a	_	DET	DT	_	13	det	_	_
+13	charity	_	NOUN	NN	_	10	obl	_	_
+14	on	_	ADP	IN	_	16	case	_	_
+15	their	_	PRON	PRP$	_	16	nmod	_	_
+16	database	_	NOUN	NN	_	13	nmod	_	SpaceAfter=No
+17	.	_	PUNCT	.	_	13	punct	_	_
+
+# sent_id = 3
+# text = So be sure to get your pet's memorial on the site and if you have a charity / rescue, make sure it is listed on their database so you can receive some of the profits from the site.
+1	So	_	ADV	RB	_	3	advmod	_	_
+2	be	_	AUX	VB	_	3	cop	_	_
+3	sure	_	ADJ	JJ	_	22	parataxis	_	_
+4	to	_	PART	TO	_	5	mark	_	_
+5	get	_	VERB	VB	_	3	xcomp	_	_
+6	your	_	PRON	PRP$	_	7	nmod	_	_
+7	pet	_	NOUN	NN	_	9	nmod	_	SpaceAfter=No
+8	's	_	PART	POS	_	7	case	_	_
+9	memorial	_	NOUN	NN	_	5	obl	_	_
+10	on	_	ADP	IN	_	12	case	_	_
+11	the	_	DET	DT	_	12	det	_	_
+12	site	_	NOUN	NN	_	9	obl	_	_
+13	and	_	CCONJ	CC	_	16	cc	_	_
+14	if	_	SCONJ	IN	_	16	mark	_	_
+15	you	_	PRON	PRP	_	16	nsubj	_	_
+16	have	_	VERB	VBP	_	5	advcl	_	_
+17	a	_	DET	DT	_	18	det	_	_
+18	charity	_	NOUN	NN	_	16	obj	_	_
+19	/	_	PUNCT	,	_	20	cc	_	_
+20	rescue	_	NOUN	NN	_	18	conj	_	SpaceAfter=No
+21	,	_	PUNCT	,	_	22	punct	_	_
+22	make	_	VERB	VB	_	0	root	_	_
+23	sure	_	ADJ	JJ	_	22	xcomp	_	_
+24	it	_	PRON	PRP	_	26	nsubj	_	_
+25	is	_	AUX	VBZ	_	26	aux	_	_
+26	listed	_	VERB	VBN	_	23	ccomp	_	_
+27	on	_	ADP	IN	_	40	case	_	_
+28	their	_	PRON	PRP$	_	29	nmod	_	_
+29	database	_	NOUN	NN	_	26	obl	_	_
+30	so	_	SCONJ	IN	_	33	mark	_	_
+31	you	_	PRON	PRP	_	33	nsubj	_	_
+32	can	_	AUX	MD	_	33	aux	_	_
+33	receive	_	VERB	VB	_	29	acl	_	_
+34	some	_	DET	DT	_	33	obj	_	_
+35	of	_	ADP	IN	_	37	case	_	_
+36	the	_	DET	DT	_	37	det	_	_
+37	profits	_	NOUN	NNS	_	34	nmod	_	_
+38	from	_	ADP	IN	_	40	case	_	_
+39	the	_	DET	DT	_	40	det	_	_
+40	site	_	NOUN	NN	_	33	obl	_	SpaceAfter=No
+41	.	_	PUNCT	.	_	22	punct	_	_
+
+# sent_id = 4
+# text = Best,
+1	Best	_	ADJ	JJS	_	0	root	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+
+# sent_id = 5
+# text = Cindy
+1	Cindy	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 6
+# text = "...there is no companion quite so devoted, so communicative, so loving and so mesmerizing as a rat."
+1	"	_	PUNCT	''	_	4	punct	_	SpaceAfter=No
+2	...	_	PUNCT	.	_	4	punct	_	SpaceAfter=No
+3	there	_	PRON	EX	_	4	expl	_	_
+4	is	_	VERB	VBZ	_	0	root	_	_
+5	no	_	DET	DT	_	6	det	_	_
+6	companion	_	NOUN	NN	_	4	nsubj	_	_
+7	quite	_	ADV	RB	_	9	advmod	_	_
+8	so	_	ADV	RB	_	9	advmod	_	_
+9	devoted	_	ADJ	JJ	_	6	acl	_	SpaceAfter=No
+10	,	_	PUNCT	,	_	12	punct	_	_
+11	so	_	ADV	RB	_	12	advmod	_	_
+12	communicative	_	ADJ	JJ	_	9	conj	_	SpaceAfter=No
+13	,	_	PUNCT	,	_	9	punct	_	_
+14	so	_	ADV	RB	_	15	advmod	_	_
+15	loving	_	VERB	VBG	_	18	advcl	_	_
+16	and	_	CCONJ	CC	_	18	cc	_	_
+17	so	_	ADV	RB	_	18	advmod	_	_
+18	mesmerizing	_	VERB	VBG	_	9	conj	_	_
+19	as	_	ADP	IN	_	21	case	_	_
+20	a	_	DET	DT	_	21	det	_	_
+21	rat	_	NOUN	NN	_	18	obl	_	SpaceAfter=No
+22	.	_	PUNCT	.	_	9	punct	_	SpaceAfter=No
+23	"	_	PUNCT	''	_	9	punct	_	_
+
+# sent_id = 7
+# text = ~CGoehring
+1	~	_	PUNCT	NFP	_	2	punct	_	SpaceAfter=No
+2	CGoehring	_	PROPN	NNP	_	0	root	_	_
+

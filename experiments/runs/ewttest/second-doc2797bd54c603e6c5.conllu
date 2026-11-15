@@ -1,0 +1,64 @@
+# sent_id = 1
+# text = Heterosexuals increasingly back gay marriage By Deb Price / The Detroit News Deb Price
+1	Heterosexuals	_	NOUN	NNS	_	0	root	_	_
+2	increasingly	_	ADV	RB	_	3	advmod	_	_
+3	back	_	ADV	RB	_	1	advmod	_	_
+4	gay	_	ADJ	JJ	_	5	amod	_	_
+5	marriage	_	NOUN	NN	_	2	obl	_	_
+6	By	_	ADP	IN	_	8	case	_	_
+7	Deb	_	PROPN	NNP	_	8	compound	_	_
+8	Price	_	NOUN	NN	_	5	nmod	_	_
+9	/	_	PUNCT	,	_	8	punct	_	_
+10	The	_	DET	DT	_	12	det	_	_
+11	Detroit	_	PROPN	NNP	_	12	compound	_	_
+12	News	_	PROPN	NNP	_	8	nmod	_	_
+13	Deb	_	PROPN	NNP	_	12	flat	_	_
+14	Price	_	NOUN	NN	_	8	list	_	_
+
+# sent_id = 2
+# text = When Baptist Pastor Stephen Jones talks about what makes for a happy marriage with Janice, his wife of 35 years, one special ingredient might surprise you:
+1	When	_	ADV	WRB	_	25	obl	_	_
+2	Baptist	_	PROPN	NNP	_	3	compound	_	_
+3	Pastor	_	PROPN	NNP	_	1	appos	_	_
+4	Stephen	_	PROPN	NNP	_	3	flat	_	_
+5	Jones	_	PROPN	NNP	_	6	compound	_	_
+6	talks	_	NOUN	NNS	_	4	parataxis	_	_
+7	about	_	SCONJ	IN	_	9	mark	_	_
+8	what	_	PRON	WP	_	9	nsubj	_	_
+9	makes	_	VERB	VBZ	_	6	acl	_	_
+10	for	_	ADP	IN	_	13	case	_	_
+11	a	_	DET	DT	_	13	det	_	_
+12	happy	_	ADJ	JJ	_	13	amod	_	_
+13	marriage	_	NOUN	NN	_	9	obj	_	_
+14	with	_	ADP	IN	_	15	case	_	_
+15	Janice	_	PROPN	NNP	_	13	nmod	_	SpaceAfter=No
+16	,	_	PUNCT	,	_	18	punct	_	_
+17	his	_	PRON	PRP$	_	18	nmod	_	_
+18	wife	_	NOUN	NN	_	9	obj	_	_
+19	of	_	ADP	IN	_	21	case	_	_
+20	35	_	NUM	CD	_	21	nummod	_	_
+21	years	_	NOUN	NNS	_	18	nmod	_	SpaceAfter=No
+22	,	_	PUNCT	,	_	25	punct	_	_
+23	one	_	NUM	CD	_	25	nummod	_	_
+24	special	_	ADJ	JJ	_	25	amod	_	_
+25	ingredient	_	NOUN	NN	_	27	nsubj	_	_
+26	might	_	AUX	MD	_	27	aux	_	_
+27	surprise	_	VERB	VB	_	0	root	_	_
+28	you	_	PRON	PRP	_	27	obj	_	SpaceAfter=No
+29	:	_	PUNCT	:	_	27	punct	_	_
+
+# sent_id = 3
+# text = Double-dating with coupled friends who happen to be gay.
+1	Double	_	ADJ	JJ	_	0	root	_	SpaceAfter=No
+2	-	_	PUNCT	:	_	1	punct	_	SpaceAfter=No
+3	dating	_	NOUN	NN	_	1	appos	_	_
+4	with	_	ADP	IN	_	6	case	_	_
+5	coupled	_	ADJ	JJ	_	6	amod	_	_
+6	friends	_	NOUN	NNS	_	3	nmod	_	_
+7	who	_	PRON	WP	_	8	nsubj	_	_
+8	happen	_	VERB	VBP	_	6	acl	_	_
+9	to	_	PART	TO	_	11	mark	_	_
+10	be	_	AUX	VB	_	11	cop	_	_
+11	gay	_	ADJ	JJ	_	8	xcomp	_	SpaceAfter=No
+12	.	_	PUNCT	.	_	1	punct	_	_
+

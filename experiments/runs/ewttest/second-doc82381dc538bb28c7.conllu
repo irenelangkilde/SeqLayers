@@ -1,0 +1,123 @@
+# sent_id = 1
+# text = How much would it cost for me to take me and three friends to Andiamos restaurant for dinner?
+1	How	_	ADV	WRB	_	2	advmod	_	_
+2	much	_	ADJ	JJ	_	5	advmod	_	_
+3	would	_	AUX	MD	_	5	aux	_	_
+4	it	_	PRON	PRP	_	5	nsubj	_	_
+5	cost	_	VERB	VB	_	0	root	_	_
+6	for	_	ADP	IN	_	7	case	_	_
+7	me	_	PRON	PRP	_	5	obl	_	_
+8	to	_	PART	TO	_	9	mark	_	_
+9	take	_	VERB	VB	_	5	xcomp	_	_
+10	me	_	PRON	PRP	_	9	obj	_	_
+11	and	_	CCONJ	CC	_	13	cc	_	_
+12	three	_	NUM	CD	_	13	nummod	_	_
+13	friends	_	NOUN	NNS	_	9	conj	_	_
+14	to	_	ADP	IN	_	16	case	_	_
+15	Andiamos	_	ADJ	JJ	_	16	amod	_	_
+16	restaurant	_	NOUN	NN	_	13	nmod	_	_
+17	for	_	ADP	IN	_	18	case	_	_
+18	dinner	_	NOUN	NN	_	16	nmod	_	SpaceAfter=No
+19	?	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 2
+# text = Hi, i'm looking to take myself and my best friend and his girl friend and this girl i really like out to dinner for my birthday.
+1	Hi	_	INTJ	UH	_	5	discourse	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	5	punct	_	_
+3	i	_	PRON	PRP	_	5	nsubj	_	SpaceAfter=No
+4	'm	_	AUX	VBP	_	5	aux	_	_
+5	looking	_	VERB	VBG	_	22	advcl	_	_
+6	to	_	PART	TO	_	7	mark	_	_
+7	take	_	VERB	VB	_	5	xcomp	_	_
+8	myself	_	PRON	PRP	_	7	obj	_	_
+9	and	_	CCONJ	CC	_	12	cc	_	_
+10	my	_	PRON	PRP$	_	12	nmod	_	_
+11	best	_	ADJ	JJS	_	12	amod	_	_
+12	friend	_	NOUN	NN	_	7	conj	_	_
+13	and	_	CCONJ	CC	_	16	cc	_	_
+14	his	_	PRON	PRP$	_	16	nmod	_	_
+15	girl	_	NOUN	NN	_	16	compound	_	_
+16	friend	_	NOUN	NN	_	12	nmod	_	_
+17	and	_	CCONJ	CC	_	19	cc	_	_
+18	this	_	DET	DT	_	19	det	_	_
+19	girl	_	NOUN	NN	_	22	obl	_	_
+20	i	_	PRON	PRP	_	22	nsubj	_	_
+21	really	_	ADV	RB	_	22	advmod	_	_
+22	like	_	VERB	VBP	_	0	root	_	_
+23	out	_	ADV	RB	_	22	advmod	_	_
+24	to	_	ADP	IN	_	25	case	_	_
+25	dinner	_	NOUN	NN	_	22	obl	_	_
+26	for	_	ADP	IN	_	28	case	_	_
+27	my	_	PRON	PRP$	_	28	nmod	_	_
+28	birthday	_	NOUN	NN	_	25	obl	_	SpaceAfter=No
+29	.	_	PUNCT	.	_	22	punct	_	_
+
+# sent_id = 3
+# text = I really want to go to andiamos for my birthday and i was just wondering how much it would cost for the four of us to eat there Have no idea what kind of restaurant this is or where it is.
+1	I	_	PRON	PRP	_	3	nsubj	_	_
+2	really	_	ADV	RB	_	3	advmod	_	_
+3	want	_	VERB	VBP	_	0	root	_	_
+4	to	_	PART	TO	_	5	mark	_	_
+5	go	_	VERB	VB	_	3	xcomp	_	_
+6	to	_	ADP	IN	_	7	case	_	_
+7	andiamos	_	PROPN	NNP	_	5	obl	_	_
+8	for	_	ADP	IN	_	10	case	_	_
+9	my	_	PRON	PRP$	_	10	nmod	_	_
+10	birthday	_	NOUN	NN	_	5	obl	_	_
+11	and	_	CCONJ	CC	_	15	cc	_	_
+12	i	_	PRON	PRP	_	15	nsubj	_	_
+13	was	_	AUX	VBD	_	15	aux	_	_
+14	just	_	ADV	RB	_	15	advmod	_	_
+15	wondering	_	VERB	VBG	_	3	conj	_	_
+16	how	_	ADV	WRB	_	17	advmod	_	_
+17	much	_	ADJ	JJ	_	20	advmod	_	_
+18	it	_	PRON	PRP	_	20	nsubj	_	_
+19	would	_	AUX	MD	_	20	aux	_	_
+20	cost	_	VERB	VB	_	15	ccomp	_	_
+21	for	_	ADP	IN	_	23	case	_	_
+22	the	_	DET	DT	_	23	det	_	_
+23	four	_	NUM	CD	_	20	obl	_	_
+24	of	_	ADP	IN	_	25	case	_	_
+25	us	_	PRON	PRP	_	23	nmod	_	_
+26	to	_	PART	TO	_	27	mark	_	_
+27	eat	_	VERB	VB	_	15	advcl	_	_
+28	there	_	PRON	EX	_	29	expl	_	_
+29	Have	_	VERB	VBP	_	27	ccomp	_	_
+30	no	_	DET	DT	_	31	det	_	_
+31	idea	_	NOUN	NN	_	29	obj	_	_
+32	what	_	PRON	WDT	_	33	det	_	_
+33	kind	_	NOUN	NN	_	31	csubj	_	_
+34	of	_	ADP	IN	_	35	case	_	_
+35	restaurant	_	NOUN	NN	_	33	nmod	_	_
+36	this	_	PRON	DT	_	37	nsubj	_	_
+37	is	_	VERB	VBZ	_	35	acl	_	_
+38	or	_	CCONJ	CC	_	39	cc	_	_
+39	where	_	ADV	WRB	_	37	advmod	_	_
+40	it	_	PRON	PRP	_	39	nsubj	_	_
+41	is	_	AUX	VBZ	_	39	cop	_	SpaceAfter=No
+42	.	_	PUNCT	.	_	33	punct	_	_
+
+# sent_id = 4
+# text = Best count on $50 per person no matter what.
+1	Best	_	ADJ	JJS	_	2	amod	_	_
+2	count	_	NOUN	NN	_	0	root	_	_
+3	on	_	ADP	IN	_	4	case	_	_
+4	$	_	SYM	$	_	2	nmod	_	SpaceAfter=No
+5	50	_	NUM	CD	_	4	nummod	_	_
+6	per	_	ADP	IN	_	7	case	_	_
+7	person	_	NOUN	NN	_	4	nmod	_	_
+8	no	_	ADV	RB	_	9	advmod	_	_
+9	matter	_	ADV	RB	_	7	advmod	_	_
+10	what	_	DET	WDT	_	2	appos	_	SpaceAfter=No
+11	.	_	PUNCT	.	_	10	punct	_	_
+
+# sent_id = 5
+# text = Or more if you have drinks.
+1	Or	_	CCONJ	CC	_	2	cc	_	_
+2	more	_	ADJ	JJR	_	0	root	_	_
+3	if	_	SCONJ	IN	_	5	mark	_	_
+4	you	_	PRON	PRP	_	5	nsubj	_	_
+5	have	_	VERB	VBP	_	2	advcl	_	_
+6	drinks	_	NOUN	NNS	_	5	obj	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	5	punct	_	_
+

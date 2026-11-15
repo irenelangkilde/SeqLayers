@@ -1,0 +1,528 @@
+# sent_id = 1
+# text = Michael Olsen@ENRON
+1	Michael	_	PROPN	NNP	_	0	root	_	_
+2	Olsen@ENRON	_	X	ADD	_	1	list	_	_
+
+# sent_id = 2
+# text = 12/07/2000 02:29 PM
+1	12/07/2000	_	NUM	CD	_	0	root	_	_
+2	02:29	_	NUM	CD	_	3	nummod	_	_
+3	PM	_	NOUN	NN	_	1	nmod	_	_
+
+# sent_id = 3
+# text = Daren, I was wondering if it would be OK for me to sit in with you one day to get a general feel of your end of the process.
+1	Daren	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+3	I	_	PRON	PRP	_	5	nsubj	_	_
+4	was	_	AUX	VBD	_	5	aux	_	_
+5	wondering	_	VERB	VBG	_	1	conj	_	_
+6	if	_	SCONJ	IN	_	10	mark	_	_
+7	it	_	PRON	PRP	_	10	nsubj	_	_
+8	would	_	AUX	MD	_	10	aux	_	_
+9	be	_	AUX	VB	_	10	cop	_	_
+10	OK	_	ADJ	JJ	_	5	advcl	_	_
+11	for	_	SCONJ	IN	_	12	case	_	_
+12	me	_	PRON	PRP	_	10	obl	_	_
+13	to	_	PART	TO	_	14	mark	_	_
+14	sit	_	VERB	VB	_	10	csubj	_	_
+15	in	_	ADP	RP	_	14	compound	_	_
+16	with	_	ADP	IN	_	17	case	_	_
+17	you	_	PRON	PRP	_	14	obl	_	_
+18	one	_	NUM	CD	_	19	nummod	_	_
+19	day	_	NOUN	NN	_	14	obl	_	_
+20	to	_	PART	TO	_	21	mark	_	_
+21	get	_	VERB	VB	_	19	acl	_	_
+22	a	_	DET	DT	_	23	det	_	_
+23	general	_	NOUN	NN	_	24	nsubj	_	_
+24	feel	_	VERB	VBP	_	14	ccomp	_	_
+25	of	_	ADP	IN	_	27	case	_	_
+26	your	_	PRON	PRP$	_	27	nmod	_	_
+27	end	_	NOUN	NN	_	24	obl	_	_
+28	of	_	ADP	IN	_	30	case	_	_
+29	the	_	DET	DT	_	30	det	_	_
+30	process	_	NOUN	NN	_	27	nmod	_	SpaceAfter=No
+31	.	_	PUNCT	.	_	14	punct	_	_
+
+# sent_id = 4
+# text = Pat had told me before he left that it would help me better grasp the process as a whole.
+1	Pat	_	PROPN	NNP	_	3	nsubj	_	_
+2	had	_	AUX	VBD	_	3	aux	_	_
+3	told	_	VERB	VBN	_	0	root	_	_
+4	me	_	PRON	PRP	_	3	obj	_	_
+5	before	_	SCONJ	IN	_	7	mark	_	_
+6	he	_	PRON	PRP	_	7	nsubj	_	_
+7	left	_	VERB	VBD	_	3	ccomp	_	_
+8	that	_	SCONJ	IN	_	11	mark	_	_
+9	it	_	PRON	PRP	_	11	nsubj	_	_
+10	would	_	AUX	MD	_	11	aux	_	_
+11	help	_	VERB	VB	_	3	ccomp	_	_
+12	me	_	PRON	PRP	_	11	obj	_	_
+13	better	_	ADV	RBR	_	14	aux	_	_
+14	grasp	_	VERB	VB	_	11	xcomp	_	_
+15	the	_	DET	DT	_	16	det	_	_
+16	process	_	NOUN	NN	_	14	obj	_	_
+17	as	_	ADP	IN	_	19	case	_	_
+18	a	_	DET	DT	_	19	det	_	_
+19	whole	_	ADJ	JJ	_	16	nmod	_	SpaceAfter=No
+20	.	_	PUNCT	.	_	19	punct	_	_
+
+# sent_id = 5
+# text = I understand the imminent cold weather is making things crazy, so now may not be the best time to be in your way.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	understand	_	VERB	VBP	_	0	root	_	_
+3	the	_	DET	DT	_	6	det	_	_
+4	imminent	_	ADJ	JJ	_	6	amod	_	_
+5	cold	_	ADJ	JJ	_	6	amod	_	_
+6	weather	_	NOUN	NN	_	8	nsubj	_	_
+7	is	_	AUX	VBZ	_	8	aux	_	_
+8	making	_	VERB	VBG	_	2	ccomp	_	_
+9	things	_	NOUN	NNS	_	8	obj	_	_
+10	crazy	_	ADV	RB	_	8	advmod	_	SpaceAfter=No
+11	,	_	PUNCT	,	_	8	punct	_	_
+12	so	_	ADV	RB	_	19	advmod	_	_
+13	now	_	ADV	RB	_	19	advmod	_	_
+14	may	_	AUX	MD	_	19	aux	_	_
+15	not	_	PART	RB	_	19	advmod	_	_
+16	be	_	AUX	VB	_	19	cop	_	_
+17	the	_	DET	DT	_	19	det	_	_
+18	best	_	ADJ	JJS	_	19	amod	_	_
+19	time	_	NOUN	NN	_	2	ccomp	_	_
+20	to	_	PART	TO	_	24	mark	_	_
+21	be	_	VERB	VB	_	19	acl	_	_
+22	in	_	ADP	IN	_	24	case	_	_
+23	your	_	PRON	PRP$	_	24	nmod	_	_
+24	way	_	NOUN	NN	_	21	obl	_	SpaceAfter=No
+25	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 6
+# text = But let me know if I can spend a day, morning, or even just an afternoon down there with you whenever it is a good time.
+1	But	_	CCONJ	CC	_	2	cc	_	_
+2	let	_	VERB	VB	_	8	advcl	_	_
+3	me	_	PRON	PRP	_	2	obj	_	_
+4	know	_	VERB	VB	_	2	xcomp	_	_
+5	if	_	SCONJ	IN	_	8	mark	_	_
+6	I	_	PRON	PRP	_	8	nsubj	_	_
+7	can	_	AUX	MD	_	8	aux	_	_
+8	spend	_	VERB	VB	_	0	root	_	_
+9	a	_	DET	DT	_	10	det	_	_
+10	day	_	NOUN	NN	_	8	obl	_	SpaceAfter=No
+11	,	_	PUNCT	,	_	12	punct	_	_
+12	morning	_	NOUN	NN	_	10	conj	_	SpaceAfter=No
+13	,	_	PUNCT	,	_	18	punct	_	_
+14	or	_	CCONJ	CC	_	18	cc	_	_
+15	even	_	ADV	RB	_	18	advmod	_	_
+16	just	_	ADV	RB	_	18	advmod	_	_
+17	an	_	DET	DT	_	18	det	_	_
+18	afternoon	_	NOUN	NN	_	8	obj	_	_
+19	down	_	ADP	RP	_	8	compound	_	_
+20	there	_	ADV	RB	_	19	advmod	_	_
+21	with	_	ADP	IN	_	22	case	_	_
+22	you	_	PRON	PRP	_	20	obl	_	_
+23	whenever	_	ADV	WRB	_	28	advmod	_	_
+24	it	_	PRON	PRP	_	28	nsubj	_	_
+25	is	_	AUX	VBZ	_	28	cop	_	_
+26	a	_	DET	DT	_	28	det	_	_
+27	good	_	ADJ	JJ	_	28	amod	_	_
+28	time	_	NOUN	NN	_	20	obl	_	SpaceAfter=No
+29	.	_	PUNCT	.	_	28	punct	_	_
+
+# sent_id = 7
+# text = I think it will help me very much in my role.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	think	_	VERB	VBP	_	0	root	_	_
+3	it	_	PRON	PRP	_	5	nsubj	_	_
+4	will	_	AUX	MD	_	5	aux	_	_
+5	help	_	VERB	VB	_	2	ccomp	_	_
+6	me	_	PRON	PRP	_	5	obj	_	_
+7	very	_	ADV	RB	_	8	advmod	_	_
+8	much	_	ADV	RB	_	5	advmod	_	_
+9	in	_	ADP	IN	_	11	case	_	_
+10	my	_	PRON	PRP$	_	11	nmod	_	_
+11	role	_	NOUN	NN	_	5	obl	_	SpaceAfter=No
+12	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 8
+# text = Thanks.
+1	Thanks	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+2	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 9
+# text = Mike The new fixed price deal with Equistar is #365013.
+1	Mike	_	PROPN	NNP	_	10	nmod	_	_
+2	The	_	DET	DT	_	6	det	_	_
+3	new	_	ADJ	JJ	_	6	amod	_	_
+4	fixed	_	VERB	VBN	_	10	amod	_	_
+5	price	_	NOUN	NN	_	6	compound	_	_
+6	deal	_	NOUN	NN	_	4	obj	_	_
+7	with	_	SCONJ	IN	_	8	case	_	_
+8	Equistar	_	PROPN	NNP	_	6	nmod	_	_
+9	is	_	AUX	VBZ	_	1	cop	_	_
+10	#	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+11	3	_	NUM	CD	_	10	nummod	_	SpaceAfter=No
+12	65013	_	NOUN	NNS	_	10	appos	_	SpaceAfter=No
+13	.	_	PUNCT	.	_	10	punct	_	_
+
+# sent_id = 10
+# text = D Daren
+1	D	_	PROPN	NNP	_	0	root	_	_
+2	Daren	_	PROPN	NNP	_	1	flat	_	_
+
+# sent_id = 11
+# text = We just did a deal for the rest of the month for 10,000/d at meter #
+1	We	_	PRON	PRP	_	3	nsubj	_	_
+2	just	_	ADV	RB	_	3	advmod	_	_
+3	did	_	VERB	VBD	_	0	root	_	_
+4	a	_	DET	DT	_	5	det	_	_
+5	deal	_	NOUN	NN	_	3	obj	_	_
+6	for	_	ADP	IN	_	8	case	_	_
+7	the	_	DET	DT	_	8	det	_	_
+8	rest	_	NOUN	NN	_	5	nmod	_	_
+9	of	_	ADP	IN	_	11	case	_	_
+10	the	_	DET	DT	_	11	det	_	_
+11	month	_	NOUN	NN	_	8	nmod	_	_
+12	for	_	ADP	IN	_	13	case	_	_
+13	10,000/d	_	NOUN	NNS	_	11	nmod	_	_
+14	at	_	ADP	IN	_	16	case	_	_
+15	meter	_	NOUN	NN	_	16	compound	_	_
+16	#	_	NOUN	NN	_	13	punct	_	_
+
+# sent_id = 12
+# text = 1552 QE-1 @ $4.355 ....
+1	1552	_	NUM	CD	_	2	nummod	_	_
+2	QE	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+3	-	_	PUNCT	GW	_	6	punct	_	SpaceAfter=No
+4	1	_	NUM	CD	_	3	goeswith	_	_
+5	@	_	SYM	SYM	_	6	punct	_	_
+6	$	_	SYM	$	_	2	nummod	_	SpaceAfter=No
+7	4.355	_	NUM	CD	_	6	nummod	_	_
+8	....	_	PUNCT	,	_	2	punct	_	_
+
+# sent_id = 13
+# text = can you let me and Robert Lloyd know what the sitara # is?
+1	can	_	AUX	MD	_	3	aux	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	let	_	VERB	VB	_	0	root	_	_
+4	me	_	PRON	PRP	_	3	obj	_	_
+5	and	_	CCONJ	CC	_	6	cc	_	_
+6	Robert	_	PROPN	NNP	_	4	conj	_	_
+7	Lloyd	_	PROPN	NNP	_	6	flat	_	_
+8	know	_	VERB	VB	_	6	acl	_	_
+9	what	_	PRON	WP	_	8	obj	_	_
+10	the	_	DET	DT	_	12	det	_	_
+11	sitara	_	PROPN	NNP	_	12	compound	_	_
+12	#	_	NOUN	NN	_	13	nsubj	_	_
+13	is	_	VERB	VBZ	_	8	advcl	_	SpaceAfter=No
+14	?	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 14
+# text = Thanks
+1	Thanks	_	NOUN	NN	_	0	root	_	_
+
+# sent_id = 15
+# text = Melissa, I show that we also had 20.000 at LS HPL for the 13th.
+1	Melissa	_	PROPN	NNP	_	4	parataxis	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	4	punct	_	_
+3	I	_	PRON	PRP	_	4	nsubj	_	_
+4	show	_	VERB	VBP	_	0	root	_	_
+5	that	_	SCONJ	IN	_	8	mark	_	_
+6	we	_	PRON	PRP	_	8	nsubj	_	_
+7	also	_	ADV	RB	_	8	advmod	_	_
+8	had	_	VERB	VBD	_	4	parataxis	_	_
+9	20.000	_	NUM	CD	_	8	obj	_	_
+10	at	_	ADP	IN	_	12	case	_	_
+11	LS	_	PROPN	NNP	_	12	compound	_	_
+12	HPL	_	PROPN	NNP	_	8	obl	_	_
+13	for	_	ADP	IN	_	15	case	_	_
+14	the	_	DET	DT	_	15	det	_	_
+15	13th	_	NOUN	NN	_	12	nmod	_	SpaceAfter=No
+16	.	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 16
+# text = Daren August 11,2000 Teco Tap 108.333 / HPL IFERC ; 20.000 / Enron LS HPL LSK IC 20.000 / Enron August 12, 2000 Teco Tap 85.000 / HPL IFERC ; 20.000 / Enron LS HPL LSK IC 20.000 / Enron August 13, 2000 Teco Tap 32.500 / HPL IFERC ; 20.000 / Enron I'm working hard for you!
+1	Daren	_	PROPN	NNP	_	5	compound	_	_
+2	August	_	PROPN	NNP	_	1	appos	_	_
+3	11,	_	NUM	CD	_	2	nummod	_	SpaceAfter=No
+4	2000	_	NUM	CD	_	2	nummod	_	_
+5	Teco	_	PROPN	NNP	_	6	compound	_	_
+6	Tap	_	PROPN	NNP	_	12	nsubj	_	_
+7	108.333	_	NOUN	NN	_	6	flat	_	_
+8	/	_	PUNCT	,	_	10	cc	_	_
+9	HPL	_	PROPN	NNP	_	10	compound	_	_
+10	IFERC	_	PROPN	NNP	_	7	conj	_	_
+11	;	_	PUNCT	,	_	7	punct	_	_
+12	20.000	_	NUM	CD	_	59	parataxis	_	_
+13	/	_	PUNCT	,	_	18	cc	_	_
+14	Enron	_	PROPN	NNP	_	18	compound	_	_
+15	LS	_	PROPN	NNP	_	14	flat	_	_
+16	HPL	_	PROPN	NNP	_	14	appos	_	_
+17	LSK	_	PROPN	NNP	_	14	flat	_	_
+18	IC	_	PROPN	NNP	_	12	nmod	_	_
+19	20.000	_	NUM	CD	_	18	nummod	_	_
+20	/	_	PUNCT	,	_	22	cc	_	_
+21	Enron	_	PROPN	NNP	_	22	compound	_	_
+22	August	_	PROPN	NNP	_	18	appos	_	_
+23	12	_	NUM	CD	_	22	nummod	_	SpaceAfter=No
+24	,	_	PUNCT	,	_	22	punct	_	_
+25	2000	_	NUM	CD	_	22	nummod	_	_
+26	Teco	_	PROPN	NNP	_	22	list	_	_
+27	Tap	_	NOUN	NN	_	26	nmod	_	_
+28	85.000	_	NUM	CD	_	27	nummod	_	_
+29	/	_	PUNCT	,	_	30	punct	_	_
+30	HPL	_	PROPN	NNP	_	26	parataxis	_	_
+31	IFERC	_	PROPN	NNP	_	30	flat	_	_
+32	;	_	PUNCT	,	_	30	punct	_	_
+33	20.000	_	NUM	CD	_	59	parataxis	_	_
+34	/	_	PUNCT	,	_	43	cc	_	_
+35	Enron	_	PROPN	NNP	_	39	compound	_	_
+36	LS	_	PROPN	NNP	_	39	compound	_	_
+37	HPL	_	PROPN	NNP	_	42	compound	_	_
+38	LSK	_	PROPN	NNP	_	37	flat	_	_
+39	IC	_	PROPN	NNP	_	37	flat	_	_
+40	20.000	_	NUM	CD	_	39	nummod	_	_
+41	/	_	PUNCT	,	_	43	cc	_	_
+42	Enron	_	PROPN	NNP	_	56	compound	_	_
+43	August	_	PROPN	NNP	_	42	appos	_	_
+44	13	_	NUM	CD	_	43	nummod	_	SpaceAfter=No
+45	,	_	PUNCT	,	_	43	punct	_	_
+46	2000	_	NUM	CD	_	43	nummod	_	_
+47	Teco	_	PROPN	NNP	_	43	list	_	_
+48	Tap	_	NOUN	NN	_	47	nmod	_	_
+49	32.500	_	NUM	CD	_	48	nummod	_	_
+50	/	_	PUNCT	,	_	51	punct	_	_
+51	HPL	_	PROPN	NNP	_	43	parataxis	_	_
+52	IFERC	_	PROPN	NNP	_	51	flat	_	_
+53	;	_	PUNCT	,	_	51	punct	_	_
+54	20.000	_	NUM	CD	_	59	parataxis	_	_
+55	/	_	PUNCT	,	_	54	punct	_	_
+56	Enron	_	PROPN	NNP	_	54	conj	_	_
+57	I	_	PRON	PRP	_	59	nsubj	_	SpaceAfter=No
+58	'm	_	AUX	VBP	_	59	aux	_	_
+59	working	_	VERB	VBG	_	0	root	_	_
+60	hard	_	ADV	RB	_	59	advmod	_	_
+61	for	_	ADP	IN	_	62	case	_	_
+62	you	_	PRON	PRP	_	59	obl	_	SpaceAfter=No
+63	!	_	PUNCT	.	_	59	punct	_	_
+
+# sent_id = 17
+# text = Now at 83.5.
+1	Now	_	ADV	RB	_	0	root	_	_
+2	at	_	ADP	IN	_	3	case	_	_
+3	83.5	_	NUM	CD	_	1	obl	_	SpaceAfter=No
+4	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 18
+# text = I need a new lawnmower, so I'll try to bump it up a little more.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	need	_	VERB	VBP	_	10	parataxis	_	_
+3	a	_	DET	DT	_	5	det	_	_
+4	new	_	ADJ	JJ	_	5	amod	_	_
+5	lawnmower	_	NOUN	NN	_	2	obj	_	SpaceAfter=No
+6	,	_	PUNCT	,	_	10	punct	_	_
+7	so	_	ADV	RB	_	10	advmod	_	_
+8	I	_	PRON	PRP	_	10	nsubj	_	SpaceAfter=No
+9	'll	_	AUX	MD	_	10	aux	_	_
+10	try	_	VERB	VB	_	0	root	_	_
+11	to	_	PART	TO	_	12	mark	_	_
+12	bump	_	VERB	VB	_	10	xcomp	_	_
+13	it	_	PRON	PRP	_	12	obj	_	_
+14	up	_	ADP	RP	_	12	compound	_	_
+15	a	_	DET	DT	_	16	det	_	_
+16	little	_	ADJ	JJ	_	17	obl	_	_
+17	more	_	ADJ	JJR	_	12	obj	_	SpaceAfter=No
+18	.	_	PUNCT	.	_	10	punct	_	_
+
+# sent_id = 19
+# text = Hope you're doing good.
+1	Hope	_	VERB	VBP	_	0	root	_	_
+2	you	_	PRON	PRP	_	4	nsubj	_	SpaceAfter=No
+3	're	_	AUX	VBP	_	4	aux	_	_
+4	doing	_	VERB	VBG	_	1	ccomp	_	_
+5	good	_	ADJ	JJ	_	4	xcomp	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 20
+# text = D ???
+1	D	_	PROPN	NNP	_	0	root	_	_
+2	???	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 21
+# text = KEEP UP THE GOOD WORK.
+1	KEEP	_	VERB	VB	_	0	root	_	_
+2	UP	_	ADP	RP	_	1	compound	_	_
+3	THE	_	DET	DT	_	5	det	_	_
+4	GOOD	_	ADJ	JJ	_	5	amod	_	_
+5	WORK	_	NOUN	NN	_	1	parataxis	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 22
+# text = ?
+1	?	_	PUNCT	.	_	0	root	_	_
+
+# sent_id = 23
+# text = WE AT HOME LOVE IT AT $80+++
+1	WE	_	PRON	PRP	_	4	nsubj	_	_
+2	AT	_	ADV	RB	_	3	advmod	_	_
+3	HOME	_	NOUN	NN	_	4	obl	_	_
+4	LOVE	_	VERB	VBP	_	0	root	_	_
+5	IT	_	PRON	PRP	_	4	obj	_	_
+6	AT	_	ADP	IN	_	5	nmod	_	_
+7	$	_	SYM	$	_	6	fixed	_	SpaceAfter=No
+8	80+++	_	NUM	CD	_	7	compound	_	_
+
+# sent_id = 24
+# text = ?
+1	?	_	PUNCT	.	_	0	root	_	_
+
+# sent_id = 25
+# text = KEN These have been sold.
+1	KEN	_	PROPN	NNP	_	0	root	_	_
+2	These	_	PRON	DT	_	5	nsubj	_	_
+3	have	_	AUX	VBP	_	5	aux	_	_
+4	been	_	AUX	VBN	_	5	aux	_	_
+5	sold	_	VERB	VBN	_	1	goeswith	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 26
+# text = Geoff,
+1	Geoff	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+
+# sent_id = 27
+# text = Thanks for the pictures.
+1	Thanks	_	NOUN	NN	_	0	root	_	_
+2	for	_	ADP	IN	_	4	case	_	_
+3	the	_	DET	DT	_	4	det	_	_
+4	pictures	_	NOUN	NNS	_	1	nmod	_	SpaceAfter=No
+5	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 28
+# text = Looks like the kids had a great time!
+1	Looks	_	VERB	VBZ	_	0	root	_	_
+2	like	_	SCONJ	IN	_	5	mark	_	_
+3	the	_	DET	DT	_	4	det	_	_
+4	kids	_	NOUN	NNS	_	5	nsubj	_	_
+5	had	_	VERB	VBD	_	1	ccomp	_	_
+6	a	_	DET	DT	_	8	det	_	_
+7	great	_	ADJ	JJ	_	8	amod	_	_
+8	time	_	NOUN	NN	_	5	obj	_	SpaceAfter=No
+9	!	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 29
+# text = I hope you don't mind, but I've taken liberty to turn them into a web photo album at http://24.27.98.30/pictures/08-05_Garrett_Gayle_Bday.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	hope	_	VERB	VBP	_	0	root	_	_
+3	you	_	PRON	PRP	_	6	nsubj	_	_
+4	do	_	AUX	VBP	_	6	aux	_	SpaceAfter=No
+5	n't	_	PART	RB	_	6	advmod	_	_
+6	mind	_	VERB	VB	_	2	ccomp	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	11	punct	_	_
+8	but	_	CCONJ	CC	_	11	cc	_	_
+9	I	_	PRON	PRP	_	11	nsubj	_	SpaceAfter=No
+10	've	_	AUX	VBP	_	11	aux	_	_
+11	taken	_	VERB	VBN	_	2	parataxis	_	_
+12	liberty	_	PROPN	NNP	_	11	obj	_	_
+13	to	_	PART	TO	_	14	mark	_	_
+14	turn	_	VERB	VB	_	11	xcomp	_	_
+15	them	_	PRON	PRP	_	14	obj	_	_
+16	into	_	ADP	IN	_	20	case	_	_
+17	a	_	DET	DT	_	20	det	_	_
+18	web	_	NOUN	NN	_	19	compound	_	_
+19	photo	_	NOUN	NN	_	20	compound	_	_
+20	album	_	NOUN	NN	_	14	obl	_	_
+21	at	_	ADP	IN	_	22	case	_	_
+22	http://24.27.98.30/pictures/08-05_Garrett_Gayle_Bday	_	NOUN	NN	_	20	nmod	_	SpaceAfter=No
+23	.	_	PUNCT	.	_	14	punct	_	_
+
+# sent_id = 30
+# text = If you want to pass this web site address along to other folks, feel free.
+1	If	_	SCONJ	IN	_	3	mark	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	want	_	VERB	VBP	_	15	advcl	_	_
+4	to	_	PART	TO	_	5	mark	_	_
+5	pass	_	VERB	VB	_	3	xcomp	_	_
+6	this	_	DET	DT	_	8	det	_	_
+7	web	_	NOUN	NN	_	8	compound	_	_
+8	site	_	NOUN	NN	_	9	compound	_	_
+9	address	_	NOUN	NN	_	5	obj	_	_
+10	along	_	ADP	IN	_	13	case	_	_
+11	to	_	ADP	IN	_	13	case	_	_
+12	other	_	ADJ	JJ	_	13	amod	_	_
+13	folks	_	NOUN	NNS	_	9	nmod	_	SpaceAfter=No
+14	,	_	PUNCT	,	_	15	punct	_	_
+15	feel	_	VERB	VB	_	0	root	_	_
+16	free	_	ADJ	JJ	_	15	xcomp	_	SpaceAfter=No
+17	.	_	PUNCT	.	_	15	punct	_	_
+
+# sent_id = 31
+# text = If you want a CD copy of this web site, give me a yell.
+1	If	_	SCONJ	IN	_	3	mark	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	want	_	VERB	VBP	_	12	advcl	_	_
+4	a	_	DET	DT	_	6	det	_	_
+5	CD	_	PROPN	NNP	_	6	compound	_	_
+6	copy	_	NOUN	NN	_	3	obj	_	_
+7	of	_	ADP	IN	_	10	case	_	_
+8	this	_	DET	DT	_	10	det	_	_
+9	web	_	NOUN	NN	_	10	compound	_	_
+10	site	_	NOUN	NN	_	6	nmod	_	SpaceAfter=No
+11	,	_	PUNCT	,	_	12	punct	_	_
+12	give	_	VERB	VB	_	0	root	_	_
+13	me	_	PRON	PRP	_	12	iobj	_	_
+14	a	_	DET	DT	_	15	det	_	_
+15	yell	_	NOUN	NN	_	12	obj	_	SpaceAfter=No
+16	.	_	PUNCT	.	_	12	punct	_	_
+
+# sent_id = 32
+# text = Thanks,
+1	Thanks	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+
+# sent_id = 33
+# text = Ram Tackett, (mailto:rtackett@abacustech.net) Owner, Abacus Technologies 17611 Loring Lane, Spring, TX 77388-5746 (281)651-7106;Fax(281)528-8636
+1	Ram	_	PROPN	NNP	_	0	root	_	_
+2	Tackett	_	PROPN	NNP	_	1	flat	_	SpaceAfter=No
+3	,	_	PUNCT	,	_	2	punct	_	_
+4	(	_	PUNCT	-LRB-	_	5	punct	_	SpaceAfter=No
+5	mailto:rtackett@abacustech.net	_	X	ADD	_	2	list	_	SpaceAfter=No
+6	)	_	PUNCT	-RRB-	_	5	punct	_	_
+7	Owner	_	NOUN	NN	_	15	appos	_	SpaceAfter=No
+8	,	_	PUNCT	,	_	7	punct	_	_
+9	Abacus	_	PROPN	NNP	_	7	appos	_	_
+10	Technologies	_	PROPN	NNPS	_	9	flat	_	_
+11	17611	_	NUM	CD	_	13	nummod	_	_
+12	Loring	_	PROPN	NNP	_	13	compound	_	_
+13	Lane	_	PROPN	NNP	_	9	conj	_	SpaceAfter=No
+14	,	_	PUNCT	,	_	13	punct	_	_
+15	Spring	_	PROPN	NNP	_	2	conj	_	SpaceAfter=No
+16	,	_	PUNCT	,	_	15	punct	_	_
+17	TX	_	PROPN	NNP	_	15	appos	_	_
+18	77388-5746	_	NUM	CD	_	17	list	_	_
+19	(	_	PUNCT	-LRB-	_	22	punct	_	SpaceAfter=No
+20	281	_	NUM	CD	_	22	nummod	_	SpaceAfter=No
+21	)	_	PUNCT	-RRB-	_	22	punct	_	SpaceAfter=No
+22	651-7106	_	NUM	CD	_	24	appos	_	SpaceAfter=No
+23	;	_	PUNCT	,	_	24	punct	_	SpaceAfter=No
+24	Fax	_	NOUN	NN	_	2	list	_	SpaceAfter=No
+25	(	_	PUNCT	-LRB-	_	24	punct	_	SpaceAfter=No
+26	281	_	NUM	CD	_	28	nummod	_	SpaceAfter=No
+27	)	_	PUNCT	-RRB-	_	28	punct	_	SpaceAfter=No
+28	528-8636	_	NUM	CD	_	24	appos	_	_
+
+# sent_id = 34
+# text = Web: http://www.abacustech.net
+1	Web	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+2	:	_	PUNCT	:	_	1	punct	_	_
+3	http://www.abacustech.net	_	X	ADD	_	1	appos	_	_
+
+# sent_id = 35
+# text = - Ram Tackett (E-mail).vcf 4222
+1	-	_	PUNCT	HYPH	_	2	punct	_	_
+2	Ram	_	PROPN	NNP	_	8	compound	_	_
+3	Tackett	_	PROPN	NNP	_	2	flat	_	_
+4	(	_	PUNCT	-LRB-	_	6	punct	_	SpaceAfter=No
+5	E-	_	ADP	IN	_	6	case	_	SpaceAfter=No
+6	mail	_	NOUN	NN	_	2	list	_	SpaceAfter=No
+7	)	_	PUNCT	-RRB-	_	6	punct	_	SpaceAfter=No
+8	.vcf	_	NUM	CD	_	0	root	_	_
+9	4222	_	NUM	CD	_	8	list	_	_
+

@@ -1,0 +1,7 @@
+=== first (1/2, dev_sents 0)
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train100000-EWT-gold-cdc3db987-wcclasses5-sfx3-rootabs-htrank-kin-hkinleftright-nn2/events
+conllu: experiments/runs/ewttest/first-pred.conllu, experiments/runs/ewttest/first-gold.conllu
+count cache: 5866829 new feature sets, 9132369 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train100000-EWT-gold-cdc3db987-wcclasses5-sfx3-rootabs-htrank-kin-hkinleftright-nn2/events
+EWT         12705   0.9779  0.7552  0.709   0.9004  
+ALL         12705   0.9779  0.7552  0.709   0.9004  
+build 9.8 s, decode 49843.5 s, run 20261114-171306 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv

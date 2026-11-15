@@ -1,0 +1,76 @@
+# sent_id = 1
+# text = Name something you find at a carnival that comes on a stick?
+1	Name	_	NOUN	NN	_	2	nsubj	_	_
+2	something	_	PRON	NN	_	0	root	_	_
+3	you	_	PRON	PRP	_	4	nsubj	_	_
+4	find	_	VERB	VBP	_	2	acl	_	_
+5	at	_	ADP	IN	_	7	case	_	_
+6	a	_	DET	DT	_	7	det	_	_
+7	carnival	_	NOUN	NN	_	4	obl	_	_
+8	that	_	PRON	WDT	_	9	nsubj	_	_
+9	comes	_	VERB	VBZ	_	7	acl	_	_
+10	on	_	ADP	IN	_	12	case	_	_
+11	a	_	DET	DT	_	12	det	_	_
+12	stick	_	NOUN	NN	_	9	obl	_	SpaceAfter=No
+13	?	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 2
+# text = Cotton Candy Corn Dog Candy Apple Meat Kabob Ship on a Stick (Prize at various trivia type contests on board.)
+1	Cotton	_	PROPN	NNP	_	3	compound	_	_
+2	Candy	_	PROPN	NNP	_	3	compound	_	_
+3	Corn	_	NOUN	NN	_	4	compound	_	_
+4	Dog	_	NOUN	NN	_	6	compound	_	_
+5	Candy	_	PROPN	NNP	_	6	compound	_	_
+6	Apple	_	PROPN	NNP	_	7	compound	_	_
+7	Meat	_	PROPN	NNP	_	9	compound	_	_
+8	Kabob	_	PROPN	NNP	_	7	flat	_	_
+9	Ship	_	PROPN	NNP	_	0	root	_	_
+10	on	_	ADP	IN	_	12	case	_	_
+11	a	_	DET	DT	_	12	det	_	_
+12	Stick	_	PROPN	NNP	_	3	nmod	_	_
+13	(	_	PUNCT	-LRB-	_	14	punct	_	SpaceAfter=No
+14	Prize	_	NOUN	NN	_	12	appos	_	_
+15	at	_	ADP	IN	_	19	case	_	_
+16	various	_	ADJ	JJ	_	19	amod	_	_
+17	trivia	_	NOUN	NN	_	18	compound	_	_
+18	type	_	NOUN	NN	_	19	compound	_	_
+19	contests	_	NOUN	NNS	_	14	nmod	_	_
+20	on	_	ADP	IN	_	21	case	_	_
+21	board	_	NOUN	NN	_	19	nmod	_	SpaceAfter=No
+22	.	_	PUNCT	.	_	14	punct	_	SpaceAfter=No
+23	)	_	PUNCT	-RRB-	_	14	punct	_	_
+
+# sent_id = 3
+# text = All of those ;D Monkey Brain.
+1	All	_	DET	DT	_	6	nsubj	_	_
+2	of	_	ADP	IN	_	6	case	_	_
+3	those	_	DET	DT	_	6	det	_	_
+4	;D	_	SYM	NFP	_	6	goeswith	_	_
+5	Monkey	_	PROPN	NNP	_	6	compound	_	_
+6	Brain	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 4
+# text = What country are we talking about?
+1	What	_	DET	WDT	_	2	det	_	_
+2	country	_	NOUN	NN	_	5	nsubj	_	_
+3	are	_	VERB	VBP	_	5	aux	_	_
+4	we	_	PRON	PRP	_	5	nsubj	_	_
+5	talking	_	VERB	VBG	_	0	root	_	_
+6	about	_	ADP	IN	_	5	obl	_	SpaceAfter=No
+7	?	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 5
+# text = I like my Monkey Brain on a stick for sure.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	like	_	VERB	VBP	_	0	root	_	_
+3	my	_	PRON	PRP$	_	4	nmod	_	_
+4	Monkey	_	NOUN	NN	_	5	compound	_	_
+5	Brain	_	NOUN	NN	_	2	obj	_	_
+6	on	_	ADP	IN	_	8	case	_	_
+7	a	_	DET	DT	_	8	det	_	_
+8	stick	_	NOUN	NN	_	5	nmod	_	_
+9	for	_	ADP	IN	_	10	case	_	_
+10	sure	_	ADJ	JJ	_	8	nmod	_	SpaceAfter=No
+11	.	_	PUNCT	.	_	2	punct	_	_
+

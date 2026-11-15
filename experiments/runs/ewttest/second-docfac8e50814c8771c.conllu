@@ -1,0 +1,449 @@
+# sent_id = 1
+# text = George and Lynne image001.jpg
+1	George	_	PROPN	NNP	_	0	root	_	_
+2	and	_	CCONJ	CC	_	3	cc	_	_
+3	Lynne	_	PROPN	NNP	_	1	flat	_	_
+4	image001.jpg	_	X	ADD	_	3	compound	_	_
+
+# sent_id = 2
+# text = 51K Download Funny stuff lifted from another list Amy:-)
+1	51	_	NUM	CD	_	3	compound	_	SpaceAfter=No
+2	K	_	NUM	CD	_	3	nummod	_	_
+3	Download	_	NOUN	NN	_	0	root	_	_
+4	Funny	_	ADJ	JJ	_	5	amod	_	_
+5	stuff	_	NOUN	NN	_	3	nmod	_	_
+6	lifted	_	VERB	VBN	_	3	acl	_	_
+7	from	_	ADP	IN	_	9	case	_	_
+8	another	_	DET	DT	_	9	det	_	_
+9	list	_	NOUN	NN	_	10	obl	_	_
+10	Amy	_	PROPN	NNP	_	6	vocative	_	SpaceAfter=No
+11	:-)	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 3
+# text = ------
+1	------	_	SYM	NFP	_	0	root	_	_
+
+# sent_id = 4
+# text = We could certainly slow the aging process down if it had to work its way through Congress.
+1	We	_	PRON	PRP	_	4	nsubj	_	_
+2	could	_	AUX	MD	_	4	aux	_	_
+3	certainly	_	ADV	RB	_	4	advmod	_	_
+4	slow	_	VERB	VB	_	0	root	_	_
+5	the	_	DET	DT	_	7	det	_	_
+6	aging	_	NOUN	NN	_	7	compound	_	_
+7	process	_	NOUN	NN	_	4	obj	_	_
+8	down	_	ADV	RB	_	4	advmod	_	_
+9	if	_	SCONJ	IN	_	11	mark	_	_
+10	it	_	PRON	PRP	_	11	nsubj	_	_
+11	had	_	VERB	VBD	_	8	advcl	_	_
+12	to	_	PART	TO	_	13	mark	_	_
+13	work	_	VERB	VB	_	11	xcomp	_	_
+14	its	_	PRON	PRP$	_	15	nmod	_	_
+15	way	_	NOUN	NN	_	13	obj	_	_
+16	through	_	ADP	IN	_	17	case	_	_
+17	Congress	_	PROPN	NNP	_	8	obl	_	SpaceAfter=No
+18	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 5
+# text = - Will Rogers
+1	-	_	PUNCT	,	_	3	punct	_	_
+2	Will	_	AUX	MD	_	3	aux	_	_
+3	Rogers	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 6
+# text = I had a rose named after me and I was very flattered.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	had	_	VERB	VBD	_	0	root	_	_
+3	a	_	DET	DT	_	4	det	_	_
+4	rose	_	NOUN	NN	_	2	obj	_	_
+5	named	_	VERB	VBN	_	4	acl	_	_
+6	after	_	ADP	IN	_	7	case	_	_
+7	me	_	PRON	PRP	_	5	obl	_	_
+8	and	_	CCONJ	CC	_	12	cc	_	_
+9	I	_	PRON	PRP	_	12	nsubj	_	_
+10	was	_	AUX	VBD	_	12	cop	_	_
+11	very	_	ADV	RB	_	12	advmod	_	_
+12	flattered	_	ADJ	JJ	_	2	parataxis	_	SpaceAfter=No
+13	.	_	PUNCT	.	_	12	punct	_	_
+
+# sent_id = 7
+# text = But I was not pleased to read the description in the catalog:
+1	But	_	CCONJ	CC	_	5	cc	_	_
+2	I	_	PRON	PRP	_	5	nsubj	_	_
+3	was	_	AUX	VBD	_	5	cop	_	_
+4	not	_	PART	RB	_	5	advmod	_	_
+5	pleased	_	ADJ	JJ	_	0	root	_	_
+6	to	_	PART	TO	_	7	mark	_	_
+7	read	_	VERB	VB	_	5	csubj	_	_
+8	the	_	DET	DT	_	9	det	_	_
+9	description	_	NOUN	NN	_	7	obj	_	_
+10	in	_	ADP	IN	_	12	case	_	_
+11	the	_	DET	DT	_	12	det	_	_
+12	catalog	_	NOUN	NN	_	9	nmod	_	SpaceAfter=No
+13	:	_	PUNCT	:	_	12	punct	_	_
+
+# sent_id = 8
+# text = "No good in a bed, but fine against a wall."
+1	"	_	PUNCT	``	_	9	punct	_	SpaceAfter=No
+2	No	_	DET	DT	_	3	det	_	_
+3	good	_	ADJ	JJ	_	0	root	_	_
+4	in	_	ADP	IN	_	6	case	_	_
+5	a	_	DET	DT	_	6	det	_	_
+6	bed	_	NOUN	NN	_	3	obl	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	9	punct	_	_
+8	but	_	CCONJ	CC	_	9	cc	_	_
+9	fine	_	ADJ	JJ	_	3	conj	_	_
+10	against	_	ADP	IN	_	12	case	_	_
+11	a	_	DET	DT	_	12	det	_	_
+12	wall	_	NOUN	NN	_	9	obl	_	SpaceAfter=No
+13	.	_	PUNCT	.	_	9	punct	_	SpaceAfter=No
+14	"	_	PUNCT	''	_	9	punct	_	_
+
+# sent_id = 9
+# text = - Eleanor Roosevelt ------
+1	-	_	PUNCT	NFP	_	2	punct	_	_
+2	Eleanor	_	PROPN	NNP	_	4	nsubj	_	_
+3	Roosevelt	_	PROPN	NNP	_	2	flat	_	_
+4	------	_	PUNCT	NFP	_	0	root	_	_
+
+# sent_id = 10
+# text = Santa Claus has the right idea.
+1	Santa	_	PROPN	NNP	_	2	compound	_	_
+2	Claus	_	PROPN	NNP	_	3	nsubj	_	_
+3	has	_	VERB	VBZ	_	0	root	_	_
+4	the	_	DET	DT	_	6	det	_	_
+5	right	_	ADJ	JJ	_	6	amod	_	_
+6	idea	_	NOUN	NN	_	3	parataxis	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 11
+# text = Visit people only once a year.
+1	Visit	_	VERB	VB	_	0	root	_	_
+2	people	_	NOUN	NNS	_	1	nsubj	_	_
+3	only	_	ADV	RB	_	2	advmod	_	_
+4	once	_	ADV	RB	_	6	case	_	_
+5	a	_	DET	DT	_	6	det	_	_
+6	year	_	NOUN	NN	_	3	advmod	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 12
+# text = - Victor Borge ------
+1	-	_	PUNCT	NFP	_	4	punct	_	_
+2	Victor	_	PROPN	NNP	_	4	nmod	_	_
+3	Borge	_	PROPN	NNP	_	2	flat	_	_
+4	------	_	NOUN	NN	_	0	root	_	_
+
+# sent_id = 13
+# text = "By all means, marry.
+1	"	_	PUNCT	''	_	0	root	_	SpaceAfter=No
+2	By	_	ADP	IN	_	4	case	_	_
+3	all	_	DET	DT	_	4	det	_	_
+4	means	_	NOUN	NNS	_	1	obl	_	SpaceAfter=No
+5	,	_	PUNCT	,	_	6	punct	_	_
+6	marry	_	VERB	VB	_	4	parataxis	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 14
+# text = If you get a good wife, you'll become happy; if you get a bad one, you'll become a philosopher.
+1	If	_	SCONJ	IN	_	3	mark	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	get	_	VERB	VBP	_	22	advcl	_	_
+4	a	_	DET	DT	_	6	det	_	_
+5	good	_	ADJ	JJ	_	6	amod	_	_
+6	wife	_	NOUN	NN	_	3	obj	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	10	punct	_	_
+8	you	_	PRON	PRP	_	10	nsubj	_	SpaceAfter=No
+9	'll	_	AUX	MD	_	10	aux	_	_
+10	become	_	VERB	VB	_	6	conj	_	_
+11	happy	_	ADJ	JJ	_	10	xcomp	_	SpaceAfter=No
+12	;	_	PUNCT	,	_	10	punct	_	_
+13	if	_	SCONJ	IN	_	15	mark	_	_
+14	you	_	PRON	PRP	_	15	nsubj	_	_
+15	get	_	VERB	VBP	_	10	advcl	_	_
+16	a	_	DET	DT	_	18	det	_	_
+17	bad	_	ADJ	JJ	_	18	amod	_	_
+18	one	_	NOUN	NN	_	15	obj	_	SpaceAfter=No
+19	,	_	PUNCT	,	_	22	punct	_	_
+20	you	_	PRON	PRP	_	22	nsubj	_	SpaceAfter=No
+21	'll	_	AUX	MD	_	22	aux	_	_
+22	become	_	VERB	VB	_	0	root	_	_
+23	a	_	DET	DT	_	24	det	_	_
+24	philosopher	_	NOUN	NN	_	22	obj	_	SpaceAfter=No
+25	.	_	PUNCT	.	_	22	punct	_	_
+
+# sent_id = 15
+# text = - Socrates
+1	-	_	PUNCT	NFP	_	2	punct	_	_
+2	Socrates	_	NOUN	NN	_	0	root	_	_
+
+# sent_id = 16
+# text = ------
+1	------	_	PUNCT	.	_	0	root	_	_
+
+# sent_id = 17
+# text = I was married by a judge.
+1	I	_	PRON	PRP	_	3	nsubj	_	_
+2	was	_	AUX	VBD	_	3	aux	_	_
+3	married	_	VERB	VBN	_	0	root	_	_
+4	by	_	ADP	IN	_	6	case	_	_
+5	a	_	DET	DT	_	6	det	_	_
+6	judge	_	NOUN	NN	_	3	obl	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 18
+# text = I should have asked for a jury.
+1	I	_	PRON	PRP	_	4	nsubj	_	_
+2	should	_	AUX	MD	_	4	aux	_	_
+3	have	_	AUX	VB	_	4	aux	_	_
+4	asked	_	VERB	VBN	_	0	root	_	_
+5	for	_	ADP	IN	_	7	case	_	_
+6	a	_	DET	DT	_	7	det	_	_
+7	jury	_	NOUN	NN	_	4	obl	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 19
+# text = - Groucho Marx
+1	-	_	PUNCT	NFP	_	2	punct	_	_
+2	Groucho	_	PROPN	NNP	_	0	root	_	_
+3	Marx	_	PROPN	NNP	_	2	flat	_	_
+
+# sent_id = 20
+# text = ------
+1	------	_	SYM	NFP	_	0	root	_	_
+
+# sent_id = 21
+# text = My wife has a slight impediment in her speech.
+1	My	_	PRON	PRP$	_	2	nmod	_	_
+2	wife	_	NOUN	NN	_	3	nsubj	_	_
+3	has	_	VERB	VBZ	_	0	root	_	_
+4	a	_	DET	DT	_	6	det	_	_
+5	slight	_	ADJ	JJ	_	6	amod	_	_
+6	impediment	_	NOUN	NN	_	3	obj	_	_
+7	in	_	ADP	IN	_	9	case	_	_
+8	her	_	PRON	PRP$	_	9	nmod	_	_
+9	speech	_	NOUN	NN	_	6	nmod	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 22
+# text = Every now and then she stops to breathe.
+1	Every	_	DET	DT	_	2	mark	_	_
+2	now	_	ADV	RB	_	0	root	_	_
+3	and	_	CCONJ	CC	_	6	cc	_	_
+4	then	_	ADV	RB	_	6	advmod	_	_
+5	she	_	PRON	PRP	_	6	nsubj	_	_
+6	stops	_	VERB	VBZ	_	2	ccomp	_	_
+7	to	_	PART	TO	_	8	mark	_	_
+8	breathe	_	VERB	VB	_	6	advcl	_	SpaceAfter=No
+9	.	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 23
+# text = -
+1	-	_	PUNCT	NFP	_	0	root	_	_
+
+# sent_id = 24
+# text = Jimmy
+1	Jimmy	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 25
+# text = Durante
+1	Durante	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 26
+# text = ------
+1	------	_	PUNCT	,	_	0	root	_	_
+
+# sent_id = 27
+# text = I have never hated a man enough to give his diamonds back.
+1	I	_	PRON	PRP	_	4	nsubj	_	_
+2	have	_	AUX	VBP	_	4	aux	_	_
+3	never	_	ADV	RB	_	4	advmod	_	_
+4	hated	_	VERB	VBN	_	0	root	_	_
+5	a	_	DET	DT	_	6	det	_	_
+6	man	_	NOUN	NN	_	4	obj	_	_
+7	enough	_	ADV	RB	_	4	advmod	_	_
+8	to	_	PART	TO	_	9	mark	_	_
+9	give	_	VERB	VB	_	4	advcl	_	_
+10	his	_	PRON	PRP$	_	11	nmod	_	_
+11	diamonds	_	NOUN	NNS	_	9	obj	_	_
+12	back	_	ADV	RB	_	9	advmod	_	SpaceAfter=No
+13	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 28
+# text = - Zsa Zsa Gabor ------
+1	-	_	PUNCT	NFP	_	2	punct	_	_
+2	Zsa	_	NOUN	NN	_	0	root	_	_
+3	Zsa	_	PROPN	NNP	_	2	vocative	_	_
+4	Gabor	_	PROPN	NNP	_	2	parataxis	_	_
+5	------	_	PUNCT	NFP	_	2	parataxis	_	_
+
+# sent_id = 29
+# text = Only Irish coffee provides in a single glass all four essential food groups: alcohol, caffeine, sugar and fat.
+1	Only	_	ADV	RB	_	3	advmod	_	_
+2	Irish	_	ADJ	JJ	_	3	amod	_	_
+3	coffee	_	NOUN	NN	_	4	nsubj	_	_
+4	provides	_	VERB	VBZ	_	0	root	_	_
+5	in	_	ADP	IN	_	8	case	_	_
+6	a	_	DET	DT	_	8	det	_	_
+7	single	_	ADJ	JJ	_	8	amod	_	_
+8	glass	_	NOUN	NN	_	4	obj	_	_
+9	all	_	DET	PDT	_	13	det	_	_
+10	four	_	NUM	CD	_	13	nummod	_	_
+11	essential	_	ADJ	JJ	_	13	amod	_	_
+12	food	_	NOUN	NN	_	13	compound	_	_
+13	groups	_	NOUN	NNS	_	4	parataxis	_	SpaceAfter=No
+14	:	_	PUNCT	:	_	13	punct	_	_
+15	alcohol	_	NOUN	NNS	_	13	appos	_	SpaceAfter=No
+16	,	_	PUNCT	,	_	17	punct	_	_
+17	caffeine	_	ADJ	JJ	_	15	conj	_	SpaceAfter=No
+18	,	_	PUNCT	,	_	19	punct	_	_
+19	sugar	_	NOUN	NN	_	17	conj	_	_
+20	and	_	CCONJ	CC	_	21	cc	_	_
+21	fat	_	ADJ	JJ	_	19	conj	_	SpaceAfter=No
+22	.	_	PUNCT	.	_	21	punct	_	_
+
+# sent_id = 30
+# text = - Alex Levine ------
+1	-	_	PUNCT	NFP	_	2	punct	_	_
+2	Alex	_	PROPN	NNP	_	0	root	_	_
+3	Levine	_	PROPN	NNP	_	2	flat	_	_
+4	------	_	PUNCT	,	_	3	punct	_	_
+
+# sent_id = 31
+# text = Money can't buy you happiness... but it does bring you a more pleasant form of misery.
+1	Money	_	NOUN	NN	_	4	nsubj	_	_
+2	ca	_	AUX	MD	_	4	aux	_	SpaceAfter=No
+3	n't	_	PART	RB	_	4	advmod	_	_
+4	buy	_	VERB	VB	_	0	root	_	_
+5	you	_	PRON	PRP	_	4	iobj	_	_
+6	happiness	_	NOUN	NN	_	4	obj	_	SpaceAfter=No
+7	...	_	PUNCT	,	_	11	punct	_	_
+8	but	_	CCONJ	CC	_	11	cc	_	_
+9	it	_	PRON	PRP	_	11	nsubj	_	_
+10	does	_	AUX	VBZ	_	11	aux	_	_
+11	bring	_	VERB	VB	_	4	parataxis	_	_
+12	you	_	PRON	PRP	_	11	iobj	_	_
+13	a	_	DET	DT	_	16	det	_	_
+14	more	_	ADV	RBR	_	15	advmod	_	_
+15	pleasant	_	ADJ	JJ	_	16	amod	_	_
+16	form	_	NOUN	NN	_	11	obl	_	_
+17	of	_	ADP	IN	_	18	case	_	_
+18	misery	_	NOUN	NN	_	16	nmod	_	SpaceAfter=No
+19	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 32
+# text = - Spike Milligan ------
+1	-	_	PUNCT	NFP	_	2	punct	_	_
+2	Spike	_	PROPN	NNP	_	0	root	_	_
+3	Milligan	_	PROPN	NNP	_	2	flat	_	_
+4	------	_	ADV	RB	_	3	dep	_	_
+
+# sent_id = 33
+# text = Until I was thirteen, I thought my name was shut up.
+1	Until	_	SCONJ	IN	_	4	mark	_	_
+2	I	_	PRON	PRP	_	4	nsubj	_	_
+3	was	_	AUX	VBD	_	4	cop	_	_
+4	thirteen	_	NUM	CD	_	7	nummod	_	SpaceAfter=No
+5	,	_	PUNCT	,	_	7	punct	_	_
+6	I	_	PRON	PRP	_	7	nsubj	_	_
+7	thought	_	VERB	VBD	_	0	root	_	_
+8	my	_	PRON	PRP$	_	9	nmod	_	_
+9	name	_	NOUN	NN	_	11	nsubj	_	_
+10	was	_	AUX	VBD	_	11	aux	_	_
+11	shut	_	VERB	VBN	_	7	ccomp	_	_
+12	up	_	ADP	RP	_	11	compound	_	SpaceAfter=No
+13	.	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 34
+# text = - Joe Namath ------
+1	-	_	PUNCT	NFP	_	2	punct	_	_
+2	Joe	_	PROPN	NNP	_	0	root	_	_
+3	Namath	_	PROPN	NNP	_	2	flat	_	_
+4	------	_	PUNCT	,	_	3	punct	_	_
+
+# sent_id = 35
+# text = Youth would be an ideal state if it came a little later in life.
+1	Youth	_	NOUN	NN	_	0	root	_	_
+2	would	_	AUX	MD	_	6	aux	_	_
+3	be	_	AUX	VB	_	6	cop	_	_
+4	an	_	DET	DT	_	6	det	_	_
+5	ideal	_	ADJ	JJ	_	6	amod	_	_
+6	state	_	NOUN	NN	_	1	nmod	_	_
+7	if	_	SCONJ	IN	_	9	mark	_	_
+8	it	_	PRON	PRP	_	9	nsubj	_	_
+9	came	_	VERB	VBD	_	6	advcl	_	_
+10	a	_	DET	DT	_	11	det	_	_
+11	little	_	ADJ	JJ	_	12	obl	_	_
+12	later	_	ADV	RBR	_	9	advmod	_	_
+13	in	_	ADP	IN	_	14	case	_	_
+14	life	_	NOUN	NN	_	12	obl	_	SpaceAfter=No
+15	.	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 36
+# text = -
+1	-	_	PUNCT	NFP	_	0	root	_	_
+
+# sent_id = 37
+# text = Herbert Henry Asquith ------
+1	Herbert	_	PROPN	NNP	_	0	root	_	_
+2	Henry	_	PROPN	NNP	_	1	appos	_	_
+3	Asquith	_	PROPN	NNP	_	2	flat	_	_
+4	------	_	AUX	MD	_	1	acl	_	_
+
+# sent_id = 38
+# text = I don't feel old.
+1	I	_	PRON	PRP	_	4	nsubj	_	_
+2	do	_	AUX	VBP	_	4	aux	_	SpaceAfter=No
+3	n't	_	PART	RB	_	4	advmod	_	_
+4	feel	_	VERB	VB	_	0	root	_	_
+5	old	_	ADJ	JJ	_	4	xcomp	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 39
+# text = I don't feel anything until noon.
+1	I	_	PRON	PRP	_	4	nsubj	_	_
+2	do	_	AUX	VBP	_	4	aux	_	SpaceAfter=No
+3	n't	_	PART	RB	_	4	advmod	_	_
+4	feel	_	VERB	VB	_	0	root	_	_
+5	anything	_	PRON	NN	_	4	obj	_	_
+6	until	_	ADP	IN	_	7	case	_	_
+7	noon	_	PROPN	NNP	_	4	obl	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 40
+# text = Then it's time for my nap.
+1	Then	_	ADV	RB	_	4	advmod	_	_
+2	it	_	PRON	PRP	_	4	nsubj	_	SpaceAfter=No
+3	's	_	AUX	VBZ	_	4	cop	_	_
+4	time	_	NOUN	NN	_	0	root	_	_
+5	for	_	ADP	IN	_	7	case	_	_
+6	my	_	PRON	PRP$	_	7	nmod	_	_
+7	nap	_	NOUN	NN	_	4	nmod	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 41
+# text = - Bob Hope ------
+1	-	_	PUNCT	NFP	_	2	punct	_	_
+2	Bob	_	PROPN	NNP	_	3	nsubj	_	_
+3	Hope	_	VERB	VBP	_	0	root	_	_
+4	------	_	INTJ	UH	_	3	discourse	_	_
+
+# sent_id = 42
+# text = Don't worry about avoiding temptation... as you grow older, it will avoid you.
+1	Do	_	AUX	VB	_	3	aux	_	SpaceAfter=No
+2	n't	_	PART	RB	_	3	advmod	_	_
+3	worry	_	VERB	VB	_	0	root	_	_
+4	about	_	SCONJ	IN	_	5	mark	_	_
+5	avoiding	_	VERB	VBG	_	3	advcl	_	_
+6	temptation	_	NOUN	NN	_	5	obj	_	SpaceAfter=No
+7	...	_	PUNCT	,	_	3	punct	_	_
+8	as	_	SCONJ	IN	_	10	mark	_	_
+9	you	_	PRON	PRP	_	10	nsubj	_	_
+10	grow	_	VERB	VBP	_	15	advcl	_	_
+11	older	_	ADJ	JJR	_	10	xcomp	_	SpaceAfter=No
+12	,	_	PUNCT	,	_	15	punct	_	_
+13	it	_	PRON	PRP	_	15	nsubj	_	_
+14	will	_	AUX	MD	_	15	aux	_	_
+15	avoid	_	VERB	VB	_	3	parataxis	_	_
+16	you	_	PRON	PRP	_	15	obj	_	SpaceAfter=No
+17	.	_	PUNCT	.	_	3	punct	_	_
+

@@ -1,0 +1,173 @@
+# sent_id = 1
+# text = I doubt the very few who actually read my blog have not come across this yet, but I figured I would put it out there anyways.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	doubt	_	VERB	VBP	_	0	root	_	_
+3	the	_	DET	DT	_	5	det	_	_
+4	very	_	ADV	RB	_	5	advmod	_	_
+5	few	_	ADJ	JJ	_	2	xcomp	_	_
+6	who	_	PRON	WP	_	8	nsubj	_	_
+7	actually	_	ADV	RB	_	8	advmod	_	_
+8	read	_	VERB	VBP	_	5	acl	_	_
+9	my	_	PRON	PRP$	_	10	nmod	_	_
+10	blog	_	NOUN	NN	_	8	obj	_	_
+11	have	_	AUX	VBP	_	13	aux	_	_
+12	not	_	PART	RB	_	13	advmod	_	_
+13	come	_	VERB	VB	_	2	ccomp	_	_
+14	across	_	ADP	IN	_	16	case	_	_
+15	this	_	DET	DT	_	16	det	_	_
+16	yet	_	ADV	RB	_	13	advmod	_	SpaceAfter=No
+17	,	_	PUNCT	,	_	20	punct	_	_
+18	but	_	CCONJ	CC	_	20	cc	_	_
+19	I	_	PRON	PRP	_	20	nsubj	_	_
+20	figured	_	VERB	VBD	_	13	conj	_	_
+21	I	_	PRON	PRP	_	23	nsubj	_	_
+22	would	_	AUX	MD	_	23	aux	_	_
+23	put	_	VERB	VB	_	2	parataxis	_	_
+24	it	_	PRON	PRP	_	23	obj	_	_
+25	out	_	ADV	RB	_	26	advmod	_	_
+26	there	_	ADV	RB	_	23	advmod	_	_
+27	anyway	_	ADV	RB	_	26	advmod	_	SpaceAfter=No
+28	s	_	X	AFX	_	26	advmod	_	SpaceAfter=No
+29	.	_	PUNCT	.	_	26	punct	_	_
+
+# sent_id = 2
+# text = John
+1	John	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 3
+# text = Donovan from Argghhh!
+1	Donovan	_	PROPN	NNP	_	0	root	_	_
+2	from	_	ADP	IN	_	3	case	_	_
+3	Argghhh	_	PROPN	NNP	_	1	nmod	_	SpaceAfter=No
+4	!	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 4
+# text = has put out a excellent slide show on what was actually found and fought for in Fallujah.
+1	has	_	AUX	VBZ	_	2	aux	_	_
+2	put	_	VERB	VBN	_	0	root	_	_
+3	out	_	ADP	RP	_	2	compound	_	_
+4	a	_	DET	DT	_	6	det	_	_
+5	excellent	_	ADJ	JJ	_	6	amod	_	_
+6	slide	_	NOUN	NN	_	7	nsubj	_	_
+7	show	_	VERB	VB	_	2	parataxis	_	_
+8	on	_	SCONJ	IN	_	9	mark	_	_
+9	what	_	PRON	WP	_	7	obl	_	_
+10	was	_	AUX	VBD	_	12	aux	_	_
+11	actually	_	ADV	RB	_	12	advmod	_	_
+12	found	_	VERB	VBN	_	9	acl	_	_
+13	and	_	CCONJ	CC	_	14	cc	_	_
+14	fought	_	VERB	VBD	_	12	conj	_	_
+15	for	_	ADP	IN	_	17	case	_	_
+16	in	_	ADP	IN	_	17	case	_	_
+17	Fallujah	_	PROPN	NNP	_	7	obl	_	SpaceAfter=No
+18	.	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 5
+# text = Click here To view it.
+1	Click	_	VERB	VB	_	0	root	_	_
+2	here	_	ADV	RB	_	1	advmod	_	_
+3	To	_	PART	TO	_	4	mark	_	_
+4	view	_	VERB	VB	_	2	advcl	_	_
+5	it	_	PRON	PRP	_	4	obj	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 6
+# text = He makes some good observations on a few of the pic's.
+1	He	_	PRON	PRP	_	2	nsubj	_	_
+2	makes	_	VERB	VBZ	_	0	root	_	_
+3	some	_	DET	DT	_	5	det	_	_
+4	good	_	ADJ	JJ	_	5	amod	_	_
+5	observations	_	NOUN	NNS	_	2	obj	_	_
+6	on	_	ADP	IN	_	8	case	_	_
+7	a	_	DET	DT	_	8	det	_	_
+8	few	_	ADJ	JJ	_	5	acl	_	_
+9	of	_	ADP	IN	_	11	case	_	_
+10	the	_	DET	DT	_	11	det	_	_
+11	pic	_	NOUN	NN	_	8	obl	_	SpaceAfter=No
+12	's	_	PART	POS	_	11	case	_	SpaceAfter=No
+13	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 7
+# text = One of the pictures shows a flag that was found in Fallujah.
+1	One	_	NUM	CD	_	5	nsubj	_	_
+2	of	_	ADP	IN	_	4	case	_	_
+3	the	_	DET	DT	_	4	det	_	_
+4	pictures	_	NOUN	NNS	_	1	nmod	_	_
+5	shows	_	VERB	VBZ	_	0	root	_	_
+6	a	_	DET	DT	_	7	det	_	_
+7	flag	_	NOUN	NN	_	5	obj	_	_
+8	that	_	PRON	WDT	_	10	nsubj	_	_
+9	was	_	AUX	VBD	_	10	aux	_	_
+10	found	_	VERB	VBN	_	7	acl	_	_
+11	in	_	ADP	IN	_	12	case	_	_
+12	Fallujah	_	PROPN	NNP	_	10	obl	_	SpaceAfter=No
+13	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 8
+# text = On the next two pictures he took screenshots of two beheading video's.
+1	On	_	ADP	IN	_	5	case	_	_
+2	the	_	DET	DT	_	5	det	_	_
+3	next	_	ADJ	JJ	_	5	amod	_	_
+4	two	_	NUM	CD	_	5	nummod	_	_
+5	pictures	_	NOUN	NNS	_	0	root	_	_
+6	he	_	PRON	PRP	_	7	nsubj	_	_
+7	took	_	VERB	VBD	_	5	acl	_	_
+8	screenshots	_	NOUN	NNS	_	7	obj	_	_
+9	of	_	ADP	IN	_	12	case	_	_
+10	two	_	NUM	CD	_	12	nummod	_	_
+11	beheading	_	NOUN	NN	_	12	compound	_	_
+12	video	_	NOUN	NN	_	8	nmod	_	SpaceAfter=No
+13	's	_	PART	POS	_	12	case	_	SpaceAfter=No
+14	.	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 9
+# text = Compare the flags to the Fallujah one.
+1	Compare	_	VERB	VB	_	0	root	_	_
+2	the	_	DET	DT	_	3	det	_	_
+3	flags	_	NOUN	NNS	_	1	obj	_	_
+4	to	_	ADP	IN	_	7	case	_	_
+5	the	_	DET	DT	_	7	det	_	_
+6	Fallujah	_	PROPN	NNP	_	7	compound	_	_
+7	one	_	NOUN	NN	_	3	appos	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 10
+# text = You have to see these slides....they are amazing.
+1	You	_	PRON	PRP	_	2	nsubj	_	_
+2	have	_	VERB	VBP	_	0	root	_	_
+3	to	_	PART	TO	_	4	mark	_	_
+4	see	_	VERB	VB	_	2	xcomp	_	_
+5	these	_	DET	DT	_	6	det	_	_
+6	slides	_	NOUN	NNS	_	4	obj	_	SpaceAfter=No
+7	....they	_	PRON	PRP	_	9	nsubj	_	_
+8	are	_	AUX	VBP	_	9	cop	_	_
+9	amazing	_	ADJ	JJ	_	2	parataxis	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 11
+# text = This Fallujah operation my turn out to be the most important operation done by the US Military since the end of the war.
+1	This	_	DET	DT	_	3	det	_	_
+2	Fallujah	_	PROPN	NNP	_	3	compound	_	_
+3	operation	_	NOUN	NN	_	5	nsubj	_	_
+4	my	_	PRON	PRP$	_	5	nmod	_	_
+5	turn	_	VERB	VBN	_	0	root	_	_
+6	out	_	ADP	RP	_	5	compound	_	_
+7	to	_	PART	TO	_	12	mark	_	_
+8	be	_	AUX	VB	_	12	cop	_	_
+9	the	_	DET	DT	_	12	det	_	_
+10	most	_	ADV	RBS	_	11	advmod	_	_
+11	important	_	ADJ	JJ	_	12	amod	_	_
+12	operation	_	NOUN	NN	_	5	nsubj	_	_
+13	done	_	VERB	VBN	_	12	acl	_	_
+14	by	_	ADP	IN	_	17	case	_	_
+15	the	_	DET	DT	_	17	det	_	_
+16	US	_	PROPN	NNP	_	17	compound	_	_
+17	Military	_	PROPN	NNP	_	13	obl	_	_
+18	since	_	ADP	IN	_	20	case	_	_
+19	the	_	DET	DT	_	20	det	_	_
+20	end	_	NOUN	NN	_	13	obl	_	_
+21	of	_	ADP	IN	_	23	case	_	_
+22	the	_	DET	DT	_	23	det	_	_
+23	war	_	NOUN	NN	_	20	nmod	_	SpaceAfter=No
+24	.	_	PUNCT	.	_	13	punct	_	_
+

@@ -1,0 +1,108 @@
+# sent_id = 1
+# text = out of carnival, royal caribbean, and norweigan (cruises) which is the best and why?
+1	out	_	ADP	IN	_	3	case	_	_
+2	of	_	ADP	IN	_	3	case	_	_
+3	carnival	_	PROPN	NNP	_	11	compound	_	SpaceAfter=No
+4	,	_	PUNCT	,	_	9	punct	_	_
+5	royal	_	PROPN	NNP	_	6	compound	_	_
+6	caribbean	_	PROPN	NNP	_	16	obl	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	9	punct	_	_
+8	and	_	CCONJ	CC	_	9	cc	_	_
+9	norweigan	_	VERB	VBD	_	6	conj	_	_
+10	(	_	PUNCT	-LRB-	_	11	punct	_	SpaceAfter=No
+11	cruises	_	NOUN	NNS	_	9	obj	_	SpaceAfter=No
+12	)	_	PUNCT	-RRB-	_	11	punct	_	_
+13	which	_	PRON	WDT	_	16	nsubj	_	_
+14	is	_	AUX	VBZ	_	16	cop	_	_
+15	the	_	DET	DT	_	16	det	_	_
+16	best	_	ADJ	JJS	_	0	root	_	_
+17	and	_	CCONJ	CC	_	18	cc	_	_
+18	why	_	ADV	WRB	_	16	parataxis	_	SpaceAfter=No
+19	?	_	PUNCT	.	_	18	punct	_	_
+
+# sent_id = 2
+# text = I prefer Royal Caribbean out of all these.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	prefer	_	VERB	VBP	_	0	root	_	_
+3	Royal	_	PROPN	NNP	_	4	compound	_	_
+4	Caribbean	_	PROPN	NNP	_	2	obj	_	_
+5	out	_	ADP	IN	_	8	case	_	_
+6	of	_	ADP	IN	_	8	case	_	_
+7	all	_	DET	PDT	_	8	det	_	_
+8	these	_	DET	DT	_	9	nmod	_	SpaceAfter=No
+9	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 3
+# text = There is so much to do onboard.
+1	There	_	PRON	EX	_	2	expl	_	_
+2	is	_	VERB	VBZ	_	0	root	_	_
+3	so	_	ADV	RB	_	4	advmod	_	_
+4	much	_	ADJ	JJ	_	2	ccomp	_	_
+5	to	_	PART	TO	_	6	mark	_	_
+6	do	_	VERB	VB	_	4	acl	_	_
+7	onboard	_	ADV	RB	_	6	advmod	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 4
+# text = The new NCL Epic does sound amazing, although I haven't sailed on her yet.
+1	The	_	DET	DT	_	4	det	_	_
+2	new	_	ADJ	JJ	_	4	amod	_	_
+3	NCL	_	PROPN	NNP	_	4	compound	_	_
+4	Epic	_	PROPN	NNP	_	6	nsubj	_	_
+5	does	_	AUX	VBZ	_	6	aux	_	_
+6	sound	_	VERB	VB	_	0	root	_	_
+7	amazing	_	ADJ	JJ	_	6	xcomp	_	SpaceAfter=No
+8	,	_	PUNCT	,	_	6	punct	_	_
+9	although	_	SCONJ	IN	_	13	mark	_	_
+10	I	_	PRON	PRP	_	13	nsubj	_	_
+11	have	_	AUX	VBP	_	13	aux	_	SpaceAfter=No
+12	n't	_	PART	RB	_	13	advmod	_	_
+13	sailed	_	VERB	VBN	_	6	advcl	_	_
+14	on	_	ADP	IN	_	16	case	_	_
+15	her	_	PRON	PRP$	_	16	nmod	_	_
+16	yet	_	ADV	RB	_	13	advmod	_	SpaceAfter=No
+17	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 5
+# text = None of the above.
+1	None	_	NOUN	NN	_	0	root	_	_
+2	of	_	ADP	IN	_	4	case	_	_
+3	the	_	DET	DT	_	4	det	_	_
+4	above	_	ADJ	JJ	_	1	nmod	_	SpaceAfter=No
+5	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 6
+# text = Of THESE three, it's a toss-up between Royal and Carnival.
+1	Of	_	ADP	IN	_	10	case	_	_
+2	THESE	_	DET	DT	_	10	det	_	_
+3	three	_	NUM	CD	_	0	root	_	SpaceAfter=No
+4	,	_	PUNCT	,	_	10	punct	_	_
+5	it	_	PRON	PRP	_	10	nsubj	_	SpaceAfter=No
+6	's	_	AUX	VBZ	_	10	cop	_	_
+7	a	_	DET	DT	_	10	det	_	_
+8	toss	_	NOUN	NN	_	10	compound	_	SpaceAfter=No
+9	-	_	PUNCT	HYPH	_	10	punct	_	SpaceAfter=No
+10	up	_	NOUN	NN	_	3	nmod	_	_
+11	between	_	ADP	IN	_	12	case	_	_
+12	Royal	_	PROPN	NNP	_	10	compound	_	_
+13	and	_	CCONJ	CC	_	14	cc	_	_
+14	Carnival	_	PROPN	NNP	_	12	conj	_	SpaceAfter=No
+15	.	_	PUNCT	.	_	10	punct	_	_
+
+# sent_id = 7
+# text = NCL is a notch below either, in terms of quality and service.
+1	NCL	_	PROPN	NNP	_	4	nsubj	_	_
+2	is	_	AUX	VBZ	_	4	cop	_	_
+3	a	_	DET	DT	_	4	det	_	_
+4	notch	_	NOUN	NN	_	0	root	_	_
+5	below	_	ADV	RB	_	4	advmod	_	_
+6	either	_	ADV	RB	_	4	advmod	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	4	punct	_	_
+8	in	_	ADP	IN	_	9	case	_	_
+9	terms	_	NOUN	NNS	_	4	obl	_	_
+10	of	_	ADP	IN	_	11	case	_	_
+11	quality	_	NOUN	NN	_	9	nmod	_	_
+12	and	_	CCONJ	CC	_	13	cc	_	_
+13	service	_	NOUN	NN	_	11	conj	_	SpaceAfter=No
+14	.	_	PUNCT	.	_	4	punct	_	_
+

@@ -1,0 +1,81 @@
+# sent_id = 1
+# text = How come no one bothers to ask any questions in this section?
+1	How	_	ADV	WRB	_	2	advmod	_	_
+2	come	_	VERB	VBN	_	5	xcomp	_	_
+3	no	_	DET	DT	_	4	det	_	_
+4	one	_	NOUN	NN	_	5	nsubj	_	_
+5	bothers	_	VERB	VBZ	_	0	root	_	_
+6	to	_	PART	TO	_	7	mark	_	_
+7	ask	_	VERB	VB	_	5	ccomp	_	_
+8	any	_	DET	DT	_	9	det	_	_
+9	questions	_	NOUN	NNS	_	7	obj	_	_
+10	in	_	ADP	IN	_	12	case	_	_
+11	this	_	DET	DT	_	12	det	_	_
+12	section	_	NOUN	NN	_	9	nmod	_	SpaceAfter=No
+13	?	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 2
+# text = I mean besides me of course.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	mean	_	VERB	VBP	_	0	root	_	_
+3	besides	_	ADP	IN	_	4	case	_	_
+4	me	_	PRON	PRP	_	2	obl	_	_
+5	of	_	ADV	RB	_	2	advmod	_	_
+6	course	_	ADV	RB	_	5	fixed	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 3
+# text = Because obviously most people have never even heard of this section.
+1	Because	_	SCONJ	IN	_	8	mark	_	_
+2	obviously	_	ADV	RB	_	8	advmod	_	_
+3	most	_	ADJ	JJS	_	4	amod	_	_
+4	people	_	NOUN	NNS	_	8	nsubj	_	_
+5	have	_	AUX	VBP	_	8	aux	_	_
+6	never	_	ADV	RB	_	8	advmod	_	_
+7	even	_	ADV	RB	_	8	advmod	_	_
+8	heard	_	VERB	VBN	_	0	root	_	_
+9	of	_	SCONJ	IN	_	11	case	_	_
+10	this	_	DET	DT	_	11	det	_	_
+11	section	_	NOUN	NN	_	8	obl	_	SpaceAfter=No
+12	.	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 4
+# text = Someone had to be first.
+1	Someone	_	PRON	NN	_	2	nsubj	_	_
+2	had	_	VERB	VBD	_	0	root	_	_
+3	to	_	PART	TO	_	5	mark	_	_
+4	be	_	AUX	VB	_	5	cop	_	_
+5	first	_	ADV	RB	_	2	xcomp	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 5
+# text = I have never been there.
+1	I	_	PRON	PRP	_	5	nsubj	_	_
+2	have	_	AUX	VBP	_	5	aux	_	_
+3	never	_	ADV	RB	_	5	advmod	_	_
+4	been	_	AUX	VBN	_	5	cop	_	_
+5	there	_	ADV	RB	_	0	root	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 6
+# text = well, I don't ask questions here because I have no clue what "Iguazu" is...
+1	well	_	INTJ	UH	_	6	discourse	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	6	punct	_	_
+3	I	_	PRON	PRP	_	6	nsubj	_	_
+4	do	_	AUX	VBP	_	6	aux	_	SpaceAfter=No
+5	n't	_	PART	RB	_	6	advmod	_	_
+6	ask	_	VERB	VB	_	18	ccomp	_	_
+7	questions	_	NOUN	NNS	_	6	obj	_	_
+8	here	_	ADV	RB	_	6	advmod	_	_
+9	because	_	SCONJ	IN	_	11	mark	_	_
+10	I	_	PRON	PRP	_	11	nsubj	_	_
+11	have	_	VERB	VBP	_	6	advcl	_	_
+12	no	_	DET	DT	_	13	det	_	_
+13	clue	_	NOUN	NN	_	11	obj	_	_
+14	what	_	PRON	WP	_	16	nsubj	_	_
+15	"	_	PUNCT	``	_	16	punct	_	SpaceAfter=No
+16	Iguazu	_	PROPN	NNP	_	13	dep	_	SpaceAfter=No
+17	"	_	PUNCT	''	_	16	punct	_	_
+18	is	_	VERB	VBZ	_	0	root	_	SpaceAfter=No
+19	...	_	PUNCT	.	_	18	punct	_	_
+

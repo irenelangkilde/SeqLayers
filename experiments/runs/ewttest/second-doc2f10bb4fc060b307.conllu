@@ -1,0 +1,104 @@
+# sent_id = 1
+# text = Which Compact System Camera
+1	Which	_	DET	WDT	_	3	det	_	_
+2	Compact	_	PROPN	NNP	_	3	compound	_	_
+3	System	_	PROPN	NNP	_	4	compound	_	_
+4	Camera	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 2
+# text = Should I Get...?
+1	Should	_	AUX	MD	_	3	aux	_	_
+2	I	_	PRON	PRP	_	3	nsubj	_	_
+3	Get	_	VERB	VB	_	0	root	_	SpaceAfter=No
+4	...	_	PUNCT	,	_	3	punct	_	SpaceAfter=No
+5	?	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 3
+# text = I'm looking for a camera that has really good zoom during a video and pictures; and good quality pictures /videos I'm planning on buying a compact system camera at best buy ; so please list the one(s) I should purchase.
+1	I	_	PRON	PRP	_	3	nsubj	_	SpaceAfter=No
+2	'm	_	AUX	VBP	_	3	aux	_	_
+3	looking	_	VERB	VBG	_	0	root	_	_
+4	for	_	ADP	IN	_	6	case	_	_
+5	a	_	DET	DT	_	6	det	_	_
+6	camera	_	NOUN	NN	_	3	obl	_	_
+7	that	_	PRON	WDT	_	11	nsubj	_	_
+8	has	_	AUX	VBZ	_	11	aux	_	_
+9	really	_	ADV	RB	_	10	advmod	_	_
+10	good	_	ADJ	JJ	_	11	amod	_	_
+11	zoom	_	NOUN	NN	_	3	obl	_	_
+12	during	_	ADP	IN	_	14	case	_	_
+13	a	_	DET	DT	_	14	det	_	_
+14	video	_	NOUN	NN	_	11	nmod	_	_
+15	and	_	CCONJ	CC	_	16	cc	_	_
+16	pictures	_	NOUN	NNS	_	14	conj	_	SpaceAfter=No
+17	;	_	PUNCT	,	_	16	punct	_	_
+18	and	_	CCONJ	CC	_	21	cc	_	_
+19	good	_	ADJ	JJ	_	21	amod	_	_
+20	quality	_	ADJ	JJ	_	21	amod	_	_
+21	pictures	_	NOUN	NNS	_	16	nmod	_	_
+22	/	_	PUNCT	,	_	23	cc	_	SpaceAfter=No
+23	videos	_	NOUN	NNS	_	21	conj	_	_
+24	I	_	PRON	PRP	_	26	nsubj	_	SpaceAfter=No
+25	'm	_	AUX	VBP	_	26	aux	_	_
+26	planning	_	VERB	VBG	_	3	parataxis	_	_
+27	on	_	SCONJ	IN	_	28	mark	_	_
+28	buying	_	VERB	VBG	_	26	advcl	_	_
+29	a	_	DET	DT	_	32	det	_	_
+30	compact	_	ADJ	JJ	_	32	amod	_	_
+31	system	_	NOUN	NN	_	32	compound	_	_
+32	camera	_	NOUN	NN	_	28	obj	_	_
+33	at	_	ADV	RB	_	34	case	_	_
+34	best	_	ADV	RBS	_	35	advmod	_	_
+35	buy	_	VERB	VBP	_	28	parataxis	_	_
+36	;	_	PUNCT	,	_	35	punct	_	_
+37	so	_	ADV	RB	_	39	advmod	_	_
+38	please	_	INTJ	UH	_	39	discourse	_	_
+39	list	_	VERB	VB	_	3	parataxis	_	_
+40	the	_	DET	DT	_	41	det	_	_
+41	one	_	NOUN	NN	_	39	obj	_	SpaceAfter=No
+42	(	_	PUNCT	-LRB-	_	41	punct	_	SpaceAfter=No
+43	s	_	X	AFX	_	41	advmod	_	SpaceAfter=No
+44	)	_	PUNCT	-RRB-	_	41	punct	_	_
+45	I	_	PRON	PRP	_	47	nsubj	_	_
+46	should	_	AUX	MD	_	47	aux	_	_
+47	purchase	_	VERB	VB	_	41	acl	_	SpaceAfter=No
+48	.	_	PUNCT	.	_	39	punct	_	_
+
+# sent_id = 4
+# text = Also how much do compact system cameras drop on boxing day?
+1	Also	_	ADV	RB	_	4	advmod	_	_
+2	how	_	ADV	WRB	_	3	advmod	_	_
+3	much	_	ADV	RB	_	4	advmod	_	_
+4	do	_	VERB	VB	_	0	root	_	_
+5	compact	_	ADJ	JJ	_	6	amod	_	_
+6	system	_	NOUN	NN	_	7	compound	_	_
+7	cameras	_	NOUN	NNS	_	4	obj	_	_
+8	drop	_	VERB	VBP	_	4	parataxis	_	_
+9	on	_	ADP	IN	_	11	case	_	_
+10	boxing	_	NOUN	NN	_	11	compound	_	_
+11	day	_	NOUN	NN	_	8	obl	_	SpaceAfter=No
+12	?	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 5
+# text = **and i can upload my pictures and videos on the computer (facebook) have a look at sony wx10
+1	**and	_	ADV	RB	_	15	advmod	_	_
+2	i	_	PRON	PRP	_	4	nsubj	_	_
+3	can	_	AUX	MD	_	4	aux	_	_
+4	upload	_	VERB	VB	_	1	advcl	_	_
+5	my	_	PRON	PRP$	_	6	nmod	_	_
+6	pictures	_	NOUN	NNS	_	4	obj	_	_
+7	and	_	CCONJ	CC	_	8	cc	_	_
+8	videos	_	NOUN	NNS	_	6	conj	_	_
+9	on	_	ADP	IN	_	11	case	_	_
+10	the	_	DET	DT	_	11	det	_	_
+11	computer	_	NOUN	NN	_	4	obl	_	_
+12	(	_	PUNCT	-LRB-	_	13	punct	_	SpaceAfter=No
+13	facebook	_	NOUN	NN	_	11	advmod	_	SpaceAfter=No
+14	)	_	PUNCT	-RRB-	_	13	punct	_	_
+15	have	_	VERB	VB	_	0	root	_	_
+16	a	_	DET	DT	_	17	det	_	_
+17	look	_	NOUN	NN	_	15	obj	_	_
+18	at	_	ADP	IN	_	19	case	_	_
+19	sony	_	NOUN	NN	_	17	nmod	_	_
+20	wx10	_	NUM	CD	_	19	nummod	_	_
+

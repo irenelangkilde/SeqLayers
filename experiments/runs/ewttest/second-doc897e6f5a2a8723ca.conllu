@@ -1,0 +1,538 @@
+# sent_id = 1
+# text = Vince,
+1	Vince	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+
+# sent_id = 2
+# text = Are you going to be able to make the power VAR meeting on Thursday?
+1	Are	_	AUX	VBP	_	3	aux	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	going	_	VERB	VBG	_	0	root	_	_
+4	to	_	PART	TO	_	6	mark	_	_
+5	be	_	AUX	VB	_	6	cop	_	_
+6	able	_	ADJ	JJ	_	3	ccomp	_	_
+7	to	_	PART	TO	_	8	mark	_	_
+8	make	_	VERB	VB	_	6	xcomp	_	_
+9	the	_	DET	DT	_	12	det	_	_
+10	power	_	NOUN	NN	_	8	obj	_	_
+11	VAR	_	PROPN	NNP	_	12	compound	_	_
+12	meeting	_	NOUN	NN	_	10	nmod	_	_
+13	on	_	ADP	IN	_	14	case	_	_
+14	Thursday	_	PROPN	NNP	_	12	nmod	_	SpaceAfter=No
+15	?	_	PUNCT	.	_	14	punct	_	_
+
+# sent_id = 3
+# text = Frank Sheridan, I have just checked with RAC (David Gorte) and we have a green light to go ahead with the project.
+1	Frank	_	PROPN	NNP	_	0	root	_	_
+2	Sheridan	_	PROPN	NNP	_	1	appos	_	SpaceAfter=No
+3	,	_	PUNCT	,	_	1	punct	_	_
+4	I	_	PRON	PRP	_	7	nsubj	_	_
+5	have	_	AUX	VBP	_	7	aux	_	_
+6	just	_	ADV	RB	_	7	advmod	_	_
+7	checked	_	VERB	VBN	_	16	advcl	_	_
+8	with	_	ADP	IN	_	9	case	_	_
+9	RAC	_	PROPN	NNP	_	7	obl	_	_
+10	(	_	PUNCT	-LRB-	_	11	punct	_	SpaceAfter=No
+11	David	_	PROPN	NNP	_	9	appos	_	_
+12	Gorte	_	PROPN	NNP	_	11	flat	_	SpaceAfter=No
+13	)	_	PUNCT	-RRB-	_	9	punct	_	_
+14	and	_	CCONJ	CC	_	16	cc	_	_
+15	we	_	PRON	PRP	_	16	nsubj	_	_
+16	have	_	VERB	VBP	_	1	conj	_	_
+17	a	_	DET	DT	_	19	det	_	_
+18	green	_	ADJ	JJ	_	19	amod	_	_
+19	light	_	NOUN	NN	_	16	obj	_	_
+20	to	_	PART	TO	_	21	mark	_	_
+21	go	_	VERB	VB	_	19	acl	_	_
+22	ahead	_	ADV	RB	_	21	advmod	_	_
+23	with	_	ADP	IN	_	25	case	_	_
+24	the	_	DET	DT	_	25	det	_	_
+25	project	_	NOUN	NN	_	21	obl	_	SpaceAfter=No
+26	.	_	PUNCT	.	_	16	punct	_	_
+
+# sent_id = 4
+# text = I shall you tomorrow to discuss the details.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	shall	_	AUX	MD	_	4	aux	_	_
+3	you	_	PRON	PRP	_	4	nsubj	_	_
+4	tomorrow	_	VERB	VBG	_	0	root	_	_
+5	to	_	PART	TO	_	6	mark	_	_
+6	discuss	_	VERB	VB	_	4	advcl	_	_
+7	the	_	DET	DT	_	8	det	_	_
+8	details	_	NOUN	NNS	_	6	obj	_	SpaceAfter=No
+9	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 5
+# text = Vince
+1	Vince	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 6
+# text = Sheridan Titman <titman@mail.utexas.edu> on 01/24/2001 02:45:50 PM
+1	Sheridan	_	PROPN	NNP	_	0	root	_	_
+2	Titman	_	PROPN	NNP	_	1	flat	_	_
+3	<	_	PUNCT	-LRB-	_	4	punct	_	SpaceAfter=No
+4	titman@mail.utexas.edu	_	X	ADD	_	1	list	_	SpaceAfter=No
+5	>	_	PUNCT	-RRB-	_	4	punct	_	_
+6	on	_	ADP	IN	_	7	case	_	_
+7	01/24/2001	_	NUM	CD	_	1	obl	_	_
+8	02:45:50	_	NUM	CD	_	9	nummod	_	_
+9	PM	_	NOUN	NN	_	7	nmod	_	_
+
+# sent_id = 7
+# text = Vince:
+1	Vince	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+2	:	_	PUNCT	:	_	1	punct	_	_
+
+# sent_id = 8
+# text = I just wanted to check with you regarding the consulting arrangement we discussed a couple of weeks ago.
+1	I	_	PRON	PRP	_	3	nsubj	_	_
+2	just	_	ADV	RB	_	3	advmod	_	_
+3	wanted	_	VERB	VBD	_	0	root	_	_
+4	to	_	PART	TO	_	5	mark	_	_
+5	check	_	VERB	VB	_	3	xcomp	_	_
+6	with	_	ADP	IN	_	7	case	_	_
+7	you	_	PRON	PRP	_	5	obl	_	_
+8	regarding	_	VERB	VBG	_	11	case	_	_
+9	the	_	DET	DT	_	11	det	_	_
+10	consulting	_	ADJ	JJ	_	11	amod	_	_
+11	arrangement	_	NOUN	NN	_	3	ccomp	_	_
+12	we	_	PRON	PRP	_	13	nsubj	_	_
+13	discussed	_	VERB	VBD	_	11	acl	_	_
+14	a	_	DET	DT	_	15	det	_	_
+15	couple	_	NOUN	NN	_	18	obl	_	_
+16	of	_	ADP	IN	_	17	case	_	_
+17	weeks	_	NOUN	NNS	_	15	nmod	_	_
+18	ago	_	ADV	RB	_	13	advmod	_	SpaceAfter=No
+19	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 9
+# text = Perhaps, we should start with just a 1 or 2 day contract where I give some thoughts to the kind of issues that we discussed and come to Houston to present my preliminary thoughts and possible avenues for additional work.
+1	Perhaps	_	ADV	RB	_	5	advmod	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	5	punct	_	_
+3	we	_	PRON	PRP	_	5	nsubj	_	_
+4	should	_	AUX	MD	_	5	aux	_	_
+5	start	_	VERB	VB	_	0	root	_	_
+6	with	_	ADP	IN	_	5	obl	_	_
+7	just	_	ADV	RB	_	13	advmod	_	_
+8	a	_	DET	DT	_	13	det	_	_
+9	1	_	NUM	CD	_	13	parataxis	_	_
+10	or	_	CCONJ	CC	_	11	cc	_	_
+11	2	_	NUM	CD	_	12	nummod	_	_
+12	day	_	NOUN	NN	_	13	compound	_	_
+13	contract	_	NOUN	NN	_	5	obl	_	_
+14	where	_	ADV	WRB	_	16	mark	_	_
+15	I	_	PRON	PRP	_	16	nsubj	_	_
+16	give	_	VERB	VBP	_	5	advcl	_	_
+17	some	_	DET	DT	_	18	det	_	_
+18	thoughts	_	NOUN	NNS	_	16	obj	_	_
+19	to	_	ADP	IN	_	21	case	_	_
+20	the	_	DET	DT	_	21	det	_	_
+21	kind	_	NOUN	NN	_	18	nmod	_	_
+22	of	_	ADP	IN	_	23	case	_	_
+23	issues	_	NOUN	NNS	_	21	nmod	_	_
+24	that	_	PRON	WDT	_	26	obj	_	_
+25	we	_	PRON	PRP	_	26	nsubj	_	_
+26	discussed	_	VERB	VBD	_	23	acl	_	_
+27	and	_	CCONJ	CC	_	28	cc	_	_
+28	come	_	VERB	VB	_	26	conj	_	_
+29	to	_	ADP	IN	_	30	case	_	_
+30	Houston	_	PROPN	NNP	_	28	obl	_	_
+31	to	_	PART	TO	_	32	mark	_	_
+32	present	_	VERB	VB	_	28	advcl	_	_
+33	my	_	PRON	PRP$	_	35	nmod	_	_
+34	preliminary	_	ADJ	JJ	_	35	amod	_	_
+35	thoughts	_	NOUN	NNS	_	32	obj	_	_
+36	and	_	CCONJ	CC	_	38	cc	_	_
+37	possible	_	ADJ	JJ	_	38	amod	_	_
+38	avenues	_	NOUN	NNS	_	32	obj	_	_
+39	for	_	ADP	IN	_	41	case	_	_
+40	additional	_	ADJ	JJ	_	41	amod	_	_
+41	work	_	NOUN	NN	_	32	obl	_	SpaceAfter=No
+42	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 10
+# text = regards,
+1	regards	_	NOUN	NNS	_	0	root	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+
+# sent_id = 11
+# text = Sheridan Sheridan Titman Department of Finance College of Business Administration University of Texas Austin, Texas 78712-1179 512-232-2787 (phone) 512-471-5073 (fax) titman@mail.utexas.edu Bryan,
+1	Sheridan	_	PROPN	NNP	_	29	compound	_	_
+2	Sheridan	_	PROPN	NNP	_	3	compound	_	_
+3	Titman	_	PROPN	NNP	_	4	compound	_	_
+4	Department	_	PROPN	NNP	_	1	appos	_	_
+5	of	_	ADP	IN	_	7	case	_	_
+6	Finance	_	PROPN	NNP	_	7	compound	_	_
+7	College	_	PROPN	NNP	_	2	nmod	_	_
+8	of	_	ADP	IN	_	9	case	_	_
+9	Business	_	PROPN	NNP	_	7	nmod	_	_
+10	Administration	_	PROPN	NNP	_	11	compound	_	_
+11	University	_	PROPN	NNP	_	7	nmod	_	_
+12	of	_	ADP	IN	_	13	case	_	_
+13	Texas	_	PROPN	NNP	_	11	nmod	_	_
+14	Austin	_	PROPN	NNP	_	11	compound	_	SpaceAfter=No
+15	,	_	PUNCT	,	_	14	punct	_	_
+16	Texas	_	PROPN	NNP	_	14	appos	_	_
+17	78712	_	NUM	CD	_	7	appos	_	SpaceAfter=No
+18	-1179	_	NUM	CD	_	17	nummod	_	_
+19	512-232-2787	_	NUM	CD	_	21	appos	_	_
+20	(	_	PUNCT	-LRB-	_	21	punct	_	SpaceAfter=No
+21	phone	_	NOUN	NN	_	7	list	_	SpaceAfter=No
+22	)	_	PUNCT	-RRB-	_	21	punct	_	_
+23	512-471	_	NUM	CD	_	26	appos	_	SpaceAfter=No
+24	-5073	_	NUM	CD	_	23	appos	_	_
+25	(	_	PUNCT	-LRB-	_	26	punct	_	SpaceAfter=No
+26	fax	_	NOUN	NN	_	7	list	_	SpaceAfter=No
+27	)	_	PUNCT	-RRB-	_	26	punct	_	_
+28	titman@mail.utexas.edu	_	X	ADD	_	7	list	_	_
+29	Bryan	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+30	,	_	PUNCT	,	_	29	punct	_	_
+
+# sent_id = 12
+# text = Did you have a chance to take a look at the resume I sent you?
+1	Did	_	AUX	VBD	_	3	aux	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	have	_	VERB	VB	_	0	root	_	_
+4	a	_	DET	DT	_	5	det	_	_
+5	chance	_	NOUN	NN	_	3	obj	_	_
+6	to	_	PART	TO	_	7	mark	_	_
+7	take	_	VERB	VB	_	5	acl	_	_
+8	a	_	DET	DT	_	9	det	_	_
+9	look	_	NOUN	NN	_	7	obj	_	_
+10	at	_	ADP	IN	_	12	case	_	_
+11	the	_	DET	DT	_	12	det	_	_
+12	resume	_	NOUN	NN	_	7	obl	_	_
+13	I	_	PRON	PRP	_	14	nsubj	_	_
+14	sent	_	VERB	VBD	_	12	acl	_	_
+15	you	_	PRON	PRP	_	14	obj	_	SpaceAfter=No
+16	?	_	PUNCT	.	_	14	punct	_	_
+
+# sent_id = 13
+# text = He looked like a great guy for your group.
+1	He	_	PRON	PRP	_	2	nsubj	_	_
+2	looked	_	VERB	VBD	_	0	root	_	_
+3	like	_	ADP	IN	_	6	case	_	_
+4	a	_	DET	DT	_	6	det	_	_
+5	great	_	ADJ	JJ	_	6	amod	_	_
+6	guy	_	NOUN	NN	_	2	obl	_	_
+7	for	_	ADP	IN	_	9	case	_	_
+8	your	_	PRON	PRP$	_	9	nmod	_	_
+9	group	_	NOUN	NN	_	6	nmod	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 14
+# text = Vince
+1	Vince	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 15
+# text = David,
+1	David	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+
+# sent_id = 16
+# text = A reminder.
+1	A	_	DET	DT	_	2	det	_	_
+2	reminder	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+3	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 17
+# text = We discussed a few days ago a consulting arrangement with Prof.
+1	We	_	PRON	PRP	_	2	nsubj	_	_
+2	discussed	_	VERB	VBD	_	0	root	_	_
+3	a	_	DET	DT	_	5	det	_	_
+4	few	_	ADJ	JJ	_	5	amod	_	_
+5	days	_	NOUN	NNS	_	6	obl	_	_
+6	ago	_	ADV	RB	_	9	advmod	_	_
+7	a	_	DET	DT	_	9	det	_	_
+8	consulting	_	ADJ	JJ	_	9	amod	_	_
+9	arrangement	_	NOUN	NN	_	2	ccomp	_	_
+10	with	_	ADP	IN	_	11	case	_	_
+11	Prof	_	PROPN	NNP	_	9	nmod	_	SpaceAfter=No
+12	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 18
+# text = Sheridan Titman from UT.
+1	Sheridan	_	PROPN	NNP	_	2	compound	_	_
+2	Titman	_	PROPN	NNP	_	0	root	_	_
+3	from	_	ADP	IN	_	4	case	_	_
+4	UT	_	PROPN	NNP	_	1	nmod	_	SpaceAfter=No
+5	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 19
+# text = Any feedback from Rick Buy?
+1	Any	_	DET	DT	_	2	det	_	_
+2	feedback	_	NOUN	NN	_	0	root	_	_
+3	from	_	ADP	IN	_	5	case	_	_
+4	Rick	_	PROPN	NNP	_	5	compound	_	_
+5	Buy	_	NOUN	NN	_	2	nmod	_	SpaceAfter=No
+6	?	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 20
+# text = Please, let me know.
+1	Please	_	INTJ	UH	_	3	discourse	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	3	punct	_	_
+3	let	_	VERB	VB	_	0	root	_	_
+4	me	_	PRON	PRP	_	3	obj	_	_
+5	know	_	VERB	VB	_	3	xcomp	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 21
+# text = 42299
+1	42299	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 22
+# text = Vince Kevin Kindall@ENRON
+1	Vince	_	PROPN	NNP	_	2	parataxis	_	_
+2	Kevin	_	PROPN	NNP	_	0	root	_	_
+3	Kindall@ENRON	_	X	ADD	_	2	goeswith	_	_
+
+# sent_id = 23
+# text = 01/24/2001 03:51 PM
+1	01/24/2001	_	NUM	CD	_	0	root	_	_
+2	03:51	_	NUM	CD	_	3	nummod	_	_
+3	PM	_	NOUN	NN	_	1	nmod	_	_
+
+# sent_id = 24
+# text = Per our conversation yesterday...
+1	Per	_	ADP	IN	_	3	case	_	_
+2	our	_	PRON	PRP$	_	3	nmod	_	_
+3	conversation	_	NOUN	NN	_	4	compound	_	_
+4	yesterday	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+5	...	_	PUNCT	,	_	4	punct	_	_
+
+# sent_id = 25
+# text = Hi Kevin, Further to your call attached is a presentation I gave at the Canadian Risk Managers Conference in Edmonton in the fall of 2000.
+1	Hi	_	INTJ	UH	_	2	discourse	_	_
+2	Kevin	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+3	,	_	PUNCT	,	_	2	punct	_	_
+4	Further	_	ADV	RB	_	7	advmod	_	_
+5	to	_	ADP	IN	_	7	case	_	_
+6	your	_	PRON	PRP$	_	7	nmod	_	_
+7	call	_	NOUN	NN	_	8	advcl	_	_
+8	attached	_	VERB	VBN	_	2	acl	_	_
+9	is	_	AUX	VBZ	_	8	aux	_	_
+10	a	_	DET	DT	_	11	det	_	_
+11	presentation	_	NOUN	NN	_	8	nsubj	_	_
+12	I	_	PRON	PRP	_	13	nsubj	_	_
+13	gave	_	VERB	VBD	_	11	acl	_	_
+14	at	_	ADP	IN	_	17	case	_	_
+15	the	_	DET	DT	_	17	det	_	_
+16	Canadian	_	PROPN	NNP	_	17	compound	_	_
+17	Risk	_	PROPN	NNP	_	18	compound	_	_
+18	Managers	_	PROPN	NNPS	_	19	compound	_	_
+19	Conference	_	PROPN	NNP	_	24	nmod	_	_
+20	in	_	ADP	IN	_	21	case	_	_
+21	Edmonton	_	PROPN	NNP	_	19	nmod	_	_
+22	in	_	ADP	IN	_	24	case	_	_
+23	the	_	DET	DT	_	24	det	_	_
+24	fall	_	NOUN	NN	_	13	obl	_	_
+25	of	_	ADP	IN	_	26	case	_	_
+26	2000	_	NUM	CD	_	24	nmod	_	SpaceAfter=No
+27	.	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 26
+# text = I'll try and send one of Peter Cox' as well but may have some problems due to file size.
+1	I	_	PRON	PRP	_	3	nsubj	_	SpaceAfter=No
+2	'll	_	AUX	MD	_	3	aux	_	_
+3	try	_	VERB	VB	_	0	root	_	_
+4	and	_	CCONJ	CC	_	5	cc	_	_
+5	send	_	VERB	VB	_	3	conj	_	_
+6	one	_	NUM	CD	_	5	obj	_	_
+7	of	_	ADP	IN	_	8	case	_	_
+8	Peter	_	PROPN	NNP	_	11	obl	_	_
+9	Cox	_	PROPN	NNP	_	8	flat	_	SpaceAfter=No
+10	'	_	PART	POS	_	8	case	_	_
+11	as	_	ADV	RB	_	15	cc	_	_
+12	well	_	ADV	RB	_	11	fixed	_	_
+13	but	_	CCONJ	CC	_	15	cc	_	_
+14	may	_	AUX	MD	_	15	aux	_	_
+15	have	_	VERB	VB	_	5	conj	_	_
+16	some	_	DET	DT	_	17	det	_	_
+17	problems	_	NOUN	NNS	_	15	obj	_	_
+18	due	_	ADP	IN	_	21	case	_	_
+19	to	_	ADP	IN	_	18	fixed	_	_
+20	file	_	NOUN	NN	_	17	nmod	_	_
+21	size	_	NOUN	NN	_	20	nmod	_	SpaceAfter=No
+22	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 27
+# text = In any event, my presentation should give you a starting point.
+1	In	_	ADP	IN	_	3	case	_	_
+2	any	_	DET	DT	_	3	det	_	_
+3	event	_	NOUN	NN	_	8	obl	_	SpaceAfter=No
+4	,	_	PUNCT	,	_	8	punct	_	_
+5	my	_	PRON	PRP$	_	6	nmod	_	_
+6	presentation	_	NOUN	NN	_	8	nsubj	_	_
+7	should	_	AUX	MD	_	8	aux	_	_
+8	give	_	VERB	VB	_	0	root	_	_
+9	you	_	PRON	PRP	_	8	iobj	_	_
+10	a	_	DET	DT	_	12	det	_	_
+11	starting	_	VERB	VBG	_	12	amod	_	_
+12	point	_	NOUN	NN	_	8	obl	_	SpaceAfter=No
+13	.	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 28
+# text = Mike - Cfoforum.ppt Darrell,
+1	Mike	_	PROPN	NNP	_	4	nsubj	_	_
+2	-	_	PUNCT	HYPH	_	1	punct	_	_
+3	Cfoforum.ppt	_	PROPN	NNP	_	4	compound	_	_
+4	Darrell	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+5	,	_	PUNCT	,	_	4	punct	_	_
+
+# sent_id = 29
+# text = Thanks a lot.
+1	Thanks	_	NOUN	NN	_	0	root	_	_
+2	a	_	DET	DT	_	3	det	_	_
+3	lot	_	NOUN	NN	_	1	nmod	_	SpaceAfter=No
+4	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 30
+# text = A quick question:
+1	A	_	DET	DT	_	3	det	_	_
+2	quick	_	ADJ	JJ	_	3	amod	_	_
+3	question	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+4	:	_	PUNCT	:	_	3	punct	_	_
+
+# sent_id = 31
+# text = we haven't received your invoice for the last few model / paper reviews.
+1	we	_	PRON	PRP	_	4	nsubj	_	_
+2	have	_	AUX	VBP	_	4	aux	_	SpaceAfter=No
+3	n't	_	PART	RB	_	4	advmod	_	_
+4	received	_	VERB	VBN	_	0	root	_	_
+5	your	_	PRON	PRP$	_	6	nmod	_	_
+6	invoice	_	NOUN	NN	_	4	obj	_	_
+7	for	_	ADP	IN	_	11	case	_	_
+8	the	_	DET	DT	_	11	det	_	_
+9	last	_	ADJ	JJ	_	11	amod	_	_
+10	few	_	ADJ	JJ	_	11	amod	_	_
+11	model	_	NOUN	NNS	_	4	obl	_	_
+12	/	_	PUNCT	,	_	13	cc	_	_
+13	paper	_	NOUN	NN	_	14	compound	_	_
+14	reviews	_	NOUN	NNS	_	11	conj	_	SpaceAfter=No
+15	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 32
+# text = Please, make sure that we are billed.
+1	Please	_	INTJ	UH	_	3	discourse	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	3	punct	_	_
+3	make	_	VERB	VB	_	0	root	_	_
+4	sure	_	ADJ	JJ	_	3	xcomp	_	_
+5	that	_	SCONJ	IN	_	8	mark	_	_
+6	we	_	PRON	PRP	_	8	nsubj	_	_
+7	are	_	AUX	VBP	_	8	aux	_	_
+8	billed	_	VERB	VBN	_	4	ccomp	_	SpaceAfter=No
+9	.	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 33
+# text = Clewlow/Strickland book is out.
+1	Clewlow/	_	PROPN	NNP	_	2	compound	_	SpaceAfter=No
+2	Strickland	_	PROPN	NNP	_	3	compound	_	_
+3	book	_	NOUN	NN	_	0	root	_	_
+4	is	_	AUX	VBZ	_	5	cop	_	_
+5	out	_	X	FW	_	3	acl	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 34
+# text = I shall send you a copy today.
+1	I	_	PRON	PRP	_	3	nsubj	_	_
+2	shall	_	AUX	MD	_	3	aux	_	_
+3	send	_	VERB	VB	_	0	root	_	_
+4	you	_	PRON	PRP	_	3	iobj	_	_
+5	a	_	DET	DT	_	6	det	_	_
+6	copy	_	NOUN	NN	_	3	obj	_	_
+7	today	_	NOUN	NN	_	3	parataxis	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 35
+# text = Vince
+1	Vince	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 36
+# text = Darrell Duffie <duffie@Stanford.EDU> on 01/24/2001 03:17:01 PM
+1	Darrell	_	PROPN	NNP	_	0	root	_	_
+2	Duffie	_	PROPN	NNP	_	1	flat	_	_
+3	<	_	PUNCT	-LRB-	_	4	punct	_	SpaceAfter=No
+4	duffie@Stanford.EDU>	_	X	ADD	_	1	appos	_	_
+5	on	_	ADP	IN	_	6	case	_	_
+6	01/24/2001	_	NUM	CD	_	4	obl	_	_
+7	03:17:01	_	NUM	CD	_	8	nummod	_	_
+8	PM	_	NOUN	NN	_	6	nmod	_	_
+
+# sent_id = 37
+# text = Please respond to Darrell Duffie <duffie@Stanford.EDU>
+1	Please	_	INTJ	UH	_	2	discourse	_	_
+2	respond	_	VERB	VB	_	0	root	_	_
+3	to	_	ADP	IN	_	4	case	_	_
+4	Darrell	_	PROPN	NNP	_	2	discourse	_	_
+5	Duffie	_	PROPN	NNP	_	4	flat	_	_
+6	<	_	PUNCT	-LRB-	_	7	punct	_	SpaceAfter=No
+7	duffie@Stanford.EDU	_	X	ADD	_	4	list	_	SpaceAfter=No
+8	>	_	PUNCT	-RRB-	_	7	punct	_	_
+
+# sent_id = 38
+# text = Vince/
+1	Vince	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+2	/	_	PUNCT	,	_	1	punct	_	_
+
+# sent_id = 39
+# text = Taiichi In case you are interested, I attach this paper on gas Storage value modeling.
+1	Taiichi	_	PROPN	NNP	_	9	nsubj	_	_
+2	In	_	SCONJ	IN	_	6	mark	_	_
+3	case	_	NOUN	NN	_	2	fixed	_	_
+4	you	_	PRON	PRP	_	6	nsubj	_	_
+5	are	_	AUX	VBP	_	6	cop	_	_
+6	interested	_	ADJ	JJ	_	9	advcl	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	9	punct	_	_
+8	I	_	PRON	PRP	_	9	nsubj	_	_
+9	attach	_	VERB	VB	_	0	root	_	_
+10	this	_	DET	DT	_	11	det	_	_
+11	paper	_	NOUN	NN	_	9	obj	_	_
+12	on	_	ADP	IN	_	14	case	_	_
+13	gas	_	NOUN	NN	_	14	compound	_	_
+14	Storage	_	NOUN	NN	_	15	compound	_	_
+15	value	_	NOUN	NN	_	16	compound	_	_
+16	modeling	_	NOUN	NN	_	11	nmod	_	SpaceAfter=No
+17	.	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 40
+# text = Best,
+1	Best	_	ADJ	JJS	_	0	root	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+
+# sent_id = 41
+# text = Darrell
+1	Darrell	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 42
+# text = _____________________________________________
+1	_____________________________________________	_	SYM	NFP	_	0	root	_	_
+
+# sent_id = 43
+# text = Darrell Duffie mail GSB Stanford CA 94305-5015 USA phone 650 723 1976 fax 650 725 7979 email duffie@stanford.edu web http://www.stanford.edu/~duffie/
+1	Darrell	_	PROPN	NNP	_	0	root	_	_
+2	Duffie	_	PROPN	NNP	_	1	flat	_	_
+3	mail	_	PROPN	NNP	_	1	list	_	_
+4	GSB	_	PROPN	NNP	_	3	appos	_	_
+5	Stanford	_	PROPN	NNP	_	4	flat	_	_
+6	CA	_	PROPN	NNP	_	4	appos	_	_
+7	94305-5015	_	NUM	CD	_	1	appos	_	_
+8	USA	_	PROPN	NNP	_	1	appos	_	_
+9	phone	_	NOUN	NN	_	8	list	_	_
+10	650	_	NUM	CD	_	9	compound	_	_
+11	723	_	NUM	CD	_	9	compound	_	_
+12	1976	_	NUM	CD	_	9	appos	_	_
+13	fax	_	NOUN	NN	_	1	list	_	_
+14	650	_	NUM	CD	_	13	appos	_	_
+15	725	_	NOUN	NN	_	14	appos	_	_
+16	7979	_	NUM	CD	_	13	appos	_	_
+17	email	_	NOUN	NN	_	1	list	_	_
+18	duffie@stanford.edu	_	NUM	CD	_	17	nummod	_	_
+19	web	_	NOUN	NN	_	20	compound	_	_
+20	http://www.stanford.edu	_	NOUN	NN	_	21	compound	_	SpaceAfter=No
+21	/~duffie	_	NOUN	NN	_	18	nmod	_	SpaceAfter=No
+22	/	_	PUNCT	,	_	21	punct	_	_
+
+# sent_id = 44
+# text = _____________________________________________
+1	_____________________________________________	_	SYM	NFP	_	0	root	_	_
+

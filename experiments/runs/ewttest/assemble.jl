@@ -22,19 +22,26 @@ if !isempty(ARGS) && ARGS[1] == "list"
   exit()
 end
 
-pred = Dict{Int,String}()
-# shard 1: first-pred.conllu, split at each doc's first sentence
-text = read(joinpath(OUT, "first-pred.conllu"), String)
-starts = [first(r) for r in findall(r"^# sent_id = 1\n"m, text)]
-length(starts) == length(shard1) || error("first-pred.conllu has $(length(starts)) docs, shard 1 $(length(shard1))")
-for (k, i) in enumerate(shard1)
-  pred[i] = text[starts[k]:(k < length(starts) ? prevind(text, starts[k+1]) : lastindex(text))]
+# each predicted doc matched to its test doc by content: its tokens' characters without spaces (2026-11-14: the helper's
+# skips depended on timing, so the order of its merged help-pred.conllu isn't known in advance)
+bykey = Dict(replace(String(d.text), r"\s" => "") => i for (i, d) in enumerate(ds))
+docblocks(text) = (st = [first(r) for r in findall(r"^# sent_id = 1\n"m, text)];
+  [text[st[k]:(k < length(st) ? prevind(text, st[k+1]) : lastindex(text))] for k in eachindex(st)])
+key(block) = join(split(l, '\t')[2] for l in split(block, '\n') if !isempty(l) && !startswith(l, '#'))
+pred, src = Dict{Int,String}(), Dict{String,Int}()
+function add!(block, from)
+  i = get(bykey, key(block), 0)
+  i == 0 && error("a predicted doc from $from matches no test doc")
+  haskey(pred, i) && return
+  pred[i] = block; src[from] = get(src, from, 0) + 1
 end
-# shard 2: per-doc files (the second worker's, else the helper's)
-for i in shard2, p in ("second", "help")
-  f = joinpath(OUT, "$p-doc$(hx(ds[i])).conllu")
-  isfile(f) && (pred[i] = read(f, String); break)
+foreach(b -> add!(b, "first-pred"), docblocks(read(joinpath(OUT, "first-pred.conllu"), String)))
+for i in shard2
+  f = joinpath(OUT, "second-doc$(hx(ds[i])).conllu")
+  isfile(f) && add!(read(f, String), "second")
 end
+isfile(joinpath(OUT, "help-pred.conllu")) && foreach(b -> add!(b, "help-pred"), docblocks(read(joinpath(OUT, "help-pred.conllu"), String)))
+println("docs by source: ", src)
 missing_ = [i for i in eachindex(ds) if !haskey(pred, i)]
 isempty(missing_) || error("no prediction for $(length(missing_)) docs: $(missing_[1:min(end, 10)])")
 open(io -> foreach(i -> write(io, pred[i]), eachindex(ds)), joinpath(OUT, "ewttest-pred.conllu"), "w")

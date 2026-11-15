@@ -1,0 +1,85 @@
+# sent_id = 1
+# text = * Twinkle Twinkle lazy star Kitna soyega uthja yaar, up above the world so high, sun has risen in the sky, uthke jaldi pee le chai, then call me up and say "HI" **
+1	*	_	PUNCT	NFP	_	2	punct	_	_
+2	Twinkle	_	VERB	VBD	_	32	advcl	_	_
+3	Twinkle	_	VERB	VBG	_	2	xcomp	_	_
+4	lazy	_	ADJ	JJ	_	5	amod	_	_
+5	star	_	NOUN	NN	_	6	compound	_	_
+6	Kitna	_	NOUN	NN	_	2	obl	_	_
+7	soyega	_	NUM	CD	_	6	nummod	_	_
+8	uthja	_	NOUN	NN	_	9	compound	_	_
+9	yaar	_	NOUN	NN	_	11	compound	_	SpaceAfter=No
+10	,	_	PUNCT	,	_	11	punct	_	_
+11	up	_	ADP	RP	_	6	compound	_	_
+12	above	_	ADP	IN	_	14	case	_	_
+13	the	_	DET	DT	_	14	det	_	_
+14	world	_	NOUN	NN	_	11	nmod	_	_
+15	so	_	ADV	RB	_	16	advmod	_	_
+16	high	_	ADJ	JJ	_	6	appos	_	SpaceAfter=No
+17	,	_	PUNCT	,	_	18	punct	_	_
+18	sun	_	NOUN	NN	_	20	nsubj	_	_
+19	has	_	AUX	VBZ	_	20	aux	_	_
+20	risen	_	VERB	VBN	_	6	acl	_	_
+21	in	_	ADP	IN	_	23	case	_	_
+22	the	_	DET	DT	_	23	det	_	_
+23	sky	_	NOUN	NN	_	18	nmod	_	SpaceAfter=No
+24	,	_	PUNCT	,	_	25	punct	_	_
+25	uthke	_	NOUN	NN	_	26	compound	_	_
+26	jaldi	_	NOUN	NNS	_	27	nsubj	_	_
+27	pee	_	VERB	VBP	_	6	conj	_	_
+28	le	_	X	AFX	_	29	compound	_	_
+29	chai	_	NOUN	NN	_	27	obj	_	SpaceAfter=No
+30	,	_	PUNCT	,	_	32	punct	_	_
+31	then	_	ADV	RB	_	32	advmod	_	_
+32	call	_	VERB	VB	_	0	root	_	_
+33	me	_	PRON	PRP	_	32	obj	_	_
+34	up	_	ADP	RP	_	32	compound	_	_
+35	and	_	CCONJ	CC	_	36	cc	_	_
+36	say	_	VERB	VB	_	32	conj	_	_
+37	"	_	PUNCT	``	_	36	punct	_	SpaceAfter=No
+38	HI	_	INTJ	UH	_	36	obj	_	SpaceAfter=No
+39	"	_	PUNCT	''	_	38	punct	_	_
+40	**	_	PUNCT	NFP	_	38	punct	_	_
+
+# sent_id = 2
+# text = Good Morning*
+1	Good	_	ADJ	JJ	_	2	amod	_	_
+2	Morning	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+3	*	_	PUNCT	NFP	_	2	punct	_	_
+
+# sent_id = 3
+# text = *
+1	*	_	PRON	NFP	_	0	root	_	_
+
+# sent_id = 4
+# text = Have a Nice Day*
+1	Have	_	VERB	VBP	_	0	root	_	_
+2	a	_	DET	DT	_	4	det	_	_
+3	Nice	_	ADJ	JJ	_	4	amod	_	_
+4	Day	_	NOUN	NN	_	1	obj	_	SpaceAfter=No
+5	*	_	PUNCT	NFP	_	1	punct	_	_
+
+# sent_id = 5
+# text = **
+1	**	_	PUNCT	NFP	_	0	root	_	_
+
+# sent_id = 6
+# text = **
+1	**	_	PUNCT	NFP	_	0	root	_	_
+
+# sent_id = 7
+# text = --
+1	--	_	PUNCT	NFP	_	0	root	_	_
+
+# sent_id = 8
+# text = Thanks and Regard Rajendra rajendra.o...@gmail.com image_gif_part 81K Download
+1	Thanks	_	NOUN	NN	_	6	parataxis	_	_
+2	and	_	CCONJ	CC	_	3	cc	_	_
+3	Regard	_	PROPN	NNP	_	1	conj	_	_
+4	Rajendra	_	PROPN	NNP	_	6	parataxis	_	_
+5	rajendra.o...@gmail.com	_	X	ADD	_	6	parataxis	_	_
+6	image_gif_part	_	NUM	CD	_	0	root	_	_
+7	81	_	NUM	CD	_	8	nummod	_	SpaceAfter=No
+8	K	_	NOUN	NN	_	6	nmod	_	_
+9	Download	_	PROPN	NNP	_	6	nmod	_	_
+

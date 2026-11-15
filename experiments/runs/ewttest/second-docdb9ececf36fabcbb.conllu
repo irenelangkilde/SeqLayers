@@ -1,0 +1,67 @@
+# sent_id = 1
+# text = A Definite No Incompetent servers, kitchen and management.
+1	A	_	DET	DT	_	2	det	_	_
+2	Definite	_	ADJ	JJ	_	0	root	_	_
+3	No	_	DET	DT	_	5	det	_	_
+4	Incompetent	_	ADJ	JJ	_	5	amod	_	_
+5	servers	_	NOUN	NNS	_	1	nmod	_	SpaceAfter=No
+6	,	_	PUNCT	,	_	7	punct	_	_
+7	kitchen	_	NOUN	NN	_	5	conj	_	_
+8	and	_	CCONJ	CC	_	9	cc	_	_
+9	management	_	NOUN	NN	_	7	conj	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 2
+# text = Expect either undercooked or mushy food and lackluster service.
+1	Expect	_	VERB	VB	_	0	root	_	_
+2	either	_	CCONJ	CC	_	3	cc	_	_
+3	undercooked	_	ADJ	JJ	_	1	conj	_	_
+4	or	_	CCONJ	CC	_	6	cc	_	_
+5	mushy	_	ADJ	JJ	_	6	amod	_	_
+6	food	_	NOUN	NN	_	1	obj	_	_
+7	and	_	CCONJ	CC	_	9	cc	_	_
+8	lackluster	_	ADJ	JJ	_	9	amod	_	_
+9	service	_	NOUN	NN	_	6	conj	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 3
+# text = The investors put big bucks into the building but are clueless about what makes a good dining or bar experience.
+1	The	_	DET	DT	_	2	det	_	_
+2	investors	_	NOUN	NNS	_	3	nsubj	_	_
+3	put	_	VERB	VBD	_	0	root	_	_
+4	big	_	ADJ	JJ	_	5	amod	_	_
+5	bucks	_	NOUN	NNS	_	3	obj	_	_
+6	into	_	ADP	IN	_	8	case	_	_
+7	the	_	DET	DT	_	8	det	_	_
+8	building	_	NOUN	NN	_	3	obl	_	_
+9	but	_	CCONJ	CC	_	11	cc	_	_
+10	are	_	AUX	VBP	_	11	cop	_	_
+11	clueless	_	ADJ	JJR	_	8	conj	_	_
+12	about	_	SCONJ	IN	_	14	mark	_	_
+13	what	_	PRON	WP	_	14	nsubj	_	_
+14	makes	_	VERB	VBZ	_	11	advcl	_	_
+15	a	_	DET	DT	_	17	det	_	_
+16	good	_	ADJ	JJ	_	17	amod	_	_
+17	dining	_	NOUN	NN	_	14	obj	_	_
+18	or	_	CCONJ	CC	_	20	cc	_	_
+19	bar	_	NOUN	NN	_	20	compound	_	_
+20	experience	_	NOUN	NN	_	11	obl	_	SpaceAfter=No
+21	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 4
+# text = Even the least discriminating diner would know not to eat at Sprecher's.
+1	Even	_	ADV	RB	_	5	advmod	_	_
+2	the	_	DET	DT	_	5	det	_	_
+3	least	_	ADJ	JJ	_	5	amod	_	_
+4	discriminating	_	ADJ	JJ	_	5	amod	_	_
+5	diner	_	NOUN	NN	_	7	nsubj	_	_
+6	would	_	AUX	MD	_	7	aux	_	_
+7	know	_	VERB	VB	_	0	root	_	_
+8	not	_	ADV	RB	_	10	advmod	_	_
+9	to	_	PART	TO	_	10	mark	_	_
+10	eat	_	VERB	VB	_	7	ccomp	_	_
+11	at	_	ADP	IN	_	12	case	_	_
+12	Sprecher	_	PROPN	NNP	_	10	obl	_	SpaceAfter=No
+13	's	_	PART	POS	_	12	case	_	SpaceAfter=No
+14	.	_	PUNCT	.	_	7	punct	_	_
+

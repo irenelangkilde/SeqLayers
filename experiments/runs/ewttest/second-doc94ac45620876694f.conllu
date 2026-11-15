@@ -1,0 +1,116 @@
+# sent_id = 1
+# text = no.
+1	no	_	INTJ	UH	_	0	root	_	SpaceAfter=No
+2	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 2
+# text = i got her number though.
+1	i	_	PRON	PRP	_	2	nsubj	_	_
+2	got	_	VERB	VBD	_	0	root	_	_
+3	her	_	PRON	PRP$	_	4	nmod	_	_
+4	number	_	NOUN	NN	_	2	obj	_	_
+5	though	_	ADV	RB	_	2	advmod	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 3
+# text = i want to hook up with that girl paige in the brown leather jacket.
+1	i	_	PRON	PRP	_	2	nsubj	_	_
+2	want	_	VERB	VBP	_	0	root	_	_
+3	to	_	PART	TO	_	4	mark	_	_
+4	hook	_	VERB	VB	_	2	xcomp	_	_
+5	up	_	ADP	RP	_	4	compound	_	_
+6	with	_	ADP	IN	_	8	case	_	_
+7	that	_	DET	DT	_	8	det	_	_
+8	girl	_	NOUN	NN	_	9	nsubj	_	_
+9	paige	_	VERB	VBD	_	4	advcl	_	_
+10	in	_	ADP	IN	_	14	case	_	_
+11	the	_	DET	DT	_	14	det	_	_
+12	brown	_	NOUN	NN	_	13	compound	_	_
+13	leather	_	NOUN	NN	_	14	compound	_	_
+14	jacket	_	NOUN	NN	_	9	obj	_	SpaceAfter=No
+15	.	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 4
+# text = what happened to you?
+1	what	_	PRON	WP	_	2	nsubj	_	_
+2	happened	_	VERB	VBD	_	0	root	_	_
+3	to	_	ADP	IN	_	4	case	_	_
+4	you	_	PRON	PRP	_	2	obl	_	SpaceAfter=No
+5	?	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 5
+# text = i had a blast that night.
+1	i	_	PRON	PRP	_	2	nsubj	_	_
+2	had	_	VERB	VBD	_	0	root	_	_
+3	a	_	DET	DT	_	4	det	_	_
+4	blast	_	NOUN	NN	_	2	obj	_	_
+5	that	_	SCONJ	IN	_	6	case	_	_
+6	night	_	NOUN	NN	_	2	obl	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 6
+# text = did you hook up with that blonde chick saturday night?
+1	did	_	AUX	VBD	_	3	aux	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	hook	_	VERB	VB	_	0	root	_	_
+4	up	_	ADP	RP	_	3	compound	_	_
+5	with	_	ADP	IN	_	8	case	_	_
+6	that	_	DET	DT	_	8	det	_	_
+7	blonde	_	NOUN	NN	_	8	compound	_	_
+8	chick	_	NOUN	NN	_	3	obl	_	_
+9	saturday	_	PROPN	NNP	_	10	compound	_	_
+10	night	_	NOUN	NN	_	3	obl	_	SpaceAfter=No
+11	?	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 7
+# text = no i am not lying.
+1	no	_	INTJ	UH	_	5	discourse	_	_
+2	i	_	PRON	PRP	_	5	nsubj	_	_
+3	am	_	AUX	VBP	_	5	aux	_	_
+4	not	_	PART	RB	_	5	advmod	_	_
+5	lying	_	VERB	VBG	_	0	root	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 8
+# text = i flew here last night.
+1	i	_	PRON	PRP	_	2	nsubj	_	_
+2	flew	_	VERB	VBD	_	0	root	_	_
+3	here	_	ADV	RB	_	2	advmod	_	_
+4	last	_	ADJ	JJ	_	5	amod	_	_
+5	night	_	NOUN	NN	_	2	obl	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 9
+# text = are you lying? i am out of town.
+1	are	_	AUX	VBP	_	3	aux	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	lying	_	VERB	VBG	_	0	root	_	SpaceAfter=No
+4	?	_	PUNCT	.	_	3	punct	_	_
+5	i	_	PRON	PRP	_	9	nsubj	_	_
+6	am	_	AUX	VBP	_	9	cop	_	_
+7	out	_	ADP	IN	_	9	case	_	_
+8	of	_	ADP	IN	_	9	case	_	_
+9	town	_	NOUN	NN	_	3	obl	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 10
+# text = i am in portland.
+1	i	_	PRON	PRP	_	4	nsubj	_	_
+2	am	_	AUX	VBP	_	4	cop	_	_
+3	in	_	ADP	IN	_	4	case	_	_
+4	portland	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+5	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 11
+# text = you can buy me dinner when we get back.
+1	you	_	PRON	PRP	_	3	nsubj	_	_
+2	can	_	AUX	MD	_	3	aux	_	_
+3	buy	_	VERB	VB	_	0	root	_	_
+4	me	_	PRON	PRP	_	3	obj	_	_
+5	dinner	_	VERB	VB	_	3	xcomp	_	_
+6	when	_	ADV	WRB	_	8	mark	_	_
+7	we	_	PRON	PRP	_	8	nsubj	_	_
+8	get	_	VERB	VBP	_	5	advcl	_	_
+9	back	_	ADV	RB	_	8	advmod	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	3	punct	_	_
+

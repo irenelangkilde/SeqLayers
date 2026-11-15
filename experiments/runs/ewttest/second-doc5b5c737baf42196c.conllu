@@ -1,0 +1,76 @@
+# sent_id = 1
+# text = if i preorder a game at gamestop can someone else pick it up for me?
+1	if	_	SCONJ	IN	_	3	mark	_	_
+2	i	_	PRON	PRP	_	3	nsubj	_	_
+3	preorder	_	VERB	VBD	_	0	root	_	_
+4	a	_	DET	DT	_	5	det	_	_
+5	game	_	NOUN	NN	_	3	obj	_	_
+6	at	_	ADP	IN	_	7	case	_	_
+7	gamestop	_	NOUN	NN	_	5	nmod	_	_
+8	can	_	AUX	MD	_	11	aux	_	_
+9	someone	_	PRON	NN	_	11	nsubj	_	_
+10	else	_	ADJ	JJ	_	9	amod	_	_
+11	pick	_	VERB	VB	_	3	ccomp	_	_
+12	it	_	PRON	PRP	_	11	obj	_	_
+13	up	_	ADP	RP	_	11	compound	_	_
+14	for	_	ADP	IN	_	15	case	_	_
+15	me	_	PRON	PRP	_	11	obl	_	SpaceAfter=No
+16	?	_	PUNCT	.	_	11	punct	_	_
+
+# sent_id = 2
+# text = i put $5 bucks down for it too.
+1	i	_	PRON	PRP	_	2	nsubj	_	_
+2	put	_	VERB	VBD	_	0	root	_	_
+3	$	_	SYM	$	_	4	compound	_	SpaceAfter=No
+4	5	_	NUM	CD	_	5	nummod	_	_
+5	bucks	_	NOUN	NNS	_	6	obl	_	_
+6	down	_	ADV	RB	_	2	conj	_	_
+7	for	_	ADP	IN	_	8	case	_	_
+8	it	_	PRON	PRP	_	6	obl	_	_
+9	too	_	ADV	RB	_	6	advmod	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 3
+# text = no they wont be able to some gamestops dont check ID for the pre-order so some ppl can get away with doing this but alot of store want to see your id and/or your reciept of the pre-order
+1	no	_	INTJ	UH	_	6	discourse	_	_
+2	they	_	PRON	PRP	_	6	nsubj	_	_
+3	wo	_	AUX	MD	_	6	aux	_	SpaceAfter=No
+4	nt	_	PART	RB	_	6	advmod	_	_
+5	be	_	AUX	VB	_	6	cop	_	_
+6	able	_	ADJ	JJ	_	0	root	_	_
+7	to	_	PART	TO	_	8	mark	_	_
+8	some	_	DET	DT	_	9	xcomp	_	_
+9	gamestops	_	NOUN	NNS	_	6	conj	_	_
+10	dont	_	ADJ	JJ	_	11	amod	_	_
+11	check	_	NOUN	NN	_	12	compound	_	_
+12	ID	_	NOUN	NN	_	9	compound	_	_
+13	for	_	ADP	IN	_	15	case	_	_
+14	the	_	DET	DT	_	15	det	_	_
+15	pre-order	_	NOUN	NN	_	11	nmod	_	_
+16	so	_	SCONJ	IN	_	20	mark	_	_
+17	some	_	DET	DT	_	18	det	_	_
+18	ppl	_	NOUN	NNS	_	20	nsubj	_	_
+19	can	_	AUX	MD	_	20	aux	_	_
+20	get	_	VERB	VB	_	10	csubj	_	_
+21	away	_	ADV	RB	_	20	advmod	_	_
+22	with	_	SCONJ	IN	_	23	mark	_	_
+23	doing	_	VERB	VBG	_	20	obl	_	_
+24	this	_	PRON	DT	_	23	obj	_	_
+25	but	_	CCONJ	CC	_	26	cc	_	_
+26	alot	_	NOUN	NN	_	29	obl	_	_
+27	of	_	ADP	IN	_	28	case	_	_
+28	store	_	NOUN	NN	_	26	nmod	_	_
+29	want	_	VERB	VBP	_	23	conj	_	_
+30	to	_	PART	TO	_	31	mark	_	_
+31	see	_	VERB	VB	_	29	xcomp	_	_
+32	your	_	PRON	PRP$	_	33	nmod	_	_
+33	id	_	NOUN	NN	_	31	obj	_	_
+34	and	_	CCONJ	CC	_	36	cc	_	SpaceAfter=No
+35	/	_	PUNCT	,	_	36	punct	_	SpaceAfter=No
+36	or	_	CCONJ	CC	_	38	cc	_	_
+37	your	_	PRON	PRP$	_	38	nmod	_	_
+38	reciept	_	NOUN	NN	_	33	conj	_	_
+39	of	_	ADP	IN	_	41	case	_	_
+40	the	_	DET	DT	_	41	det	_	_
+41	pre-order	_	NOUN	NN	_	38	nmod	_	_
+

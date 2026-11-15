@@ -1,0 +1,7 @@
+=== help (2/2, dev_sents 0)
+using cached events in /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train100000-EWT-gold-cdc3db987-wcclasses5-sfx3-rootabs-htrank-kin-hkinleftright-nn2/events
+conllu: experiments/runs/ewttest/help-pred.conllu, experiments/runs/ewttest/help-gold.conllu
+count cache: 1890478 new feature sets, 11022847 in all → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/work/train100000-EWT-gold-cdc3db987-wcclasses5-sfx3-rootabs-htrank-kin-hkinleftright-nn2/events
+EWT         5503    0.9786  0.7525  0.7086  0.9036  
+ALL         5503    0.9786  0.7525  0.7086  0.9036  
+build 9.8 s, decode 14940.4 s, run 20261114-220940 → /Users/irenelangkildegeary2015/Projects/crystallization/juliaNLP/SeqLayers/experiments/results.csv

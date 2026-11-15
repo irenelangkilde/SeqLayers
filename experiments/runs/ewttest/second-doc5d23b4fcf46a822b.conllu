@@ -1,0 +1,154 @@
+# sent_id = 1
+# text = is there any good places to get an ice-cream sundae from in Invercargill New Zealand?
+1	is	_	VERB	VBZ	_	0	root	_	_
+2	there	_	PRON	EX	_	1	expl	_	_
+3	any	_	DET	DT	_	5	det	_	_
+4	good	_	ADJ	JJ	_	5	amod	_	_
+5	places	_	NOUN	NNS	_	1	nsubj	_	_
+6	to	_	PART	TO	_	7	mark	_	_
+7	get	_	VERB	VB	_	5	acl	_	_
+8	an	_	DET	DT	_	9	det	_	_
+9	ice	_	NOUN	NN	_	11	compound	_	SpaceAfter=No
+10	-	_	PUNCT	HYPH	_	11	punct	_	SpaceAfter=No
+11	cream	_	NOUN	NN	_	12	compound	_	_
+12	sundae	_	NOUN	NN	_	7	obl	_	_
+13	from	_	ADP	IN	_	17	case	_	_
+14	in	_	ADP	IN	_	17	case	_	_
+15	Invercargill	_	PROPN	NNP	_	17	compound	_	_
+16	New	_	PROPN	NNP	_	17	compound	_	_
+17	Zealand	_	PROPN	NNP	_	12	obl	_	SpaceAfter=No
+18	?	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 2
+# text = so i live in Invercargill New Zealand and i want to know if there are any good places to buy an ice-cream sundae from other than mc donalds lol Fast food chains, supermarkets, dairies you live in NZ and you eat McDonalds ice cream?
+1	so	_	ADV	RB	_	3	advmod	_	_
+2	i	_	PRON	PRP	_	3	nsubj	_	_
+3	live	_	VERB	VBP	_	10	xcomp	_	_
+4	in	_	ADP	IN	_	7	case	_	_
+5	Invercargill	_	PROPN	NNP	_	7	compound	_	_
+6	New	_	PROPN	NNP	_	7	compound	_	_
+7	Zealand	_	PROPN	NNP	_	3	obl	_	_
+8	and	_	CCONJ	CC	_	9	cc	_	_
+9	i	_	PRON	PRP	_	10	nsubj	_	_
+10	want	_	VERB	VBP	_	0	root	_	_
+11	to	_	PART	TO	_	12	mark	_	_
+12	know	_	VERB	VB	_	10	xcomp	_	_
+13	if	_	SCONJ	IN	_	15	mark	_	_
+14	there	_	PRON	EX	_	15	expl	_	_
+15	are	_	VERB	VBP	_	12	advcl	_	_
+16	any	_	DET	DT	_	18	det	_	_
+17	good	_	ADJ	JJ	_	18	amod	_	_
+18	places	_	NOUN	NNS	_	12	ccomp	_	_
+19	to	_	PART	TO	_	20	mark	_	_
+20	buy	_	VERB	VB	_	18	acl	_	_
+21	an	_	DET	DT	_	22	det	_	_
+22	ice	_	NOUN	NN	_	24	compound	_	SpaceAfter=No
+23	-	_	PUNCT	HYPH	_	24	punct	_	SpaceAfter=No
+24	cream	_	NOUN	NN	_	25	compound	_	_
+25	sundae	_	NOUN	NN	_	20	obj	_	_
+26	from	_	ADP	IN	_	27	case	_	_
+27	other	_	ADJ	JJ	_	25	advcl	_	_
+28	than	_	ADP	IN	_	30	case	_	_
+29	mc	_	NOUN	NN	_	30	compound	_	_
+30	donalds	_	NOUN	NNS	_	25	nmod	_	_
+31	lol	_	INTJ	UH	_	34	discourse	_	_
+32	Fast	_	ADJ	JJ	_	33	amod	_	_
+33	food	_	NOUN	NN	_	34	compound	_	_
+34	chains	_	NOUN	NNS	_	30	conj	_	SpaceAfter=No
+35	,	_	PUNCT	,	_	36	punct	_	_
+36	supermarkets	_	NOUN	NNS	_	34	conj	_	SpaceAfter=No
+37	,	_	PUNCT	,	_	38	punct	_	_
+38	dairies	_	NOUN	NNS	_	36	conj	_	_
+39	you	_	PRON	PRP	_	40	nsubj	_	_
+40	live	_	VERB	VBP	_	38	acl	_	_
+41	in	_	ADP	IN	_	42	case	_	_
+42	NZ	_	PROPN	NNP	_	40	obl	_	_
+43	and	_	CCONJ	CC	_	45	cc	_	_
+44	you	_	PRON	PRP	_	45	nsubj	_	_
+45	eat	_	VERB	VBP	_	40	conj	_	_
+46	McDonalds	_	PROPN	NNP	_	48	compound	_	_
+47	ice	_	NOUN	NN	_	48	compound	_	_
+48	cream	_	NOUN	NN	_	45	obj	_	SpaceAfter=No
+49	?	_	PUNCT	.	_	40	punct	_	_
+
+# sent_id = 3
+# text = you're mad!
+1	you	_	PRON	PRP	_	3	nsubj	_	SpaceAfter=No
+2	're	_	AUX	VBP	_	3	cop	_	_
+3	mad	_	ADJ	JJ	_	0	root	_	SpaceAfter=No
+4	!	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 4
+# text = Any of the tip-top places have great ice-cream, get them to mix it up.
+1	Any	_	DET	DT	_	9	nsubj	_	_
+2	of	_	ADP	IN	_	8	case	_	_
+3	the	_	DET	DT	_	4	det	_	_
+4	tip	_	NOUN	NN	_	8	compound	_	SpaceAfter=No
+5	-	_	PUNCT	HYPH	_	4	punct	_	SpaceAfter=No
+6	to	_	ADP	IN	_	8	case	_	SpaceAfter=No
+7	p	_	NOUN	NN	_	8	goeswith	_	_
+8	places	_	NOUN	NNS	_	1	nmod	_	_
+9	have	_	VERB	VBP	_	0	root	_	_
+10	great	_	ADJ	JJ	_	13	amod	_	_
+11	ice	_	NOUN	NN	_	13	compound	_	SpaceAfter=No
+12	-	_	PUNCT	HYPH	_	13	punct	_	SpaceAfter=No
+13	cream	_	NOUN	NN	_	9	obj	_	SpaceAfter=No
+14	,	_	PUNCT	,	_	15	punct	_	_
+15	get	_	VERB	VB	_	9	conj	_	_
+16	them	_	PRON	PRP	_	15	obj	_	_
+17	to	_	PART	TO	_	18	mark	_	_
+18	mix	_	VERB	VB	_	15	xcomp	_	_
+19	it	_	PRON	PRP	_	18	obj	_	_
+20	up	_	ADP	RP	_	18	compound	_	SpaceAfter=No
+21	.	_	PUNCT	.	_	18	punct	_	_
+
+# sent_id = 5
+# text = any Ice Cream In NZ no matter where as New Zealand has the best bl**dy ice cream in the world I was in NZ for a few weeks had some Ice Cream and really enjoyed it I will go back just to eat some Ice Cream
+1	any	_	DET	DT	_	2	det	_	_
+2	Ice	_	NOUN	NN	_	3	compound	_	_
+3	Cream	_	NOUN	NN	_	6	discourse	_	_
+4	In	_	ADP	IN	_	5	case	_	_
+5	NZ	_	PROPN	NNP	_	3	nmod	_	_
+6	no	_	ADV	RB	_	7	advmod	_	_
+7	matter	_	ADV	RB	_	8	advmod	_	_
+8	where	_	ADV	WRB	_	12	advmod	_	_
+9	as	_	ADP	IN	_	11	case	_	_
+10	New	_	PROPN	NNP	_	11	compound	_	_
+11	Zealand	_	PROPN	NNP	_	12	nsubj	_	_
+12	has	_	VERB	VBZ	_	0	root	_	_
+13	the	_	DET	DT	_	18	det	_	_
+14	best	_	ADJ	JJS	_	18	amod	_	_
+15	bl*	_	NOUN	NN	_	33	compound	_	SpaceAfter=No
+16	*dy	_	PUNCT	NFP	_	18	punct	_	_
+17	ice	_	NOUN	NN	_	18	compound	_	_
+18	cream	_	NOUN	NN	_	15	nmod	_	_
+19	in	_	ADP	IN	_	21	case	_	_
+20	the	_	DET	DT	_	21	det	_	_
+21	world	_	NOUN	NN	_	18	nmod	_	_
+22	I	_	PRON	PRP	_	25	nsubj	_	_
+23	was	_	AUX	VBD	_	25	cop	_	_
+24	in	_	ADP	IN	_	25	case	_	_
+25	NZ	_	PROPN	NNP	_	12	parataxis	_	_
+26	for	_	ADP	IN	_	29	case	_	_
+27	a	_	DET	DT	_	29	det	_	_
+28	few	_	ADJ	JJ	_	29	amod	_	_
+29	weeks	_	NOUN	NNS	_	30	nsubj	_	_
+30	had	_	VERB	VBD	_	25	parataxis	_	_
+31	some	_	DET	DT	_	33	det	_	_
+32	Ice	_	NOUN	NN	_	33	compound	_	_
+33	Cream	_	NOUN	NN	_	30	obj	_	_
+34	and	_	CCONJ	CC	_	36	cc	_	_
+35	really	_	ADV	RB	_	36	advmod	_	_
+36	enjoyed	_	VERB	VBD	_	30	conj	_	_
+37	it	_	PRON	PRP	_	36	obj	_	_
+38	I	_	PRON	PRP	_	40	nsubj	_	_
+39	will	_	AUX	MD	_	40	aux	_	_
+40	go	_	VERB	VB	_	36	conj	_	_
+41	back	_	ADV	RB	_	40	advmod	_	_
+42	just	_	ADV	RB	_	44	advmod	_	_
+43	to	_	PART	TO	_	44	mark	_	_
+44	eat	_	VERB	VB	_	40	advcl	_	_
+45	some	_	DET	DT	_	47	det	_	_
+46	Ice	_	PROPN	NNP	_	47	compound	_	_
+47	Cream	_	NOUN	NN	_	44	obj	_	_
+

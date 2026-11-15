@@ -1,0 +1,94 @@
+# sent_id = 1
+# text = Best POS system in Philadelphia ?
+1	Best	_	ADJ	JJS	_	3	amod	_	_
+2	POS	_	NOUN	NN	_	3	compound	_	_
+3	system	_	NOUN	NN	_	0	root	_	_
+4	in	_	ADP	IN	_	5	case	_	_
+5	Philadelphia	_	PROPN	NNP	_	3	nmod	_	_
+6	?	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 2
+# text = What is the best pos system I can buy in philadelphia pa?
+1	What	_	PRON	WP	_	9	parataxis	_	_
+2	is	_	AUX	VBZ	_	1	cop	_	_
+3	the	_	DET	DT	_	6	det	_	_
+4	best	_	ADJ	JJS	_	6	amod	_	_
+5	pos	_	NOUN	NN	_	6	compound	_	_
+6	system	_	NOUN	NN	_	9	obj	_	_
+7	I	_	PRON	PRP	_	9	nsubj	_	_
+8	can	_	AUX	MD	_	9	aux	_	_
+9	buy	_	VERB	VB	_	0	root	_	_
+10	in	_	ADP	IN	_	11	case	_	_
+11	philadelphia	_	PROPN	NNP	_	9	obl	_	_
+12	pa	_	PROPN	NNP	_	11	flat	_	SpaceAfter=No
+13	?	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 3
+# text = I need something reliable and good looking.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	need	_	VERB	VBP	_	0	root	_	_
+3	something	_	PRON	NN	_	2	obj	_	_
+4	reliable	_	ADJ	JJ	_	3	amod	_	_
+5	and	_	CCONJ	CC	_	7	cc	_	_
+6	good	_	ADJ	JJ	_	7	obl	_	_
+7	looking	_	NOUN	NN	_	3	conj	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 4
+# text = Prosperity POS makes the best pos systems.
+1	Prosperity	_	NOUN	NN	_	2	compound	_	_
+2	POS	_	NOUN	NN	_	3	nsubj	_	_
+3	makes	_	VERB	VBZ	_	0	root	_	_
+4	the	_	DET	DT	_	7	det	_	_
+5	best	_	ADJ	JJS	_	7	amod	_	_
+6	pos	_	NOUN	NN	_	7	compound	_	_
+7	systems	_	NOUN	NNS	_	3	obj	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 5
+# text = I use them for my restaurant and always get compliments on the sleek look of the mac system not to mention how good the support is.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	use	_	VERB	VB	_	0	root	_	_
+3	them	_	PRON	PRP	_	2	obj	_	_
+4	for	_	ADP	IN	_	6	case	_	_
+5	my	_	PRON	PRP$	_	6	nmod	_	_
+6	restaurant	_	NOUN	NN	_	2	obl	_	_
+7	and	_	CCONJ	CC	_	9	cc	_	_
+8	always	_	ADV	RB	_	9	advmod	_	_
+9	get	_	VERB	VB	_	2	conj	_	_
+10	compliments	_	NOUN	NNS	_	9	obj	_	_
+11	on	_	ADP	IN	_	14	case	_	_
+12	the	_	DET	DT	_	14	det	_	_
+13	sleek	_	NOUN	NN	_	14	compound	_	_
+14	look	_	NOUN	NN	_	9	obl	_	_
+15	of	_	ADP	IN	_	18	case	_	_
+16	the	_	DET	DT	_	18	det	_	_
+17	mac	_	NOUN	NN	_	18	compound	_	_
+18	system	_	NOUN	NN	_	14	nmod	_	_
+19	not	_	ADV	RB	_	25	cc	_	_
+20	to	_	PART	TO	_	19	fixed	_	_
+21	mention	_	VERB	VB	_	19	fixed	_	_
+22	how	_	ADV	WRB	_	23	advmod	_	_
+23	good	_	ADJ	JJ	_	21	advcl	_	_
+24	the	_	DET	DT	_	25	det	_	_
+25	support	_	NOUN	NN	_	26	nsubj	_	_
+26	is	_	VERB	VBZ	_	2	advcl	_	SpaceAfter=No
+27	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 6
+# text = Do yourself a favor and give them a call.
+1	Do	_	VERB	VB	_	0	root	_	_
+2	yourself	_	PRON	PRP	_	1	iobj	_	_
+3	a	_	DET	DT	_	4	det	_	_
+4	favor	_	NOUN	NN	_	1	obj	_	_
+5	and	_	CCONJ	CC	_	6	cc	_	_
+6	give	_	VERB	VB	_	1	conj	_	_
+7	them	_	PRON	PRP	_	6	iobj	_	_
+8	a	_	DET	DT	_	9	det	_	_
+9	call	_	NOUN	NN	_	6	obj	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 7
+# text = http://www.prosperitypos.com?p=ya
+1	http://www.prosperitypos.com?p=ya	_	X	ADD	_	0	root	_	_
+

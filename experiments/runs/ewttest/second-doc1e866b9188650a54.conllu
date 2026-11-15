@@ -1,0 +1,306 @@
+# sent_id = 1
+# text = daily dose on enron - we are finished.
+1	daily	_	ADJ	JJ	_	2	amod	_	_
+2	dose	_	NOUN	NN	_	0	root	_	_
+3	on	_	ADP	IN	_	4	case	_	_
+4	enron	_	PROPN	NNP	_	2	obl	_	_
+5	-	_	PUNCT	,	_	2	punct	_	_
+6	we	_	PRON	PRP	_	8	nsubj	_	_
+7	are	_	AUX	VBP	_	8	aux	_	_
+8	finished	_	VERB	VBN	_	2	acl	_	SpaceAfter=No
+9	.	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 2
+# text = i need to now get a job at house of pies b/c that is the only way to pay the bills.
+1	i	_	PRON	PRP	_	2	nsubj	_	_
+2	need	_	VERB	VBP	_	0	root	_	_
+3	to	_	PART	TO	_	5	mark	_	_
+4	now	_	ADV	RB	_	5	advmod	_	_
+5	get	_	VERB	VB	_	2	xcomp	_	_
+6	a	_	DET	DT	_	7	det	_	_
+7	job	_	NOUN	NN	_	5	obj	_	_
+8	at	_	ADP	IN	_	9	case	_	_
+9	house	_	NOUN	NN	_	7	nmod	_	_
+10	of	_	ADP	IN	_	11	case	_	_
+11	pies	_	NOUN	NNS	_	9	nmod	_	_
+12	b/	_	PUNCT	-LRB-	_	13	punct	_	SpaceAfter=No
+13	c	_	NOUN	NN	_	11	punct	_	_
+14	that	_	PRON	DT	_	18	nsubj	_	_
+15	is	_	AUX	VBZ	_	18	cop	_	_
+16	the	_	DET	DT	_	18	det	_	_
+17	only	_	ADJ	JJ	_	18	amod	_	_
+18	way	_	NOUN	NN	_	5	conj	_	_
+19	to	_	PART	TO	_	20	mark	_	_
+20	pay	_	VERB	VB	_	18	acl	_	_
+21	the	_	DET	DT	_	22	det	_	_
+22	bills	_	NOUN	NNS	_	20	obj	_	SpaceAfter=No
+23	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 3
+# text = the economy is down and when enron collapses, the energy industry is going to be in a world of hurt.
+1	the	_	DET	DT	_	2	det	_	_
+2	economy	_	NOUN	NN	_	4	nsubj	_	_
+3	is	_	AUX	VBZ	_	4	cop	_	_
+4	down	_	ADV	RB	_	0	root	_	_
+5	and	_	CCONJ	CC	_	6	cc	_	_
+6	when	_	ADV	WRB	_	8	mark	_	_
+7	enron	_	PROPN	NNP	_	8	nsubj	_	_
+8	collapses	_	VERB	VBZ	_	4	advcl	_	SpaceAfter=No
+9	,	_	PUNCT	,	_	14	punct	_	_
+10	the	_	DET	DT	_	12	det	_	_
+11	energy	_	NOUN	NN	_	12	compound	_	_
+12	industry	_	NOUN	NN	_	14	nsubj	_	_
+13	is	_	AUX	VBZ	_	14	aux	_	_
+14	going	_	VERB	VBG	_	8	ccomp	_	_
+15	to	_	PART	TO	_	19	mark	_	_
+16	be	_	AUX	VB	_	19	cop	_	_
+17	in	_	ADP	IN	_	19	case	_	_
+18	a	_	DET	DT	_	19	det	_	_
+19	world	_	NOUN	NN	_	14	obl	_	_
+20	of	_	ADP	IN	_	21	case	_	_
+21	hurt	_	NOUN	NN	_	19	nmod	_	SpaceAfter=No
+22	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 4
+# text = not to mention the market is going to be flooded with enron folks . can't go to anymore lsu games unless i get a free ticket.
+1	not	_	ADV	RB	_	5	cc	_	_
+2	to	_	PART	TO	_	1	fixed	_	_
+3	mention	_	VERB	VB	_	1	fixed	_	_
+4	the	_	DET	DT	_	5	det	_	_
+5	market	_	NOUN	NN	_	7	nsubj	_	_
+6	is	_	AUX	VBZ	_	7	aux	_	_
+7	going	_	VERB	VBG	_	0	root	_	_
+8	to	_	PART	TO	_	10	mark	_	_
+9	be	_	AUX	VB	_	10	aux	_	_
+10	flooded	_	VERB	VBN	_	7	xcomp	_	_
+11	with	_	ADP	IN	_	13	case	_	_
+12	enron	_	PROPN	NNP	_	13	compound	_	_
+13	folks	_	NOUN	NNS	_	10	obl	_	_
+14	.	_	PUNCT	.	_	17	punct	_	_
+15	ca	_	AUX	MD	_	17	aux	_	SpaceAfter=No
+16	n't	_	PART	RB	_	17	advmod	_	_
+17	go	_	VERB	VB	_	10	conj	_	_
+18	to	_	ADP	IN	_	17	obl	_	_
+19	anymore	_	ADV	RB	_	17	obl	_	_
+20	lsu	_	ADJ	JJ	_	21	amod	_	_
+21	games	_	NOUN	NNS	_	17	obl	_	_
+22	unless	_	SCONJ	IN	_	24	mark	_	_
+23	i	_	PRON	PRP	_	24	nsubj	_	_
+24	get	_	VERB	VBP	_	17	advcl	_	_
+25	a	_	DET	DT	_	27	det	_	_
+26	free	_	ADJ	JJ	_	27	amod	_	_
+27	ticket	_	NOUN	NN	_	24	obj	_	SpaceAfter=No
+28	.	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 5
+# text = Since work has gone to hell, I am hoping to find some excitement in the possibility that LSU may play in the Cotton Bowl (if Rohan "Alabama" Davey shows up for the next 3 games.)
+1	Since	_	SCONJ	IN	_	4	mark	_	_
+2	work	_	NOUN	NN	_	4	nsubj	_	_
+3	has	_	AUX	VBZ	_	4	aux	_	_
+4	gone	_	VERB	VBN	_	10	advcl	_	_
+5	to	_	ADP	IN	_	6	case	_	_
+6	hell	_	INTJ	UH	_	4	ccomp	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	10	punct	_	_
+8	I	_	PRON	PRP	_	10	nsubj	_	_
+9	am	_	AUX	VBP	_	10	aux	_	_
+10	hoping	_	VERB	VBG	_	0	root	_	_
+11	to	_	PART	TO	_	12	mark	_	_
+12	find	_	VERB	VB	_	10	xcomp	_	_
+13	some	_	DET	DT	_	14	det	_	_
+14	excitement	_	NOUN	NN	_	12	obj	_	_
+15	in	_	ADP	IN	_	17	case	_	_
+16	the	_	DET	DT	_	17	det	_	_
+17	possibility	_	NOUN	NN	_	12	obl	_	_
+18	that	_	SCONJ	IN	_	21	mark	_	_
+19	LSU	_	PROPN	NNP	_	21	nsubj	_	_
+20	may	_	AUX	MD	_	21	aux	_	_
+21	play	_	VERB	VB	_	12	ccomp	_	_
+22	in	_	ADP	IN	_	25	case	_	_
+23	the	_	DET	DT	_	25	det	_	_
+24	Cotton	_	PROPN	NNP	_	25	compound	_	_
+25	Bowl	_	PROPN	NNP	_	21	obj	_	_
+26	(	_	PUNCT	-LRB-	_	32	punct	_	SpaceAfter=No
+27	if	_	SCONJ	IN	_	28	mark	_	_
+28	Rohan	_	PROPN	NNP	_	32	nmod	_	_
+29	"	_	PUNCT	``	_	30	punct	_	SpaceAfter=No
+30	Alabama	_	PROPN	NNP	_	28	appos	_	SpaceAfter=No
+31	"	_	PUNCT	''	_	30	punct	_	_
+32	Davey	_	PROPN	NNP	_	33	nsubj	_	_
+33	shows	_	VERB	VBZ	_	10	parataxis	_	_
+34	up	_	ADP	RP	_	33	compound	_	_
+35	for	_	ADP	IN	_	39	case	_	_
+36	the	_	DET	DT	_	39	det	_	_
+37	next	_	ADJ	JJ	_	39	amod	_	_
+38	3	_	NUM	CD	_	39	nummod	_	_
+39	games	_	NOUN	NNS	_	33	obl	_	SpaceAfter=No
+40	.	_	PUNCT	.	_	33	punct	_	SpaceAfter=No
+41	)	_	PUNCT	-RRB-	_	33	punct	_	_
+
+# sent_id = 6
+# text = However, do not purchase tickets until it is a done deal - a lesson I learned following the Ark game last season.
+1	However	_	ADV	RB	_	5	advmod	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	5	punct	_	_
+3	do	_	AUX	VB	_	5	aux	_	_
+4	not	_	PART	RB	_	5	advmod	_	_
+5	purchase	_	VERB	VB	_	0	root	_	_
+6	tickets	_	NOUN	NNS	_	5	obj	_	_
+7	until	_	SCONJ	IN	_	11	mark	_	_
+8	it	_	PRON	PRP	_	11	nsubj	_	_
+9	is	_	AUX	VBZ	_	11	aux	_	_
+10	a	_	DET	DT	_	11	nsubj	_	_
+11	done	_	VERB	VBN	_	23	amod	_	_
+12	deal	_	NOUN	NN	_	11	obj	_	_
+13	-	_	PUNCT	,	_	11	punct	_	_
+14	a	_	DET	DT	_	15	det	_	_
+15	lesson	_	NOUN	NN	_	5	obj	_	_
+16	I	_	PRON	PRP	_	17	nsubj	_	_
+17	learned	_	VERB	VBD	_	15	acl	_	_
+18	following	_	VERB	VBG	_	17	advcl	_	_
+19	the	_	DET	DT	_	21	det	_	_
+20	Ark	_	PROPN	NNP	_	21	compound	_	_
+21	game	_	NOUN	NN	_	15	nmod	_	_
+22	last	_	ADJ	JJ	_	23	amod	_	_
+23	season	_	NOUN	NN	_	15	nmod	_	SpaceAfter=No
+24	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 7
+# text = http://www.theadvocate.com/sports/story.asp?StoryID=16473
+1	http://www.theadvocate.com/sports	_	NOUN	NNS	_	0	root	_	SpaceAfter=No
+2	/	_	PUNCT	,	_	1	punct	_	SpaceAfter=No
+3	story.asp	_	NOUN	NN	_	1	appos	_	SpaceAfter=No
+4	?Story	_	PROPN	NNP	_	5	compound	_	SpaceAfter=No
+5	ID=16473	_	PROPN	NNP	_	3	conj	_	_
+
+# sent_id = 8
+# text = http://www.theadvocate.com/sports/story.asp?StoryID=16475
+1	http://www.theadvocate.com/sports	_	NOUN	NNS	_	4	dep	_	SpaceAfter=No
+2	/	_	PUNCT	,	_	1	punct	_	SpaceAfter=No
+3	story.asp	_	NOUN	NN	_	4	compound	_	SpaceAfter=No
+4	?Story	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+5	ID=16475	_	PROPN	NNP	_	4	flat	_	_
+
+# sent_id = 9
+# text = http://www.nola.com/lsu/t-p/football/index.ssf?/lsustory/lsunotes08.html
+1	http://www.nola.com/lsu	_	NUM	CD	_	8	parataxis	_	SpaceAfter=No
+2	/t-	_	NOUN	NN	_	3	compound	_	SpaceAfter=No
+3	p	_	NOUN	NN	_	1	list	_	SpaceAfter=No
+4	/	_	PUNCT	,	_	3	punct	_	SpaceAfter=No
+5	football/index.ssf?	_	NOUN	NN	_	3	appos	_	SpaceAfter=No
+6	/	_	PUNCT	,	_	7	cc	_	SpaceAfter=No
+7	lsustory	_	NOUN	NN	_	5	list	_	SpaceAfter=No
+8	/lsunotes	_	VERB	VBZ	_	0	root	_	SpaceAfter=No
+9	08.html	_	X	ADD	_	8	parataxis	_	_
+
+# sent_id = 10
+# text = http://www.nola.com/lsu/t-p/football/index.ssf?/lsustory/secnotes08.html
+1	http://www.nola.com/lsu	_	X	ADD	_	8	parataxis	_	SpaceAfter=No
+2	/t-	_	X	ADD	_	5	amod	_	SpaceAfter=No
+3	p	_	NOUN	NNS	_	1	appos	_	SpaceAfter=No
+4	/	_	PUNCT	,	_	5	cc	_	SpaceAfter=No
+5	football/index.ssf?	_	NOUN	NN	_	3	appos	_	SpaceAfter=No
+6	/	_	PUNCT	,	_	7	cc	_	SpaceAfter=No
+7	lsustory	_	NOUN	NN	_	5	list	_	SpaceAfter=No
+8	/secnotes	_	VERB	VBZ	_	0	root	_	SpaceAfter=No
+9	08.html	_	X	ADD	_	8	parataxis	_	_
+
+# sent_id = 11
+# text = http://www.nola.com/lsu/t-p/football/index.ssf?/lsustory/lsufoe08.html
+1	http://www.nola.com/lsu	_	X	ADD	_	2	parataxis	_	SpaceAfter=No
+2	/t-	_	X	ADD	_	0	root	_	SpaceAfter=No
+3	p	_	NOUN	NNS	_	2	appos	_	SpaceAfter=No
+4	/	_	PUNCT	,	_	5	cc	_	SpaceAfter=No
+5	football/index.ssf?	_	NOUN	NN	_	3	appos	_	SpaceAfter=No
+6	/	_	PUNCT	,	_	7	cc	_	SpaceAfter=No
+7	lsustory	_	NOUN	NN	_	5	list	_	SpaceAfter=No
+8	/lsufoe08.html	_	X	ADD	_	3	appos	_	_
+
+# sent_id = 12
+# text = i have stronger will than you think.
+1	i	_	PRON	PRP	_	3	nsubj	_	_
+2	have	_	AUX	VBP	_	3	aux	_	_
+3	stronger	_	VERB	VBN	_	0	root	_	_
+4	will	_	AUX	JJR	_	3	advcl	_	_
+5	than	_	SCONJ	IN	_	7	mark	_	_
+6	you	_	PRON	PRP	_	7	nsubj	_	_
+7	think	_	VERB	VBP	_	3	advcl	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 13
+# text = house of pies here i come.
+1	house	_	NOUN	NN	_	0	root	_	_
+2	of	_	ADP	IN	_	3	case	_	_
+3	pies	_	NOUN	NNS	_	1	nmod	_	_
+4	here	_	ADV	RB	_	6	obl	_	_
+5	i	_	PRON	PRP	_	6	nsubj	_	_
+6	come	_	VERB	VBP	_	3	acl	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 14
+# text = i am sure i could have persuaded you to give me some action.
+1	i	_	PRON	PRP	_	3	nsubj	_	_
+2	am	_	AUX	VBP	_	3	cop	_	_
+3	sure	_	ADJ	JJ	_	7	advmod	_	_
+4	i	_	PRON	PRP	_	7	nsubj	_	_
+5	could	_	AUX	MD	_	7	aux	_	_
+6	have	_	AUX	VB	_	7	aux	_	_
+7	persuaded	_	VERB	VBN	_	0	root	_	_
+8	you	_	PRON	PRP	_	7	obj	_	_
+9	to	_	PART	TO	_	10	mark	_	_
+10	give	_	VERB	VB	_	7	ccomp	_	_
+11	me	_	PRON	PRP	_	10	iobj	_	_
+12	some	_	DET	DT	_	13	det	_	_
+13	action	_	NOUN	NN	_	10	obj	_	SpaceAfter=No
+14	.	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 15
+# text = why is enron blowing up?
+1	why	_	ADV	WRB	_	4	advmod	_	_
+2	is	_	AUX	VBZ	_	4	aux	_	_
+3	enron	_	PROPN	NNP	_	4	nsubj	_	_
+4	blowing	_	VERB	VBG	_	0	root	_	_
+5	up	_	ADP	RP	_	4	compound	_	SpaceAfter=No
+6	?	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 16
+# text = i didn't want you to go.
+1	i	_	PRON	PRP	_	4	nsubj	_	_
+2	did	_	AUX	VBD	_	4	aux	_	SpaceAfter=No
+3	n't	_	PART	RB	_	4	advmod	_	_
+4	want	_	VERB	VB	_	0	root	_	_
+5	you	_	PRON	PRP	_	4	obj	_	_
+6	to	_	PART	TO	_	7	mark	_	_
+7	go	_	VERB	VB	_	4	xcomp	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 17
+# text = i was just going to sleep anyway.
+1	i	_	PRON	PRP	_	4	nsubj	_	_
+2	was	_	AUX	VBD	_	4	aux	_	_
+3	just	_	ADV	RB	_	4	advmod	_	_
+4	going	_	VERB	VBG	_	0	root	_	_
+5	to	_	PART	TO	_	6	mark	_	_
+6	sleep	_	VERB	VB	_	4	xcomp	_	_
+7	anyway	_	ADV	RB	_	6	advmod	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 18
+# text = i was too tired to give you any action.
+1	i	_	PRON	PRP	_	4	nsubj	_	_
+2	was	_	AUX	VBD	_	4	cop	_	_
+3	too	_	ADV	RB	_	4	advmod	_	_
+4	tired	_	ADJ	JJ	_	0	root	_	_
+5	to	_	PART	TO	_	6	mark	_	_
+6	give	_	VERB	VB	_	4	advcl	_	_
+7	you	_	PRON	PRP	_	6	iobj	_	_
+8	any	_	DET	DT	_	9	det	_	_
+9	action	_	NOUN	NN	_	6	obj	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 19
+# text = enron is blowing up.
+1	enron	_	PROPN	NNP	_	3	nsubj	_	_
+2	is	_	AUX	VBZ	_	3	aux	_	_
+3	blowing	_	VERB	VBG	_	0	root	_	_
+4	up	_	ADV	RB	_	3	ccomp	_	SpaceAfter=No
+5	.	_	PUNCT	.	_	3	punct	_	_
+

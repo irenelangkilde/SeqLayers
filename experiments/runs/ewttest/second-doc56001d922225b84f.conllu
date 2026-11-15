@@ -1,0 +1,316 @@
+# sent_id = 1
+# text = All p&l and PRMA numbers should be in $'000's.
+1	All	_	DET	DT	_	2	det	_	_
+2	p&l	_	NOUN	NN	_	5	nsubj	_	_
+3	and	_	CCONJ	CC	_	5	cc	_	_
+4	PRMA	_	NOUN	NN	_	5	compound	_	_
+5	numbers	_	NOUN	NNS	_	0	root	_	_
+6	should	_	AUX	MD	_	9	aux	_	_
+7	be	_	AUX	VB	_	9	cop	_	_
+8	in	_	ADP	IN	_	9	case	_	_
+9	$	_	SYM	$	_	2	obl	_	SpaceAfter=No
+10	'000	_	NUM	CD	_	9	amod	_	SpaceAfter=No
+11	's	_	PART	POS	_	9	case	_	SpaceAfter=No
+12	.	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 2
+# text = Starting in February, you will be able to export the data, as opposed to using the spreadsheets.
+1	Starting	_	VERB	VBG	_	8	advcl	_	_
+2	in	_	ADP	IN	_	3	case	_	_
+3	February	_	PROPN	NNP	_	1	obl	_	SpaceAfter=No
+4	,	_	PUNCT	,	_	8	punct	_	_
+5	you	_	PRON	PRP	_	8	nsubj	_	_
+6	will	_	AUX	MD	_	8	aux	_	_
+7	be	_	AUX	VB	_	8	cop	_	_
+8	able	_	ADJ	JJ	_	0	root	_	_
+9	to	_	PART	TO	_	10	mark	_	_
+10	export	_	VERB	VB	_	8	xcomp	_	_
+11	the	_	DET	DT	_	12	det	_	_
+12	data	_	NOUN	NN	_	10	obj	_	SpaceAfter=No
+13	,	_	PUNCT	,	_	10	punct	_	_
+14	as	_	SCONJ	IN	_	20	mark	_	_
+15	opposed	_	VERB	VBN	_	14	fixed	_	_
+16	to	_	PART	TO	_	17	mark	_	_
+17	using	_	VERB	VB	_	15	xcomp	_	_
+18	the	_	DET	DT	_	19	det	_	_
+19	spreadsheets	_	NOUN	NNS	_	17	obj	_	SpaceAfter=No
+20	.	_	PUNCT	.	_	10	punct	_	_
+
+# sent_id = 3
+# text = Thanks,
+1	Thanks	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+
+# sent_id = 4
+# text = Chris
+1	Chris	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 5
+# text = Abel Manager, Risk Controls Global Risk Operations chris.abel@enron.com
+1	Abel	_	NOUN	NN	_	2	compound	_	_
+2	Manager	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+3	,	_	PUNCT	,	_	2	punct	_	_
+4	Risk	_	PROPN	NNP	_	8	nsubj	_	_
+5	Controls	_	PROPN	NNP	_	4	flat	_	_
+6	Global	_	PROPN	NNP	_	8	compound	_	_
+7	Risk	_	PROPN	NNP	_	8	compound	_	_
+8	Operations	_	PROPN	NNPS	_	2	appos	_	_
+9	chris.abel@enron.com	_	X	ADD	_	8	list	_	_
+
+# sent_id = 6
+# text = <mailto:chris.abel@enron.com>
+1	<	_	PUNCT	-LRB-	_	2	punct	_	SpaceAfter=No
+2	mailto:chris.abel@enron.com	_	X	ADD	_	0	root	_	SpaceAfter=No
+3	>	_	PUNCT	-RRB-	_	2	punct	_	_
+
+# sent_id = 7
+# text = 713.853.3102 Kristen,
+1	713.853.3102	_	NUM	CD	_	0	root	_	_
+2	Kristen	_	PROPN	NNP	_	1	appos	_	SpaceAfter=No
+3	,	_	PUNCT	,	_	2	punct	_	_
+
+# sent_id = 8
+# text = Attached are all live financial deals by risk type.
+1	Attached	_	VERB	VBN	_	0	root	_	_
+2	are	_	AUX	VBP	_	1	aux	_	_
+3	all	_	ADV	RB	_	4	advmod	_	_
+4	live	_	ADJ	JJ	_	6	amod	_	_
+5	financial	_	ADJ	JJ	_	6	amod	_	_
+6	deals	_	NOUN	NNS	_	1	obl	_	_
+7	by	_	ADP	IN	_	9	case	_	_
+8	risk	_	NOUN	NN	_	9	compound	_	_
+9	type	_	NOUN	NN	_	6	nmod	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 9
+# text = As you can see, the price data is too large to fit into one tab.
+1	As	_	SCONJ	IN	_	4	mark	_	_
+2	you	_	PRON	PRP	_	4	nsubj	_	_
+3	can	_	AUX	MD	_	4	aux	_	_
+4	see	_	VERB	VB	_	0	root	_	SpaceAfter=No
+5	,	_	PUNCT	,	_	11	punct	_	_
+6	the	_	DET	DT	_	8	det	_	_
+7	price	_	NOUN	NN	_	8	compound	_	_
+8	data	_	NOUN	NN	_	11	nsubj	_	_
+9	is	_	AUX	VBZ	_	11	cop	_	_
+10	too	_	ADV	RB	_	11	advmod	_	_
+11	large	_	ADJ	JJ	_	4	ccomp	_	_
+12	to	_	PART	TO	_	13	mark	_	_
+13	fit	_	VERB	VB	_	11	xcomp	_	_
+14	into	_	ADP	IN	_	16	case	_	_
+15	one	_	NUM	CD	_	16	nummod	_	_
+16	tab	_	NOUN	NN	_	13	obl	_	SpaceAfter=No
+17	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 10
+# text = After tomorrow,
+1	After	_	ADV	RB	_	0	root	_	_
+2	tomorrow	_	NOUN	NN	_	1	obl	_	SpaceAfter=No
+3	,	_	PUNCT	,	_	1	punct	_	_
+
+# sent_id = 11
+# text = I will no longer have access to the estate files.
+1	I	_	PRON	PRP	_	5	nsubj	_	_
+2	will	_	AUX	MD	_	5	aux	_	_
+3	no	_	ADV	RB	_	4	advmod	_	_
+4	longer	_	ADV	RBR	_	5	advmod	_	_
+5	have	_	VERB	VBP	_	0	root	_	_
+6	access	_	NOUN	NN	_	5	obj	_	_
+7	to	_	ADP	IN	_	10	case	_	_
+8	the	_	DET	DT	_	10	det	_	_
+9	estate	_	NOUN	NN	_	10	compound	_	_
+10	files	_	NOUN	NNS	_	5	obl	_	SpaceAfter=No
+11	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 12
+# text = Greg Couch will be taking over the responsibility for the estate risk group and will be able to assist you with your requests going forward.
+1	Greg	_	PROPN	NNP	_	5	nsubj	_	_
+2	Couch	_	PROPN	NNP	_	5	nsubj	_	_
+3	will	_	AUX	MD	_	5	aux	_	_
+4	be	_	AUX	VB	_	5	aux	_	_
+5	taking	_	VERB	VBG	_	0	root	_	_
+6	over	_	ADP	IN	_	8	case	_	_
+7	the	_	DET	DT	_	8	det	_	_
+8	responsibility	_	NOUN	NN	_	5	obl	_	_
+9	for	_	ADP	IN	_	13	case	_	_
+10	the	_	DET	DT	_	13	det	_	_
+11	estate	_	NOUN	NN	_	13	compound	_	_
+12	risk	_	NOUN	NN	_	13	compound	_	_
+13	group	_	NOUN	NN	_	8	nmod	_	_
+14	and	_	CCONJ	CC	_	17	cc	_	_
+15	will	_	AUX	MD	_	17	aux	_	_
+16	be	_	AUX	VB	_	17	cop	_	_
+17	able	_	ADJ	JJ	_	13	acl	_	_
+18	to	_	PART	TO	_	19	mark	_	_
+19	assist	_	VERB	VB	_	17	xcomp	_	_
+20	you	_	PRON	PRP	_	19	obj	_	_
+21	with	_	ADP	IN	_	23	case	_	_
+22	your	_	PRON	PRP$	_	23	nmod	_	_
+23	requests	_	NOUN	NNS	_	13	nmod	_	_
+24	going	_	VERB	VBG	_	23	acl	_	_
+25	forward	_	ADV	RB	_	24	advmod	_	SpaceAfter=No
+26	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 13
+# text = Thanks Kam Ed,
+1	Thanks	_	NOUN	NN	_	0	root	_	_
+2	Kam	_	PROPN	NNP	_	1	vocative	_	_
+3	Ed	_	PROPN	NNP	_	1	parataxis	_	SpaceAfter=No
+4	,	_	PUNCT	,	_	3	punct	_	_
+
+# sent_id = 14
+# text = Here is a list of the risk people that will be with the estate.
+1	Here	_	ADV	RB	_	0	root	_	_
+2	is	_	AUX	VBZ	_	1	cop	_	_
+3	a	_	DET	DT	_	4	det	_	_
+4	list	_	NOUN	NN	_	1	nsubj	_	_
+5	of	_	ADP	IN	_	8	case	_	_
+6	the	_	DET	DT	_	8	det	_	_
+7	risk	_	NOUN	NN	_	8	compound	_	_
+8	people	_	NOUN	NNS	_	4	nmod	_	_
+9	that	_	PRON	WDT	_	14	nsubj	_	_
+10	will	_	AUX	MD	_	14	aux	_	_
+11	be	_	AUX	VB	_	7	acl	_	_
+12	with	_	ADP	IN	_	14	case	_	_
+13	the	_	DET	DT	_	14	det	_	_
+14	estate	_	NOUN	NN	_	11	obl	_	SpaceAfter=No
+15	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 15
+# text = After this weekend, we will no longer have access to the estate files, these people will be able to help you with any of your questions.
+1	After	_	ADP	IN	_	3	case	_	_
+2	this	_	DET	DT	_	3	det	_	_
+3	weekend	_	NOUN	NN	_	9	obl	_	SpaceAfter=No
+4	,	_	PUNCT	,	_	9	punct	_	_
+5	we	_	PRON	PRP	_	9	nsubj	_	_
+6	will	_	AUX	MD	_	9	aux	_	_
+7	no	_	ADV	RB	_	8	advmod	_	_
+8	longer	_	ADV	RBR	_	9	advmod	_	_
+9	have	_	VERB	VBP	_	20	parataxis	_	_
+10	access	_	NOUN	NN	_	9	obj	_	_
+11	to	_	ADP	IN	_	14	case	_	_
+12	the	_	DET	DT	_	14	det	_	_
+13	estate	_	NOUN	NN	_	14	compound	_	_
+14	files	_	NOUN	NNS	_	9	obj	_	SpaceAfter=No
+15	,	_	PUNCT	,	_	20	punct	_	_
+16	these	_	DET	DT	_	17	det	_	_
+17	people	_	NOUN	NNS	_	20	nsubj	_	_
+18	will	_	AUX	MD	_	20	aux	_	_
+19	be	_	AUX	VB	_	20	cop	_	_
+20	able	_	ADJ	JJ	_	0	root	_	_
+21	to	_	PART	TO	_	22	mark	_	_
+22	help	_	VERB	VB	_	20	xcomp	_	_
+23	you	_	PRON	PRP	_	22	obj	_	_
+24	with	_	ADP	IN	_	25	case	_	_
+25	any	_	DET	DT	_	22	obl	_	_
+26	of	_	ADP	IN	_	28	case	_	_
+27	your	_	PRON	PRP$	_	28	nmod	_	_
+28	questions	_	NOUN	NNS	_	25	nmod	_	SpaceAfter=No
+29	.	_	PUNCT	.	_	22	punct	_	_
+
+# sent_id = 16
+# text = We will still be around to assist them if needed.
+1	We	_	PRON	PRP	_	5	nsubj	_	_
+2	will	_	AUX	MD	_	5	aux	_	_
+3	still	_	ADV	RB	_	5	advmod	_	_
+4	be	_	AUX	VB	_	5	cop	_	_
+5	around	_	ADV	RB	_	0	root	_	_
+6	to	_	PART	TO	_	7	mark	_	_
+7	assist	_	VERB	VB	_	5	xcomp	_	_
+8	them	_	PRON	PRP	_	7	obj	_	_
+9	if	_	SCONJ	IN	_	10	mark	_	_
+10	needed	_	ADJ	JJ	_	7	advcl	_	SpaceAfter=No
+11	.	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 17
+# text = Thanks
+1	Thanks	_	NOUN	NN	_	0	root	_	_
+
+# sent_id = 18
+# text = KK
+1	KK	_	NOUN	NN	_	0	root	_	_
+
+# sent_id = 19
+# text = Here you go... AC Sanjeev, I should have a list of post-id's for you by 4:30 today.
+1	Here	_	ADV	RB	_	0	root	_	_
+2	you	_	PRON	PRP	_	3	nsubj	_	_
+3	go	_	VERB	VBP	_	1	advcl	_	SpaceAfter=No
+4	...	_	PUNCT	,	_	3	punct	_	_
+5	AC	_	NOUN	NN	_	6	compound	_	_
+6	Sanjeev	_	PROPN	NNP	_	3	vocative	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	10	punct	_	_
+8	I	_	PRON	PRP	_	10	nsubj	_	_
+9	should	_	AUX	MD	_	10	aux	_	_
+10	have	_	VERB	VB	_	15	parataxis	_	_
+11	a	_	DET	DT	_	12	det	_	_
+12	list	_	NOUN	NN	_	10	obj	_	_
+13	of	_	ADP	IN	_	14	case	_	_
+14	post	_	X	AFX	_	15	compound	_	SpaceAfter=No
+15	-id	_	NOUN	NN	_	6	nmod	_	SpaceAfter=No
+16	's	_	VERB	VBZ	_	15	ccomp	_	_
+17	for	_	ADP	IN	_	18	case	_	_
+18	you	_	PRON	PRP	_	16	obl	_	_
+19	by	_	ADP	IN	_	21	case	_	_
+20	4:30	_	NUM	CD	_	21	nummod	_	_
+21	today	_	NOUN	NN	_	16	obl	_	SpaceAfter=No
+22	.	_	PUNCT	.	_	16	punct	_	_
+
+# sent_id = 20
+# text = After friday, I will no longer have access to the estate, so if you could shoot this off over night so I could have something in the morning to work with I would appreciate it.
+1	After	_	ADP	IN	_	2	case	_	_
+2	friday	_	PROPN	NNP	_	8	obl	_	SpaceAfter=No
+3	,	_	PUNCT	,	_	8	punct	_	_
+4	I	_	PRON	PRP	_	8	nsubj	_	_
+5	will	_	AUX	MD	_	8	aux	_	_
+6	no	_	ADV	RB	_	7	advmod	_	_
+7	longer	_	ADV	RBR	_	8	advmod	_	_
+8	have	_	VERB	VBP	_	0	root	_	_
+9	access	_	NOUN	NN	_	8	obj	_	_
+10	to	_	ADP	IN	_	12	case	_	_
+11	the	_	DET	DT	_	12	det	_	_
+12	estate	_	NOUN	NN	_	9	nmod	_	SpaceAfter=No
+13	,	_	PUNCT	,	_	8	punct	_	_
+14	so	_	ADV	RB	_	18	advmod	_	_
+15	if	_	SCONJ	IN	_	18	mark	_	_
+16	you	_	PRON	PRP	_	18	nsubj	_	_
+17	could	_	AUX	MD	_	18	aux	_	_
+18	shoot	_	VERB	VB	_	8	acl	_	_
+19	this	_	PRON	DT	_	18	obj	_	_
+20	off	_	ADP	RP	_	18	compound	_	_
+21	over	_	ADP	IN	_	22	case	_	_
+22	night	_	NOUN	NN	_	18	obl	_	_
+23	so	_	SCONJ	IN	_	26	mark	_	_
+24	I	_	PRON	PRP	_	26	nsubj	_	_
+25	could	_	AUX	MD	_	26	aux	_	_
+26	have	_	VERB	VB	_	22	acl	_	_
+27	something	_	PRON	NN	_	26	obj	_	_
+28	in	_	ADP	IN	_	30	case	_	_
+29	the	_	DET	DT	_	30	det	_	_
+30	morning	_	NOUN	NN	_	26	obl	_	_
+31	to	_	PART	TO	_	32	mark	_	_
+32	work	_	VERB	VB	_	26	advcl	_	_
+33	with	_	SCONJ	IN	_	36	mark	_	_
+34	I	_	PRON	PRP	_	36	nsubj	_	_
+35	would	_	AUX	MD	_	36	aux	_	_
+36	appreciate	_	VERB	VB	_	8	parataxis	_	_
+37	it	_	PRON	PRP	_	36	obj	_	SpaceAfter=No
+38	.	_	PUNCT	.	_	36	punct	_	_
+
+# sent_id = 21
+# text = Let me know if that doesn't seem possible.
+1	Let	_	VERB	VB	_	0	root	_	_
+2	me	_	PRON	PRP	_	1	obj	_	_
+3	know	_	VERB	VB	_	1	xcomp	_	_
+4	if	_	SCONJ	IN	_	8	mark	_	_
+5	that	_	PRON	DT	_	8	nsubj	_	_
+6	does	_	AUX	VBZ	_	8	aux	_	SpaceAfter=No
+7	n't	_	PART	RB	_	8	advmod	_	_
+8	seem	_	VERB	VB	_	3	advcl	_	_
+9	possible	_	ADJ	JJ	_	8	xcomp	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 22
+# text = Thanks Kam
+1	Thanks	_	NOUN	NN	_	2	discourse	_	_
+2	Kam	_	PROPN	NNP	_	0	root	_	_
+

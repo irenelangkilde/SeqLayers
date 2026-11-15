@@ -1,0 +1,83 @@
+# sent_id = 1
+# text = Email: Roving Mouse
+1	Email	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+2	:	_	PUNCT	:	_	1	punct	_	_
+3	Roving	_	PROPN	NNP	_	1	appos	_	_
+4	Mouse	_	PROPN	NNP	_	3	flat	_	_
+
+# sent_id = 2
+# text = <s...@tack.net>
+1	<	_	PUNCT	-LRB-	_	2	punct	_	SpaceAfter=No
+2	s	_	X	ADD	_	0	root	_	SpaceAfter=No
+3	...@tack.net	_	X	-RRB-	_	2	list	_	SpaceAfter=No
+4	>	_	PUNCT	-RRB-	_	3	punct	_	_
+
+# sent_id = 3
+# text = Groups: alt.animals, alt.animals.cat, alt.animals.ethics.vegetarian, talk.politics.animals Followup-To: alt.animals
+1	Groups	_	NOUN	NNS	_	0	root	_	SpaceAfter=No
+2	:	_	PUNCT	:	_	1	punct	_	_
+3	alt.animals	_	NOUN	NNS	_	1	appos	_	SpaceAfter=No
+4	,	_	PUNCT	,	_	5	punct	_	_
+5	alt.animals.cat	_	NOUN	NN	_	3	conj	_	SpaceAfter=No
+6	,	_	PUNCT	,	_	7	punct	_	_
+7	alt.animals.ethics.vegetarian	_	NOUN	NN	_	5	conj	_	SpaceAfter=No
+8	,	_	PUNCT	,	_	9	punct	_	_
+9	talk.politics.animals	_	NOUN	NNS	_	7	conj	_	_
+10	Followup	_	PROPN	NNP	_	9	vocative	_	SpaceAfter=No
+11	-	_	PUNCT	HYPH	_	10	punct	_	SpaceAfter=No
+12	To	_	ADP	IN	_	3	case	_	SpaceAfter=No
+13	:	_	PUNCT	:	_	3	punct	_	_
+14	alt.animals	_	NOUN	NNS	_	3	orphan	_	_
+
+# sent_id = 4
+# text = You will always find fascinating links at: Extreme Web Surfs http://extremewebsurfs.blogspot.com/ (nice urban wildlife post today) & Me and the Web http://maartenvt.blogspot.com/ Arts, History,Animals, Music,Games ,Politics,Technology, Fun and more!
+1	You	_	PRON	PRP	_	4	nsubj	_	_
+2	will	_	AUX	MD	_	4	aux	_	_
+3	always	_	ADV	RB	_	4	advmod	_	_
+4	find	_	VERB	VB	_	0	root	_	_
+5	fascinating	_	ADJ	JJ	_	6	amod	_	_
+6	links	_	NOUN	NNS	_	4	obj	_	_
+7	at	_	ADP	IN	_	11	case	_	SpaceAfter=No
+8	:	_	PUNCT	:	_	10	punct	_	_
+9	Extreme	_	ADJ	JJ	_	10	amod	_	_
+10	Web	_	NOUN	NN	_	11	compound	_	_
+11	Surfs	_	PROPN	NNP	_	6	appos	_	_
+12	http://extremewebsurfs.blogspot.com	_	X	ADD	_	11	list	_	SpaceAfter=No
+13	/	_	PUNCT	-RRB-	_	12	punct	_	_
+14	(	_	PUNCT	-LRB-	_	18	punct	_	SpaceAfter=No
+15	nice	_	ADJ	JJ	_	18	amod	_	_
+16	urban	_	ADJ	JJ	_	17	amod	_	_
+17	wildlife	_	NOUN	NN	_	18	compound	_	_
+18	post	_	NOUN	NN	_	11	appos	_	_
+19	today	_	NOUN	NN	_	18	parataxis	_	SpaceAfter=No
+20	)	_	PUNCT	-RRB-	_	19	punct	_	_
+21	&	_	CCONJ	CC	_	22	cc	_	_
+22	Me	_	PRON	PRP	_	42	nsubj	_	_
+23	and	_	CCONJ	CC	_	40	cc	_	_
+24	the	_	DET	DT	_	40	det	_	_
+25	Web	_	NOUN	NN	_	26	compound	_	_
+26	http://maartenvt.blogspot.com	_	NOUN	NN	_	18	list	_	SpaceAfter=No
+27	/	_	PUNCT	,	_	28	cc	_	_
+28	Arts	_	NOUN	NNS	_	26	conj	_	SpaceAfter=No
+29	,	_	PUNCT	,	_	30	punct	_	_
+30	History	_	NOUN	NN	_	28	conj	_	SpaceAfter=No
+31	,	_	PUNCT	,	_	32	punct	_	SpaceAfter=No
+32	Animals	_	NOUN	NNS	_	28	conj	_	SpaceAfter=No
+33	,	_	PUNCT	,	_	34	punct	_	_
+34	Music	_	PROPN	NNP	_	32	conj	_	SpaceAfter=No
+35	,	_	PUNCT	,	_	36	punct	_	SpaceAfter=No
+36	Games	_	PROPN	NNP	_	34	conj	_	_
+37	,	_	PUNCT	,	_	38	punct	_	SpaceAfter=No
+38	Politics	_	NOUN	NNS	_	32	conj	_	SpaceAfter=No
+39	,	_	PUNCT	,	_	40	punct	_	SpaceAfter=No
+40	Technology	_	NOUN	NN	_	32	conj	_	SpaceAfter=No
+41	,	_	PUNCT	,	_	42	punct	_	_
+42	Fun	_	ADJ	JJ	_	40	conj	_	_
+43	and	_	CCONJ	CC	_	44	cc	_	_
+44	more	_	ADJ	JJR	_	42	conj	_	SpaceAfter=No
+45	!	_	PUNCT	.	_	18	punct	_	_
+
+# sent_id = 5
+# text = ..
+1	..	_	PUNCT	,	_	0	root	_	_
+

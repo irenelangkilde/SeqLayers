@@ -1,0 +1,195 @@
+# sent_id = 1
+# text = I decided to get a 150 gal aquarium, what can I fill it with?
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	decided	_	VERB	VBD	_	0	root	_	_
+3	to	_	PART	TO	_	4	mark	_	_
+4	get	_	VERB	VB	_	2	xcomp	_	_
+5	a	_	DET	DT	_	8	det	_	_
+6	150	_	NUM	CD	_	7	nummod	_	_
+7	gal	_	NOUN	NN	_	8	compound	_	_
+8	aquarium	_	NOUN	NN	_	4	obl	_	SpaceAfter=No
+9	,	_	PUNCT	,	_	8	punct	_	_
+10	what	_	PRON	WP	_	13	obj	_	_
+11	can	_	AUX	MD	_	13	aux	_	_
+12	I	_	PRON	PRP	_	13	nsubj	_	_
+13	fill	_	VERB	VB	_	4	conj	_	_
+14	it	_	PRON	PRP	_	13	obj	_	_
+15	with	_	ADP	IN	_	13	compound	_	SpaceAfter=No
+16	?	_	PUNCT	.	_	13	punct	_	_
+
+# sent_id = 2
+# text = I was thinking cichlids?
+1	I	_	PRON	PRP	_	3	nsubj	_	_
+2	was	_	AUX	VBD	_	3	aux	_	_
+3	thinking	_	VERB	VBG	_	0	root	_	_
+4	cichlids	_	NOUN	NNS	_	3	obj	_	SpaceAfter=No
+5	?	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 3
+# text = Possibly a freshwater tank with a ton of different species in there.
+1	Possibly	_	ADV	RB	_	4	advmod	_	_
+2	a	_	DET	DT	_	4	det	_	_
+3	freshwater	_	NOUN	NN	_	4	compound	_	_
+4	tank	_	NOUN	NN	_	0	root	_	_
+5	with	_	ADP	IN	_	7	case	_	_
+6	a	_	DET	DT	_	7	det	_	_
+7	ton	_	NOUN	NN	_	4	nmod	_	_
+8	of	_	ADP	IN	_	10	case	_	_
+9	different	_	ADJ	JJ	_	10	amod	_	_
+10	species	_	NOUN	NNS	_	7	nmod	_	_
+11	in	_	ADP	IN	_	12	case	_	_
+12	there	_	ADV	RB	_	10	nmod	_	SpaceAfter=No
+13	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 4
+# text = I've never kept cichlids though.
+1	I	_	PRON	PRP	_	4	nsubj	_	SpaceAfter=No
+2	've	_	AUX	VBP	_	4	aux	_	_
+3	never	_	ADV	RB	_	4	advmod	_	_
+4	kept	_	VERB	VBN	_	0	root	_	_
+5	cichlids	_	NOUN	NNS	_	4	xcomp	_	_
+6	though	_	ADV	RB	_	4	advmod	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 5
+# text = I know saltwater is a possibility, can you give me a possible stocking option for that too?
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	know	_	VERB	VBP	_	0	root	_	_
+3	saltwater	_	NOUN	NN	_	2	obj	_	_
+4	is	_	AUX	VBZ	_	6	cop	_	_
+5	a	_	DET	DT	_	6	det	_	_
+6	possibility	_	NOUN	NN	_	2	parataxis	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	10	punct	_	_
+8	can	_	AUX	MD	_	10	aux	_	_
+9	you	_	PRON	PRP	_	10	nsubj	_	_
+10	give	_	VERB	VB	_	2	parataxis	_	_
+11	me	_	PRON	PRP	_	10	iobj	_	_
+12	a	_	DET	DT	_	15	det	_	_
+13	possible	_	ADJ	JJ	_	15	amod	_	_
+14	stocking	_	NOUN	NN	_	15	compound	_	_
+15	option	_	NOUN	NN	_	10	obj	_	_
+16	for	_	ADP	IN	_	17	case	_	_
+17	that	_	DET	DT	_	15	nmod	_	_
+18	too	_	ADV	RB	_	15	advmod	_	SpaceAfter=No
+19	?	_	PUNCT	.	_	10	punct	_	_
+
+# sent_id = 6
+# text = I'll choose the one that sounds the best after looking into all the fish :)
+1	I	_	PRON	PRP	_	3	nsubj	_	SpaceAfter=No
+2	'll	_	AUX	MD	_	3	aux	_	_
+3	choose	_	VERB	VB	_	0	root	_	_
+4	the	_	DET	DT	_	5	det	_	_
+5	one	_	NOUN	NN	_	3	obj	_	_
+6	that	_	PRON	WDT	_	7	nsubj	_	_
+7	sounds	_	VERB	VBZ	_	5	acl	_	_
+8	the	_	DET	DT	_	9	det	_	_
+9	best	_	ADJ	JJS	_	7	obj	_	_
+10	after	_	SCONJ	IN	_	11	mark	_	_
+11	looking	_	VERB	VBG	_	9	advcl	_	_
+12	into	_	ADP	IN	_	15	case	_	_
+13	all	_	DET	PDT	_	15	det	_	_
+14	the	_	DET	DT	_	15	det	_	_
+15	fish	_	NOUN	NN	_	11	obl	_	_
+16	:)	_	SYM	NFP	_	3	discourse	_	_
+
+# sent_id = 7
+# text = Here is the stocking for my 150 gallon tank i upgraded it to 200 at the weekend because of the clownloach A 200 gallon with 6 pairs of Breeding Angel fish fire mouth honey Gouramis 5 8 inch
+1	Here	_	ADV	RB	_	0	root	_	_
+2	is	_	AUX	VBZ	_	1	cop	_	_
+3	the	_	DET	DT	_	4	det	_	_
+4	stocking	_	NOUN	NN	_	1	nsubj	_	_
+5	for	_	ADP	IN	_	9	case	_	_
+6	my	_	PRON	PRP$	_	9	nmod	_	_
+7	150	_	NUM	CD	_	8	nummod	_	_
+8	gallon	_	NOUN	NN	_	9	compound	_	_
+9	tank	_	NOUN	NN	_	4	obl	_	_
+10	i	_	PRON	PRP	_	11	nsubj	_	_
+11	upgraded	_	VERB	VBD	_	9	acl	_	_
+12	it	_	PRON	PRP	_	11	obj	_	_
+13	to	_	ADP	IN	_	14	case	_	_
+14	200	_	NUM	CD	_	11	obl	_	_
+15	at	_	ADP	IN	_	17	case	_	_
+16	the	_	DET	DT	_	17	det	_	_
+17	weekend	_	NOUN	NN	_	11	obl	_	_
+18	because	_	ADP	IN	_	21	case	_	_
+19	of	_	ADP	IN	_	18	fixed	_	_
+20	the	_	DET	DT	_	21	det	_	_
+21	clownloach	_	NOUN	NN	_	17	nmod	_	_
+22	A	_	ADP	IN	_	24	case	_	_
+23	200	_	NUM	CD	_	24	nummod	_	_
+24	gallon	_	NOUN	NN	_	21	nmod	_	_
+25	with	_	ADP	IN	_	27	case	_	_
+26	6	_	NUM	CD	_	27	nummod	_	_
+27	pairs	_	NOUN	NNS	_	24	nmod	_	_
+28	of	_	ADP	IN	_	30	case	_	_
+29	Breeding	_	NOUN	NN	_	30	compound	_	_
+30	Angel	_	NOUN	NN	_	31	compound	_	_
+31	fish	_	NOUN	NN	_	32	compound	_	_
+32	fire	_	NOUN	NN	_	33	compound	_	_
+33	mouth	_	NOUN	NN	_	34	compound	_	_
+34	honey	_	NOUN	NN	_	27	nmod	_	_
+35	Gouramis	_	PROPN	NNP	_	27	flat	_	_
+36	5	_	NUM	CD	_	37	compound	_	_
+37	8	_	NUM	CD	_	38	nummod	_	_
+38	inch	_	NOUN	NN	_	11	obl	_	_
+
+# sent_id = 8
+# text = clownloach a Krib and 5 1 inch clown loach with 16 cory cats 5 Australian Rainbows If you took out the clown loach it would make a nice 150 gallon tank.
+1	clownloach	_	VERB	VBN	_	0	root	_	_
+2	a	_	DET	DT	_	3	det	_	_
+3	Krib	_	PROPN	NNP	_	1	obl	_	_
+4	and	_	CCONJ	CC	_	6	cc	_	_
+5	5	_	NUM	CD	_	6	compound	_	_
+6	1	_	NUM	CD	_	7	nummod	_	_
+7	inch	_	NOUN	NN	_	3	nmod	_	_
+8	clown	_	NOUN	NN	_	9	amod	_	_
+9	loach	_	NOUN	NN	_	7	nmod	_	_
+10	with	_	ADP	IN	_	13	case	_	_
+11	16	_	NUM	CD	_	13	nummod	_	_
+12	cory	_	NOUN	NN	_	13	compound	_	_
+13	cats	_	NOUN	NNS	_	9	appos	_	_
+14	5	_	NUM	CD	_	16	nummod	_	_
+15	Australian	_	ADJ	JJ	_	16	amod	_	_
+16	Rainbows	_	NOUN	NNS	_	26	obj	_	_
+17	If	_	SCONJ	IN	_	19	mark	_	_
+18	you	_	PRON	PRP	_	19	nsubj	_	_
+19	took	_	VERB	VBD	_	26	advcl	_	_
+20	out	_	ADP	RP	_	19	compound	_	_
+21	the	_	DET	DT	_	23	det	_	_
+22	clown	_	NOUN	NN	_	23	dislocated	_	_
+23	loach	_	NOUN	NN	_	19	obl	_	_
+24	it	_	PRON	PRP	_	26	nsubj	_	_
+25	would	_	AUX	MD	_	26	aux	_	_
+26	make	_	VERB	VB	_	1	ccomp	_	_
+27	a	_	DET	DT	_	30	det	_	_
+28	nice	_	ADJ	JJ	_	30	amod	_	_
+29	150	_	NUM	CD	_	30	nummod	_	_
+30	gallon	_	NOUN	NN	_	31	compound	_	_
+31	tank	_	NOUN	NN	_	26	obl	_	SpaceAfter=No
+32	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 9
+# text = fill it with water :) lol for a tank that size i would suggest oscars or piranha every time awesome fish!!
+1	fill	_	VERB	VB	_	0	root	_	_
+2	it	_	PRON	PRP	_	1	obj	_	_
+3	with	_	ADP	IN	_	4	case	_	_
+4	water	_	NOUN	NN	_	1	obl	_	_
+5	:)	_	SYM	NFP	_	4	discourse	_	_
+6	lol	_	INTJ	UH	_	9	discourse	_	_
+7	for	_	ADP	IN	_	9	case	_	_
+8	a	_	DET	DT	_	9	det	_	_
+9	tank	_	NOUN	NN	_	4	nmod	_	_
+10	that	_	PRON	WDT	_	11	nsubj	_	_
+11	size	_	NOUN	NN	_	9	obl	_	_
+12	i	_	PRON	PRP	_	14	nsubj	_	_
+13	would	_	AUX	MD	_	14	aux	_	_
+14	suggest	_	VERB	VB	_	11	acl	_	_
+15	oscars	_	NOUN	NNS	_	14	obj	_	_
+16	or	_	CCONJ	CC	_	17	cc	_	_
+17	piranha	_	NOUN	NN	_	11	conj	_	_
+18	every	_	DET	DT	_	19	det	_	_
+19	time	_	NOUN	NN	_	17	nmod	_	_
+20	awesome	_	ADJ	JJ	_	21	amod	_	_
+21	fish	_	NOUN	NN	_	19	nmod	_	SpaceAfter=No
+22	!!	_	PUNCT	.	_	11	punct	_	_
+

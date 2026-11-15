@@ -1,0 +1,327 @@
+# sent_id = 1
+# text = - Paper4.pdf
+1	-	_	PUNCT	NFP	_	2	punct	_	_
+2	Paper4.pdf	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 2
+# text = Al, I have spoken with Mark Lay and he is interested.
+1	Al	_	PROPN	NNP	_	5	nsubj	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+3	I	_	PRON	PRP	_	5	nsubj	_	_
+4	have	_	AUX	VBP	_	5	aux	_	_
+5	spoken	_	VERB	VBN	_	0	root	_	_
+6	with	_	ADP	IN	_	7	case	_	_
+7	Mark	_	PROPN	NNP	_	5	obl	_	_
+8	Lay	_	PROPN	NNP	_	7	flat	_	_
+9	and	_	CCONJ	CC	_	12	cc	_	_
+10	he	_	PRON	PRP	_	12	nsubj	_	_
+11	is	_	AUX	VBZ	_	12	cop	_	_
+12	interested	_	ADJ	JJ	_	7	acl	_	SpaceAfter=No
+13	.	_	PUNCT	.	_	12	punct	_	_
+
+# sent_id = 3
+# text = Even if we cannot help you here in Enron, he may be able to put you in touch with other CV groups in town.
+1	Even	_	ADV	RB	_	6	advmod	_	_
+2	if	_	SCONJ	IN	_	6	mark	_	_
+3	we	_	PRON	PRP	_	6	nsubj	_	_
+4	can	_	AUX	MD	_	6	aux	_	SpaceAfter=No
+5	not	_	PART	RB	_	6	advmod	_	_
+6	help	_	VERB	VB	_	0	root	_	_
+7	you	_	PRON	PRP	_	6	obj	_	_
+8	here	_	ADV	RB	_	6	advmod	_	_
+9	in	_	ADP	IN	_	10	case	_	_
+10	Enron	_	PROPN	NNP	_	8	obl	_	SpaceAfter=No
+11	,	_	PUNCT	,	_	15	punct	_	_
+12	he	_	PRON	PRP	_	15	nsubj	_	_
+13	may	_	AUX	MD	_	15	aux	_	_
+14	be	_	AUX	VB	_	15	cop	_	_
+15	able	_	ADJ	JJ	_	6	ccomp	_	_
+16	to	_	PART	TO	_	17	mark	_	_
+17	put	_	VERB	VB	_	15	xcomp	_	_
+18	you	_	PRON	PRP	_	17	obj	_	_
+19	in	_	ADP	IN	_	20	case	_	_
+20	touch	_	NOUN	NN	_	17	obl	_	_
+21	with	_	ADP	IN	_	24	case	_	_
+22	other	_	ADJ	JJ	_	24	amod	_	_
+23	CV	_	PROPN	NNP	_	24	compound	_	_
+24	groups	_	NOUN	NNS	_	20	nmod	_	_
+25	in	_	ADP	IN	_	26	case	_	_
+26	town	_	NOUN	NN	_	24	nmod	_	SpaceAfter=No
+27	.	_	PUNCT	.	_	17	punct	_	_
+
+# sent_id = 4
+# text = Please, call him directly and give my name as a reference. (713) 853-7408
+1	Please	_	INTJ	UH	_	3	discourse	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	3	punct	_	_
+3	call	_	VERB	VB	_	0	root	_	_
+4	him	_	PRON	PRP	_	3	obj	_	_
+5	directly	_	ADV	RB	_	3	advmod	_	_
+6	and	_	CCONJ	CC	_	7	cc	_	_
+7	give	_	VERB	VB	_	3	conj	_	_
+8	my	_	PRON	PRP$	_	9	nmod	_	_
+9	name	_	NOUN	NN	_	7	obj	_	_
+10	as	_	ADP	IN	_	12	case	_	_
+11	a	_	DET	DT	_	12	det	_	_
+12	reference	_	NOUN	NN	_	7	obl	_	SpaceAfter=No
+13	.	_	PUNCT	.	_	12	punct	_	_
+14	(	_	PUNCT	-LRB-	_	17	punct	_	SpaceAfter=No
+15	713	_	NUM	CD	_	17	nummod	_	SpaceAfter=No
+16	)	_	PUNCT	-RRB-	_	17	punct	_	_
+17	853-7408	_	NUM	CD	_	12	appos	_	_
+
+# sent_id = 5
+# text = Good luck.
+1	Good	_	ADJ	JJ	_	2	amod	_	_
+2	luck	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+3	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 6
+# text = Vince
+1	Vince	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 7
+# text = Vince J Kaminski
+1	Vince	_	PROPN	NNP	_	0	root	_	_
+2	J	_	PROPN	NNP	_	1	flat	_	_
+3	Kaminski	_	PROPN	NNP	_	2	flat	_	_
+
+# sent_id = 8
+# text = 01/24/2001 11:21 AM
+1	01/24/2001	_	NUM	CD	_	0	root	_	_
+2	11:21	_	NUM	CD	_	3	nummod	_	_
+3	AM	_	NOUN	NN	_	1	nmod	_	_
+
+# sent_id = 9
+# text = Al, I have called Mark Lay and left a message on his voice mail.
+1	Al	_	PROPN	NNP	_	5	vocative	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+3	I	_	PRON	PRP	_	5	nsubj	_	_
+4	have	_	AUX	VBP	_	5	aux	_	_
+5	called	_	VERB	VBN	_	0	root	_	_
+6	Mark	_	PROPN	NNP	_	5	obj	_	_
+7	Lay	_	PROPN	NNP	_	6	flat	_	_
+8	and	_	CCONJ	CC	_	9	cc	_	_
+9	left	_	VERB	VBD	_	5	conj	_	_
+10	a	_	DET	DT	_	11	det	_	_
+11	message	_	NOUN	NN	_	9	obj	_	_
+12	on	_	ADP	IN	_	15	case	_	_
+13	his	_	PRON	PRP$	_	15	nmod	_	_
+14	voice	_	NOUN	NN	_	15	compound	_	_
+15	mail	_	NOUN	NN	_	9	obl	_	SpaceAfter=No
+16	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 10
+# text = Vince Al Arfsten <arfsten@bflassociates.com> on 01/24/2001 11:16:25 AM
+1	Vince	_	PROPN	NNP	_	0	root	_	_
+2	Al	_	PROPN	NNP	_	3	compound	_	_
+3	Arfsten	_	PROPN	NNP	_	1	conj	_	_
+4	<	_	PUNCT	-LRB-	_	5	punct	_	SpaceAfter=No
+5	arfsten@bflassociates.com	_	X	ADD	_	1	list	_	SpaceAfter=No
+6	>	_	PUNCT	-RRB-	_	5	punct	_	_
+7	on	_	ADP	IN	_	8	case	_	_
+8	01/24/2001	_	NUM	CD	_	5	nmod	_	_
+9	11:16:25	_	NUM	CD	_	10	nummod	_	_
+10	AM	_	NOUN	NN	_	8	nmod	_	_
+
+# sent_id = 11
+# text = Vince:
+1	Vince	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+2	:	_	PUNCT	:	_	1	punct	_	_
+
+# sent_id = 12
+# text = Your suggestion to introduce the concept discussed with one of the Lays is welcomed.
+1	Your	_	PRON	PRP$	_	2	nmod	_	_
+2	suggestion	_	NOUN	NN	_	7	nsubj	_	_
+3	to	_	PART	TO	_	4	mark	_	_
+4	introduce	_	VERB	VB	_	2	acl	_	_
+5	the	_	DET	DT	_	6	det	_	_
+6	concept	_	NOUN	NN	_	7	nsubj	_	_
+7	discussed	_	VERB	VBD	_	0	root	_	_
+8	with	_	SCONJ	IN	_	9	mark	_	_
+9	one	_	NUM	CD	_	7	obl	_	_
+10	of	_	ADP	IN	_	12	case	_	_
+11	the	_	DET	DT	_	12	det	_	_
+12	Lays	_	PROPN	NNP	_	9	nmod	_	_
+13	is	_	AUX	VBZ	_	14	aux	_	_
+14	welcomed	_	VERB	VBN	_	7	ccomp	_	SpaceAfter=No
+15	.	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 13
+# text = I hope that this would mean that you would remain involved at some level.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	hope	_	VERB	VBP	_	0	root	_	_
+3	that	_	SCONJ	IN	_	6	mark	_	_
+4	this	_	PRON	DT	_	6	nsubj	_	_
+5	would	_	AUX	MD	_	6	aux	_	_
+6	mean	_	VERB	VB	_	2	parataxis	_	_
+7	that	_	SCONJ	IN	_	11	mark	_	_
+8	you	_	PRON	PRP	_	11	nsubj	_	_
+9	would	_	AUX	MD	_	11	aux	_	_
+10	remain	_	AUX	VB	_	11	aux	_	_
+11	involved	_	ADJ	JJ	_	2	parataxis	_	_
+12	at	_	ADP	IN	_	14	case	_	_
+13	some	_	DET	DT	_	14	det	_	_
+14	level	_	NOUN	NN	_	11	obl	_	SpaceAfter=No
+15	.	_	PUNCT	.	_	11	punct	_	_
+
+# sent_id = 14
+# text = The design of the model and its potential economics could be key to how worthy the effort might be.
+1	The	_	DET	DT	_	2	det	_	_
+2	design	_	NOUN	NN	_	9	nsubj	_	_
+3	of	_	ADP	IN	_	5	case	_	_
+4	the	_	DET	DT	_	5	det	_	_
+5	model	_	NOUN	NN	_	2	nmod	_	_
+6	and	_	CCONJ	CC	_	9	cc	_	_
+7	its	_	PRON	PRP$	_	9	nmod	_	_
+8	potential	_	ADJ	JJ	_	9	amod	_	_
+9	economics	_	NOUN	NNS	_	12	nsubj	_	_
+10	could	_	AUX	MD	_	12	aux	_	_
+11	be	_	AUX	VB	_	12	cop	_	_
+12	key	_	ADJ	JJ	_	0	root	_	_
+13	to	_	ADP	IN	_	17	case	_	_
+14	how	_	ADV	WRB	_	15	advmod	_	_
+15	worthy	_	ADJ	JJ	_	17	advcl	_	_
+16	the	_	DET	DT	_	17	det	_	_
+17	effort	_	NOUN	NN	_	19	nsubj	_	_
+18	might	_	AUX	MD	_	19	aux	_	_
+19	be	_	VERB	VB	_	9	acl	_	SpaceAfter=No
+20	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 15
+# text = Enron could be an ideal environment from which to the concept enhancement through to commercialization could be successfully accomplished.
+1	Enron	_	PROPN	NNP	_	6	nsubj	_	_
+2	could	_	AUX	MD	_	6	aux	_	_
+3	be	_	AUX	VB	_	6	cop	_	_
+4	an	_	DET	DT	_	6	det	_	_
+5	ideal	_	ADJ	JJ	_	6	amod	_	_
+6	environment	_	NOUN	NN	_	19	nsubj	_	_
+7	from	_	ADP	IN	_	8	case	_	_
+8	which	_	PRON	WDT	_	12	obl	_	_
+9	to	_	ADP	IN	_	12	case	_	_
+10	the	_	DET	DT	_	12	det	_	_
+11	concept	_	NOUN	NN	_	12	compound	_	_
+12	enhancement	_	NOUN	NN	_	6	nmod	_	_
+13	through	_	ADP	IN	_	15	case	_	_
+14	to	_	ADP	IN	_	15	case	_	_
+15	commercialization	_	NOUN	NN	_	12	obl	_	_
+16	could	_	AUX	MD	_	19	aux	_	_
+17	be	_	AUX	VB	_	19	aux	_	_
+18	successfully	_	ADV	RB	_	19	advmod	_	_
+19	accomplished	_	VERB	VBN	_	0	root	_	SpaceAfter=No
+20	.	_	PUNCT	.	_	19	punct	_	_
+
+# sent_id = 16
+# text = Please confidentially share matters as you think best and advise me of the interest generated.
+1	Please	_	INTJ	UH	_	3	discourse	_	_
+2	confidentially	_	ADV	RB	_	3	advmod	_	_
+3	share	_	VERB	VB	_	0	root	_	_
+4	matters	_	NOUN	NNS	_	3	obj	_	_
+5	as	_	SCONJ	IN	_	7	mark	_	_
+6	you	_	PRON	PRP	_	7	nsubj	_	_
+7	think	_	VERB	VBP	_	3	advcl	_	_
+8	best	_	ADJ	JJS	_	7	obj	_	_
+9	and	_	CCONJ	CC	_	10	cc	_	_
+10	advise	_	VERB	VB	_	3	conj	_	_
+11	me	_	PRON	PRP	_	10	obj	_	_
+12	of	_	ADP	IN	_	14	case	_	_
+13	the	_	DET	DT	_	14	det	_	_
+14	interest	_	NOUN	NN	_	10	obl	_	_
+15	generated	_	VERB	VBN	_	14	acl	_	SpaceAfter=No
+16	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 17
+# text = I am ready to meet there at your building or elsewhere that is appropriate.
+1	I	_	PRON	PRP	_	3	nsubj	_	_
+2	am	_	AUX	VBP	_	3	cop	_	_
+3	ready	_	ADJ	JJ	_	0	root	_	_
+4	to	_	PART	TO	_	5	mark	_	_
+5	meet	_	VERB	VB	_	3	xcomp	_	_
+6	there	_	ADV	RB	_	5	advmod	_	_
+7	at	_	ADP	IN	_	9	case	_	_
+8	your	_	PRON	PRP$	_	9	nmod	_	_
+9	building	_	NOUN	NN	_	5	obl	_	_
+10	or	_	CCONJ	CC	_	11	cc	_	_
+11	elsewhere	_	ADV	RB	_	14	advmod	_	_
+12	that	_	PRON	DT	_	14	nsubj	_	_
+13	is	_	AUX	VBZ	_	14	cop	_	_
+14	appropriate	_	ADJ	JJ	_	9	acl	_	SpaceAfter=No
+15	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 18
+# text = Best regards,
+1	Best	_	ADJ	JJS	_	2	amod	_	_
+2	regards	_	NOUN	NNS	_	0	root	_	SpaceAfter=No
+3	,	_	PUNCT	,	_	2	punct	_	_
+
+# sent_id = 19
+# text = Al Arfsten 713 965 2158 Martin, No problem.
+1	Al	_	PROPN	NNP	_	0	root	_	_
+2	Arfsten	_	PROPN	NNP	_	1	flat	_	_
+3	713	_	PROPN	NNP	_	1	flat	_	_
+4	965	_	INTJ	UH	_	5	discourse	_	_
+5	2158	_	NUM	CD	_	1	vocative	_	_
+6	Martin	_	PROPN	NNP	_	5	vocative	_	SpaceAfter=No
+7	,	_	PUNCT	,	_	6	punct	_	_
+8	No	_	DET	DT	_	9	det	_	_
+9	problem	_	NOUN	NN	_	6	appos	_	SpaceAfter=No
+10	.	_	PUNCT	.	_	9	punct	_	_
+
+# sent_id = 20
+# text = Please, ask Stinson as well.
+1	Please	_	INTJ	UH	_	3	discourse	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	3	punct	_	_
+3	ask	_	VERB	VB	_	0	root	_	_
+4	Stinson	_	PROPN	NNP	_	3	obj	_	_
+5	as	_	ADV	RB	_	3	advmod	_	_
+6	well	_	ADV	RB	_	5	fixed	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 21
+# text = Vince I thought that since Chonawee has an optimization background, he would be good to have him go to dinner with Dr. Lasdon on Thrusday as well.
+1	Vince	_	PROPN	NNP	_	3	vocative	_	_
+2	I	_	PRON	PRP	_	3	nsubj	_	_
+3	thought	_	VERB	VBD	_	0	root	_	_
+4	that	_	SCONJ	IN	_	17	mark	_	_
+5	since	_	SCONJ	IN	_	7	mark	_	_
+6	Chonawee	_	PROPN	NNP	_	7	nsubj	_	_
+7	has	_	VERB	VBZ	_	3	ccomp	_	_
+8	an	_	DET	DT	_	10	det	_	_
+9	optimization	_	NOUN	NN	_	10	compound	_	_
+10	background	_	NOUN	NN	_	7	obj	_	SpaceAfter=No
+11	,	_	PUNCT	,	_	15	punct	_	_
+12	he	_	PRON	PRP	_	15	nsubj	_	_
+13	would	_	AUX	MD	_	15	aux	_	_
+14	be	_	AUX	VB	_	15	cop	_	_
+15	good	_	ADJ	JJ	_	7	ccomp	_	_
+16	to	_	PART	TO	_	17	mark	_	_
+17	have	_	VERB	VB	_	15	csubj	_	_
+18	him	_	PRON	PRP	_	17	obj	_	_
+19	go	_	VERB	VB	_	17	xcomp	_	_
+20	to	_	ADP	IN	_	21	case	_	_
+21	dinner	_	NOUN	NN	_	19	obl	_	_
+22	with	_	ADP	IN	_	23	case	_	_
+23	Dr.	_	PROPN	NNP	_	21	nmod	_	_
+24	Lasdon	_	PROPN	NNP	_	21	flat	_	_
+25	on	_	ADP	IN	_	26	case	_	_
+26	Thrusday	_	PROPN	NNP	_	24	obl	_	_
+27	as	_	ADV	RB	_	19	advmod	_	_
+28	well	_	ADV	RB	_	27	fixed	_	SpaceAfter=No
+29	.	_	PUNCT	.	_	17	punct	_	_
+
+# sent_id = 22
+# text = Would this be fine?
+1	Would	_	AUX	MD	_	4	aux	_	_
+2	this	_	PRON	DT	_	4	nsubj	_	_
+3	be	_	AUX	VB	_	4	cop	_	_
+4	fine	_	ADJ	JJ	_	0	root	_	SpaceAfter=No
+5	?	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 23
+# text = Thanks,
+1	Thanks	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	1	punct	_	_
+
+# sent_id = 24
+# text = Martin
+1	Martin	_	PROPN	NNP	_	0	root	_	_
+

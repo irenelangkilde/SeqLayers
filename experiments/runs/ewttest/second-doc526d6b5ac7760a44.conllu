@@ -1,0 +1,249 @@
+# sent_id = 1
+# text = These guys tried the Ken Lay route.
+1	These	_	DET	DT	_	2	det	_	_
+2	guys	_	NOUN	NNS	_	3	nsubj	_	_
+3	tried	_	VERB	VBD	_	0	root	_	_
+4	the	_	DET	DT	_	5	det	_	_
+5	Ken	_	PROPN	NNP	_	3	obj	_	_
+6	Lay	_	PROPN	NNP	_	5	flat	_	_
+7	route	_	NOUN	NN	_	6	flat	_	SpaceAfter=No
+8	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 2
+# text = Now they are part of your working group.
+1	Now	_	ADV	RB	_	4	advmod	_	_
+2	they	_	PRON	PRP	_	4	nsubj	_	_
+3	are	_	AUX	VBP	_	4	cop	_	_
+4	part	_	NOUN	NN	_	0	root	_	_
+5	of	_	ADP	IN	_	8	case	_	_
+6	your	_	PRON	PRP$	_	8	nmod	_	_
+7	working	_	NOUN	NN	_	8	compound	_	_
+8	group	_	NOUN	NN	_	4	nmod	_	SpaceAfter=No
+9	.	_	PUNCT	.	_	4	punct	_	_
+
+# sent_id = 3
+# text = Hilary E. Ackermann Goldman Sachs Credit Risk Management & Advisory Phone: 212-902-3724 Fax: 212-428-1181
+1	Hilary	_	PROPN	NNP	_	0	root	_	_
+2	E	_	PROPN	NNP	_	1	flat	_	SpaceAfter=No
+3	.	_	PUNCT	.	_	1	punct	_	_
+4	Ackermann	_	PROPN	NNP	_	1	flat	_	_
+5	Goldman	_	PROPN	NNP	_	4	flat	_	_
+6	Sachs	_	PRON	EX	_	7	expl	_	_
+7	Credit	_	NOUN	NN	_	12	compound	_	_
+8	Risk	_	NOUN	NN	_	9	compound	_	_
+9	Management	_	NOUN	NN	_	12	appos	_	_
+10	&	_	CCONJ	CC	_	11	cc	_	_
+11	Advisory	_	NOUN	NN	_	9	list	_	_
+12	Phone	_	NOUN	NN	_	1	list	_	SpaceAfter=No
+13	:	_	PUNCT	:	_	12	punct	_	_
+14	212-902-3724	_	NUM	CD	_	12	appos	_	_
+15	Fax	_	NOUN	NN	_	12	list	_	SpaceAfter=No
+16	:	_	PUNCT	:	_	15	punct	_	_
+17	212	_	NUM	CD	_	15	appos	_	SpaceAfter=No
+18	-428-1181	_	NUM	CD	_	12	appos	_	_
+
+# sent_id = 4
+# text = E-Mail: hilary.ackermann@gs.com
+1	E	_	NOUN	NN	_	2	compound	_	SpaceAfter=No
+2	-Mail	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+3	:	_	PUNCT	:	_	2	punct	_	_
+4	hilary.ackermann@gs.com	_	X	ADD	_	2	appos	_	_
+
+# sent_id = 5
+# text = Dear Mr. Lavorato:
+1	Dear	_	ADJ	JJ	_	2	amod	_	_
+2	Mr.	_	PROPN	NNP	_	0	root	_	_
+3	Lavorato	_	PROPN	NNP	_	2	flat	_	SpaceAfter=No
+4	:	_	PUNCT	:	_	2	punct	_	_
+
+# sent_id = 6
+# text = Following up on your and Ken Lay's conversation with Gary Cohn, I would like to forward the following proposal, acting for each of Goldman Sachs Capital Markets and J.Aron.
+1	Following	_	VERB	VBG	_	0	root	_	_
+2	up	_	ADP	RP	_	1	compound	_	_
+3	on	_	ADP	IN	_	9	case	_	_
+4	your	_	PRON	PRP$	_	9	nmod	_	_
+5	and	_	CCONJ	CC	_	6	cc	_	_
+6	Ken	_	PROPN	NNP	_	9	nmod	_	_
+7	Lay	_	PROPN	NNP	_	6	flat	_	SpaceAfter=No
+8	's	_	PART	POS	_	6	case	_	_
+9	conversation	_	NOUN	NN	_	1	obl	_	_
+10	with	_	ADP	IN	_	11	case	_	_
+11	Gary	_	PROPN	NNP	_	9	nmod	_	_
+12	Cohn	_	PROPN	NNP	_	11	vocative	_	SpaceAfter=No
+13	,	_	PUNCT	,	_	16	punct	_	_
+14	I	_	PRON	PRP	_	16	nsubj	_	_
+15	would	_	AUX	MD	_	16	aux	_	_
+16	like	_	VERB	VB	_	1	parataxis	_	_
+17	to	_	PART	TO	_	18	mark	_	_
+18	forward	_	VERB	VB	_	16	xcomp	_	_
+19	the	_	DET	DT	_	21	det	_	_
+20	following	_	VERB	VBG	_	21	amod	_	_
+21	proposal	_	NOUN	NN	_	18	obj	_	SpaceAfter=No
+22	,	_	PUNCT	,	_	16	punct	_	_
+23	acting	_	VERB	VBG	_	16	advcl	_	_
+24	for	_	ADP	IN	_	25	case	_	_
+25	each	_	DET	DT	_	29	nmod	_	_
+26	of	_	ADP	IN	_	27	case	_	_
+27	Goldman	_	PROPN	NNP	_	25	nmod	_	_
+28	Sachs	_	PRON	EX	_	29	expl	_	_
+29	Capital	_	PROPN	NNP	_	30	compound	_	_
+30	Markets	_	PROPN	NNPS	_	23	obl	_	_
+31	and	_	CCONJ	CC	_	32	cc	_	_
+32	J.Aron	_	PROPN	NNP	_	30	conj	_	SpaceAfter=No
+33	.	_	PUNCT	.	_	16	punct	_	_
+
+# sent_id = 7
+# text = Hilary E. Ackermann Goldman Sachs Credit Risk Management & Advisory Phone: 212-902-3724 Fax: 212-428-1181
+1	Hilary	_	PROPN	NNP	_	0	root	_	_
+2	E	_	PROPN	NNP	_	1	flat	_	SpaceAfter=No
+3	.	_	PUNCT	.	_	1	punct	_	_
+4	Ackermann	_	PROPN	NNP	_	1	flat	_	_
+5	Goldman	_	PROPN	NNP	_	4	flat	_	_
+6	Sachs	_	PRON	EX	_	7	expl	_	_
+7	Credit	_	NOUN	NN	_	12	compound	_	_
+8	Risk	_	NOUN	NN	_	9	compound	_	_
+9	Management	_	NOUN	NN	_	12	appos	_	_
+10	&	_	CCONJ	CC	_	11	cc	_	_
+11	Advisory	_	NOUN	NN	_	9	list	_	_
+12	Phone	_	NOUN	NN	_	1	list	_	SpaceAfter=No
+13	:	_	PUNCT	:	_	12	punct	_	_
+14	212-902-3724	_	NUM	CD	_	12	appos	_	_
+15	Fax	_	NOUN	NN	_	12	list	_	SpaceAfter=No
+16	:	_	PUNCT	:	_	15	punct	_	_
+17	212	_	NUM	CD	_	15	appos	_	SpaceAfter=No
+18	-428-1181	_	NUM	CD	_	12	appos	_	_
+
+# sent_id = 8
+# text = E-Mail: hilary.ackermann@gs.com Not going well
+1	E	_	NOUN	NN	_	2	compound	_	SpaceAfter=No
+2	-Mail	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+3	:	_	PUNCT	:	_	2	punct	_	_
+4	hilary.ackermann@gs.com	_	X	ADD	_	2	appos	_	_
+5	Not	_	ADV	RB	_	6	advmod	_	_
+6	going	_	VERB	VBG	_	4	goeswith	_	_
+7	well	_	ADV	RB	_	6	advmod	_	_
+
+# sent_id = 9
+# text = Hello Louise, I know you must be going nuts with all the events, so I have not called.
+1	Hello	_	INTJ	UH	_	5	parataxis	_	_
+2	Louise	_	PROPN	NNP	_	1	vocative	_	SpaceAfter=No
+3	,	_	PUNCT	,	_	1	punct	_	_
+4	I	_	PRON	PRP	_	5	nsubj	_	_
+5	know	_	VERB	VBP	_	0	root	_	_
+6	you	_	PRON	PRP	_	9	nsubj	_	_
+7	must	_	AUX	MD	_	9	aux	_	_
+8	be	_	AUX	VB	_	9	aux	_	_
+9	going	_	VERB	VBG	_	5	ccomp	_	_
+10	nuts	_	NOUN	NNS	_	9	obl	_	_
+11	with	_	ADP	IN	_	14	case	_	_
+12	all	_	DET	PDT	_	14	det	_	_
+13	the	_	DET	DT	_	14	det	_	_
+14	events	_	NOUN	NNS	_	9	obl	_	SpaceAfter=No
+15	,	_	PUNCT	,	_	5	punct	_	_
+16	so	_	ADV	RB	_	20	advmod	_	_
+17	I	_	PRON	PRP	_	20	nsubj	_	_
+18	have	_	AUX	VBP	_	20	aux	_	_
+19	not	_	PART	RB	_	20	advmod	_	_
+20	called	_	VERB	VBN	_	5	advcl	_	SpaceAfter=No
+21	.	_	PUNCT	.	_	20	punct	_	_
+
+# sent_id = 10
+# text = Hope you will be sorted.
+1	Hope	_	VERB	VBP	_	0	root	_	_
+2	you	_	PRON	PRP	_	5	nsubj	_	_
+3	will	_	AUX	MD	_	5	aux	_	_
+4	be	_	AUX	VB	_	5	cop	_	_
+5	sorted	_	VERB	VBN	_	1	parataxis	_	SpaceAfter=No
+6	.	_	PUNCT	.	_	5	punct	_	_
+
+# sent_id = 11
+# text = Call me if you have time.
+1	Call	_	VERB	VB	_	0	root	_	_
+2	me	_	PRON	PRP	_	1	obj	_	_
+3	if	_	SCONJ	IN	_	5	mark	_	_
+4	you	_	PRON	PRP	_	5	nsubj	_	_
+5	have	_	VERB	VBP	_	1	advcl	_	_
+6	time	_	NOUN	NN	_	5	obj	_	SpaceAfter=No
+7	.	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 12
+# text = M
+1	M	_	NUM	CD	_	0	root	_	_
+
+# sent_id = 13
+# text = Please update daily Louise,
+1	Please	_	INTJ	UH	_	2	discourse	_	_
+2	update	_	VERB	VB	_	0	root	_	_
+3	daily	_	ADJ	JJ	_	4	amod	_	_
+4	Louise	_	PROPN	NNP	_	2	obj	_	SpaceAfter=No
+5	,	_	PUNCT	,	_	2	punct	_	_
+
+# sent_id = 14
+# text = There are only two counterparties at this time who have overdue margin:
+1	There	_	PRON	EX	_	2	expl	_	_
+2	are	_	VERB	VBP	_	0	root	_	_
+3	only	_	ADV	RB	_	4	advmod	_	_
+4	two	_	NUM	CD	_	5	nummod	_	_
+5	counterparties	_	NOUN	NNS	_	2	obl	_	_
+6	at	_	ADP	IN	_	8	case	_	_
+7	this	_	DET	DT	_	8	det	_	_
+8	time	_	NOUN	NN	_	5	nmod	_	_
+9	who	_	PRON	WP	_	10	nsubj	_	_
+10	have	_	VERB	VBP	_	8	acl	_	_
+11	overdue	_	ADJ	JJ	_	12	amod	_	_
+12	margin	_	NOUN	NNS	_	10	obj	_	SpaceAfter=No
+13	:	_	PUNCT	:	_	12	punct	_	_
+
+# sent_id = 15
+# text = Original Margin Call Margin Due Today Kinder Morgan $ 3,500,000 $ 1,250,000 AEP $19,250,000
+1	Original	_	ADJ	JJ	_	2	amod	_	_
+2	Margin	_	NOUN	NN	_	3	nsubj	_	_
+3	Call	_	VERB	VBP	_	0	root	_	_
+4	Margin	_	NOUN	NN	_	3	obj	_	_
+5	Due	_	ADP	IN	_	4	nmod	_	_
+6	Today	_	NOUN	NN	_	5	fixed	_	_
+7	Kinder	_	PROPN	NNP	_	6	nmod	_	_
+8	Morgan	_	PROPN	NNP	_	7	flat	_	_
+9	$	_	SYM	$	_	8	appos	_	_
+10	3,500,000	_	NUM	CD	_	9	list	_	_
+11	$	_	SYM	$	_	9	appos	_	_
+12	1,250,000	_	NUM	CD	_	11	nummod	_	_
+13	AEP	_	PROPN	NNP	_	14	compound	_	_
+14	$	_	SYM	$	_	8	list	_	SpaceAfter=No
+15	19,250,000	_	NUM	CD	_	14	list	_	_
+
+# sent_id = 16
+# text = $38,750,000 ------------------------------
+1	$	_	SYM	$	_	3	dep	_	SpaceAfter=No
+2	38,750,000	_	NUM	CD	_	1	dep	_	_
+3	------------------------------	_	SYM	NFP	_	0	root	_	_
+
+# sent_id = 17
+# text = Totals $22,750,000
+1	Totals	_	NOUN	NNS	_	0	root	_	_
+2	$	_	SYM	$	_	1	appos	_	SpaceAfter=No
+3	22,750,000	_	NUM	CD	_	2	nummod	_	_
+
+# sent_id = 18
+# text = $40,000,000
+1	$	_	SYM	$	_	0	root	_	SpaceAfter=No
+2	40,000,000	_	NUM	CD	_	1	nummod	_	_
+
+# sent_id = 19
+# text = Please let us know if you need any additional information.
+1	Please	_	INTJ	UH	_	2	discourse	_	_
+2	let	_	VERB	VB	_	0	root	_	_
+3	us	_	PRON	PRP	_	2	obj	_	_
+4	know	_	VERB	VB	_	2	xcomp	_	_
+5	if	_	SCONJ	IN	_	7	mark	_	_
+6	you	_	PRON	PRP	_	7	nsubj	_	_
+7	need	_	VERB	VBP	_	4	advcl	_	_
+8	any	_	DET	DT	_	10	det	_	_
+9	additional	_	ADJ	JJ	_	10	amod	_	_
+10	information	_	NOUN	NN	_	7	obj	_	SpaceAfter=No
+11	.	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 20
+# text = Stephanie
+1	Stephanie	_	PROPN	NNP	_	0	root	_	_
+

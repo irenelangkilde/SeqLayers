@@ -1,0 +1,193 @@
+# sent_id = 1
+# text = [http://www.reuters.co.uk/newsPackageArticle.jhtml?type=worldNews&storyID=624569&section=news]
+1	[	_	PUNCT	-LRB-	_	2	punct	_	SpaceAfter=No
+2	http://www.reuters.co.uk/newsPackageArticle.jhtml?type=world	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+3	News&story	_	PROPN	NNP	_	4	compound	_	SpaceAfter=No
+4	ID=624569&section=news	_	PROPN	NNPS	_	2	list	_	SpaceAfter=No
+5	]	_	PUNCT	-RRB-	_	4	punct	_	_
+
+# sent_id = 2
+# text = With protests going on in the Chilean capital of Santiago (from the economic summit), President Bush visited Chinese President Hu Jintao and other key allies in Santiago.
+1	With	_	SCONJ	IN	_	20	mark	_	_
+2	protests	_	NOUN	NNS	_	20	nsubj	_	_
+3	going	_	VERB	VBG	_	2	acl	_	_
+4	on	_	ADP	RP	_	3	compound	_	_
+5	in	_	ADP	IN	_	8	case	_	_
+6	the	_	DET	DT	_	8	det	_	_
+7	Chilean	_	ADJ	JJ	_	8	amod	_	_
+8	capital	_	NOUN	NN	_	3	obl	_	_
+9	of	_	ADP	IN	_	10	case	_	_
+10	Santiago	_	PROPN	NNP	_	8	nmod	_	_
+11	(	_	PUNCT	-LRB-	_	15	punct	_	SpaceAfter=No
+12	from	_	ADP	IN	_	15	case	_	_
+13	the	_	DET	DT	_	15	det	_	_
+14	economic	_	ADJ	JJ	_	15	amod	_	_
+15	summit	_	NOUN	NN	_	8	parataxis	_	SpaceAfter=No
+16	)	_	PUNCT	-RRB-	_	8	punct	_	SpaceAfter=No
+17	,	_	PUNCT	,	_	20	punct	_	_
+18	President	_	PROPN	NNP	_	20	nsubj	_	_
+19	Bush	_	PROPN	NNP	_	18	flat	_	_
+20	visited	_	VERB	VBD	_	0	root	_	_
+21	Chinese	_	ADJ	JJ	_	22	amod	_	_
+22	President	_	PROPN	NNP	_	20	obj	_	_
+23	Hu	_	PROPN	NNP	_	22	flat	_	_
+24	Jintao	_	PROPN	NNP	_	22	flat	_	_
+25	and	_	CCONJ	CC	_	28	cc	_	_
+26	other	_	ADJ	JJ	_	28	amod	_	_
+27	key	_	ADJ	JJ	_	28	amod	_	_
+28	allies	_	NOUN	NNS	_	24	conj	_	_
+29	in	_	ADP	IN	_	30	case	_	_
+30	Santiago	_	PROPN	NNP	_	28	nmod	_	SpaceAfter=No
+31	.	_	PUNCT	.	_	20	punct	_	_
+
+# sent_id = 3
+# text = The talk of the day besides a more level playing field with China was North Korea.
+1	The	_	DET	DT	_	2	det	_	_
+2	talk	_	NOUN	NN	_	6	nsubj	_	_
+3	of	_	ADP	IN	_	5	case	_	_
+4	the	_	DET	DT	_	5	det	_	_
+5	day	_	NOUN	NN	_	2	nmod	_	_
+6	besides	_	ADP	IN	_	0	root	_	_
+7	a	_	DET	DT	_	9	det	_	_
+8	more	_	ADJ	JJR	_	9	amod	_	_
+9	level	_	NOUN	NN	_	6	obj	_	_
+10	playing	_	VERB	VBG	_	9	acl	_	_
+11	field	_	NOUN	NN	_	10	obj	_	_
+12	with	_	SCONJ	IN	_	13	case	_	_
+13	China	_	PROPN	NNP	_	11	nmod	_	_
+14	was	_	AUX	VBD	_	16	cop	_	_
+15	North	_	PROPN	NNP	_	16	compound	_	_
+16	Korea	_	PROPN	NNP	_	13	nmod	_	SpaceAfter=No
+17	.	_	PUNCT	.	_	6	punct	_	_
+
+# sent_id = 4
+# text = China has been a great help at getting North Korea to the table and Bush is hoping that with their cooperation Korea can become a nuclear free peninsula.
+1	China	_	PROPN	NNP	_	6	nsubj	_	_
+2	has	_	AUX	VBZ	_	6	aux	_	_
+3	been	_	AUX	VBN	_	21	acl	_	_
+4	a	_	DET	DT	_	6	det	_	_
+5	great	_	ADJ	JJ	_	6	amod	_	_
+6	help	_	NOUN	NN	_	3	obj	_	_
+7	at	_	SCONJ	IN	_	8	mark	_	_
+8	getting	_	VERB	VBG	_	6	csubj	_	_
+9	North	_	PROPN	NNP	_	10	compound	_	_
+10	Korea	_	PROPN	NNP	_	8	obj	_	_
+11	to	_	ADP	IN	_	13	case	_	_
+12	the	_	DET	DT	_	13	det	_	_
+13	table	_	NOUN	NN	_	10	obl	_	_
+14	and	_	CCONJ	CC	_	17	cc	_	_
+15	Bush	_	PROPN	NNP	_	17	nsubj	_	_
+16	is	_	AUX	VBZ	_	17	aux	_	_
+17	hoping	_	VERB	VBG	_	0	root	_	_
+18	that	_	SCONJ	IN	_	24	mark	_	_
+19	with	_	ADP	IN	_	22	case	_	_
+20	their	_	PRON	PRP$	_	22	nmod	_	_
+21	cooperation	_	NOUN	NN	_	22	compound	_	_
+22	Korea	_	NOUN	NN	_	24	nsubj	_	_
+23	can	_	AUX	MD	_	24	aux	_	_
+24	become	_	VERB	VB	_	17	ccomp	_	_
+25	a	_	DET	DT	_	28	det	_	_
+26	nuclear	_	ADJ	JJ	_	28	amod	_	_
+27	free	_	NOUN	NN	_	28	compound	_	_
+28	peninsula	_	NOUN	NN	_	24	xcomp	_	SpaceAfter=No
+29	.	_	PUNCT	.	_	28	punct	_	_
+
+# sent_id = 5
+# text = REUTERS/Jason Reed U.S. President George W. Bush shakes hands with Chinese President Hu Jintao in a bilateral meeting in Santiago.
+1	REUTERS	_	NOUN	NNS	_	0	root	_	SpaceAfter=No
+2	/	_	PUNCT	,	_	1	punct	_	SpaceAfter=No
+3	Jason	_	PROPN	NNP	_	5	compound	_	_
+4	Reed	_	PROPN	NNP	_	3	flat	_	_
+5	U.S.	_	PROPN	NNP	_	6	compound	_	_
+6	President	_	PROPN	NNP	_	10	nsubj	_	_
+7	George	_	PROPN	NNP	_	6	flat	_	_
+8	W.	_	PROPN	NNP	_	6	flat	_	_
+9	Bush	_	PROPN	NNP	_	6	flat	_	_
+10	shakes	_	VERB	VBD	_	1	acl	_	_
+11	hands	_	NOUN	NNS	_	10	obj	_	_
+12	with	_	ADP	IN	_	14	case	_	_
+13	Chinese	_	ADJ	JJ	_	14	amod	_	_
+14	President	_	NOUN	NN	_	9	nmod	_	_
+15	Hu	_	PROPN	NNP	_	6	flat	_	_
+16	Jintao	_	PROPN	NNP	_	15	flat	_	_
+17	in	_	ADP	IN	_	20	case	_	_
+18	a	_	DET	DT	_	20	det	_	_
+19	bilateral	_	ADJ	JJ	_	20	amod	_	_
+20	meeting	_	NOUN	NN	_	16	conj	_	_
+21	in	_	ADP	IN	_	22	case	_	_
+22	Santiago	_	PROPN	NNP	_	20	nmod	_	SpaceAfter=No
+23	.	_	PUNCT	.	_	3	punct	_	_
+
+# sent_id = 6
+# text = Bush is in Santiago for the annual Asia-Pacific Economic Cooperation (APEC) leaders meeting.
+1	Bush	_	PROPN	NNP	_	4	nsubj	_	_
+2	is	_	AUX	VBZ	_	4	cop	_	_
+3	in	_	ADP	IN	_	4	case	_	_
+4	Santiago	_	PROPN	NNP	_	0	root	_	_
+5	for	_	ADP	IN	_	8	case	_	_
+6	the	_	DET	DT	_	8	det	_	_
+7	annual	_	ADJ	JJ	_	8	amod	_	_
+8	Asia	_	PROPN	NNP	_	16	amod	_	SpaceAfter=No
+9	-Pacific	_	ADJ	JJ	_	10	amod	_	_
+10	Economic	_	ADJ	JJ	_	11	amod	_	_
+11	Cooperation	_	NOUN	NN	_	1	nmod	_	_
+12	(	_	PUNCT	-LRB-	_	13	punct	_	SpaceAfter=No
+13	APEC	_	PROPN	NNP	_	11	appos	_	SpaceAfter=No
+14	)	_	PUNCT	-RRB-	_	13	punct	_	_
+15	leaders	_	NOUN	NNS	_	16	compound	_	_
+16	meeting	_	NOUN	NN	_	10	conj	_	SpaceAfter=No
+17	.	_	PUNCT	.	_	16	punct	_	_
+
+# sent_id = 7
+# text = Hopefully President Bush can accomplish these goals which will not only help strengthen our Chinese allies, but will also help fight the war on terror.
+1	Hopefully	_	ADV	RB	_	5	advmod	_	_
+2	President	_	PROPN	NNP	_	5	nsubj	_	_
+3	Bush	_	PROPN	NNP	_	2	flat	_	_
+4	can	_	AUX	MD	_	5	aux	_	_
+5	accomplish	_	VERB	VB	_	21	advcl	_	_
+6	these	_	DET	DT	_	7	det	_	_
+7	goals	_	NOUN	NNS	_	5	obj	_	_
+8	which	_	PRON	WDT	_	12	nsubj	_	_
+9	will	_	AUX	MD	_	12	aux	_	_
+10	not	_	PART	RB	_	12	advmod	_	_
+11	only	_	ADV	RB	_	12	advmod	_	_
+12	help	_	VERB	VB	_	5	advcl	_	_
+13	strengthen	_	VERB	VB	_	12	advcl	_	_
+14	our	_	PRON	PRP$	_	16	nmod	_	_
+15	Chinese	_	ADJ	JJ	_	16	amod	_	_
+16	allies	_	NOUN	NNS	_	13	obj	_	SpaceAfter=No
+17	,	_	PUNCT	,	_	21	punct	_	_
+18	but	_	CCONJ	CC	_	21	cc	_	_
+19	will	_	AUX	MD	_	21	aux	_	_
+20	also	_	ADV	RB	_	21	advmod	_	_
+21	help	_	VERB	VB	_	0	root	_	_
+22	fight	_	VERB	VB	_	21	xcomp	_	_
+23	the	_	DET	DT	_	24	det	_	_
+24	war	_	NOUN	NN	_	22	obj	_	_
+25	on	_	ADP	IN	_	26	case	_	_
+26	terror	_	NOUN	NN	_	24	nmod	_	SpaceAfter=No
+27	.	_	PUNCT	.	_	21	punct	_	_
+
+# sent_id = 8
+# text = Selah!
+1	Selah	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+2	!	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 9
+# text = --
+1	--	_	PUNCT	NFP	_	0	root	_	_
+
+# sent_id = 10
+# text = Posted by Hidden Nook to Hidden Nook at 11/20/2004 03:10:35 PM
+1	Posted	_	VERB	VBN	_	0	root	_	_
+2	by	_	ADP	IN	_	4	case	_	_
+3	Hidden	_	PROPN	NNP	_	4	compound	_	_
+4	Nook	_	PROPN	NNP	_	1	obl	_	_
+5	to	_	ADP	IN	_	6	case	_	_
+6	Hidden	_	PROPN	NNP	_	4	nmod	_	_
+7	Nook	_	PROPN	NNP	_	6	advcl	_	_
+8	at	_	ADP	IN	_	9	case	_	_
+9	11/20/2004	_	NUM	CD	_	7	nmod	_	_
+10	03:10:35	_	NUM	CD	_	11	nummod	_	_
+11	PM	_	NOUN	NN	_	9	nmod	_	_
+

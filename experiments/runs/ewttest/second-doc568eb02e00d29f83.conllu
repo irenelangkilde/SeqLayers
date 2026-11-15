@@ -1,0 +1,90 @@
+# sent_id = 1
+# text = What are "good" speakers?
+1	What	_	PRON	WP	_	0	root	_	_
+2	are	_	AUX	VBP	_	1	cop	_	_
+3	"	_	PUNCT	``	_	4	punct	_	SpaceAfter=No
+4	good	_	ADJ	JJ	_	6	amod	_	SpaceAfter=No
+5	"	_	PUNCT	''	_	6	punct	_	_
+6	speakers	_	NOUN	NNS	_	1	nsubj	_	SpaceAfter=No
+7	?	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 2
+# text = I've been looking at the bose sound dock 10 ive currently got a jvc mini hifi system, i was wondering what would be a good set of speakers.
+1	I	_	PRON	PRP	_	13	nsubj	_	SpaceAfter=No
+2	've	_	AUX	VBP	_	13	aux	_	_
+3	been	_	AUX	VBN	_	4	aux	_	_
+4	looking	_	VERB	VBG	_	13	advcl	_	_
+5	at	_	ADP	IN	_	7	case	_	_
+6	the	_	DET	DT	_	7	det	_	_
+7	bose	_	PROPN	NNP	_	8	compound	_	_
+8	sound	_	NOUN	NN	_	4	obl	_	_
+9	dock	_	VERB	VB	_	7	xcomp	_	_
+10	10	_	NUM	CD	_	11	nummod	_	_
+11	ive	_	PRON	PRP	_	13	nsubj	_	_
+12	currently	_	ADV	RB	_	13	advmod	_	_
+13	got	_	VERB	VBD	_	0	root	_	_
+14	a	_	DET	DT	_	16	det	_	_
+15	jvc	_	NOUN	NN	_	16	compound	_	_
+16	mini	_	NOUN	NN	_	13	obj	_	_
+17	hifi	_	NOUN	NN	_	18	compound	_	_
+18	system	_	NOUN	NN	_	13	obj	_	SpaceAfter=No
+19	,	_	PUNCT	,	_	13	punct	_	_
+20	i	_	PRON	PRP	_	22	nsubj	_	_
+21	was	_	AUX	VBD	_	22	aux	_	_
+22	wondering	_	VERB	VBG	_	13	conj	_	_
+23	what	_	PRON	WP	_	28	parataxis	_	_
+24	would	_	AUX	MD	_	28	aux	_	_
+25	be	_	AUX	VB	_	28	cop	_	_
+26	a	_	DET	DT	_	28	det	_	_
+27	good	_	ADJ	JJ	_	28	amod	_	_
+28	set	_	NOUN	NN	_	13	conj	_	_
+29	of	_	ADP	IN	_	30	case	_	_
+30	speakers	_	NOUN	NNS	_	28	nmod	_	SpaceAfter=No
+31	.	_	PUNCT	.	_	13	punct	_	_
+
+# sent_id = 3
+# text = I like music very loud and with a lot of bass.
+1	I	_	PRON	PRP	_	2	nsubj	_	_
+2	like	_	VERB	VBP	_	0	root	_	_
+3	music	_	NOUN	NN	_	2	obj	_	_
+4	very	_	ADV	RB	_	5	advmod	_	_
+5	loud	_	ADJ	JJ	_	3	appos	_	_
+6	and	_	CCONJ	CC	_	9	cc	_	_
+7	with	_	ADP	IN	_	9	case	_	_
+8	a	_	DET	DT	_	9	det	_	_
+9	lot	_	NOUN	NN	_	5	obl	_	_
+10	of	_	ADP	IN	_	11	case	_	_
+11	bass.	_	NOUN	NN	_	9	nmod	_	_
+
+# sent_id = 4
+# text = also i was wondering, is it true that the bigger the speakers are the better.
+1	also	_	ADV	RB	_	4	advmod	_	_
+2	i	_	PRON	PRP	_	4	nsubj	_	_
+3	was	_	AUX	VBD	_	4	aux	_	_
+4	wondering	_	VERB	VBG	_	8	parataxis	_	SpaceAfter=No
+5	,	_	PUNCT	,	_	4	punct	_	_
+6	is	_	AUX	VBZ	_	8	cop	_	_
+7	it	_	PRON	PRP	_	8	expl	_	_
+8	true	_	ADJ	JJ	_	0	root	_	_
+9	that	_	SCONJ	IN	_	16	mark	_	_
+10	the	_	DET	DT	_	16	mark	_	_
+11	bigger	_	ADJ	JJR	_	13	case	_	_
+12	the	_	DET	DT	_	13	det	_	_
+13	speakers	_	NOUN	NNS	_	16	nsubj	_	_
+14	are	_	AUX	VBP	_	16	cop	_	_
+15	the	_	DET	DT	_	16	mark	_	_
+16	better	_	ADJ	JJR	_	8	parataxis	_	SpaceAfter=No
+17	.	_	PUNCT	.	_	8	punct	_	_
+
+# sent_id = 5
+# text = thanks B&w.
+1	thanks	_	NOUN	NN	_	2	discourse	_	_
+2	B&w.	_	PROPN	NNP	_	0	root	_	_
+
+# sent_id = 6
+# text = Bose is not good
+1	Bose	_	PROPN	NNP	_	4	nsubj	_	_
+2	is	_	AUX	VBZ	_	4	cop	_	_
+3	not	_	PART	RB	_	4	advmod	_	_
+4	good	_	ADJ	JJ	_	0	root	_	_
+

@@ -1,0 +1,169 @@
+# sent_id = 1
+# text = why are there two statues of David?
+1	why	_	ADV	WRB	_	0	root	_	_
+2	are	_	AUX	VBP	_	5	reparandum	_	_
+3	there	_	PRON	EX	_	2	expl	_	_
+4	two	_	NUM	CD	_	5	nummod	_	_
+5	statues	_	NOUN	NNS	_	1	nsubj	_	_
+6	of	_	ADP	IN	_	7	case	_	_
+7	David	_	PROPN	NNP	_	5	nmod	_	SpaceAfter=No
+8	?	_	PUNCT	.	_	1	punct	_	_
+
+# sent_id = 2
+# text = i doing a research paper on donatello and i notice that there are two statues of David, a bronze one and marble one.
+1	i	_	PRON	PRP	_	2	nsubj	_	_
+2	doing	_	VERB	VBG	_	0	root	_	_
+3	a	_	DET	DT	_	5	det	_	_
+4	research	_	NOUN	NN	_	5	compound	_	_
+5	paper	_	NOUN	NN	_	2	obj	_	_
+6	on	_	ADP	IN	_	7	case	_	_
+7	donatello	_	NOUN	NN	_	5	nmod	_	_
+8	and	_	CCONJ	CC	_	10	cc	_	_
+9	i	_	PRON	PRP	_	10	nsubj	_	_
+10	notice	_	VERB	VBP	_	7	conj	_	_
+11	that	_	SCONJ	IN	_	13	mark	_	_
+12	there	_	PRON	EX	_	13	expl	_	_
+13	are	_	VERB	VBP	_	10	ccomp	_	_
+14	two	_	NUM	CD	_	15	nummod	_	_
+15	statues	_	NOUN	NNS	_	13	nsubj	_	_
+16	of	_	ADP	IN	_	17	case	_	_
+17	David	_	PROPN	NNP	_	15	nmod	_	SpaceAfter=No
+18	,	_	PUNCT	,	_	17	punct	_	_
+19	a	_	DET	DT	_	24	det	_	_
+20	bronze	_	NOUN	NN	_	21	compound	_	_
+21	one	_	NOUN	NN	_	2	obl	_	_
+22	and	_	CCONJ	CC	_	24	cc	_	_
+23	marble	_	NOUN	NN	_	24	compound	_	_
+24	one	_	NOUN	NN	_	21	conj	_	SpaceAfter=No
+25	.	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 3
+# text = Michelangelo made the marble one but why did he do another if Donatello had already made one?
+1	Michelangelo	_	PROPN	NNP	_	2	nsubj	_	_
+2	made	_	VERB	VBD	_	0	root	_	_
+3	the	_	DET	DT	_	4	det	_	_
+4	marble	_	NOUN	NN	_	2	obj	_	_
+5	one	_	NUM	CD	_	4	nummod	_	_
+6	but	_	CCONJ	CC	_	10	cc	_	_
+7	why	_	ADV	WRB	_	10	advmod	_	_
+8	did	_	AUX	VBD	_	10	aux	_	_
+9	he	_	PRON	PRP	_	10	nsubj	_	_
+10	do	_	VERB	VB	_	2	conj	_	_
+11	another	_	DET	DT	_	10	obj	_	_
+12	if	_	SCONJ	IN	_	16	mark	_	_
+13	Donatello	_	PROPN	NNP	_	16	nsubj	_	_
+14	had	_	AUX	VBD	_	16	aux	_	_
+15	already	_	ADV	RB	_	16	advmod	_	_
+16	made	_	VERB	VBN	_	10	acl	_	_
+17	one	_	NUM	CD	_	16	xcomp	_	SpaceAfter=No
+18	?	_	PUNCT	.	_	2	punct	_	_
+
+# sent_id = 4
+# text = so im a little confused , why is there two statues of David? different generations , the donatello is of a boy david as a young sheep Herder, the Michelangelo is the grown up man david as slayer and king Because he liked making statues of David!
+1	so	_	ADV	RB	_	5	advmod	_	_
+2	im	_	AUX	VBZ	_	5	cop	_	_
+3	a	_	DET	DT	_	4	det	_	_
+4	little	_	ADJ	JJ	_	5	obl	_	_
+5	confused	_	ADJ	JJ	_	0	root	_	_
+6	,	_	PUNCT	,	_	5	punct	_	_
+7	why	_	ADV	WRB	_	5	ccomp	_	_
+8	is	_	AUX	VBZ	_	7	ccomp	_	_
+9	there	_	PRON	EX	_	8	expl	_	_
+10	two	_	NUM	CD	_	11	nummod	_	_
+11	statues	_	NOUN	NNS	_	8	nsubj	_	_
+12	of	_	ADP	IN	_	13	case	_	_
+13	David	_	PROPN	NNP	_	11	nmod	_	SpaceAfter=No
+14	?	_	PUNCT	.	_	11	punct	_	_
+15	different	_	ADJ	JJ	_	16	amod	_	_
+16	generations	_	NOUN	NNS	_	11	parataxis	_	_
+17	,	_	PUNCT	,	_	23	punct	_	_
+18	the	_	DET	DT	_	19	det	_	_
+19	donatello	_	NOUN	NN	_	23	nsubj	_	_
+20	is	_	AUX	VBZ	_	23	cop	_	_
+21	of	_	ADP	IN	_	23	case	_	_
+22	a	_	DET	DT	_	23	det	_	_
+23	boy	_	NOUN	NN	_	11	compound	_	_
+24	david	_	NOUN	NN	_	23	appos	_	_
+25	as	_	ADP	IN	_	28	case	_	_
+26	a	_	DET	DT	_	28	det	_	_
+27	young	_	ADJ	JJ	_	28	amod	_	_
+28	sheep	_	NOUN	NN	_	24	nmod	_	_
+29	Herder	_	PROPN	NNP	_	28	flat	_	SpaceAfter=No
+30	,	_	PUNCT	,	_	32	punct	_	_
+31	the	_	DET	DT	_	32	det	_	_
+32	Michelangelo	_	PROPN	NNP	_	37	nsubj	_	_
+33	is	_	AUX	VBZ	_	37	cop	_	_
+34	the	_	DET	DT	_	35	det	_	_
+35	grown	_	VERB	VBN	_	37	advcl	_	_
+36	up	_	ADP	RP	_	35	compound	_	_
+37	man	_	NOUN	NN	_	38	compound	_	_
+38	david	_	PROPN	NNP	_	29	nmod	_	_
+39	as	_	ADP	IN	_	40	case	_	_
+40	slayer	_	NOUN	NN	_	37	nmod	_	_
+41	and	_	CCONJ	CC	_	42	cc	_	_
+42	king	_	NOUN	NN	_	40	conj	_	_
+43	Because	_	SCONJ	IN	_	46	mark	_	_
+44	he	_	PRON	PRP	_	46	nsubj	_	_
+45	liked	_	VERB	VBD	_	42	acl	_	_
+46	making	_	VERB	VBG	_	45	xcomp	_	_
+47	statues	_	NOUN	NNS	_	46	obj	_	_
+48	of	_	ADP	IN	_	49	case	_	_
+49	David	_	PROPN	NNP	_	47	nmod	_	SpaceAfter=No
+50	!	_	PUNCT	.	_	32	punct	_	_
+
+# sent_id = 5
+# text = :D
+1	:D	_	SYM	NFP	_	0	root	_	_
+
+# sent_id = 6
+# text = Obviously, he should have been arrested and jailed - imagine making a statue or painting on the same subject as another artist
+1	Obviously	_	ADV	RB	_	7	advmod	_	SpaceAfter=No
+2	,	_	PUNCT	,	_	7	punct	_	_
+3	he	_	PRON	PRP	_	7	nsubj	_	_
+4	should	_	AUX	MD	_	7	aux	_	_
+5	have	_	AUX	VB	_	7	aux	_	_
+6	been	_	AUX	VBN	_	7	aux	_	_
+7	arrested	_	VERB	VBN	_	0	root	_	_
+8	and	_	CCONJ	CC	_	9	cc	_	_
+9	jailed	_	VERB	VBN	_	7	conj	_	_
+10	-	_	PUNCT	-LRB-	_	11	punct	_	_
+11	imagine	_	VERB	VB	_	9	parataxis	_	_
+12	making	_	VERB	VBG	_	11	xcomp	_	_
+13	a	_	DET	DT	_	14	det	_	_
+14	statue	_	NOUN	NN	_	12	obj	_	_
+15	or	_	CCONJ	CC	_	16	cc	_	_
+16	painting	_	NOUN	NN	_	14	conj	_	_
+17	on	_	ADP	IN	_	20	case	_	_
+18	the	_	DET	DT	_	20	det	_	_
+19	same	_	ADJ	JJ	_	20	amod	_	_
+20	subject	_	NOUN	NN	_	16	nmod	_	_
+21	as	_	ADP	IN	_	23	case	_	_
+22	another	_	DET	DT	_	23	det	_	_
+23	artist	_	NOUN	NN	_	20	obl	_	_
+
+# sent_id = 7
+# text = - clearly insulting and disrespecting
+1	-	_	PUNCT	HYPH	_	2	punct	_	_
+2	clearly	_	ADV	RB	_	3	advmod	_	_
+3	insulting	_	ADJ	JJ	_	0	root	_	_
+4	and	_	CCONJ	CC	_	5	cc	_	_
+5	disrespecting	_	ADJ	JJ	_	3	conj	_	_
+
+# sent_id = 8
+# text = - wasted time that could have been used making a statue with clothes on.
+1	-	_	PUNCT	,	_	2	punct	_	_
+2	wasted	_	VERB	VBD	_	8	advcl	_	_
+3	time	_	NOUN	NN	_	2	obj	_	_
+4	that	_	PRON	WDT	_	8	nsubj	_	_
+5	could	_	AUX	MD	_	8	aux	_	_
+6	have	_	AUX	VB	_	8	aux	_	_
+7	been	_	AUX	VBN	_	8	aux	_	_
+8	used	_	VERB	VBN	_	0	root	_	_
+9	making	_	VERB	VBG	_	8	advcl	_	_
+10	a	_	DET	DT	_	11	det	_	_
+11	statue	_	NOUN	NN	_	9	obj	_	_
+12	with	_	ADP	IN	_	13	case	_	_
+13	clothes	_	NOUN	NNS	_	11	nmod	_	_
+14	on	_	ADV	RB	_	11	advmod	_	SpaceAfter=No
+15	.	_	PUNCT	.	_	8	punct	_	_
+

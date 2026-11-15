@@ -1,0 +1,48 @@
+# sent_id = 1
+# text = Who is artist Gunther Uecker;explain?
+1	Who	_	PRON	WP	_	3	nsubj	_	_
+2	is	_	AUX	VBZ	_	3	cop	_	_
+3	artist	_	NOUN	NN	_	7	nsubj	_	_
+4	Gunther	_	PROPN	NNP	_	5	compound	_	_
+5	Uecker	_	PROPN	NNP	_	3	nmod	_	SpaceAfter=No
+6	;	_	PUNCT	,	_	7	punct	_	SpaceAfter=No
+7	explain	_	VERB	VB	_	0	root	_	SpaceAfter=No
+8	?	_	PUNCT	.	_	7	punct	_	_
+
+# sent_id = 2
+# text = http://www.kettererkunst.com/bio/GuntherUecker-1930.shtml
+1	http://www.kettererkunst.com/bio	_	PROPN	NNP	_	0	root	_	SpaceAfter=No
+2	/	_	PUNCT	,	_	1	punct	_	SpaceAfter=No
+3	GuntherUecker-1930	_	PROPN	NNP	_	1	list	_	SpaceAfter=No
+4	.shtml	_	X	ADD	_	1	list	_	_
+
+# sent_id = 3
+# text = His work http://www.google.com/search?hl=en&rlz=1G1GGLQ_ENUS359&q=gunther+uecker+biography&gs_sm=c&gs_upl=484l484l0l5093l1l1l0l0l0l0l328l328l3-1l1l0&um=1&ie=UTF-8&tbm=isch&source=og&sa=N&tab=wi&biw=1221&bih=756&sei=XVG5TqrrGoXK2AXG0ry-Bw#um=1&hl=en&rlz=1G1GGLQ_ENUS359&tbm=isch&sa=1&q=gunther+uecker+artist&pbx=1&oq=gunther+uecker+&aq=1S&aqi=g1g-S3&aql=&gs_sm=c&gs_upl=10219l10219l0l13797l1l1l0l0l0l0l125l125l0.1l1l0&bav=on.2,or.r_gc.r_pw.,cf.osb&fp=13ddcdc64cbf5fd&biw=1221&bih=756
+1	His	_	PRON	PRP$	_	2	nmod	_	_
+2	work	_	NOUN	NN	_	3	compound	_	_
+3	http://www.google.com/search	_	NOUN	NN	_	4	compound	_	SpaceAfter=No
+4	?hl=en&rlz=1G1GGLQ_ENUS	_	NOUN	NN	_	5	compound	_	SpaceAfter=No
+5	359&q=gunther+uecker+biography	_	NOUN	NN	_	6	compound	_	SpaceAfter=No
+6	&gs_sm=c&gs_upl=484l484l0l5093l1l1l0l0l0l0l328l328l3	_	NOUN	NN	_	20	parataxis	_	SpaceAfter=No
+7	-	_	PUNCT	NFP	_	8	punct	_	SpaceAfter=No
+8	1l1l0&um=1&ie=UTF	_	NOUN	NN	_	20	parataxis	_	SpaceAfter=No
+9	-	_	PUNCT	HYPH	_	20	punct	_	SpaceAfter=No
+10	8&tbm	_	NUM	CD	_	12	nummod	_	SpaceAfter=No
+11	=isch&source=og&sa=N&t	_	X	ADD	_	12	case	_	SpaceAfter=No
+12	ab=wi&biw=1221&bih=756&sei=XVG5	_	NOUN	NN	_	20	nsubj	_	SpaceAfter=No
+13	TqrrGoXK2AXG0ry	_	PROPN	NNP	_	12	appos	_	SpaceAfter=No
+14	-	_	PUNCT	,	_	13	punct	_	SpaceAfter=No
+15	Bw#um=1&hl=en&rlz=1G1GGLQ_ENUS	_	X	NNP	_	13	list	_	SpaceAfter=No
+16	359&tbm	_	NOUN	NN	_	13	list	_	SpaceAfter=No
+17	=isch&sa=1&	_	NUM	CD	_	16	appos	_	SpaceAfter=No
+18	q=gunther+uecker+artist&pbx=1&oq=gunther+uecker	_	NUM	CD	_	17	list	_	SpaceAfter=No
+19	+	_	SYM	SYM	_	18	advmod	_	SpaceAfter=No
+20	&aq=1S&aqi=g1g	_	NOUN	NN	_	0	root	_	SpaceAfter=No
+21	-	_	PUNCT	:	_	20	punct	_	SpaceAfter=No
+22	S3&aql=&gs_sm=c&gs_upl=10219l	_	NOUN	NN	_	20	parataxis	_	SpaceAfter=No
+23	10219l0l13797l1l1l0l0l0l0l125l125l0.1l1l0&bav=on.2	_	X	ADD	_	22	appos	_	SpaceAfter=No
+24	,or.r_gc.r_pw.	_	NUM	CD	_	22	amod	_	SpaceAfter=No
+25	,	_	PUNCT	,	_	26	punct	_	SpaceAfter=No
+26	cf.osb&fp=13	_	NOUN	NN	_	22	list	_	SpaceAfter=No
+27	ddcdc64cbf5fd&biw=1221&bih=756	_	X	ADD	_	26	list	_	_
+
